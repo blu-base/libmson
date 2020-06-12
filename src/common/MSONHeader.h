@@ -64,10 +64,10 @@ private:
 
 
 
-    static constexpr const char* v_guidFileType_One = "7B5C52E4-D88C-4DA7-AEB1-5378D02996D3";
-    static constexpr const char* v_guidFileType_OneToc2 = "43FF2FA1-EFD9-4C76-9EE2-10EA5722765F";
-    static constexpr const char* v_guidFileFormat = "109ADD3F-911B-49F5-A5D0-1791EDC8AED8";
-    static constexpr const char* v_guidZero = "00000000-0000-0000-0000-000000000000";
+    static constexpr const char* v_guidFileType_One = "{7B5C52E4-D88C-4DA7-AEB1-5378D02996D3}";
+    static constexpr const char* v_guidFileType_OneToc2 = "{43FF2FA1-EFD9-4C76-9EE2-10EA5722765F}";
+    static constexpr const char* v_guidFileFormat = "{109ADD3F-911B-49F5-A5D0-1791EDC8AED8}";
+    static constexpr const char* v_guidZero = "{00000000-0000-0000-0000-000000000000}";
 
     static constexpr double def_balance = 0.0;
 
