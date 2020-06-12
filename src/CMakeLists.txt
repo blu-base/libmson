@@ -17,6 +17,8 @@ set (MSONParser_common_PART_SRCS
     common/MSONParser_common.cpp
     common/MSONHeader.cpp
     common/FileChunkReference.cpp
+    common/ExtendedGUID.cpp
+    common/CompactID.cpp
     )
 
 add_library(MSONParser_common SHARED ${MSONParser_common_PART_SRCS})

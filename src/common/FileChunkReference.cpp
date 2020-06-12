@@ -14,7 +14,7 @@ void I_FileChunkReference::setCb(const QByteArray &cb)
   m_cb = cb;
 }
 
-quint64 I_FileChunkReference::getCBsize() const
+uint64_t I_FileChunkReference::getCBsize() const
 {
   return m_cb.size();
 }
@@ -56,7 +56,7 @@ void I_FileChunkReference::setStp(const QByteArray &stp)
   m_stp = stp;
 }
 
-quint64 I_FileChunkReference::getStpSize() const
+ulong I_FileChunkReference::getStpSize() const
 {
   return m_stp.size();
 }

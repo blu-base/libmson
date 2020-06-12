@@ -27,39 +27,39 @@ private:
     QUuid guidFile;
     QUuid guidLegacyFileVersion;
     QUuid guidFileFormat;
-    quint32 ffvLastWriterVersion; // ffvLastCodeThatWroteToThisFile  // long?
-    quint32 ffvOldestWriterVersion; // ffvNewestCodeThatHasWrittenToThisFile
-    quint32 ffvNewestWriterVersion; // ffvOldestCodeThatHasWrittenToThisFile
-    quint32 ffvOldestReader; // ffvOldestCodeThatMayReadThisFile
+    uint32_t  ffvLastWriterVersion; // ffvLastCodeThatWroteToThisFile  // long?
+    uint32_t  ffvOldestWriterVersion; // ffvNewestCodeThatHasWrittenToThisFile
+    uint32_t  ffvNewestWriterVersion; // ffvOldestCodeThatHasWrittenToThisFile
+    uint32_t  ffvOldestReader; // ffvOldestCodeThatMayReadThisFile
     FileChunkReference32 fcrLegacyFreeChunkList;
     FileChunkReference32 fcrLegacyTransactionLog;
-    quint32 cTransactionsInLog;
-    quint32 cbLegacyExpectedFileLength;
-    quint64 rgbPlaceholder;
+    uint32_t  cTransactionsInLog;
+    uint32_t  cbLegacyExpectedFileLength;
+    uint64_t  rgbPlaceholder;
     FileChunkReference32 fcrLegacyFileNodeListRoot;
-    quint32 cbLegacyFreeSpaceInFreeChunkList;
-    quint8 fNeedsDefrag;
-    quint8 fRepairedFile;
-    quint8 fNeedsGarbageCollect;
-    quint8 fHasNoEmbeddedFileObjects;
+    uint32_t  cbLegacyFreeSpaceInFreeChunkList;
+    uint8_t fNeedsDefrag;
+    uint8_t fRepairedFile;
+    uint8_t fNeedsGarbageCollect;
+    uint8_t fHasNoEmbeddedFileObjects;
     QUuid guidAncestor;
-    quint32 crcName;
+    uint32_t  crcName;
     FileChunkReference64x32 fcrHashedChunkList;
     FileChunkReference64x32 fcrTransactionLog;
     FileChunkReference64x32 fcrFileNodeListRoot;
     FileChunkReference64x32 fcrFreeChunkList;
-    quint64 cbExpectedFileLength;
-    quint64 cbFreeSpaceInFreeChunkList;
+    uint64_t  cbExpectedFileLength;
+    uint64_t  cbFreeSpaceInFreeChunkList;
     QUuid guidFileVersion;
-    quint64 nFileVersionGeneration;
+    uint64_t  nFileVersionGeneration;
     QUuid guidDenyReadFileVersion;
-    quint32 grfDebugLogFlags;
+    uint32_t  grfDebugLogFlags;
     FileChunkReference64x32 fcrDebugLog;
     FileChunkReference64x32 fcrAllocVerificationFreeChunkList;
-    quint32 bnCreated;
-    quint32 bnLastWroteToThisFile;
-    quint32 bnOldestWritten;
-    quint32 bnNewestWritten;
+    uint32_t  bnCreated;
+    uint32_t  bnLastWroteToThisFile;
+    uint32_t  bnOldestWritten;
+    uint32_t  bnNewestWritten;
     QByteArray reservedHeaderTail;
 
 
@@ -97,23 +97,23 @@ public:
   bool isGuidFileFormatValid() const;
   bool isGuidFileFormatIgnored() const;
 
-  quint32 getFfvLastWriterVersion() const;
-  void setFfvLastWriterVersion(quint32 value);
+  uint32_t  getFfvLastWriterVersion() const;
+  void setFfvLastWriterVersion(uint32_t  value);
   bool isFfvLastWriterVersionValid() const;
   bool isFfvLastWriterVersionIgnored() const;
 
-  quint32 getFfvNewestWriterVersion() const;
-  void setFfvNewestWriterVersion(quint32 value);
+  uint32_t  getFfvNewestWriterVersion() const;
+  void setFfvNewestWriterVersion(uint32_t  value);
   bool isFfvNewestWriterVersionValid() const;
   bool isFfvNewestWriterVersionIgnored() const;
 
-  quint32 getFfvOldestWriterVersion() const;
-  void setFfvOldestWriterVersion(quint32 value);
+  uint32_t  getFfvOldestWriterVersion() const;
+  void setFfvOldestWriterVersion(uint32_t  value);
   bool isFfvOldestWriterVersionValid() const;
   bool isFfvOldestWriterVersionIgnored() const;
 
-  quint32 getFfvOldestReader() const;
-  void setFfvOldestReader(quint32 value);
+  uint32_t  getFfvOldestReader() const;
+  void setFfvOldestReader(uint32_t  value);
   bool isFfvOldestReaderValid() const;
   bool isFfvOldestReaderIgnored() const;
 
@@ -127,19 +127,19 @@ public:
   bool isFcrLegacyTransactionLogValid() const;
   bool isFcrLegacyTransactionLogIgnored() const;
 
-  quint32 getCTransactionsInLog() const;
-  void setCTransactionsInLog(quint32 value);
-  void changeTransactionsInLog(quint32 value);
+  uint32_t  getCTransactionsInLog() const;
+  void setCTransactionsInLog(uint32_t  value);
+  void changeTransactionsInLog(uint32_t  value);
   bool isCTransactionsInLogValid() const;
   bool isCTransactionsInLogIgnored() const;
 
-  quint32 getCbLegacyExpectedFileLength() const;
-  void setCbLegacyExpectedFileLength(quint32 value);
+  uint32_t  getCbLegacyExpectedFileLength() const;
+  void setCbLegacyExpectedFileLength(uint32_t  value);
   bool isCbLegacyExpectedFileLengthValid() const;
   bool isCbLegacyExpectedFileLengthIgnored() const;
 
-  quint64 getRgbPlaceholder() const;
-  void setRgbPlaceholder(quint64 value);
+  uint64_t  getRgbPlaceholder() const;
+  void setRgbPlaceholder(uint64_t  value);
   bool isRgbPlaceholderValid() const;
   bool isRgbPlaceholderIgnored() const;
 
@@ -148,28 +148,28 @@ public:
   bool isFcrLegacyFileNodeListRootValid() const;
   bool isFcrLegacyFileNodeListRootIgnored() const;
 
-  quint32 getCbLegacyFreeSpaceInFreeChunkList() const;
-  void setCbLegacyFreeSpaceInFreeChunkList(quint32 value);
+  uint32_t  getCbLegacyFreeSpaceInFreeChunkList() const;
+  void setCbLegacyFreeSpaceInFreeChunkList(uint32_t  value);
   bool isCbLegacyFreeSpaceInFreeChunkListValid() const;
   bool isCbLegacyFreeSpaceInFreeChunkListIgnored() const;
 
-  quint8 getFNeedsDefrag() const;
-  void setFNeedsDefrag(quint8 value);
+  uint8_t getFNeedsDefrag() const;
+  void setFNeedsDefrag(uint8_t value);
   bool isFNeedsDefragValid() const;
   bool isFNeedsDefragIgnored() const;
 
-  quint8 getFRepairedFile() const;
-  void setFRepairedFile(quint8 value);
+  uint8_t getFRepairedFile() const;
+  void setFRepairedFile(uint8_t value);
   bool isFRepairedFileValid() const;
   bool isFRepairedFileIgnored() const;
 
-  quint8 getFNeedsGarbageCollect() const;
-  void setFNeedsGarbageCollect(quint8 value);
+  uint8_t getFNeedsGarbageCollect() const;
+  void setFNeedsGarbageCollect(uint8_t value);
   bool isFNeedsGarbageCollectValid() const;
   bool isFNeedsGarbageCollectIgnored() const;
 
-  quint8 getFHasNoEmbeddedFileObjects() const;
-  void setFHasNoEmbeddedFileObjects(quint8 value);
+  uint8_t getFHasNoEmbeddedFileObjects() const;
+  void setFHasNoEmbeddedFileObjects(uint8_t value);
   bool isFHasNoEmbeddedFileObjectsValid() const;
   bool isFHasNoEmbeddedFileObjectsIgnored() const;
 
@@ -181,8 +181,8 @@ public:
   bool guidAncestorLocationInPD() const;
   bool guidAncestorLocationNotPresent() const;
 
-  quint32 getCrcName() const;
-  void setCrcName(quint32 value);
+  uint32_t  getCrcName() const;
+  void setCrcName(uint32_t  value);
   bool isCrcNameValid() const;
   bool isCrcNameIgnored() const;
 
@@ -208,13 +208,13 @@ public:
   bool isFcrFreeChunkListIgnored() const;
   bool fcrFreeChunkList_exits() const;
 
-  quint64 getCbExpectedFileLength() const;
-  void setCbExpectedFileLength(quint64 value);
+  uint64_t  getCbExpectedFileLength() const;
+  void setCbExpectedFileLength(uint64_t  value);
   bool isCbExpectedFileLengthValid() const;
   bool isCbExpectedFileLengthIgnored() const;
 
-  quint64 getCbFreeSpaceInFreeChunkList() const;
-  void setCbFreeSpaceInFreeChunkList(quint64 value);
+  uint64_t  getCbFreeSpaceInFreeChunkList() const;
+  void setCbFreeSpaceInFreeChunkList(uint64_t  value);
   bool isCbFreeSpaceInFreeChunkListValid() const;
   bool isCbFreeSpaceInFreeChunkListIgnored() const;
 
@@ -224,8 +224,8 @@ public:
   bool isGuidFileVersionValid() const;
   bool isGuidFileVersionIgnored() const;
 
-  quint64 getNFileVersionGeneration() const;
-  void setNFileVersionGeneration(quint64 value);
+  uint64_t  getNFileVersionGeneration() const;
+  void setNFileVersionGeneration(uint64_t  value);
   bool isNFileVersionGenerationValid() const;
   bool isNFileVersionGenerationIgnored() const;
 
@@ -235,8 +235,8 @@ public:
   bool isGuidDenyReadFileVersionValid() const;
   bool isGuidDenyReadFileVersionIgnored() const;
 
-  quint32 getGrfDebugLogFlags() const;
-  void setGrfDebugLogFlags(quint32 value);
+  uint32_t  getGrfDebugLogFlags() const;
+  void setGrfDebugLogFlags(uint32_t  value);
   bool isGrfDebugLogFlagsValid() const;
   bool isGrfDebugLogFlagsIgnored() const;
 
@@ -250,23 +250,23 @@ public:
   bool isFcrAllocVerificationFreeChunkListValid() const;
   bool isFcrAllocVerificationFreeChunkListIgnored() const;
 
-  quint32 getBnCreated() const;
-  void setBnCreated(quint32 value);
+  uint32_t  getBnCreated() const;
+  void setBnCreated(uint32_t  value);
   bool isBnCreatedValid() const;
   bool isBnCreatedIgnored() const;
 
-  quint32 getBnLastWroteToThisFile() const;
-  void setBnLastWroteToThisFile(quint32 value);
+  uint32_t  getBnLastWroteToThisFile() const;
+  void setBnLastWroteToThisFile(uint32_t  value);
   bool isBnLastWroteToThisFileValid() const;
   bool isBnLastWroteToThisFileIgnored() const;
 
-  quint32 getBnOldestWritten() const;
-  void setBnOldestWritten(quint32 value);
+  uint32_t  getBnOldestWritten() const;
+  void setBnOldestWritten(uint32_t  value);
   bool isBnOldestWrittenValid() const;
   bool isBnOldestWrittenIgnored() const;
 
-  quint32 getBnNewestWritten() const;
-  void setBnNewestWritten(quint32 value);
+  uint32_t  getBnNewestWritten() const;
+  void setBnNewestWritten(uint32_t  value);
   bool isBnNewestWrittenValid() const;
   bool isBnNewestWrittenIgnored() const;
 

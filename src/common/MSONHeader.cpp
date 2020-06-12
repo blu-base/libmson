@@ -154,12 +154,12 @@ bool MSONHeader::isGuidFileFormatIgnored() const
 
 
 
-quint32 MSONHeader::getFfvLastWriterVersion() const
+uint32_t  MSONHeader::getFfvLastWriterVersion() const
 {
   return ffvLastWriterVersion;
 }
 
-void MSONHeader::setFfvLastWriterVersion(quint32 value)
+void MSONHeader::setFfvLastWriterVersion(uint32_t  value)
 {
   ffvLastWriterVersion = value;
 }
@@ -184,12 +184,12 @@ bool MSONHeader::isFfvLastWriterVersionIgnored() const
 
 
 
-quint32 MSONHeader::getFfvNewestWriterVersion() const
+uint32_t  MSONHeader::getFfvNewestWriterVersion() const
 {
   return ffvNewestWriterVersion;
 }
 
-void MSONHeader::setFfvNewestWriterVersion(quint32 value)
+void MSONHeader::setFfvNewestWriterVersion(uint32_t  value)
 {
   ffvNewestWriterVersion = value;
 }
@@ -213,12 +213,12 @@ bool MSONHeader::isFfvNewestWriterVersionIgnored() const
 
 
 
-quint32 MSONHeader::getFfvOldestWriterVersion() const
+uint32_t  MSONHeader::getFfvOldestWriterVersion() const
 {
   return ffvOldestWriterVersion;
 }
 
-void MSONHeader::setFfvOldestWriterVersion(quint32 value)
+void MSONHeader::setFfvOldestWriterVersion(uint32_t  value)
 {
   ffvOldestWriterVersion = value;
 }
@@ -243,12 +243,12 @@ bool MSONHeader::isFfvOldestWriterVersionIgnored() const
 
 
 
-quint32 MSONHeader::getFfvOldestReader() const
+uint32_t  MSONHeader::getFfvOldestReader() const
 {
   return ffvOldestReader;
 }
 
-void MSONHeader::setFfvOldestReader(quint32 value)
+void MSONHeader::setFfvOldestReader(uint32_t  value)
 {
   ffvOldestReader = value;
 }
@@ -328,7 +328,7 @@ bool MSONHeader::isFcrLegacyTransactionLogIgnored() const
 
 
 
-quint32 MSONHeader::getCTransactionsInLog() const
+uint32_t  MSONHeader::getCTransactionsInLog() const
 {
   return cTransactionsInLog;
 }
@@ -340,12 +340,12 @@ quint32 MSONHeader::getCTransactionsInLog() const
  *
  * \todo setting this value forces a new UUID for guidFileVersion as well
  */
-void MSONHeader::setCTransactionsInLog(quint32 value)
+void MSONHeader::setCTransactionsInLog(uint32_t  value)
 {
   cTransactionsInLog = value;
 }
 
-void MSONHeader::changeTransactionsInLog(quint32 value)
+void MSONHeader::changeTransactionsInLog(uint32_t  value)
 {
   cTransactionsInLog = value;
   nextGuidFileVersion();
@@ -369,12 +369,12 @@ bool MSONHeader::isCTransactionsInLogIgnored() const
 
 
 
-quint32 MSONHeader::getCbLegacyExpectedFileLength() const
+uint32_t  MSONHeader::getCbLegacyExpectedFileLength() const
 {
   return cbLegacyExpectedFileLength;
 }
 
-void MSONHeader::setCbLegacyExpectedFileLength(quint32 value)
+void MSONHeader::setCbLegacyExpectedFileLength(uint32_t  value)
 {
   cbLegacyExpectedFileLength = value;
 }
@@ -398,12 +398,12 @@ bool MSONHeader::isCbLegacyExpectedFileLengthIgnored() const
 
 
 
-quint64 MSONHeader::getRgbPlaceholder() const
+uint64_t  MSONHeader::getRgbPlaceholder() const
 {
   return rgbPlaceholder;
 }
 
-void MSONHeader::setRgbPlaceholder(quint64 value)
+void MSONHeader::setRgbPlaceholder(uint64_t  value)
 {
   rgbPlaceholder = value;
 }
@@ -448,12 +448,12 @@ bool MSONHeader::isFcrLegacyFileNodeListRootIgnored() const
 
 
 
-quint32 MSONHeader::getCbLegacyFreeSpaceInFreeChunkList() const
+uint32_t  MSONHeader::getCbLegacyFreeSpaceInFreeChunkList() const
 {
   return cbLegacyFreeSpaceInFreeChunkList;
 }
 
-void MSONHeader::setCbLegacyFreeSpaceInFreeChunkList(quint32 value)
+void MSONHeader::setCbLegacyFreeSpaceInFreeChunkList(uint32_t  value)
 {
   cbLegacyFreeSpaceInFreeChunkList = value;
 }
@@ -470,12 +470,12 @@ bool MSONHeader::isCbLegacyFreeSpaceInFreeChunkListIgnored() const
 
 
 
-quint8 MSONHeader::getFNeedsDefrag() const
+uchar MSONHeader::getFNeedsDefrag() const
 {
   return fNeedsDefrag;
 }
 
-void MSONHeader::setFNeedsDefrag(quint8 value)
+void MSONHeader::setFNeedsDefrag(uint8_t value)
 {
   fNeedsDefrag = value;
 }
@@ -499,12 +499,12 @@ bool MSONHeader::isFNeedsDefragIgnored() const
 
 
 
-quint8 MSONHeader::getFRepairedFile() const
+uint8_t MSONHeader::getFRepairedFile() const
 {
   return fRepairedFile;
 }
 
-void MSONHeader::setFRepairedFile(quint8 value)
+void MSONHeader::setFRepairedFile(uint8_t value)
 {
   fRepairedFile = value;
 }
@@ -525,12 +525,12 @@ bool MSONHeader::isFRepairedFileIgnored() const
   return true;
 }
 
-quint8 MSONHeader::getFNeedsGarbageCollect() const
+uint8_t MSONHeader::getFNeedsGarbageCollect() const
 {
   return fNeedsGarbageCollect;
 }
 
-void MSONHeader::setFNeedsGarbageCollect(quint8 value)
+void MSONHeader::setFNeedsGarbageCollect(uint8_t value)
 {
   fNeedsGarbageCollect = value;
 }
@@ -554,12 +554,12 @@ bool MSONHeader::isFNeedsGarbageCollectIgnored() const
 
 
 
-quint8 MSONHeader::getFHasNoEmbeddedFileObjects() const
+uint8_t MSONHeader::getFHasNoEmbeddedFileObjects() const
 {
   return fHasNoEmbeddedFileObjects;
 }
 
-void MSONHeader::setFHasNoEmbeddedFileObjects(quint8 value)
+void MSONHeader::setFHasNoEmbeddedFileObjects(uint8_t value)
 {
   fHasNoEmbeddedFileObjects = value;
 }
@@ -629,12 +629,12 @@ bool MSONHeader::guidAncestorLocationNotPresent() const
 
 
 
-quint32 MSONHeader::getCrcName() const
+uint32_t  MSONHeader::getCrcName() const
 {
   return crcName;
 }
 
-void MSONHeader::setCrcName(quint32 value)
+void MSONHeader::setCrcName(uint32_t  value)
 {
   crcName = value;
 }
@@ -783,12 +783,12 @@ bool MSONHeader::fcrFreeChunkList_exits() const
 
 
 
-quint64 MSONHeader::getCbExpectedFileLength() const
+uint64_t  MSONHeader::getCbExpectedFileLength() const
 {
   return cbExpectedFileLength;
 }
 
-void MSONHeader::setCbExpectedFileLength(quint64 value)
+void MSONHeader::setCbExpectedFileLength(uint64_t  value)
 {
   cbExpectedFileLength = value;
 }
@@ -805,12 +805,12 @@ bool MSONHeader::isCbExpectedFileLengthIgnored() const
 
 
 
-quint64 MSONHeader::getCbFreeSpaceInFreeChunkList() const
+uint64_t  MSONHeader::getCbFreeSpaceInFreeChunkList() const
 {
   return cbFreeSpaceInFreeChunkList;
 }
 
-void MSONHeader::setCbFreeSpaceInFreeChunkList(quint64 value)
+void MSONHeader::setCbFreeSpaceInFreeChunkList(uint64_t  value)
 {
   cbFreeSpaceInFreeChunkList = value;
 }
@@ -870,7 +870,7 @@ bool MSONHeader::isGuidFileVersionIgnored() const
 
 
 
-quint64 MSONHeader::getNFileVersionGeneration() const
+uint64_t  MSONHeader::getNFileVersionGeneration() const
 {
   return nFileVersionGeneration;
 }
@@ -881,7 +881,7 @@ quint64 MSONHeader::getNFileVersionGeneration() const
  *
  * must be incremented with change of setGuidFileVersion
  */
-void MSONHeader::setNFileVersionGeneration(quint64 value)
+void MSONHeader::setNFileVersionGeneration(uint64_t  value)
 {
   nFileVersionGeneration = value;
 }
@@ -938,12 +938,12 @@ bool MSONHeader::isGuidDenyReadFileVersionIgnored() const
 
 
 
-quint32 MSONHeader::getGrfDebugLogFlags() const
+uint32_t  MSONHeader::getGrfDebugLogFlags() const
 {
   return grfDebugLogFlags;
 }
 
-void MSONHeader::setGrfDebugLogFlags(quint32 value)
+void MSONHeader::setGrfDebugLogFlags(uint32_t  value)
 {
   grfDebugLogFlags = value;
 }
@@ -1004,12 +1004,12 @@ bool MSONHeader::isFcrAllocVerificationFreeChunkListIgnored() const
 
 
 
-quint32 MSONHeader::getBnCreated() const
+uint32_t  MSONHeader::getBnCreated() const
 {
   return bnCreated;
 }
 
-void MSONHeader::setBnCreated(quint32 value)
+void MSONHeader::setBnCreated(uint32_t  value)
 {
   bnCreated = value;
 }
@@ -1033,12 +1033,12 @@ bool MSONHeader::isBnCreatedIgnored() const
 
 
 
-quint32 MSONHeader::getBnLastWroteToThisFile() const
+uint32_t  MSONHeader::getBnLastWroteToThisFile() const
 {
   return bnLastWroteToThisFile;
 }
 
-void MSONHeader::setBnLastWroteToThisFile(quint32 value)
+void MSONHeader::setBnLastWroteToThisFile(uint32_t  value)
 {
   bnLastWroteToThisFile = value;
 }
@@ -1061,12 +1061,12 @@ bool MSONHeader::isBnLastWroteToThisFileIgnored() const
 
 
 
-quint32 MSONHeader::getBnOldestWritten() const
+uint32_t  MSONHeader::getBnOldestWritten() const
 {
   return bnOldestWritten;
 }
 
-void MSONHeader::setBnOldestWritten(quint32 value)
+void MSONHeader::setBnOldestWritten(uint32_t  value)
 {
   bnOldestWritten = value;
 }
@@ -1089,12 +1089,12 @@ bool MSONHeader::isBnOldestWrittenIgnored() const
 
 
 
-quint32 MSONHeader::getBnNewestWritten() const
+uint32_t  MSONHeader::getBnNewestWritten() const
 {
   return bnNewestWritten;
 }
 
-void MSONHeader::setBnNewestWritten(quint32 value)
+void MSONHeader::setBnNewestWritten(uint32_t  value)
 {
   bnNewestWritten = value;
 }

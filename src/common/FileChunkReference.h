@@ -41,9 +41,9 @@ public:
 
 
 
-  quint64 get_location();
-  quint64 get_size();
-  quint32 get_size_in_file();
+  uint64_t  get_location();
+  uint64_t  get_size();
+  uint32_t get_size_in_file();
 
   void set_zero();
 
@@ -53,11 +53,11 @@ public:
 
   QByteArray getStp() const;
   void setStp(const QByteArray &stp);
-  quint64 getStpSize() const;
+  uint64_t  getStpSize() const;
 
   QByteArray getCb() const;
   void setCb(const QByteArray &cb);
-  quint64 getCBsize() const;
+  uint64_t  getCBsize() const;
 };
 
 
