@@ -1,7 +1,7 @@
 #include "FileChunkReference.h"
 
 #include <QDebug>
-
+#include <QDataStream>
 
 
 QByteArray I_FileChunkReference::getCb() const
@@ -9,7 +9,7 @@ QByteArray I_FileChunkReference::getCb() const
   return m_cb;
 }
 
-void I_FileChunkReference::setCb(const QByteArray &cb)
+void I_FileChunkReference::setCb(QByteArray cb)
 {
   m_cb = cb;
 }
@@ -46,12 +46,21 @@ bool I_FileChunkReference::is_fcrZero() const
   return m_stp == QByteArray(m_stp.size(),'\0') && m_cb == QByteArray(m_cb.size(),'\0');
 }
 
+
+QDebug operator<<(QDebug dbg, const I_FileChunkReference& obj)
+{
+  QDebugStateSaver saver(dbg);
+  dbg.nospace() << QString("FileChunkReference(stp: ") << QString::fromStdString(obj.getStp().toHex().toStdString()) << QString(", cb: ") << obj.getCb().toHex() << QString(")");
+  return dbg;
+}
+
+
 QByteArray I_FileChunkReference::getStp() const
 {
   return m_stp;
 }
 
-void I_FileChunkReference::setStp(const QByteArray &stp)
+void I_FileChunkReference::setStp(const QByteArray stp)
 {
   m_stp = stp;
 }
@@ -83,8 +92,27 @@ FileChunkReference32::FileChunkReference32(INITTYPE inittype)
     case INITTYPE::INIT_FCRZERO:
       this->set_fcrZero();
       break;
-    }
+  }
 
+}
+
+QDataStream& operator<<(QDataStream& s,  FileChunkReference32& obj)
+{
+  s << obj.getStp() << obj.getCb();
+}
+
+QDataStream& operator>>(QDataStream& s, FileChunkReference32& obj)
+{
+  int length = 4;
+  char temp [length];
+
+  s.readRawData(temp, length);
+  obj.m_stp.replace(0,length,temp );
+
+  s.readRawData(temp, length);
+  obj.m_cb.replace(0,length,temp );
+
+  return s;
 }
 
 
@@ -116,7 +144,7 @@ FileChunkReference64x32::FileChunkReference64x32(I_FileChunkReference::INITTYPE 
     case INITTYPE::INIT_FCRZERO:
       this->set_fcrZero();
       break;
-    }
+  }
 }
 
 
@@ -129,7 +157,7 @@ FileNodeChunkReference::FileNodeChunkReference(STP_FORMAT stpFormat, CB_FORMAT c
   m_cbFormat = cbFormat;
 
   switch (stpFormat)
-    {
+  {
     case STP_FORMAT::UNCOMPRESED_8BYTE:
       m_stp.resize(8);
       break;
@@ -142,7 +170,7 @@ FileNodeChunkReference::FileNodeChunkReference(STP_FORMAT stpFormat, CB_FORMAT c
     case STP_FORMAT::COMPRESSED_4BYTE:
       m_stp.resize(4);
       break;
-    }
+  }
 
   switch (cbFormat) {
     case CB_FORMAT::UNCOMPRESED_8BYTE:
@@ -158,7 +186,7 @@ FileNodeChunkReference::FileNodeChunkReference(STP_FORMAT stpFormat, CB_FORMAT c
       m_cb.resize(2);
       break;
 
-    }
+  }
 }
 
 bool FileNodeChunkReference::isSTPcompressed()

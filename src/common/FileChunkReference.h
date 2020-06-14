@@ -41,8 +41,8 @@ public:
 
 
 
-  uint64_t  get_location();
-  uint64_t  get_size();
+  uint64_t get_location();
+  uint64_t get_size();
   uint32_t get_size_in_file();
 
   void set_zero();
@@ -51,12 +51,20 @@ public:
   virtual ~I_FileChunkReference() = default;
 
 
+  friend QDebug operator<<(QDebug dbg, const I_FileChunkReference& obj);
+
+  //  friend bool operator==(const I_FileChunkReference& lhs, const I_FileChunkReference& rhs) noexcept;
+  //  friend bool operator!=(const I_FileChunkReference& lhs, const I_FileChunkReference& rhs) noexcept;
+  //  friend bool operator<=(const I_FileChunkReference& lhs, const I_FileChunkReference& rhs) noexcept;
+  //  friend bool operator>=(const I_FileChunkReference& lhs, const I_FileChunkReference& rhs) noexcept;
+
+
   QByteArray getStp() const;
-  void setStp(const QByteArray &stp);
+  void setStp(const QByteArray stp);
   uint64_t  getStpSize() const;
 
   QByteArray getCb() const;
-  void setCb(const QByteArray &cb);
+  void setCb(const QByteArray cb);
   uint64_t  getCBsize() const;
 };
 
@@ -67,13 +75,17 @@ public:
   FileChunkReference32();
   FileChunkReference32(I_FileChunkReference::INITTYPE inittype);
 
-
+  friend QDataStream& operator<<(QDataStream& s, const FileChunkReference32& obj);
+  friend QDataStream& operator>>(QDataStream& s, FileChunkReference32& obj);
 
 };
 
 class FileChunkReference64 : public I_FileChunkReference {
 public:
   FileChunkReference64();
+
+  friend QDataStream& operator<<(QDataStream& s, const FileChunkReference64& obj);
+  friend QDataStream& operator>>(QDataStream& s, FileChunkReference64& obj);
 };
 
 class FileChunkReference64x32 : public I_FileChunkReference {
@@ -81,6 +93,9 @@ public:
   FileChunkReference64x32();
   FileChunkReference64x32(I_FileChunkReference::INITTYPE inittype);
 
+
+  friend QDataStream& operator<<(QDataStream& s, const FileChunkReference64x32& obj);
+  friend QDataStream& operator>>(QDataStream& s, FileChunkReference64x32& obj);
 };
 
 
@@ -107,7 +122,7 @@ private:
   CB_FORMAT m_cbFormat;
 public:
   FileNodeChunkReference(STP_FORMAT stpFormat, CB_FORMAT cbFormat);
-//  FileNodeChunkReference(const QByteArray stp, const QByteArray cb);
+  //  FileNodeChunkReference(const QByteArray stp, const QByteArray cb);
 
   bool isSTPcompressed();
   bool isCBcompressed();

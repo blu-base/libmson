@@ -14,11 +14,12 @@ include_directories(
 
 ########### common MSONParser object library ###############
 set (MSONParser_common_PART_SRCS
-    common/MSONParser_common.cpp
     common/MSONHeader.cpp
     common/FileChunkReference.cpp
     common/ExtendedGUID.cpp
     common/CompactID.cpp
+    common/MSONDocument.cpp
+	common/MSONStreamReader.cpp
     )
 
 add_library(MSONParser_common SHARED ${MSONParser_common_PART_SRCS})
@@ -79,4 +80,13 @@ target_link_libraries(
     Qt5::Xml #?
     )
 
+
+
 install(TARGETS MSONParser DESTINATION ${PLUGIN_INSTALL_DIR}/)
+
+add_custom_command(
+        TARGET MSONParser POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+                "${CMAKE_SOURCE_DIR}/resources/sample-single-text/Section 1.one"
+                "${CMAKE_CURRENT_BINARY_DIR}/resources/sample-single-text/Section 1.one")
+
