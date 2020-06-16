@@ -1,0 +1,66 @@
+#include "FileChunkReference64.h"
+
+FileChunkReference64::FileChunkReference64()
+    : IFileChunkReference<quint64, quint64>() {}
+
+FileChunkReference64::FileChunkReference64(FCR_INITTYPE inittype)
+    : IFileChunkReference<quint64, quint64>() {
+  switch (inittype) {
+  case FCR_INITTYPE::FCRNIL:
+    this->set_fcrNil();
+    break;
+  case FCR_INITTYPE::FCRZERO:
+    this->set_fcrZero();
+    break;
+  }
+}
+
+FileChunkReference64::~FileChunkReference64() {}
+
+bool FileChunkReference64::is_fcrNil() const {
+  return m_stp == UINT64_MAX && m_cb == 0;
+}
+
+bool FileChunkReference64::is_fcrZero() const {
+  return m_stp == 0 && m_cb == 0;
+}
+
+void FileChunkReference64::set_fcrNil() {
+  m_stp = UINT64_MAX;
+  m_cb = 0;
+}
+
+void FileChunkReference64::set_fcrZero() {
+  m_stp = 0;
+  m_cb = 0;
+}
+
+quint64 FileChunkReference64::stp() const { return m_stp; }
+
+void FileChunkReference64::setStp(const quint64 &stp) { m_stp = stp; }
+
+quint64 FileChunkReference64::cb() const { return m_cb; }
+
+void FileChunkReference64::setCb(const quint64 &cb) { m_cb = cb; }
+
+void FileChunkReference64::deserialize(QDataStream &ds) {
+  ds >> m_stp;
+  ds >> m_cb;
+}
+
+void FileChunkReference64::serialize(QDataStream &ds) const {
+  ds << m_stp;
+  ds << m_cb;
+}
+
+void FileChunkReference64::toDebugString(QDebug dbg) const {
+  dbg << "FileChunkReference64(";
+  if (is_fcrNil()) {
+    dbg << "fcrNil";
+  } else if (is_fcrZero()) {
+    dbg << "fcrZero";
+  } else {
+    dbg << "stp: " << m_stp << ", cb: " << m_cb;
+  };
+  dbg << ")";
+}

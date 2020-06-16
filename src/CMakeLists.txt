@@ -13,34 +13,70 @@ include_directories(
 
 
 ########### common MSONParser object library ###############
-set (MSONParser_common_PART_SRCS
+set (MSONcommon_PART_SRCS
     common/MSONHeader.cpp
-    common/FileChunkReference.cpp
-    common/ExtendedGUID.cpp
-    common/CompactID.cpp
+
     common/MSONDocument.cpp
-	common/MSONStreamReader.cpp
+#    common/MSONStreamReader.cpp
+    common/FileNodeListFragment.cpp
+    common/FileNodeList.cpp
+    common/FileNodeListHeader.cpp
+    common/FileNode.cpp
+    common/FileNodeType.cpp
+
+
+    common/commonTypes/CompactID.cpp
+    common/commonTypes/ExtendedGUID.cpp
+    common/commonTypes/FileChunkReference.cpp
+    common/commonTypes/IFileChunkReference.cpp
+    common/commonTypes/FileChunkReference32.cpp
+    common/commonTypes/FileChunkReference64.cpp
+    common/commonTypes/FileChunkReference64x32.cpp
+    common/commonTypes/FileNodeChunkReference.cpp
+
+    common/FileNodeTypes/IFileNodeType.cpp
+    common/FileNodeTypes/ObjectSpaceManifestRootFND.cpp
+    common/FileNodeTypes/ObjectSpaceManifestListReferenceFND.cpp
+    common/FileNodeTypes/ObjectSpaceManifestListStartFND.cpp
+    common/FileNodeTypes/RevisionManifestListReferenceFND.cpp
+    common/FileNodeTypes/RevisionManifestListStartFND.cpp
+    common/FileNodeTypes/RevisionManifestStart4FND.cpp
+    common/FileNodeTypes/RevisionManifestStart6FND.cpp
+    common/FileNodeTypes/RevisionManifestStart7FND.cpp
+    common/FileNodeTypes/GlobalIdTableStartFNDX.cpp
+    common/FileNodeTypes/GlobalIdTableEntryFNDX.cpp
+    common/FileNodeTypes/GlobalIdTableEntry2FNDX.cpp
+    common/FileNodeTypes/GlobalIdTableEntry3FNDX.cpp
+    common/FileNodeTypes/ObjectRevisionWithRefCountFNDX.cpp
+    common/FileNodeTypes/ObjectRevisionWithRefCount2FNDX.cpp
+    common/FileNodeTypes/RootObjectReference2FNDX.cpp
+    common/FileNodeTypes/RootObjectReference3FND.cpp
+    common/FileNodeTypes/RevisionRoleDeclarationFND.cpp
+    common/FileNodeTypes/RevisionRoleAndContextDeclarationFND.cpp
+    common/FileNodeTypes/ObjectDataEncryptionKeyV2FNDX.cpp
     )
 
-add_library(MSONParser_common SHARED ${MSONParser_common_PART_SRCS})
+add_library(MSONcommon SHARED ${MSONcommon_PART_SRCS})
 
 target_link_libraries(
-    MSONParser_common
+    MSONcommon
     Qt5::Core
     Qt5::Xml #?
     )
 
-install(TARGETS MSONParser_common DESTINATION ${PLUGIN_INSTALL_DIR}/)
+install(TARGETS MSONcommon DESTINATION ${PLUGIN_INSTALL_DIR}/)
 
 ########### import MSONParser library ######################
 set (MSONParser_import_PART_SRCS
     import/MSONParser_import.cpp
     import/MSONHeaderReader.cpp
+    import/MSONParser.cpp
     )
 add_library(MSONParser_import SHARED ${MSONParser_import_PART_SRCS})
 
 target_link_libraries(
     MSONParser_import
+    MSONcommon
     Qt5::Core #?
     Qt5::Xml #?
     )
@@ -55,6 +91,7 @@ add_library(MSONParser_export SHARED ${MSONParser_export_PART_SRCS})
 
 target_link_libraries(
     MSONParser_export
+    MSONcommon
     Qt5::Core #?
     Qt5::Xml #?
     )
@@ -73,7 +110,7 @@ add_executable(
 
 target_link_libraries(
     MSONParser
-    MSONParser_common
+    MSONcommon
     MSONParser_import
     MSONParser_export
     Qt5::Core #?

@@ -71,3 +71,7 @@ Thumbs.db
 *.dll
 *.exe
 
+
+# Build Crumps
+build
+CMakeLists.txt.user*

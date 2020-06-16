@@ -5,8 +5,7 @@
 
 #include <QIODevice>
 
-class MSONStreamReader
-{
+class MSONStreamReader {
 public:
   MSONStreamReader();
 
@@ -14,8 +13,6 @@ public:
   MSONStreamReader(const QByteArray &data);
   MSONStreamReader(const QString &data);
   MSONStreamReader(const char *data);
-
-
 };
 
 #endif // MSONREADER_H

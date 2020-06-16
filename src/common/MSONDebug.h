@@ -3,8 +3,7 @@
 
 #include <QtCore/qglobal.h>
 
-class MSONDebug
-{
+class MSONDebug {
 public:
   MSONDebug();
 };

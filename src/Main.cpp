@@ -1,35 +1,34 @@
 #include <iostream>
 
-
-
 #include <QDataStream>
-#include <QFile>
 #include <QDebug>
+#include <QFile>
 
 #include <QDir>
 
 #include <QUuid>
 
-
-#include "common/MSONHeader.h"
+#include "common/MSONDocument.h"
 
 using namespace std;
 
-int main()
-{
+int main() {
   cout << "Hello World!" << endl;
 
   qDebug() << "CWD: " << QDir::currentPath();
 
   QFile file("../resources/sample-single-text/Section 1.one");
   file.open(QIODevice::ReadOnly);
-  QDataStream in(&file);    // read the data serialized from the file
+  QDataStream in(&file); // read the data serialized from the file
 
+  //  qDebug() << "Reading " << file;
+  // qDebug() << "ByteOrder" << in.byteOrder();
 
-  qDebug() << "Reading " << file;
-  qDebug() << "ByteOrder" << in.byteOrder();
+  MSONcommon::MSONDocument document;
 
-  MSONHeader header(in);
+  in >> document;
+
+  qDebug() << document;
 
   return 0;
 }
