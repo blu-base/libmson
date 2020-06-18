@@ -194,8 +194,40 @@ void FileNodeChunkReference::toDebugString(QDebug dbg) const {
   } else if (is_fcrZero()) {
     dbg << "fcrZero";
   } else {
-    dbg << "stp: " << m_stp << ", cb: " << m_cb;
+    dbg << "stp: ";
+
+    switch (m_stpFormat) {
+    case FNCR_STP_FORMAT::UNCOMPRESED_8BYTE:
+      dbg.noquote() << QString("0x%1").arg(m_stp, 16, 16, QLatin1Char('0'));
+      break;
+
+    case FNCR_STP_FORMAT::UNCOMPRESED_4BYTE:
+    case FNCR_STP_FORMAT::COMPRESSED_4BYTE:
+      dbg.noquote() << QString("0x%1").arg(m_stp, 8, 16, QLatin1Char('0'));
+      break;
+
+    case FNCR_STP_FORMAT::COMPRESSED_2BYTE:
+      dbg.noquote() << QString("0x%1").arg(m_stp, 4, 16, QLatin1Char('0'));
+      break;
+    }
+
+    dbg << ", cb: ";
+
+    switch (m_cbFormat) {
+    case FNCR_CB_FORMAT::UNCOMPRESED_8BYTE:
+      dbg.noquote() << QString("0x%1").arg(m_cb, 16, 16, QLatin1Char('0'));
+      break;
+    case FNCR_CB_FORMAT::UNCOMPRESED_4BYTE:
+      dbg.noquote() << QString("0x%1").arg(m_cb, 8, 16, QLatin1Char('0'));
+      break;
+    case FNCR_CB_FORMAT::COMPRESSED_1BYTE:
+      dbg.noquote() << QString("0x%1").arg(m_cb, 2, 16, QLatin1Char('0'));
+      break;
+    case FNCR_CB_FORMAT::COMPRESSED_2BYTE:
+      dbg.noquote() << QString("0x%1").arg(m_cb, 4, 16, QLatin1Char('0'));
+      break;
+    }
   };
-  dbg << ", format: " << static_cast<quint8>(m_stpFormat) << "/"
+  dbg << ", stp/cb format: " << static_cast<quint8>(m_stpFormat) << "/"
       << static_cast<quint8>(m_cbFormat) << ")";
 }

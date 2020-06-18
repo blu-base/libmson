@@ -9,6 +9,8 @@
 #include <QDataStream>
 #include <QDebug>
 
+#include "helper/Helper.h"
+
 namespace MSONcommon {
 
 static const QUuid v_guidFileType_One("{7b5c52e4-d88c-4da7-aeb1-5378d02996d3}");
@@ -233,9 +235,8 @@ QDebug operator<<(QDebug dbg, const MSONHeader &obj) {
       << (obj.isFcrFreeChunkListValid() ? "" : " INVALID")
       << (obj.isFcrFreeChunkListIgnored() ? " ignored" : "") << "\n";
   dbg << " cbExpectedFileLength:              "
-      << QString("%1").arg(obj.cbExpectedFileLength,
-                           sizeof(obj.cbExpectedFileLength), 16,
-                           QLatin1Char('0'))
+      << qStringHex(obj.cbExpectedFileLength,
+                    sizeof(obj.cbExpectedFileLength) * 2)
       << (obj.isCbExpectedFileLengthValid() ? "" : " INVALID")
       << (obj.isCbExpectedFileLengthIgnored() ? " ignored" : "") << "\n";
   dbg << " cbFreeSpaceInFreeChunkList:        "
@@ -263,24 +264,20 @@ QDebug operator<<(QDebug dbg, const MSONHeader &obj) {
       << (obj.isFcrAllocVerificationFreeChunkListIgnored() ? " ignored" : "")
       << "\n";
   dbg << " bnCreated:                         "
-      << QString("%1").arg(obj.bnCreated, sizeof(obj.bnCreated), 16,
-                           QLatin1Char('0'))
+      << qStringHex(obj.bnCreated, sizeof(obj.bnCreated) * 2)
       << (obj.isBnCreatedValid() ? "" : " INVALID")
       << (obj.isBnCreatedIgnored() ? " ignored" : "") << "\n";
   dbg << " bnLastWroteToThisFile:             "
-      << QString("%1").arg(obj.bnLastWroteToThisFile,
-                           sizeof(obj.bnLastWroteToThisFile), 16,
-                           QLatin1Char('0'))
+      << qStringHex(obj.bnLastWroteToThisFile,
+                    sizeof(obj.bnLastWroteToThisFile) * 2)
       << (obj.isBnLastWroteToThisFileValid() ? "" : " INVALID")
       << (obj.isBnLastWroteToThisFileIgnored() ? " ignored" : "") << "\n";
   dbg << " bnOldestWritten:                   "
-      << QString("%1").arg(obj.bnOldestWritten, sizeof(obj.bnOldestWritten), 16,
-                           QLatin1Char('0'))
+      << qStringHex(obj.bnOldestWritten, sizeof(obj.bnOldestWritten) * 2)
       << (obj.isBnOldestWrittenValid() ? "" : " INVALID")
       << (obj.isBnOldestWrittenIgnored() ? " ignored" : "") << "\n";
   dbg << " bnNewestWritten:                   "
-      << QString("%1").arg(obj.bnNewestWritten, sizeof(obj.bnNewestWritten), 16,
-                           QLatin1Char('0'))
+      << qStringHex(obj.bnNewestWritten, sizeof(obj.bnNewestWritten) * 2)
       << (obj.isBnNewestWrittenValid() ? "" : " INVALID")
       << (obj.isBnNewestWrittenIgnored() ? " ignored" : "") << "\n";
   dbg << " reservedHeaderTailLength:          " << obj.reservedHeaderTailLength

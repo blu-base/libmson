@@ -1,17 +1,21 @@
 #include "TransactionEntry.h"
+#include "helper/Helper.h"
 
-TransactionEntry::TransactionEntry() {}
+TransactionEntry::TransactionEntry() : srcID{}, TransactionEntrySwitch{} {}
 
 QDataStream &operator<<(QDataStream &ds, const TransactionEntry &obj) {
   obj.serialize(ds);
+  return ds;
 }
 
 QDataStream &operator>>(QDataStream &ds, TransactionEntry &obj) {
-    obj.deserialize(ds);
+  obj.deserialize(ds);
+  return ds;
 }
 
 QDebug operator<<(QDebug dbg, const TransactionEntry &obj) {
-    obj.toDebugString(dbg);
+  obj.toDebugString(dbg);
+  return dbg;
 }
 
 void TransactionEntry::serialize(QDataStream &ds) const {
@@ -25,12 +29,9 @@ void TransactionEntry::deserialize(QDataStream &ds) {
 }
 
 void TransactionEntry::toDebugString(QDebug dbg) const {
-  dbg.noquote() << "TransactionEntry:  srcID: "
-                << QString("0x%1").arg(srcID, 8, 16, QLatin1Char('0'))
+  dbg.noquote() << "TransactionEntry:  srcID: " << qStringHex(srcID, 8)
                 << " transactionEntrySwitch: "
-                << QString("0x%1").arg(TransactionEntrySwitch, 8, 16,
-                                       QLatin1Char('0'))
-                << '\n';
+                << qStringHex(TransactionEntrySwitch, 8) << '\n';
 }
 
 quint32 TransactionEntry::getSrcID() const { return srcID; }

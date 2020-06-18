@@ -22,17 +22,26 @@ set (MSONcommon_PART_SRCS
     common/FileNodeList.cpp
     common/FileNodeListHeader.cpp
     common/FileNode.cpp
-    common/FileNodeType.cpp
+    common/RootFileNodeList.cpp
+    common/FreeChunkListFragment.cpp
+    common/ObjectGroupList.cpp
+    common/ObjectSpaceManifestList.cpp
+    common/RevisionManifestList.cpp
+    common/RevisionManifest.cpp
+    common/TransactionEntry.cpp
+    common/TransactionLogFragment.cpp
 
 
+    common/commonTypes/Enums.cpp
     common/commonTypes/CompactID.cpp
     common/commonTypes/ExtendedGUID.cpp
-    common/commonTypes/FileChunkReference.cpp
     common/commonTypes/IFileChunkReference.cpp
     common/commonTypes/FileChunkReference32.cpp
     common/commonTypes/FileChunkReference64.cpp
     common/commonTypes/FileChunkReference64x32.cpp
     common/commonTypes/FileNodeChunkReference.cpp
+    common/commonTypes/StringInStorageBuffer.cpp
+
 
     common/FileNodeTypes/IFileNodeType.cpp
     common/FileNodeTypes/ObjectSpaceManifestRootFND.cpp
@@ -54,6 +63,22 @@ set (MSONcommon_PART_SRCS
     common/FileNodeTypes/RevisionRoleDeclarationFND.cpp
     common/FileNodeTypes/RevisionRoleAndContextDeclarationFND.cpp
     common/FileNodeTypes/ObjectDataEncryptionKeyV2FNDX.cpp
+    common/FileNodeTypes/ObjectInfoDependencyOverridesFND.cpp
+    common/FileNodeTypes/FileDataStoreListReferenceFND.cpp
+    common/FileNodeTypes/FileDataStoreObjectReferenceFND.cpp
+
+    common/FileNodeTypes/ObjectDeclarationWithRefCountFNDX.cpp
+    common/FileNodeTypes/ObjectDeclarationWithRefCount2FNDX.cpp
+    common/FileNodeTypes/ObjectDeclaration2RefCountFND.cpp
+
+
+    common/otherTypes/ObjectInfoDependencyOverrideData.cpp
+    common/otherTypes/ObjectDeclarationWithRefCountBody.cpp
+    common/otherTypes/ObjectDeclaration2Body.cpp
+
+    common/otherTypes/JCID.cpp
+
+    common/helper/Helper.cpp
     )
 
 add_library(MSONcommon SHARED ${MSONcommon_PART_SRCS})
@@ -124,6 +149,6 @@ install(TARGETS MSONParser DESTINATION ${PLUGIN_INSTALL_DIR}/)
 add_custom_command(
         TARGET MSONParser POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy
-                "${CMAKE_SOURCE_DIR}/resources/sample-single-text/Section 1.one"
-                "${CMAKE_CURRENT_BINARY_DIR}/resources/sample-single-text/Section 1.one")
+                "${CMAKE_SOURCE_DIR}/resources/sample-single-text/*"
+                "${CMAKE_CURRENT_BINARY_DIR}/resources/sample-single-text/")
 

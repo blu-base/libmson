@@ -26,5 +26,5 @@ void RevisionManifestListStartFND::serialize(QDataStream &ds) const {
 
 void RevisionManifestListStartFND::toDebugString(QDebug dbg) const {
   dbg << "RevisionManifestListStartFND:\n"
-      << "gosid: " << gosid << " nInstance: " << nInstance;
+      << " gosid: " << gosid << " nInstance: " << nInstance;
 }

@@ -60,7 +60,9 @@ void FileChunkReference32::toDebugString(QDebug dbg) const {
   } else if (is_fcrZero()) {
     dbg << "fcrZero";
   } else {
-    dbg << "stp: " << m_stp << ", cb: " << m_cb;
+    dbg << "stp: " << QString("0x%1").arg(m_stp, 8, 16, QLatin1Char('0'))
+
+        << ", cb: " << QString("0x%1").arg(m_cb, 8, 16, QLatin1Char('0'));
   };
   dbg << ")";
 }

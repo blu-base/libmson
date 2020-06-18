@@ -6,8 +6,6 @@
 #include <QDebug>
 #include <QtCore/qglobal.h>
 
-#include "FileNodeType.h"
-
 #include "FileNodeTypes/IFileNodeType.h"
 
 class FileNode {
@@ -22,7 +20,7 @@ protected:
 
   quint8 reserved;
 
-  FileNodeType *fileNodeType;
+  //  FileNodeType *fileNodeType;
 
   IFileNodeType *fnt;
 
@@ -74,7 +72,8 @@ public:
   quint8 getBaseType() const;
   void setBaseType(const quint8 &value);
 
-  void setFileNodeType(const FileNodeType &value);
+  void setFileNodeType(const IFileNodeType &value);
+  IFileNodeType *getFnt() const;
 };
 
 #endif // FILENODE_H

@@ -1,6 +1,8 @@
 #ifndef FILENODECHUNKREFERENCE_H
 #define FILENODECHUNKREFERENCE_H
 
+#include <QDataStream>
+#include <QDebug>
 #include <QtCore/qglobal.h>
 
 #include "IFileChunkReference.h"

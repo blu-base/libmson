@@ -27,19 +27,19 @@ QDataStream &operator>>(QDataStream &ds, FileNodeList &obj) {
 
   ds >> obj.m_fileNodeListHeader;
 
-  FileNode *node;
+  for (size_t i{0}; i < 4; i++) {
+    FileNode *node = new FileNode();
 
-  node = new FileNode();
+    ds >> *node;
 
-  ds >> *node;
+    obj.m_children.push_back(node);
+  }
 
-  obj.m_children.push_back(node);
+  //  node = new FileNode();
 
-  node = new FileNode();
+  //  ds >> *node;
 
-  ds >> *node;
-
-  obj.m_children.push_back(node);
+  //  obj.m_children.push_back(node);
 
   //  do {
 

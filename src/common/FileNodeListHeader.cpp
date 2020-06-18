@@ -67,7 +67,8 @@ QDebug operator<<(QDebug dbg, const FileNodeListHeader &obj) {
   dbg.noquote();
 
   dbg << " FileNodeListHeader =====================================\n";
-  dbg << " FileNodeListID:    " << obj.m_fileNodeListID
+  dbg << " FileNodeListID:    "
+      << QString("0x%1").arg(obj.m_fileNodeListID, 8, 16, QLatin1Char('0'))
       << (obj.isFileNodeListIDValid() ? "" : " INVALID") << "\n";
   dbg << " nFragmentSequence: " << obj.m_nFragmentSequence
       << (obj.isNFragmentSequenceValid() ? "" : " INVALID") << "\n";

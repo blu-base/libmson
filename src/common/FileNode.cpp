@@ -4,15 +4,20 @@
 #include <QDebug>
 #include <QtEndian>
 
+#include "FileNodeTypes/FileDataStoreListReferenceFND.h"
 #include "FileNodeTypes/ObjectSpaceManifestListReferenceFND.h"
 #include "FileNodeTypes/ObjectSpaceManifestRootFND.h"
 
-FileNode::FileNode() {}
+IFileNodeType *FileNode::getFnt() const { return fnt; }
+
+FileNode::FileNode()
+    : fileNodeID{}, fileNodeSize{}, stpFormat{}, cbFormat{}, baseType{},
+      reserved{}, fnt{nullptr} {}
 
 FileNode::FileNode(const FileNode &source)
-    : fileNodeID{source.fileNodeID},
-      fileNodeSize{source.fileNodeSize}, stpFormat{source.stpFormat},
-      cbFormat{source.cbFormat}, baseType{source.baseType}
+    : fileNodeID{source.fileNodeID}, fileNodeSize{source.fileNodeSize},
+      stpFormat{source.stpFormat}, cbFormat{source.cbFormat},
+      baseType{source.baseType}, reserved{}, fnt{nullptr}
 
 // TODO filenodetype
 {}
@@ -43,14 +48,21 @@ QDataStream &operator>>(QDataStream &ds, FileNode &obj) {
         new ObjectSpaceManifestListReferenceFND(obj.stpFormat, obj.cbFormat);
   } else if (obj.fileNodeID == 0x04) {
     obj.fnt = new ObjectSpaceManifestRootFND();
+  } else if (obj.fileNodeID == 0x90) {
+    obj.fnt = new FileDataStoreListReferenceFND(obj.stpFormat, obj.cbFormat);
+  } else {
+    obj.fnt = nullptr;
   }
 
-  ds >> *obj.fnt;
+  if (obj.fnt != nullptr) {
+    ds >> *obj.fnt;
+  }
 
   ////  switch(obj.baseType ) {
   ////    case FileNodeType::ObjectSpaceManifestListReferenceFND:
   //      obj.fileNodeType = new
-  //      ObjectSpaceManifestListReferenceFND(obj.stpFormat,obj.cbFormat); ds >>
+  //      ObjectSpaceManifestListReferenceFND(obj.stpFormat,obj.cbFormat); ds
+  //      >>
   //      *(obj.fileNodeType);
   ////      break;
   ////  }
@@ -60,16 +72,20 @@ QDataStream &operator>>(QDataStream &ds, FileNode &obj) {
 
 QDebug operator<<(QDebug dbg, const FileNode &obj) {
   QDebugStateSaver saver(dbg);
-  dbg.nospace();
 
-  dbg << "FileNode. ID: "
-      << QString("%1").arg(obj.fileNodeID, 2, 16, QLatin1Char('0'))
-      << " Size: " << obj.fileNodeSize << " Stp/Cb format: " << obj.stpFormat
-      << "/" << obj.cbFormat << " BaseType: " << obj.baseType << '\n';
+  dbg.noquote() << "FileNode. ID: "
+                << QString("0x%1").arg(obj.fileNodeID, 3, 16, QLatin1Char('0'))
+                << " Size: "
+                << QString("0x%1").arg(obj.fileNodeSize, 4, 16,
+                                       QLatin1Char('0'))
+                << " Stp/Cb format: " << obj.stpFormat << "/" << obj.cbFormat
+                << " BaseType: " << obj.baseType << '\n';
 
-  dbg << obj.fnt << '\n';
-
-  dbg << *obj.fnt;
+  if (obj.fnt != nullptr) {
+    dbg << *obj.fnt;
+  } else {
+    dbg << "FileNodeType is not declared.";
+  }
 
   return dbg;
 }
