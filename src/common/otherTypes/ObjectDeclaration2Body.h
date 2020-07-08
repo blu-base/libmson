@@ -4,7 +4,7 @@
 #include <QtCore/qglobal.h>
 
 #include "../commonTypes/CompactID.h"
-#include "JCID.h"
+#include "../properties/JCID.h"
 
 class ObjectDeclaration2Body {
 public:

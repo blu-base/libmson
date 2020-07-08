@@ -2,7 +2,8 @@
 
 #include "FileNodeTypes/RevisionManifestListReferenceFND.h"
 #include "commonTypes/Enums.h"
-
+#include "helper/Helper.h"
+namespace MSONcommon {
 ObjectSpaceManifestList::ObjectSpaceManifestList(FileNodeChunkReference &ref)
     : m_ref{ref} {}
 
@@ -37,25 +38,38 @@ QDebug operator<<(QDebug dbg, const ObjectSpaceManifestList &obj) {
 }
 
 void ObjectSpaceManifestList::deserialize(QDataStream &ds) {
-  FileNodeListFragment *fragment = new FileNodeListFragment(m_ref.cb());
-
   ds.device()->seek(m_ref.stp());
+  qInfo() << "Parsing ObjectSpaceManifestList";
+  FileNodeListFragment *fragment = new FileNodeListFragment(m_ref);
+
+  // \todo is stp absolute or relative here? the value indicates relative...
+  //  ds.device()->seek(m_ref.stp());
   ds >> *fragment;
 
   m_fileNodeListFragments.push_back(fragment);
 
-  std::copy_if(fragment->rgFileNodes().begin(), fragment->rgFileNodes().end(),
-               back_inserter(m_fileNodeSequence), [](FileNode *entry) {
-                 return entry->getFileNodeID() !=
-                        static_cast<quint16>(
-                            FileNodeTypeID::ChunkTerminatorFND);
-               });
+  for (auto *entry : fragment->rgFileNodes()) {
+    if (entry->getFileNodeID() !=
+            static_cast<quint16>(FileNodeTypeID::ChunkTerminatorFND) &&
+        entry->getFileNodeID() != 0) {
+      m_fileNodeSequence.push_back(entry);
+    }
+  }
+
+  //  std::copy_if(fragment->rgFileNodes().begin(),
+  //  fragment->rgFileNodes().end(),
+  //               back_inserter(m_fileNodeSequence), [](FileNode *entry) {
+  //                 return entry->getFileNodeID() !=
+  //                            static_cast<quint16>(
+  //                                FileNodeTypeID::ChunkTerminatorFND) &&
+  //                        entry->getFileNodeID() != 0;
+  //               });
 
   FileChunkReference64x32 nextFragmentRef = fragment->nextFragment();
 
   while (!nextFragmentRef.is_fcrNil() && !nextFragmentRef.is_fcrZero()) {
     FileNodeListFragment *nextFragment =
-        new FileNodeListFragment(nextFragmentRef.cb());
+        new FileNodeListFragment(nextFragmentRef);
 
     ds.device()->seek(nextFragmentRef.stp());
     ds >> *nextFragment;
@@ -63,12 +77,13 @@ void ObjectSpaceManifestList::deserialize(QDataStream &ds) {
     nextFragmentRef = nextFragment->nextFragment();
     m_fileNodeListFragments.push_back(nextFragment);
 
-    copy_if(nextFragment->rgFileNodes().begin(),
-            nextFragment->rgFileNodes().end(),
-            back_inserter(m_fileNodeSequence), [](FileNode *entry) {
-              return entry->getFileNodeID() !=
-                     static_cast<quint16>(FileNodeTypeID::ChunkTerminatorFND);
-            });
+    copy_if(
+        nextFragment->rgFileNodes().begin(), nextFragment->rgFileNodes().end(),
+        back_inserter(m_fileNodeSequence), [](FileNode *entry) {
+          return entry->getFileNodeID() !=
+                     static_cast<quint16>(FileNodeTypeID::ChunkTerminatorFND) &&
+                 entry->getFileNodeID() != 0;
+        });
   }
 
   std::vector<FileNode *> objectSpaceManifestListStarts{};
@@ -108,7 +123,38 @@ void ObjectSpaceManifestList::deserialize(QDataStream &ds) {
   }
 }
 
-void ObjectSpaceManifestList::toDebugString(QDebug dbg) const {}
+void ObjectSpaceManifestList::toDebugString(QDebug dbg) const {
+  dbg << " ObjectSpaceManifestList:\n";
+
+  dbg << " fileNodeListFragments:\n";
+  if (m_fileNodeListFragments.size() == 0) {
+    dbg << "none\n";
+  } else {
+    for (auto *entry : m_fileNodeListFragments) {
+      dbg << *entry;
+    }
+  }
+
+  dbg << "objectSpaceManifestListStart: " << m_objectSpaceManifestListStart;
+
+  dbg << " revisionManifestLists:\n";
+  if (m_revisionManifestLists.size() == 0) {
+    dbg << "none\n";
+  } else {
+    for (auto *entry : m_revisionManifestLists) {
+      dbg << *entry;
+    }
+  }
+
+  dbg << " fileNodeSequence:\n";
+  if (m_fileNodeSequence.size() == 0) {
+    dbg << "none\n";
+  } else {
+    for (auto *entry : m_fileNodeSequence) {
+      dbg << *entry;
+    }
+  }
+}
 
 std::vector<FileNode *> ObjectSpaceManifestList::getFileNodeSequence() const {
   return m_fileNodeSequence;
@@ -147,3 +193,4 @@ void ObjectSpaceManifestList::setFileNodeListFragments(
     const std::vector<FileNodeListFragment *> &value) {
   m_fileNodeListFragments = value;
 }
+} // namespace MSONcommon

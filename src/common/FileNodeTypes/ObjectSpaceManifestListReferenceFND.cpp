@@ -32,9 +32,9 @@ void ObjectSpaceManifestListReferenceFND::serialize(QDataStream &ds) const {
 }
 
 void ObjectSpaceManifestListReferenceFND::toDebugString(QDebug dbg) const {
-  dbg << "ObjectSpaceManifestListReferenceFND:\n"
+  dbg << " ObjectSpaceManifestListReferenceFND:\n"
       << " ref:   " << ref << '\n'
-      << " gosid: " << gosid;
+      << " gosid: " << gosid << '\n';
 }
 
 FileNodeChunkReference ObjectSpaceManifestListReferenceFND::getRef() const {

@@ -5,7 +5,7 @@
 
 #include <QDataStream>
 #include <QDebug>
-
+namespace MSONcommon {
 class TransactionEntry {
 private:
   quint32 srcID;
@@ -31,5 +31,5 @@ private:
 
   void toDebugString(QDebug dbg) const;
 };
-
+} // namespace MSONcommon
 #endif // TRANSACTIONENTRY_H

@@ -97,6 +97,8 @@ QDataStream &operator<<(QDataStream &ds, const MSONHeader &obj) {
 
 QDataStream &operator>>(QDataStream &ds, MSONHeader &obj) {
 
+  qDebug() << "MSONHeader:  Reading at pos in file: "
+           << qStringHex(ds.device()->pos(), 16);
   // if byte order is big endian, change to little endian
   if (!ds.byteOrder()) {
     ds.setByteOrder(QDataStream::LittleEndian);
@@ -140,6 +142,9 @@ QDataStream &operator>>(QDataStream &ds, MSONHeader &obj) {
   ds >> obj.bnOldestWritten;
   ds >> obj.bnNewestWritten;
   ds.skipRawData(obj.reservedHeaderTailLength);
+
+  qDebug() << "MSONHeader: Finished at pos in file: "
+           << qStringHex(ds.device()->pos(), 16);
 
   return ds;
 }
@@ -283,7 +288,7 @@ QDebug operator<<(QDebug dbg, const MSONHeader &obj) {
   dbg << " reservedHeaderTailLength:          " << obj.reservedHeaderTailLength
       << (obj.isReservedHeaderTailValid() ? "" : " INVALID")
       << (obj.isReservedHeaderTailIgnored() ? " ignored" : "") << "\n";
-
+  dbg << "++++++++++++++++++MSONHeader+++++++++++++++++++++++\n\n";
   return dbg;
 }
 

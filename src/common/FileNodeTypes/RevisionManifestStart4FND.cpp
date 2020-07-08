@@ -57,9 +57,9 @@ void RevisionManifestStart4FND::serialize(QDataStream &ds) const {
 }
 
 void RevisionManifestStart4FND::toDebugString(QDebug dbg) const {
-  dbg << "RevisionManifestStart4FND:\n"
-      << "\trid:          " << rid << '\n'
-      << "\tridDependent: " << ridDependent << '\n'
-      << "\trevisionRole: " << revisionRole << '\n'
-      << "\todcsDefault:  " << odcsDefault << '\n';
+  dbg << " RevisionManifestStart4FND:\n"
+      << " rid:          " << rid << '\n'
+      << " ridDependent: " << ridDependent << '\n'
+      << " revisionRole: " << revisionRole << '\n'
+      << " odcsDefault:  " << odcsDefault << '\n';
 }

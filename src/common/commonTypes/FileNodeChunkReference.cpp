@@ -1,4 +1,5 @@
 #include "FileNodeChunkReference.h"
+#include "../helper/Helper.h"
 
 FileNodeChunkReference::FileNodeChunkReference(FNCR_STP_FORMAT stpFormat,
                                                FNCR_CB_FORMAT cbFormat)
@@ -61,7 +62,19 @@ void FileNodeChunkReference::set_fcrNil() {
   m_cb = 0;
 }
 
-quint64 FileNodeChunkReference::stp() const { return m_stp; }
+quint64 FileNodeChunkReference::stp() const {
+
+  switch (m_stpFormat) {
+  case FNCR_STP_FORMAT::UNCOMPRESED_8BYTE:
+  case FNCR_STP_FORMAT::UNCOMPRESED_4BYTE:
+    return m_stp;
+    break;
+  case FNCR_STP_FORMAT::COMPRESSED_4BYTE:
+  case FNCR_STP_FORMAT::COMPRESSED_2BYTE:
+    return (quint64)m_stp * 8u;
+    break;
+  }
+}
 
 void FileNodeChunkReference::setStp(const quint64 &stp) {
   switch (m_stpFormat) {
@@ -70,15 +83,27 @@ void FileNodeChunkReference::setStp(const quint64 &stp) {
     break;
   case FNCR_STP_FORMAT::UNCOMPRESED_4BYTE:
   case FNCR_STP_FORMAT::COMPRESSED_4BYTE:
-    m_stp = static_cast<quint32>(stp);
+    m_stp = static_cast<quint32>(stp / 8u);
     break;
   case FNCR_STP_FORMAT::COMPRESSED_2BYTE:
-    m_stp = static_cast<quint16>(stp);
+    m_stp = static_cast<quint16>(stp / 8u);
     break;
   }
 }
 
-quint64 FileNodeChunkReference::cb() const { return m_cb; }
+quint64 FileNodeChunkReference::cb() const {
+
+  switch (m_cbFormat) {
+  case FNCR_CB_FORMAT::UNCOMPRESED_8BYTE:
+  case FNCR_CB_FORMAT::UNCOMPRESED_4BYTE:
+    return m_cb;
+    break;
+  case FNCR_CB_FORMAT::COMPRESSED_1BYTE:
+  case FNCR_CB_FORMAT::COMPRESSED_2BYTE:
+    return m_cb * 8u;
+    break;
+  }
+}
 
 void FileNodeChunkReference::setCb(const quint64 &cb) {
   switch (m_cbFormat) {
@@ -89,10 +114,10 @@ void FileNodeChunkReference::setCb(const quint64 &cb) {
     m_cb = static_cast<quint32>(cb);
     break;
   case FNCR_CB_FORMAT::COMPRESSED_1BYTE:
-    m_cb = static_cast<quint8>(cb);
+    m_cb = static_cast<quint8>(cb / 8u);
     break;
   case FNCR_CB_FORMAT::COMPRESSED_2BYTE:
-    m_cb = static_cast<quint16>(cb);
+    m_cb = static_cast<quint16>(cb / 8u);
     break;
   }
 }
@@ -194,40 +219,9 @@ void FileNodeChunkReference::toDebugString(QDebug dbg) const {
   } else if (is_fcrZero()) {
     dbg << "fcrZero";
   } else {
-    dbg << "stp: ";
-
-    switch (m_stpFormat) {
-    case FNCR_STP_FORMAT::UNCOMPRESED_8BYTE:
-      dbg.noquote() << QString("0x%1").arg(m_stp, 16, 16, QLatin1Char('0'));
-      break;
-
-    case FNCR_STP_FORMAT::UNCOMPRESED_4BYTE:
-    case FNCR_STP_FORMAT::COMPRESSED_4BYTE:
-      dbg.noquote() << QString("0x%1").arg(m_stp, 8, 16, QLatin1Char('0'));
-      break;
-
-    case FNCR_STP_FORMAT::COMPRESSED_2BYTE:
-      dbg.noquote() << QString("0x%1").arg(m_stp, 4, 16, QLatin1Char('0'));
-      break;
-    }
-
-    dbg << ", cb: ";
-
-    switch (m_cbFormat) {
-    case FNCR_CB_FORMAT::UNCOMPRESED_8BYTE:
-      dbg.noquote() << QString("0x%1").arg(m_cb, 16, 16, QLatin1Char('0'));
-      break;
-    case FNCR_CB_FORMAT::UNCOMPRESED_4BYTE:
-      dbg.noquote() << QString("0x%1").arg(m_cb, 8, 16, QLatin1Char('0'));
-      break;
-    case FNCR_CB_FORMAT::COMPRESSED_1BYTE:
-      dbg.noquote() << QString("0x%1").arg(m_cb, 2, 16, QLatin1Char('0'));
-      break;
-    case FNCR_CB_FORMAT::COMPRESSED_2BYTE:
-      dbg.noquote() << QString("0x%1").arg(m_cb, 4, 16, QLatin1Char('0'));
-      break;
-    }
+    dbg << "stp: " << qStringHex(stp(), 16) << ", cb: " << qStringHex(cb(), 16);
   };
+
   dbg << ", stp/cb format: " << static_cast<quint8>(m_stpFormat) << "/"
       << static_cast<quint8>(m_cbFormat) << ")";
 }

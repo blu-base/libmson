@@ -17,7 +17,7 @@
  * FileNode Type defined by [MS-ONESTORE]
  * 2.5.6 RevisionManifestStart4FND
  */
-class RevisionManifestStart4FND : IFileNodeType {
+class RevisionManifestStart4FND : public IFileNodeType {
 public:
   RevisionManifestStart4FND();
 

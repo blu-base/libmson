@@ -3,7 +3,7 @@
 
 #include "FileNode.h"
 #include "FileNodeList.h"
-
+namespace MSONcommon {
 FileNodeList::FileNodeList() {}
 
 FileNodeList::FileNodeList(const FileNodeList &fnl) {}
@@ -139,3 +139,4 @@ FileChunkReference64x32 *FileNodeList::getNextFragment() const {
 void FileNodeList::setNextFragment(FileChunkReference64x32 *nextFragment) {
   m_nextFragment = nextFragment;
 }
+} // namespace MSONcommon

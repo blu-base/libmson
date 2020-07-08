@@ -40,11 +40,11 @@ public:
   MSONDocument();
   ~MSONDocument();
 
-  MSONDocument(const MSONDocument &source); // copy constructor
-  MSONDocument(MSONDocument &&source);      // move constructor
+  //  MSONDocument(const MSONDocument &source); // copy constructor
+  //  MSONDocument(MSONDocument &&source);      // move constructor
 
-  MSONDocument &operator=(const MSONDocument &rhs); // copy assignment
-  MSONDocument &operator=(MSONDocument &&rhs);      // move assignment
+  //  MSONDocument &operator=(const MSONDocument &rhs); // copy assignment
+  //  MSONDocument &operator=(MSONDocument &&rhs);      // move assignment
 
   friend QDataStream &operator<<(QDataStream &ds, const MSONDocument &obj);
   friend QDataStream &operator>>(QDataStream &ds, MSONDocument &obj);
@@ -71,6 +71,5 @@ public:
   std::vector<FileNodeListFragment *> &getFileNodeList();
   void setFileNodeList(const std::vector<FileNodeListFragment *> &fileNodeList);
 };
-
+} // namespace MSONcommon
 #endif // MSONDOCUMENT_H
-}

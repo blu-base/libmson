@@ -23,11 +23,33 @@ QDataStream &operator>>(QDataStream &ds, ObjectDeclaration2Body &obj) {
   return ds;
 }
 
-void ObjectDeclaration2Body::deserialize(QDataStream &ds) {}
+void ObjectDeclaration2Body::deserialize(QDataStream &ds) {
+  ds >> oid;
+  ds >> jcid;
 
-void ObjectDeclaration2Body::serialize(QDataStream &ds) const {}
+  quint8 temp;
+  ds >> temp;
+  fHasOidReferences = temp & 0x1;
+  fHasOsidReferences = (temp >> 1) & 0x1;
+}
 
-void ObjectDeclaration2Body::toDebugString(QDebug dbg) const {}
+void ObjectDeclaration2Body::serialize(QDataStream &ds) const {
+  ds << oid;
+  ds << jcid;
+  quint8 temp{};
+  temp += fHasOidReferences;
+  temp += fHasOsidReferences << 1;
+
+  ds << temp;
+}
+
+void ObjectDeclaration2Body::toDebugString(QDebug dbg) const {
+  dbg << "  ObjectDeclaration2Body:"
+      << " HasOid: " << fHasOidReferences << " HasOsid: " << fHasOsidReferences
+      << '\n'
+      << "  oid:  " << oid << '\n'
+      << jcid;
+}
 
 bool ObjectDeclaration2Body::getFHasOsidReferences() const {
   return fHasOsidReferences;

@@ -1,8 +1,31 @@
 #include "FileNodeListFragment.h"
+#include "commonTypes/Enums.h"
+#include "helper/Helper.h"
 
-quint64 FileNodeListFragment::size() const { return m_size; }
+#include "DocumentSingleton.h"
 
-void FileNodeListFragment::setSize(const quint64 &size) { m_size = size; }
+namespace MSONcommon {
+
+FileChunkReference64 FileNodeListFragment::ref() const { return m_ref; }
+
+void FileNodeListFragment::setRef(const FileChunkReference64 &ref) {
+  m_ref = ref;
+}
+
+void FileNodeListFragment::setRef(const FileChunkReference64x32 &ref) {
+  m_ref.setCb(ref.cb());
+  m_ref.setStp(ref.stp());
+}
+
+void FileNodeListFragment::setRef(const FileChunkReference32 &ref) {
+  m_ref.setCb(ref.cb());
+  m_ref.setStp(ref.stp());
+}
+
+void FileNodeListFragment::setRef(const FileNodeChunkReference &ref) {
+  m_ref.setCb(ref.cb());
+  m_ref.setStp(ref.stp());
+}
 
 FileNodeListHeader FileNodeListFragment::fnlheader() const {
   return m_fnlheader;
@@ -36,9 +59,98 @@ void FileNodeListFragment::setNextFragment(
   m_nextFragment = nextFragment;
 }
 
-FileNodeListFragment::FileNodeListFragment(const quint64 size)
-    : m_size{size}, m_fnlheader{}, m_rgFileNodes{}, m_paddingLength{},
+void FileNodeListFragment::deserialize(QDataStream &ds) {
+  ds >> m_fnlheader;
+
+  FileNode *fn = nullptr;
+
+  rgFileNodes() = std::vector<FileNode *>();
+
+  quint32 fileNodeCount = UINT32_MAX;
+
+  if (DocumentSingleton::getDoc()->getFileNodeCountMapping().contains(
+          m_fnlheader.getFileNodeListID())) {
+    fileNodeCount =
+        DocumentSingleton::getDoc()
+            ->getFileNodeCountMapping()[m_fnlheader.getFileNodeListID()];
+  }
+  /// \todo this calculation is incorrect, not absolute
+  qint64 remainingBytes = m_ref.cb() - 20;
+  do {
+
+    fn = new FileNode();
+
+    ds >> *fn;
+
+    if (fn->getFileNodeID() != 0 &&
+        fn->getFileNodeID() !=
+            static_cast<quint16>(FileNodeTypeID::ChunkTerminatorFND)) {
+      m_rgFileNodes.push_back(fn);
+      fileNodeCount--;
+    } else {
+      break;
+    }
+
+    /// \todo this calculation is incorrect, not absolutes
+    remainingBytes = m_ref.cb() - 20 - (ds.device()->pos() - m_ref.stp());
+
+  } while (remainingBytes > 4 && fileNodeCount > 0);
+
+  if (MSONcommon::DocumentSingleton::getDoc()
+          ->getFileNodeCountMapping()
+          .contains(m_fnlheader.getFileNodeListID())) {
+    MSONcommon::DocumentSingleton::getDoc()
+        ->getFileNodeCountMapping()[m_fnlheader.getFileNodeListID()] =
+        fileNodeCount;
+  }
+  /// \todo this calculation is incorrect, not absolutes
+  m_paddingLength = m_ref.cb() - 20 - (ds.device()->pos() - m_ref.stp());
+  ds.skipRawData(m_paddingLength);
+
+  m_nextFragment = FileChunkReference64x32();
+
+  ds >> m_nextFragment;
+
+  // footer
+  ds.skipRawData(8);
+}
+
+void FileNodeListFragment::serialize(QDataStream &ds) const {}
+
+void FileNodeListFragment::toDebugString(QDebug dbg) const {
+  dbg << "FileNodeListFragment:\n"
+      << "FileNodeListHeader:\n"
+      << m_fnlheader;
+
+  for (auto *entry : m_rgFileNodes) {
+    dbg << *entry << '\n';
+  }
+}
+
+FileNodeListFragment::FileNodeListFragment(const FileChunkReference64 ref)
+    : m_ref{ref}, m_fnlheader{}, m_rgFileNodes{}, m_paddingLength{},
       m_nextFragment() {}
+
+FileNodeListFragment::FileNodeListFragment(const FileChunkReference64x32 ref)
+    : m_ref(), m_fnlheader{}, m_rgFileNodes{}, m_paddingLength{},
+      m_nextFragment() {
+  m_ref.setCb(ref.cb());
+  m_ref.setStp(ref.stp());
+}
+
+FileNodeListFragment::FileNodeListFragment(const FileChunkReference32 ref)
+    : m_ref{}, m_fnlheader{}, m_rgFileNodes{}, m_paddingLength{},
+      m_nextFragment() {
+  m_ref.setCb(ref.cb());
+  m_ref.setStp(ref.stp());
+}
+
+FileNodeListFragment::FileNodeListFragment(const FileNodeChunkReference ref)
+    : m_ref{}, m_fnlheader{}, m_rgFileNodes{}, m_paddingLength{},
+      m_nextFragment() {
+  m_ref.setCb(ref.cb());
+  m_ref.setStp(ref.stp());
+}
 
 /**
  * @brief FileNodeListFragment::~FileNodeListFragment
@@ -52,15 +164,17 @@ FileNodeListFragment::~FileNodeListFragment() {
 }
 
 QDataStream &operator<<(QDataStream &ds, const FileNodeListFragment &obj) {
-
+  obj.serialize(ds);
   return ds;
 }
 
 QDataStream &operator>>(QDataStream &ds, FileNodeListFragment &obj) {
-
-  ds >> obj.m_fnlheader;
-
+  obj.deserialize(ds);
   return ds;
 }
 
-QDebug operator<<(QDebug dbg, const FileNodeListFragment &obj) {}
+QDebug operator<<(QDebug dbg, const FileNodeListFragment &obj) {
+  obj.toDebugString(dbg);
+  return dbg;
+}
+} // namespace MSONcommon

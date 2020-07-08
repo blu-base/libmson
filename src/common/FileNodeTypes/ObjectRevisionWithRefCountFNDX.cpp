@@ -72,8 +72,8 @@ void ObjectRevisionWithRefCountFNDX::serialize(QDataStream &ds) const {
 }
 
 void ObjectRevisionWithRefCountFNDX::toDebugString(QDebug dbg) const {
-  dbg << "ObjectRevisionWithRefCountFNDX:\n"
-      << "Ref: " << ref << "oid: " << oid << "cRef: " << cRef
+  dbg << " ObjectRevisionWithRefCountFNDX:\n"
+      << " Ref: " << ref << "oid: " << oid << "cRef: " << cRef
       << " fHasOidReferences: " << fHasOidReferences
       << " fHasOsidReferences: " << fHasOsidReferences << '\n';
 }

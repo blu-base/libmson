@@ -4,8 +4,8 @@
 #include <QDataStream>
 #include <QDebug>
 #include <QtCore/qglobal.h>
+namespace MSONcommon {
 
-//#include "FileNodeList.h"
 class FileNodeList;
 
 class FileNodeListHeader {
@@ -46,4 +46,5 @@ public:
   void setNFragmentSequence(const quint32 &value);
   bool isNFragmentSequenceValid() const;
 };
+} // namespace MSONcommon
 #endif // FILENODELISTHEADER_H

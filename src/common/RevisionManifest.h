@@ -5,17 +5,40 @@
 #include <vector>
 
 #include "FileNode.h"
-
-class RevisionManifest
-{
+namespace MSONcommon {
+class RevisionManifest {
 public:
-  std::vector<FileNode*> FileNodeSquence;
+  std::vector<FileNode *> FileNodeSquence;
 
   RevisionManifest();
   ~RevisionManifest();
 
-  std::vector<FileNode*> getFileNodeSquence() const;
-  void setFileNodeSquence(const std::vector<FileNode*>& value);
-};
+  std::vector<FileNode *> getFileNodeSquence() const;
+  void setFileNodeSquence(const std::vector<FileNode *> &value);
 
+  friend QDataStream &operator<<(QDataStream &ds, const RevisionManifest &obj);
+  friend QDataStream &operator>>(QDataStream &ds, RevisionManifest &obj);
+  friend QDebug operator<<(QDebug dbg, const RevisionManifest &obj);
+
+private:
+  /**
+   * @brief creates RevisionManifest from QDataStream
+   * @param ds <QDataStream> containing the deserializable
+   * RevisionManifest
+   */
+  void deserialize(QDataStream &ds);
+  /**
+   * @brief creates byte stream from RevisionManifest object
+   * @param ds <QDataStream> is the output stream to which the serialized
+   * RevisionManifest is send
+   */
+  void serialize(QDataStream &ds) const;
+
+  /**
+   * @brief prints the RevisionManifest to a <QDebug> object
+   * @param dbg <QDebug> string builder for the debug information
+   */
+  void toDebugString(QDebug dbg) const;
+};
+} // namespace MSONcommon
 #endif // REVISIONMANIFEST_H

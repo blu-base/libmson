@@ -1,13 +1,10 @@
 #include "GlobalIdTableEntryFNDX.h"
 
-GlobalIdTableEntryFNDX::GlobalIdTableEntryFNDX()
-    : index{0}, guid{ExtendedGUID()} {}
+GlobalIdTableEntryFNDX::GlobalIdTableEntryFNDX() : index{0}, guid() {}
 
-ExtendedGUID GlobalIdTableEntryFNDX::getGuid() const { return guid; }
+QUuid GlobalIdTableEntryFNDX::getGuid() const { return guid; }
 
-void GlobalIdTableEntryFNDX::setGuid(const ExtendedGUID &value) {
-  guid = value;
-}
+void GlobalIdTableEntryFNDX::setGuid(const QUuid &value) { guid = value; }
 
 quint32 GlobalIdTableEntryFNDX::getIndex() const { return index; }
 
@@ -24,7 +21,7 @@ void GlobalIdTableEntryFNDX::serialize(QDataStream &ds) const {
 }
 
 void GlobalIdTableEntryFNDX::toDebugString(QDebug dbg) const {
-  dbg << "GlobalIdTableEntryFNDX: \n"
-      << "Index: " << index << '\n'
-      << "GUID:  " << guid << '\n';
+  dbg << " GlobalIdTableEntryFNDX: \n"
+      << " Index: " << index << '\n'
+      << " GUID:  " << guid << '\n';
 }

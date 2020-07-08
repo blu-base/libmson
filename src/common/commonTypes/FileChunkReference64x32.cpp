@@ -18,21 +18,21 @@ FileChunkReference64x32::FileChunkReference64x32(FCR_INITTYPE inittype)
 FileChunkReference64x32::~FileChunkReference64x32() {}
 
 bool FileChunkReference64x32::is_fcrNil() const {
-  return m_stp == UINT64_MAX && m_cb == 0;
+  return m_stp == UINT64_MAX && m_cb == 0u;
 }
 
 bool FileChunkReference64x32::is_fcrZero() const {
-  return m_stp == 0 && m_cb == 0;
+  return m_stp == 0u && m_cb == 0u;
 }
 
 void FileChunkReference64x32::set_fcrNil() {
   m_stp = UINT64_MAX;
-  m_cb = 0;
+  m_cb = 0u;
 }
 
 void FileChunkReference64x32::set_fcrZero() {
-  m_stp = 0;
-  m_cb = 0;
+  m_stp = 0u;
+  m_cb = 0u;
 }
 
 quint64 FileChunkReference64x32::stp() const { return m_stp; }

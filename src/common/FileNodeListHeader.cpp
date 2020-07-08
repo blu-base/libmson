@@ -3,7 +3,8 @@
 
 #include "FileNodeList.h"
 #include "FileNodeListHeader.h"
-
+#include "helper/Helper.h"
+namespace MSONcommon {
 /**
  * @brief FileNodeListHeader::FileNodeListHeader
  */
@@ -48,16 +49,15 @@ QDataStream &operator<<(QDataStream &ds, const FileNodeListHeader &obj) {
 };
 
 QDataStream &operator>>(QDataStream &ds, FileNodeListHeader &obj) {
-
   // if byte order is big endian, change to little endian
   if (!ds.byteOrder()) {
     ds.setByteOrder(QDataStream::LittleEndian);
   }
 
-  ds.skipRawData(sizeof(obj.uintMagic));
+  // skipping uintMagic
+  ds.skipRawData(8);
   ds >> obj.m_fileNodeListID;
   ds >> obj.m_nFragmentSequence;
-
   return ds;
 };
 
@@ -66,7 +66,7 @@ QDebug operator<<(QDebug dbg, const FileNodeListHeader &obj) {
   dbg.setAutoInsertSpaces(false);
   dbg.noquote();
 
-  dbg << " FileNodeListHeader =====================================\n";
+  dbg << " FileNodeListHeader\n";
   dbg << " FileNodeListID:    "
       << QString("0x%1").arg(obj.m_fileNodeListID, 8, 16, QLatin1Char('0'))
       << (obj.isFileNodeListIDValid() ? "" : " INVALID") << "\n";
@@ -143,3 +143,4 @@ void FileNodeListHeader::setFileNodeListID(const quint32 &value) {
 bool FileNodeListHeader::isFileNodeListIDValid() const {
   return m_fileNodeListID >= 0x10;
 }
+} // namespace MSONcommon

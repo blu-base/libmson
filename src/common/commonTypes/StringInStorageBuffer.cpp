@@ -1,19 +1,26 @@
 #include "StringInStorageBuffer.h"
 
+StringInStorageBuffer::StringInStorageBuffer() : cch() {}
 
-StringInStorageBuffer::StringInStorageBuffer()
-{
-
+QDataStream &operator<<(QDataStream &ds, const StringInStorageBuffer &obj) {
+  obj.serialize(ds);
+  return ds;
 }
 
-QString StringInStorageBuffer::getStringData() const
-{
-    return StringData;
+QDataStream &operator>>(QDataStream &ds, StringInStorageBuffer &obj) {
+  obj.deserialize(ds);
+  return ds;
 }
 
-void StringInStorageBuffer::setStringData(const QString& value)
-{
-    StringData = value;
+QDebug operator<<(QDebug dbg, const StringInStorageBuffer &obj) {
+  obj.toDebugString(dbg);
+  return dbg;
+}
+
+QString StringInStorageBuffer::getStringData() const { return StringData; }
+
+void StringInStorageBuffer::setStringData(const QString &value) {
+  StringData = value;
 }
 
 /**
@@ -22,34 +29,23 @@ void StringInStorageBuffer::setStringData(const QString& value)
  *
  * \todo check which endianess to be used here
  */
-void StringInStorageBuffer::deserialize(QDataStream& ds)
-{
-    ds >> cch;
+void StringInStorageBuffer::deserialize(QDataStream &ds) {
+  ds >> cch;
 
-    QByteArray rawstring = QByteArray(cch*2,Qt::Uninitialized);
+  QByteArray rawstring = QByteArray(cch * 2, Qt::Uninitialized);
 
-    ds.readRawData(rawstring.data(),cch*2);
+  ds.readRawData(rawstring.data(), cch * 2);
 
-    StringData = QString(rawstring);
-
+  StringData = QString(rawstring);
 }
 
-void StringInStorageBuffer::serialize(QDataStream& ds) const
-{
+void StringInStorageBuffer::serialize(QDataStream &ds) const {}
 
+void StringInStorageBuffer::toDebugString(QDebug dbg) const {
+  dbg << " StringInStorageBuffer:\n length: " << cch << '\n'
+      << "/* " << StringData << " */\n";
 }
 
-void StringInStorageBuffer::toDebugString(QDebug dbg) const
-{
+quint32 StringInStorageBuffer::getCch() const { return cch; }
 
-}
-
-quint32 StringInStorageBuffer::getCch() const
-{
-    return cch;
-}
-
-void StringInStorageBuffer::setCch(const quint32& value)
-{
-    cch = value;
-}
+void StringInStorageBuffer::setCch(const quint32 &value) { cch = value; }

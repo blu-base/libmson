@@ -2,15 +2,13 @@
 
 FileDataStoreObjectReferenceFND::FileDataStoreObjectReferenceFND(
     FNCR_STP_FORMAT stpFormat, FNCR_CB_FORMAT cbFormat)
-    : ref{FileNodeChunkReference(stpFormat, cbFormat)} {}
+    : ref(stpFormat, cbFormat) {}
 
 FileDataStoreObjectReferenceFND::FileDataStoreObjectReferenceFND(
     quint8 stpFormat, quint8 cbFormat)
-    : ref{FileNodeChunkReference(stpFormat, cbFormat)} {}
+    : ref(stpFormat, cbFormat) {}
 
 FileDataStoreObjectReferenceFND::~FileDataStoreObjectReferenceFND() {}
-
-
 
 FileNodeChunkReference FileDataStoreObjectReferenceFND::getRef() const {
   return ref;
@@ -40,7 +38,7 @@ void FileDataStoreObjectReferenceFND::serialize(QDataStream &ds) const {
 }
 
 void FileDataStoreObjectReferenceFND::toDebugString(QDebug dbg) const {
-  dbg << "FileDataStoreObjectReferenceFND:\n"
-      << "ref: " << ref << '\n'
-      << "guidReference: " << guidReference << '\n';
+  dbg << " FileDataStoreObjectReferenceFND:\n"
+      << " ref: " << ref << '\n'
+      << " guidReference: " << guidReference << '\n';
 }

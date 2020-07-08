@@ -8,7 +8,7 @@
 #include "FileNodeListFragment.h"
 #include "ObjectSpaceManifestList.h"
 #include "commonTypes/FileChunkReference64x32.h"
-
+namespace MSONcommon {
 class RootFileNodeList {
 private:
   std::vector<FileNodeListFragment *> m_fileNodeListFragments;
@@ -26,11 +26,12 @@ private:
 public:
   RootFileNodeList(FileChunkReference64x32 &reference);
 
-  RootFileNodeList(const RootFileNodeList &source); // copy constructor
-  RootFileNodeList(RootFileNodeList &&source);      // move constructor
+  //  RootFileNodeList(const RootFileNodeList &source); // copy constructor
+  //  RootFileNodeList(RootFileNodeList &&source);      // move constructor
 
-  RootFileNodeList &operator=(const RootFileNodeList &rhs); // copy assignment
-  RootFileNodeList &operator=(RootFileNodeList &&rhs);      // move assignment
+  //  RootFileNodeList &operator=(const RootFileNodeList &rhs); // copy
+  //  assignment RootFileNodeList &operator=(RootFileNodeList &&rhs);      //
+  //  move assignment
 
   ~RootFileNodeList();
 
@@ -79,5 +80,5 @@ private:
    */
   void toDebugString(QDebug dbg) const;
 };
-
+} // namespace MSONcommon
 #endif // ROOTFILENODELIST_H

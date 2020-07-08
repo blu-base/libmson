@@ -9,7 +9,7 @@
 
 #include "commonTypes/FileChunkReference64.h"
 #include "commonTypes/FileChunkReference64x32.h"
-
+namespace MSONcommon {
 class FreeChunkListFragment {
 private:
   quint64 m_size = 0;
@@ -56,5 +56,5 @@ public:
   std::vector<FileChunkReference64> getFcrFreeChunk() const;
   void setFcrFreeChunk(const std::vector<FileChunkReference64> &value);
 };
-
+} // namespace MSONcommon
 #endif // FREECHUNKLISTFRAGMENT_H

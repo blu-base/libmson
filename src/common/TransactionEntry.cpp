@@ -1,6 +1,6 @@
 #include "TransactionEntry.h"
 #include "helper/Helper.h"
-
+namespace MSONcommon {
 TransactionEntry::TransactionEntry() : srcID{}, TransactionEntrySwitch{} {}
 
 QDataStream &operator<<(QDataStream &ds, const TransactionEntry &obj) {
@@ -45,3 +45,4 @@ quint32 TransactionEntry::getTransactionEntrySwitch() const {
 void TransactionEntry::setTransactionEntrySwitch(const quint32 &value) {
   TransactionEntrySwitch = value;
 }
+} // namespace MSONcommon

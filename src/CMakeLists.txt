@@ -17,6 +17,9 @@ set (MSONcommon_PART_SRCS
     common/MSONHeader.cpp
 
     common/MSONDocument.cpp
+
+    common/DocumentSingleton.cpp
+
 #    common/MSONStreamReader.cpp
     common/FileNodeListFragment.cpp
     common/FileNodeList.cpp
@@ -66,17 +69,73 @@ set (MSONcommon_PART_SRCS
     common/FileNodeTypes/ObjectInfoDependencyOverridesFND.cpp
     common/FileNodeTypes/FileDataStoreListReferenceFND.cpp
     common/FileNodeTypes/FileDataStoreObjectReferenceFND.cpp
-
+    common/FileNodeTypes/ObjectDeclarationWithRefCountFNDX.cpp
     common/FileNodeTypes/ObjectDeclarationWithRefCountFNDX.cpp
     common/FileNodeTypes/ObjectDeclarationWithRefCount2FNDX.cpp
     common/FileNodeTypes/ObjectDeclaration2RefCountFND.cpp
+    common/FileNodeTypes/ObjectDeclaration2LargeRefCountFND.cpp
+    common/FileNodeTypes/ObjectDeclarationFileData3RefCountFND.cpp
+    common/FileNodeTypes/ObjectDeclarationFileData3LargeRefCountFND.cpp
+    common/FileNodeTypes/ReadOnlyObjectDeclaration2RefCountFND.cpp
+    common/FileNodeTypes/ReadOnlyObjectDeclaration2LargeRefCountFND.cpp
+    common/FileNodeTypes/ObjectGroupListReferenceFND.cpp
+    common/FileNodeTypes/ObjectGroupStartFND.cpp
+    common/FileNodeTypes/DataSignatureGroupDefinitionFND.cpp
+    common/FileNodeTypes/HashedChunkDescriptor2FND.cpp
+    common/FileNodeTypes/ObjectGroupEndFND.cpp
+    common/FileNodeTypes/GlobalIdTableEndFNDX.cpp
+    common/FileNodeTypes/GlobalIdTableStart2FND.cpp
+    common/FileNodeTypes/RevisionManifestEndFND.cpp
+    common/FileNodeTypes/ChunkTerminatorFND.cpp
 
 
+    common/otherTypes/ObjectSpaceObjectPropSet.cpp
+
+    common/otherTypes/IObjectSpaceOpbjectStream.cpp
+    common/otherTypes/ObjectSpaceObjectStreamOfOIDs.cpp
+    common/otherTypes/ObjectSpaceObjectStreamOfOSIDs.cpp
+    common/otherTypes/ObjectSpaceObjectStreamOfContextIDs.cpp
+
+    common/otherTypes/ObjectSpaceObjectStreamHeader.cpp
+
+
+    common/otherTypes/ObjectInfoDependencyOverride32.cpp
+    common/otherTypes/ObjectInfoDependencyOverride8.cpp
     common/otherTypes/ObjectInfoDependencyOverrideData.cpp
     common/otherTypes/ObjectDeclarationWithRefCountBody.cpp
     common/otherTypes/ObjectDeclaration2Body.cpp
+    common/otherTypes/FileDataStoreObject.cpp
 
-    common/otherTypes/JCID.cpp
+    common/otherTypes/prtFourBytesOfLengthFollowedByData.cpp
+
+
+
+    common/properties/JCID.cpp
+
+
+    common/properties/IProperty.cpp
+    common/properties/PropertyID.cpp
+    common/properties/PropertySet.cpp
+
+    common/properties/prtArrayOfPropertyValues.cpp
+    common/properties/IPropertyType.cpp
+    common/properties/PropertyType_NoData.cpp
+    common/properties/PropertyType_Bool.cpp
+    common/properties/PropertyType_OneByteOfData.cpp
+    common/properties/PropertyType_TwoBytesOfData.cpp
+    common/properties/PropertyType_FourBytesOfData.cpp
+    common/properties/PropertyType_EightBytesOfData.cpp
+    common/properties/PropertyType_ArrayOfContextIDs.cpp
+    common/properties/PropertyType_ArrayOfObjectIDs.cpp
+    common/properties/PropertyType_ArrayOfObjectSpaceIDs.cpp
+    common/properties/PropertyType_ArrayOfPropertyValues.cpp
+    common/properties/PropertyType_ContextID.cpp
+    common/properties/PropertyType_FourBytesOfLengthFollowedByData.cpp
+    common/properties/PropertyType_ObjectID.cpp
+    common/properties/PropertyType_ObjectSpaceID.cpp
+    common/properties/PropertyType_PropertySet.cpp
+
+
 
     common/helper/Helper.cpp
     )

@@ -2,10 +2,10 @@
 
 ObjectDataEncryptionKeyV2FNDX::ObjectDataEncryptionKeyV2FNDX(
     FNCR_STP_FORMAT stpFormat, FNCR_CB_FORMAT cbFormat)
-    : ref{FileNodeChunkReference(stpFormat, cbFormat)} {}
+    : ref(stpFormat, cbFormat), header(), footer() {}
 ObjectDataEncryptionKeyV2FNDX::ObjectDataEncryptionKeyV2FNDX(quint8 stpFormat,
                                                              quint8 cbFormat)
-    : ref{FileNodeChunkReference(stpFormat, cbFormat)} {}
+    : ref(stpFormat, cbFormat), header(), footer() {}
 
 QByteArray ObjectDataEncryptionKeyV2FNDX::getEncryptionData() const {
   return EncryptionData;
@@ -67,6 +67,6 @@ void ObjectDataEncryptionKeyV2FNDX::serialize(QDataStream &ds) const {
 }
 
 void ObjectDataEncryptionKeyV2FNDX::toDebugString(QDebug dbg) const {
-  dbg << "ObjectDataEncryptionKeyV2FNDX:\n"
-      << "Ref: " << ref << '\n';
+  dbg << " ObjectDataEncryptionKeyV2FNDX:\n"
+      << " Ref: " << ref << '\n';
 }

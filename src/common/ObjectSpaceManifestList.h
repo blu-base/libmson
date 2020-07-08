@@ -6,10 +6,10 @@
 
 #include "FileNode.h"
 #include "FileNodeListFragment.h"
-#include "commonTypes/FileNodeChunkReference.h";
+#include "commonTypes/FileNodeChunkReference.h"
 
 #include "RevisionManifestList.h"
-
+namespace MSONcommon {
 class ObjectSpaceManifestList {
 private:
   FileNodeChunkReference m_ref;
@@ -39,8 +39,8 @@ public:
   FileNodeChunkReference getRef() const;
   void setRef(const FileNodeChunkReference &ref);
 
-  //  friend QDataStream &operator<<(QDataStream &ds, const RootFileNodeList
-  //  &obj);
+  //  friend QDataStream &operator<<(QDataStream &ds, const
+  //  ObjectSpaceManifestList &obj);
   friend QDataStream &operator>>(QDataStream &ds, ObjectSpaceManifestList &obj);
   friend QDebug operator<<(QDebug dbg, const ObjectSpaceManifestList &obj);
 
@@ -64,5 +64,5 @@ private:
    */
   void toDebugString(QDebug dbg) const;
 };
-
+} // namespace MSONcommon
 #endif // OBJECTSPACEMANIFESTLIST_H

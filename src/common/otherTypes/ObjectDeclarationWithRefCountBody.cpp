@@ -1,4 +1,9 @@
 #include "ObjectDeclarationWithRefCountBody.h"
+#include <QDataStream>
+#include <QDebug>
+
+#include "../commonTypes/CompactID.h"
+#include "../properties/JCID.h"
 
 ObjectDeclarationWithRefCountBody::ObjectDeclarationWithRefCountBody() {}
 
@@ -19,58 +24,70 @@ QDebug operator<<(QDebug dbg, const ObjectDeclarationWithRefCountBody &obj) {
   return dbg;
 }
 
-quint32 ObjectDeclarationWithRefCountBody::getFReserved() const {
-  return fReserved;
+void ObjectDeclarationWithRefCountBody::deserialize(QDataStream &ds) {
+  ds >> m_oid;
+  quint64 temp;
+
+  ds >> temp;
+  m_jci = temp & 0x3FF;
+  m_odcs = (temp >> 10) & 0xF;
+  m_fReserved1 = (temp >> 14) & 0x3;
+  m_fHasOidReferences = (temp >> 16) & 0x1;
+  m_fHasOsidReferences = (temp >> 17) & 0x1;
 }
 
-void ObjectDeclarationWithRefCountBody::setFReserved(const quint32 &value) {
-  fReserved = value;
+void ObjectDeclarationWithRefCountBody::serialize(QDataStream &ds) const {
+
+  ds << m_oid;
+  quint64 temp{};
+
+  temp += m_fHasOsidReferences << 17;
+  temp += m_fHasOidReferences << 16;
+  temp += m_odcs << 10;
+  temp += m_jci;
+
+  ds << temp;
 }
 
-void ObjectDeclarationWithRefCountBody::deserialize(QDataStream &ds) {}
-
-void ObjectDeclarationWithRefCountBody::serialize(QDataStream &ds) const {}
-
-void ObjectDeclarationWithRefCountBody::toDebugString(QDebug dbg) const {}
+void ObjectDeclarationWithRefCountBody::toDebugString(QDebug dbg) const {
+  dbg << "ObjectDeclarationWithRefCountBody:\n"
+      << "oid: " << m_oid << '\n'
+      << "jci: " << m_jci << '\n'
+      << "odcs: " << m_odcs << '\n'
+      << "fHasOidReferences: " << m_fHasOidReferences << " fHasOsidReferences"
+      << m_fHasOsidReferences << '\n';
+}
 
 bool ObjectDeclarationWithRefCountBody::getFHasOsidReferences() const {
-  return fHasOsidReferences;
+  return m_fHasOsidReferences;
 }
 
 void ObjectDeclarationWithRefCountBody::setFHasOsidReferences(bool value) {
-  fHasOsidReferences = value;
+  m_fHasOsidReferences = value;
 }
 
 bool ObjectDeclarationWithRefCountBody::getFHasOidReferences() const {
-  return fHasOidReferences;
+  return m_fHasOidReferences;
 }
 
 void ObjectDeclarationWithRefCountBody::setFHasOidReferences(bool value) {
-  fHasOidReferences = value;
+  m_fHasOidReferences = value;
 }
 
-quint8 ObjectDeclarationWithRefCountBody::getFReserved1() const {
-  return fReserved1;
-}
-
-void ObjectDeclarationWithRefCountBody::setFReserved1(const quint8 &value) {
-  fReserved1 = value;
-}
-
-quint8 ObjectDeclarationWithRefCountBody::getOdc() const { return odc; }
+quint8 ObjectDeclarationWithRefCountBody::getOdc() const { return m_odcs; }
 
 void ObjectDeclarationWithRefCountBody::setOdc(const quint8 &value) {
-  odc = value;
+  m_odcs = value;
 }
 
-quint8 ObjectDeclarationWithRefCountBody::getJci() const { return jci; }
+quint8 ObjectDeclarationWithRefCountBody::getJci() const { return m_jci; }
 
 void ObjectDeclarationWithRefCountBody::setJci(const quint8 &value) {
-  jci = value;
+  m_jci = value;
 }
 
-CompactID ObjectDeclarationWithRefCountBody::getOid() const { return oid; }
+CompactID ObjectDeclarationWithRefCountBody::getOid() const { return m_oid; }
 
 void ObjectDeclarationWithRefCountBody::setOid(const CompactID &value) {
-  oid = value;
+  m_oid = value;
 }

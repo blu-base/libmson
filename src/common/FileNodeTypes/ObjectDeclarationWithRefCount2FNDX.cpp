@@ -2,11 +2,11 @@
 
 ObjectDeclarationWithRefCount2FNDX::ObjectDeclarationWithRefCount2FNDX(
     FNCR_STP_FORMAT stpFormat, FNCR_CB_FORMAT cbFormat)
-    : objectRef{FileNodeChunkReference(stpFormat, cbFormat)} {}
+    : objectRef(stpFormat, cbFormat) {}
 
 ObjectDeclarationWithRefCount2FNDX::ObjectDeclarationWithRefCount2FNDX(
     quint8 stpFormat, quint8 cbFormat)
-    : objectRef{FileNodeChunkReference(stpFormat, cbFormat)} {}
+    : objectRef(stpFormat, cbFormat) {}
 
 ObjectDeclarationWithRefCount2FNDX::~ObjectDeclarationWithRefCount2FNDX() {}
 
@@ -49,8 +49,8 @@ void ObjectDeclarationWithRefCount2FNDX::serialize(QDataStream &ds) const {
 }
 
 void ObjectDeclarationWithRefCount2FNDX::toDebugString(QDebug dbg) const {
-  dbg << "ObjectDeclarationWithRefCount2FNDX:\n"
-      << "objectRef: " << objectRef << '\n'
-      << "body: " << body << '\n'
-      << "cRef: " << cRef << '\n';
+  dbg << " ObjectDeclarationWithRefCount2FNDX:\n"
+      << " objectRef: " << objectRef << '\n'
+      << " body: " << body << '\n'
+      << " cRef: " << cRef << '\n';
 }

@@ -7,7 +7,7 @@
 #include "FileNode.h"
 #include "FileNodeListHeader.h"
 #include "commonTypes/FileChunkReference64x32.h"
-
+namespace MSONcommon {
 class FileNodeList {
 private:
   FileNodeListHeader m_fileNodeListHeader;
@@ -53,5 +53,5 @@ public:
   FileChunkReference64x32 *getNextFragment() const;
   void setNextFragment(FileChunkReference64x32 *nextFragment);
 };
-
+} // namespace MSONcommon
 #endif // FILENODELIST_H

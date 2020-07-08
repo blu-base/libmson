@@ -7,6 +7,21 @@
 #include <QtCore/qglobal.h>
 
 #include "FileNodeTypes/IFileNodeType.h"
+namespace MSONcommon {
+
+static constexpr const quint32 FileNode_maskReserved = 0x1;
+static constexpr const quint32 FileNode_maskBaseType = 0xF;
+static constexpr const quint32 FileNode_maskCbFormat = 0x3;
+static constexpr const quint32 FileNode_maskStpFormat = 0x3;
+static constexpr const quint32 FileNode_maskFileNodeSize = 0x1FFF;
+static constexpr const quint32 FileNode_maskFileNodeID = 0x3FF;
+
+static constexpr const quint32 FileNode_shiftReserved = 31;
+static constexpr const quint32 FileNode_shiftBaseType = 27;
+static constexpr const quint32 FileNode_shiftCbFormat = 25;
+static constexpr const quint32 FileNode_shiftStpFormat = 23;
+static constexpr const quint32 FileNode_shiftFileNodeSize = 10;
+static constexpr const quint32 FileNode_shiftFileNodeID = 0;
 
 class FileNode {
 protected:
@@ -29,19 +44,6 @@ protected:
    *
    * masks and shifts for parsing filenode
    */
-  static constexpr const uint32_t maskReserved = 0x1;
-  static constexpr const uint32_t maskBaseType = 0xF;
-  static constexpr const uint32_t maskCbFormat = 0x3;
-  static constexpr const uint32_t maskStpFormat = 0x3;
-  static constexpr const uint32_t maskFileNodeSize = 0x1FFF;
-  static constexpr const uint32_t maskFileNodeID = 0x3FF;
-
-  static constexpr const uint32_t shiftReserved = 31;
-  static constexpr const uint32_t shiftBaseType = 27;
-  static constexpr const uint32_t shiftCbFormat = 25;
-  static constexpr const uint32_t shiftStpFormat = 23;
-  static constexpr const uint32_t shiftFileNodeSize = 10;
-  static constexpr const uint32_t shiftFileNodeID = 0;
 
 public:
   FileNode();
@@ -75,5 +77,5 @@ public:
   void setFileNodeType(const IFileNodeType &value);
   IFileNodeType *getFnt() const;
 };
-
+} // namespace MSONcommon
 #endif // FILENODE_H

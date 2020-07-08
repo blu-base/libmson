@@ -1,6 +1,13 @@
 #include "TransactionLogFragment.h"
-
+#include "helper/Helper.h"
+namespace MSONcommon {
 TransactionLogFragment::TransactionLogFragment(quint64 size) : m_size{size} {}
+
+TransactionLogFragment::~TransactionLogFragment() {
+  for (auto *entry : sizeTable) {
+    delete entry;
+  }
+}
 
 FileChunkReference64x32 TransactionLogFragment::getNextFragment() const {
   return nextFragment;
@@ -24,11 +31,15 @@ void TransactionLogFragment::deserialize(QDataStream &ds) {
 }
 
 void TransactionLogFragment::serialize(QDataStream &ds) const {
-
+  qDebug() << "TransactionLogFragment:  Reading at pos in file: "
+           << qStringHex(ds.device()->pos(), 16);
   for (auto *te : sizeTable) {
     ds << te;
   }
   ds << nextFragment;
+
+  qDebug() << "TransactionLogFragment: Finished at pos in file: "
+           << qStringHex(ds.device()->pos(), 16);
 }
 
 void TransactionLogFragment::toDebugString(QDebug dbg) const {
@@ -40,11 +51,19 @@ void TransactionLogFragment::toDebugString(QDebug dbg) const {
   }
 }
 
-QDataStream &operator<<(QDataStream &ds, const TransactionEntry &obj) {}
+QDataStream &operator<<(QDataStream &ds, const TransactionLogFragment &obj) {
+  return ds;
+}
 
-QDataStream &operator>>(QDataStream &ds, TransactionEntry &obj) {}
+QDataStream &operator>>(QDataStream &ds, TransactionLogFragment &obj) {
+  obj.deserialize(ds);
+  return ds;
+}
 
-QDebug operator<<(QDebug dbg, const TransactionEntry &obj) {}
+QDebug operator<<(QDebug dbg, const TransactionLogFragment &obj) {
+  obj.toDebugString(dbg);
+  return dbg;
+}
 
 std::vector<TransactionEntry *> TransactionLogFragment::getSizeTable() const {
   return sizeTable;
@@ -54,3 +73,4 @@ void TransactionLogFragment::setSizeTable(
     const std::vector<TransactionEntry *> &value) {
   sizeTable = value;
 }
+} // namespace MSONcommon

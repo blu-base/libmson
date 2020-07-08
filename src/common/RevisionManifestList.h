@@ -12,7 +12,7 @@
 #include <QDataStream>
 #include <QDebug>
 #include <vector>
-
+namespace MSONcommon {
 class RevisionManifestList {
 private:
   FileNodeChunkReference mRef;
@@ -47,6 +47,33 @@ public:
   void setFileNodeSequence(const std::vector<FileNode *> &value);
   FileNodeChunkReference getRef() const;
   void setRef(const FileNodeChunkReference &ref);
+
+  //  friend QDataStream &operator<<(QDataStream &ds, const RevisionManifestList
+  //  &obj);
+  friend QDataStream &operator>>(QDataStream &ds, RevisionManifestList &obj);
+  friend QDebug operator<<(QDebug dbg, const RevisionManifestList &obj);
+
+private:
+  /**
+   * @brief creates RevisionManifestList from QDataStream
+   * @param ds <QDataStream> containing the deserializable
+   * RevisionManifestList
+   */
+  void deserialize(QDataStream &ds);
+  //  /**
+  //   * @brief creates byte stream from RevisionManifestList object
+  //   * @param ds <QDataStream> is the output stream to which the serialized
+  //   * RevisionManifestList is send
+  //   */
+  //  void serialize(QDataStream &ds) const;
+
+  /**
+   * @brief prints the RevisionManifestList to a <QDebug> object
+   * @param dbg <QDebug> string builder for the debug information
+   */
+  void toDebugString(QDebug dbg) const;
 };
+
+} // namespace MSONcommon
 
 #endif // REVISIONMANIFESTLIST_H

@@ -17,6 +17,5 @@ void ObjectSpaceManifestListStartFND::serialize(QDataStream &ds) const {
 }
 
 void ObjectSpaceManifestListStartFND::toDebugString(QDebug dbg) const {
-  dbg << "ObjectSpaceManifestListStartFND:\n"
-      << "gosid: " << gosid << "\n";
+  dbg << " ObjectSpaceManifestListStartFND: gosid: " << gosid << '\n';
 }

@@ -6,19 +6,17 @@
 #include "../commonTypes/CompactID.h"
 
 class ObjectDeclarationWithRefCountBody {
-public:
-  ObjectDeclarationWithRefCountBody();
-
+private:
   /**
    * @brief specifies the identity of this object
    */
-  CompactID oid;
+  CompactID m_oid;
 
   /**
    * @brief specifies the value of the JCID.indexfield of the object. MUSTbe
    * 0x01
    */
-  quint8 jci;
+  quint8 m_jci;
 
   /**
    * @brief specifies whether the data contained by this object is encrypted.
@@ -26,32 +24,35 @@ public:
    * MUST be zero
    * 4bits wide
    */
-  quint8 odc;
+  quint8 m_odcs;
 
   /**
    * @brief MUST be zero, and MUST be ignored
    *
    * 2bits wide
    */
-  quint8 fReserved1;
+  quint8 m_fReserved1;
 
   /**
    * @brief Specifies whether this object contains references to other objects.
    */
-  bool fHasOidReferences;
+  bool m_fHasOidReferences;
 
   /**
    * @brief Specifies whether this object contains references to object
    * spaces(section 2.1.4). MUST be zero
    */
-  bool fHasOsidReferences;
+  bool m_fHasOsidReferences;
 
   /**
    * @brief padding, MUST be zero, and MUST be ignored.
    *
    * 30 bits wide
    */
-  quint32 fReserved;
+  quint32 m_fReserved2;
+
+public:
+  ObjectDeclarationWithRefCountBody();
 
   friend QDataStream &operator<<(QDataStream &ds,
                                  const ObjectDeclarationWithRefCountBody &obj);
@@ -69,17 +70,11 @@ public:
   quint8 getOdc() const;
   void setOdc(const quint8 &value);
 
-  quint8 getFReserved1() const;
-  void setFReserved1(const quint8 &value);
-
   bool getFHasOidReferences() const;
   void setFHasOidReferences(bool value);
 
   bool getFHasOsidReferences() const;
   void setFHasOsidReferences(bool value);
-
-  quint32 getFReserved() const;
-  void setFReserved(const quint32 &value);
 
 private:
   /**

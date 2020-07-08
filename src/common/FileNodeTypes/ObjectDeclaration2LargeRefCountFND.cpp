@@ -1,0 +1,56 @@
+#include "ObjectDeclaration2LargeRefCountFND.h"
+#include "../helper/Helper.h"
+
+ObjectDeclaration2LargeRefCountFND::ObjectDeclaration2LargeRefCountFND(
+    FNCR_STP_FORMAT stpFormat, FNCR_CB_FORMAT cbFormat)
+    : m_BlobRef(stpFormat, cbFormat), m_cRef() {}
+
+ObjectDeclaration2LargeRefCountFND::ObjectDeclaration2LargeRefCountFND(
+    quint8 stpFormat, quint8 cbFormat)
+    : m_BlobRef(stpFormat, cbFormat), m_cRef() {}
+
+ObjectDeclaration2LargeRefCountFND::~ObjectDeclaration2LargeRefCountFND() {}
+
+ObjectDeclaration2Body ObjectDeclaration2LargeRefCountFND::body() const {
+  return m_body;
+}
+
+void ObjectDeclaration2LargeRefCountFND::setBody(
+    const ObjectDeclaration2Body &body) {
+  m_body = body;
+}
+
+quint32 ObjectDeclaration2LargeRefCountFND::cRef() const { return m_cRef; }
+
+void ObjectDeclaration2LargeRefCountFND::setCRef(const quint32 &cRef) {
+  m_cRef = cRef;
+}
+
+FileNodeChunkReference ObjectDeclaration2LargeRefCountFND::BlobRef() const {
+  return m_BlobRef;
+}
+
+void ObjectDeclaration2LargeRefCountFND::setBlobRef(
+    const FileNodeChunkReference &BlobRef) {
+  m_BlobRef = BlobRef;
+}
+
+void ObjectDeclaration2LargeRefCountFND::deserialize(QDataStream &ds) {
+  ds >> m_BlobRef;
+  ds >> m_body;
+  ds >> m_cRef;
+}
+
+void ObjectDeclaration2LargeRefCountFND::serialize(QDataStream &ds) const {
+  ds << m_BlobRef;
+  ds << m_body;
+  ds << m_cRef;
+}
+
+void ObjectDeclaration2LargeRefCountFND::toDebugString(QDebug dbg) const {
+  dbg << " ObjectDeclaration2LargeRefCountFND\n"
+      << " BlobRef: " << m_BlobRef << '\n'
+      << " body:\n"
+      << m_body << "\n"
+      << " cRef: " << qStringHex(m_cRef, 16) << '\n';
+}
