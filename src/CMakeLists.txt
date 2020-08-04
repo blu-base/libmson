@@ -117,7 +117,6 @@ set (MSONcommon_PART_SRCS
     common/properties/PropertyID.cpp
     common/properties/PropertySet.cpp
 
-    common/properties/prtArrayOfPropertyValues.cpp
     common/properties/IPropertyType.cpp
     common/properties/PropertyType_NoData.cpp
     common/properties/PropertyType_Bool.cpp
@@ -125,9 +124,7 @@ set (MSONcommon_PART_SRCS
     common/properties/PropertyType_TwoBytesOfData.cpp
     common/properties/PropertyType_FourBytesOfData.cpp
     common/properties/PropertyType_EightBytesOfData.cpp
-    common/properties/PropertyType_ArrayOfContextIDs.cpp
-    common/properties/PropertyType_ArrayOfObjectIDs.cpp
-    common/properties/PropertyType_ArrayOfObjectSpaceIDs.cpp
+    common/properties/PropertyType_ArrayNumber.cpp
     common/properties/PropertyType_ArrayOfPropertyValues.cpp
     common/properties/PropertyType_ContextID.cpp
     common/properties/PropertyType_FourBytesOfLengthFollowedByData.cpp

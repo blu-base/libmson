@@ -32,7 +32,7 @@ void PropertySet::deserialize(QDataStream &ds) {
 
     ds >> m_cProperties;
 
-    for (int i = 0; i< m_cProperties; i++) {
+    for (quint32 i = 0; i< m_cProperties; i++) {
         PropertyID prid;
         ds >> prid;
         m_rgPrids.push_back(prid);
@@ -102,11 +102,11 @@ void PropertySet::serialize(QDataStream &ds) const {
 
     ds << m_cProperties;
 
-    foreach(auto propid : m_rgPrids) {
+    for(auto propid : m_rgPrids) {
         ds << propid;
     }
 
-    foreach(IPropertyType* prop : m_rgData) {
+    for(IPropertyType* prop : m_rgData) {
         ds << *prop;
     }
 }

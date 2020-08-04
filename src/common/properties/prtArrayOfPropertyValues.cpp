@@ -3,21 +3,8 @@
 #include <QDataStream>
 #include <QDebug>
 
-#include "PropertyType_ArrayOfContextIDs.h"
-#include "PropertyType_ArrayOfObjectIDs.h"
-#include "PropertyType_ArrayOfObjectSpaceIDs.h"
-#include "PropertyType_ArrayOfPropertyValues.h"
-#include "PropertyType_Bool.h"
-#include "PropertyType_ContextID.h"
-#include "PropertyType_EightBytesOfData.h"
-#include "PropertyType_FourBytesOfData.h"
-#include "PropertyType_FourBytesOfLengthFollowedByData.h"
-#include "PropertyType_NoData.h"
-#include "PropertyType_ObjectID.h"
-#include "PropertyType_ObjectSpaceID.h"
-#include "PropertyType_OneByteOfData.h"
 #include "PropertyType_PropertySet.h"
-#include "PropertyType_TwoBytesOfData.h"
+
 
 prtArrayOfPropertyValues::prtArrayOfPropertyValues() {}
 

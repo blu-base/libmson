@@ -82,6 +82,8 @@ void FileNodeChunkReference::setStp(const quint64 &stp) {
     m_stp = stp;
     break;
   case FNCR_STP_FORMAT::UNCOMPRESED_4BYTE:
+    m_stp = static_cast<quint32>(stp);
+    break;
   case FNCR_STP_FORMAT::COMPRESSED_4BYTE:
     m_stp = static_cast<quint32>(stp / 8u);
     break;
@@ -213,6 +215,7 @@ void FileNodeChunkReference::serialize(QDataStream &ds) const {
 }
 
 void FileNodeChunkReference::toDebugString(QDebug dbg) const {
+    dbg.noquote();
   dbg << "FileNodeChunkReference(";
   if (is_fcrNil()) {
     dbg << "fcrNil";

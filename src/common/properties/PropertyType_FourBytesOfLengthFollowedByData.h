@@ -2,22 +2,29 @@
 #define PROPERTYTYPE_FOURBYTESOFLENGTHFOLLOWEDBYDATA_H
 
 #include "IPropertyType.h"
-#include "prtArrayOfPropertyValues.h"
+#include "PropertyType_ArrayOfPropertyValues.h"
 #include <QByteArray>
 #include <QtCore/qglobal.h>
+
+#include <QByteArray>
 
 #include <QDebug>
 
 class PropertyType_FourBytesOfLengthFollowedByData : public IPropertyType {
 private:
-  prtArrayOfPropertyValues m_data;
+  quint32 m_cb;
+  QByteArray m_data;
 
 public:
   PropertyType_FourBytesOfLengthFollowedByData();
 
-  // IPropertyType interface
-  prtArrayOfPropertyValues data() const;
-  void setData(const prtArrayOfPropertyValues &data);
+  quint32 cb() const;
+  void setCb(const quint32& cb);
+
+  QByteArray data() const;
+  void setData(const QByteArray &data);
+
+
 
 private:
   void deserialize(QDataStream &ds) override;

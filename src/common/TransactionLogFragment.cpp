@@ -24,7 +24,7 @@ void TransactionLogFragment::deserialize(QDataStream &ds) {
   for (size_t i{0}; i < num_entries; i++) {
     TransactionEntry *entry = new TransactionEntry;
     ds >> *entry;
-    getSizeTable().push_back(entry);
+    sizeTable.push_back(entry);
   }
 
   ds >> nextFragment;
@@ -45,9 +45,9 @@ void TransactionLogFragment::serialize(QDataStream &ds) const {
 void TransactionLogFragment::toDebugString(QDebug dbg) const {
   dbg << "TransactionLogFragment: size: "
       << QString("0x%1").arg(m_size, 16, 16, QLatin1Char('0')) << '\n'
-      << " nextFragment: " << nextFragment;
-  for (auto *te : sizeTable) {
-    dbg << te << '\n';
+      << " nextFragment: " << nextFragment << '\n';
+  for (TransactionEntry * te : sizeTable) {
+    dbg << *te ;
   }
 }
 

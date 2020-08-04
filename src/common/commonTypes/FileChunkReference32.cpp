@@ -54,6 +54,7 @@ void FileChunkReference32::serialize(QDataStream &ds) const {
 }
 
 void FileChunkReference32::toDebugString(QDebug dbg) const {
+    dbg.noquote();
   dbg << "FileChunkReference32(";
   if (is_fcrNil()) {
     dbg << "fcrNil";

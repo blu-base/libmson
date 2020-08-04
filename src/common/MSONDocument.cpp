@@ -7,6 +7,8 @@
 #include <QDataStream>
 #include <QDebug>
 
+#include "helper/Helper.h"
+
 namespace MSONcommon {
 
 QMap<quint32, quint32> &MSONDocument::getFileNodeCountMapping() {
@@ -332,27 +334,26 @@ QDataStream &operator>>(QDataStream &ds, MSONDocument &obj) {
     for (auto entry : tlf->getSizeTable()) {
       if (entry->getSrcID() != 0x00000001) {
 
-        if (obj.getFileNodeCountMapping().contains(entry->getSrcID())) {
-          if (obj.getFileNodeCountMapping()[entry->getSrcID()] <
+        if (obj.FileNodeCountMapping.contains(entry->getSrcID())) {
+          if (obj.FileNodeCountMapping[entry->getSrcID()] <
               entry->getTransactionEntrySwitch()) {
-            obj.getFileNodeCountMapping()[entry->getSrcID()] =
-                entry->getTransactionEntrySwitch();
+            obj.FileNodeCountMapping[entry->getSrcID()] = entry->getTransactionEntrySwitch();
           }
 
         } else {
-          obj.getFileNodeCountMapping().insert(
+          obj.FileNodeCountMapping.insert(
               entry->getSrcID(), entry->getTransactionEntrySwitch());
         }
       }
 
-      size_t i{0};
+//      size_t i{0};
 
-      while (i < tlf->getSizeTable().size()) {
-      }
+//      while (i < tlf->getSizeTable().size()) {
+//      }
     }
 
-    for (size_t i{0}; i < tlf->getSizeTable().size(); i++) {
-    }
+//    for (size_t i{0}; i < tlf->getSizeTable().size(); i++) {
+//    }
 
   } while (!transLogRef.is_fcrNil() && !transLogRef.is_fcrZero());
 
@@ -388,18 +389,58 @@ QDebug operator<<(QDebug dbg, const MSONDocument &obj) {
   dbg << *obj.m_header;
 
   dbg << "FileNodeCountMapping: ";
-  if (obj.FileNodeCountMapping.size() == 0) {
+  if (obj.FileNodeCountMapping.empty()) {
     dbg << "none mapped\n";
   } else {
     dbg << '\n';
     for (auto key : obj.FileNodeCountMapping) {
-      dbg << key << ", " << obj.FileNodeCountMapping[key];
+      dbg << qStringHex(key,8) << ", " << obj.FileNodeCountMapping[key] << '\n';
     }
   }
 
+
+  dbg<< "FreeChunkList: ";
+  if(obj.m_freeChunkList.empty()) {
+      dbg << "no free chunks\n";
+  } else {
+      dbg << '\n';
+      for (auto key : obj.m_freeChunkList) {
+          dbg << key << '\n';
+      }
+  }
+
+  dbg << "TransactionLog: ";
+  if(obj.m_transactionLog.empty()) {
+      dbg << "no transactions\n";
+  } else {
+      dbg << '\n';
+      for (auto entry : obj.m_transactionLog) {
+          dbg << *entry << '\n';
+      }
+  }
+
+  dbg << "HashedChunkList: ";
+  if(obj.m_hashedChunkList.empty()) {
+      dbg << "no hashed chunks\n";
+  } else {
+      dbg << '\n';
+      for (auto entry : obj.m_hashedChunkList) {
+          dbg << *entry << '\n';
+      }
+  }
+
+
   dbg << *obj.m_rootFileNodeList;
 
-  //  dbg << obj.m_fnlRoot;
+  dbg << "File Node List: ";
+  if(obj.m_fileNodeList.empty()) {
+      dbg << "no file nodes\n";
+  } else {
+      dbg << '\n';
+      for (auto entry : obj.m_fileNodeList) {
+          dbg << *entry << '\n';
+      }
+  }
 
   return dbg;
 }

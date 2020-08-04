@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "IPropertyType.h"
+#include "PropertySet.h"
 
 class prtArrayOfPropertyValues {
 private:
@@ -25,7 +26,7 @@ private:
 
   QByteArray m_Data;
 
-  std::vector<IPropertyType *> m_dataVector;
+  std::vector<PropertySet> m_dataVector;
 
 public:
   prtArrayOfPropertyValues();
@@ -46,8 +47,8 @@ public:
   QByteArray Data() const;
   void setData(const QByteArray &Data);
 
-  std::vector<IPropertyType *> dataVector() const;
-  void setDataVector(const std::vector<IPropertyType *> &dataVector);
+  std::vector<PropertySet> dataVector() const;
+  void setDataVector(const std::vector<PropertySet> &dataVector);
 
 private:
   void deserialize(QDataStream &ds);

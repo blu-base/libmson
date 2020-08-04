@@ -3,22 +3,63 @@
 #include <QDataStream>
 #include <QDebug>
 
-prtArrayOfPropertyValues PropertyType_ArrayOfPropertyValues::data() const {
+PropertyType_ArrayOfPropertyValues::PropertyType_ArrayOfPropertyValues()
+    :m_cProperties(0){}
+
+QDataStream &operator<<(QDataStream &ds, const PropertyType_ArrayOfPropertyValues &obj) {
+  obj.serialize(ds);
+  return ds;
+}
+
+QDataStream &operator>>(QDataStream &ds, PropertyType_ArrayOfPropertyValues &obj) {
+  obj.deserialize(ds);
+  return ds;
+}
+
+QDebug operator<<(QDebug dbg, const PropertyType_ArrayOfPropertyValues &obj) {
+  obj.toDebugString(dbg);
+  return dbg;
+}
+
+quint32 PropertyType_ArrayOfPropertyValues::cProperties() const { return m_cProperties; }
+
+void PropertyType_ArrayOfPropertyValues::setCProperties(const quint32 &cProperties) {
+  m_cProperties = cProperties;
+}
+
+PropertyID PropertyType_ArrayOfPropertyValues::prid() const { return m_prid; }
+
+void PropertyType_ArrayOfPropertyValues::setPrid(const PropertyID &prid) {
+  m_prid = prid;
+}
+
+
+
+std::vector<PropertySet> PropertyType_ArrayOfPropertyValues::data() const {
   return m_data;
 }
 
 void PropertyType_ArrayOfPropertyValues::setData(
-    const prtArrayOfPropertyValues &data) {
+    const std::vector<PropertySet> &data) {
   m_data = data;
 }
 
-PropertyType_ArrayOfPropertyValues::PropertyType_ArrayOfPropertyValues() {}
+void PropertyType_ArrayOfPropertyValues::deserialize(QDataStream &ds) {
+  ds >> m_cProperties;
 
-/// \todo implement
-void PropertyType_ArrayOfPropertyValues::deserialize(QDataStream &ds) {}
+  if (m_cProperties != 0) {
+    ds >> m_prid;
 
-void PropertyType_ArrayOfPropertyValues::serialize(QDataStream &ds) const {
-  ds << m_data;
+    for (quint32 i {0}; i < m_cProperties; i ++) {
+        PropertySet ps;
+        ds >> ps;
+        m_data.push_back(ps);
+    }
+  }
+
+
 }
+
+void PropertyType_ArrayOfPropertyValues::serialize(QDataStream &ds) const {}
 
 void PropertyType_ArrayOfPropertyValues::toDebugString(QDebug dbg) const {}
