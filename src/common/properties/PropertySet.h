@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "PropertyID.h"
+#include "IPropertyType.h"
 class PropertySet {
 private:
   /**
@@ -21,10 +22,10 @@ private:
   std::vector<PropertyID> m_rgPrids;
 
   /**
-   * @brief ByteStream which contains the data associated to the PropertyIDs in
+   * @brief vector which contains the data associated to the PropertyIDs in
    * m_rgPrids
    */
-  QByteArray m_rgData;
+  std::vector<IPropertyType*> m_rgData;
 
 public:
   PropertySet();
@@ -39,8 +40,8 @@ public:
   std::vector<PropertyID> rgPrids() const;
   void setRgPrids(const std::vector<PropertyID> &rgPrids);
 
-  QByteArray rgData() const;
-  void setRgData(const QByteArray &rgData);
+  std::vector<IPropertyType*> rgData() const;
+  void setRgData(const std::vector<IPropertyType*> &rgData);
 
 private:
   void deserialize(QDataStream &ds);
