@@ -2,6 +2,7 @@
 #define FILENODELISTHEADER_H
 
 #include <QDataStream>
+#include <QXmlStreamWriter>
 #include <QDebug>
 #include <QtCore/qglobal.h>
 namespace MSONcommon {
@@ -32,6 +33,8 @@ public:
   friend QDataStream &operator>>(QDataStream &ds, FileNodeListHeader &obj);
 
   friend QDebug operator<<(QDebug dbg, const FileNodeListHeader &obj);
+
+    void generateXml(QXmlStreamWriter &xmlWriter) const;
 
   FileNodeListHeader &
   operator=(const FileNodeListHeader &rhs);                // copy assignment

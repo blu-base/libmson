@@ -6,6 +6,7 @@
 #include <QDataStream>
 #include <QDebug>
 #include <QIODevice>
+#include <QXmlStreamWriter>
 
 #include <vector>
 
@@ -50,6 +51,8 @@ public:
   friend QDataStream &operator>>(QDataStream &ds, MSONDocument &obj);
 
   friend QDebug operator<<(QDebug dbg, const MSONDocument &obj);
+
+  void generateXml(QXmlStreamWriter &xmlWriter) const;
 
   QMap<quint32, quint32> &getFileNodeCountMapping();
   void setFileNodeCountMapping(const QMap<quint32, quint32> &value);

@@ -3,6 +3,7 @@
 
 #include <QtCore/qglobal.h>
 #include <vector>
+#include <QXmlStreamWriter>
 
 #include "FileNode.h"
 #include "FileNodeListFragment.h"
@@ -60,6 +61,8 @@ public:
   //                                 const RootFileNodeList &obj);
   friend QDataStream &operator>>(QDataStream &ds, RootFileNodeList &obj);
   friend QDebug operator<<(QDebug dbg, const RootFileNodeList &obj);
+
+  void generateXml(QXmlStreamWriter &xmlWriter) const;
 
 private:
   /**

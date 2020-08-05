@@ -1,5 +1,7 @@
 #include "FileChunkReference32.h"
 
+#include "../helper/Helper.h"
+
 FileChunkReference32::FileChunkReference32()
     : IFileChunkReference<quint32, quint32>() {}
 
@@ -42,6 +44,30 @@ void FileChunkReference32::setStp(const quint32 &stp) { m_stp = stp; }
 quint32 FileChunkReference32::cb() const { return m_cb; }
 
 void FileChunkReference32::setCb(const quint32 &cb) { m_cb = cb; }
+
+void FileChunkReference32::generateXml(QXmlStreamWriter& xmlWriter) const
+{
+    xmlWriter.writeStartElement("FileChunkReference32");
+
+    if (this->is_fcrNil()) {
+        xmlWriter.writeAttribute("fcrNil", "true");
+    } else if (this->is_fcrZero()) {
+        xmlWriter.writeAttribute("fcrZero", "true");
+    } else {
+        xmlWriter.writeStartElement("stp");
+        xmlWriter.writeAttribute("type", "quint32");
+        xmlWriter.writeCharacters(qStringHex(m_stp,8));
+        xmlWriter.writeEndElement();
+
+        xmlWriter.writeStartElement("cb");
+        xmlWriter.writeAttribute("type", "quint32");
+        xmlWriter.writeCharacters(qStringHex(m_cb,8));
+        xmlWriter.writeEndElement();
+    }
+
+
+    xmlWriter.writeEndElement();
+}
 
 void FileChunkReference32::deserialize(QDataStream &ds) {
   ds >> m_stp;

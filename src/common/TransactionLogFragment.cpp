@@ -65,6 +65,31 @@ QDebug operator<<(QDebug dbg, const TransactionLogFragment &obj) {
   return dbg;
 }
 
+void TransactionLogFragment::generateXml(QXmlStreamWriter& xmlWriter) const
+{
+    xmlWriter.writeStartElement("TransactionLogFragment");
+
+    xmlWriter.writeStartElement("size");
+    xmlWriter.writeCharacters(qStringHex(m_size,16));
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("nextFragment");
+    nextFragment.generateXml(xmlWriter);
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("sizeTable");
+    for(auto entry : sizeTable) {
+        if(! entry->isZero()) {
+        entry->generateXml(xmlWriter);
+        }
+    }
+    xmlWriter.writeEndElement();
+
+
+    xmlWriter.writeEndElement();
+
+}
+
 std::vector<TransactionEntry *> TransactionLogFragment::getSizeTable() const {
   return sizeTable;
 }

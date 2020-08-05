@@ -49,6 +49,8 @@ public:
   friend QDataStream &operator>>(QDataStream &ds, FreeChunkListFragment &obj);
   friend QDebug operator<<(QDebug dbg, const FreeChunkListFragment &obj);
 
+  void generateXml(QXmlStreamWriter &xmlWriter) const;
+
   quint32 getCrc() const;
   void setCrc(const quint32 &value);
   FileChunkReference64x32 getFcrNextChunk() const;

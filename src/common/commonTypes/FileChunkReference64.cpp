@@ -1,5 +1,7 @@
 #include "FileChunkReference64.h"
 
+#include "../helper/Helper.h"
+
 FileChunkReference64::FileChunkReference64()
     : IFileChunkReference<quint64, quint64>() {}
 
@@ -42,6 +44,29 @@ void FileChunkReference64::setStp(const quint64 &stp) { m_stp = stp; }
 quint64 FileChunkReference64::cb() const { return m_cb; }
 
 void FileChunkReference64::setCb(const quint64 &cb) { m_cb = cb; }
+
+void FileChunkReference64::generateXml(QXmlStreamWriter& xmlWriter) const
+{
+    xmlWriter.writeStartElement("FileChunkReference64");
+
+    if (this->is_fcrNil()) {
+        xmlWriter.writeAttribute("fcrNil", "true");
+    } else if (this->is_fcrZero()) {
+        xmlWriter.writeAttribute("fcrZero", "true");
+    } else {
+        xmlWriter.writeStartElement("stp");
+        xmlWriter.writeCharacters(qStringHex(m_stp,16));
+        xmlWriter.writeEndElement();
+
+        xmlWriter.writeStartElement("cb");
+        xmlWriter.writeCharacters(qStringHex(m_cb,16));
+        xmlWriter.writeEndElement();
+    }
+
+
+    xmlWriter.writeEndElement();
+}
+
 
 void FileChunkReference64::deserialize(QDataStream &ds) {
   ds >> m_stp;

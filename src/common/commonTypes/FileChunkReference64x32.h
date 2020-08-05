@@ -22,6 +22,8 @@ public:
   quint32 cb() const override;
   void setCb(const quint32& cb) override;
 
+  void generateXml(QXmlStreamWriter &xmlWriter) const override;
+
 private:
   void deserialize(QDataStream& ds) override;
   void serialize(QDataStream& ds) const override;

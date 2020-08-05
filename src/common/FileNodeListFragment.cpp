@@ -56,7 +56,41 @@ FileChunkReference64x32 FileNodeListFragment::nextFragment() const {
 
 void FileNodeListFragment::setNextFragment(
     const FileChunkReference64x32 &nextFragment) {
-  m_nextFragment = nextFragment;
+    m_nextFragment = nextFragment;
+}
+
+void FileNodeListFragment::generateXml(QXmlStreamWriter& xmlWriter) const
+{
+    xmlWriter.writeStartElement("FileNodeListFragment");
+
+    xmlWriter.writeStartElement("ref");
+    m_ref.generateXml(xmlWriter);
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("fnlheader");
+    m_fnlheader.generateXml(xmlWriter);
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("nextFragment");
+    m_nextFragment.generateXml(xmlWriter);
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("rgFileNodes");
+    for(auto entry : m_rgFileNodes) {
+        entry->generateXml(xmlWriter);
+    }
+
+    xmlWriter.writeStartElement("paddingLength");
+    xmlWriter.writeCharacters(qStringHex(m_paddingLength,16));
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeEndElement();
+
+
+
+
+
+    xmlWriter.writeEndElement();
 }
 
 void FileNodeListFragment::deserialize(QDataStream &ds) {

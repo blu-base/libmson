@@ -6,6 +6,8 @@
 #include <QDataStream>
 #include <QDebug>
 
+#include <QXmlStreamWriter>
+
 enum FCR_INITTYPE {
   FCRZERO,
   FCRNIL,
@@ -30,6 +32,9 @@ public:
 
   virtual C cb() const = 0;
   virtual void setCb(const C &cb) = 0;
+
+
+  virtual void generateXml(QXmlStreamWriter &xmlWriter) const = 0;
 
 private:
   /**

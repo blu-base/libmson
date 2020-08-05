@@ -6,6 +6,7 @@
 
 #include <QDataStream>
 #include <QDebug>
+#include <QXmlStreamWriter>
 
 #include "TransactionEntry.h"
 #include "commonTypes/FileChunkReference64x32.h"
@@ -41,6 +42,8 @@ public:
 
   FileChunkReference64x32 getNextFragment() const;
   void setNextFragment(const FileChunkReference64x32 &value);
+
+  void generateXml(QXmlStreamWriter &xmlWriter) const;
 
 private:
   void serialize(QDataStream &ds) const;

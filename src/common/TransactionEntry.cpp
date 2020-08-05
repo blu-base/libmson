@@ -18,6 +18,22 @@ QDebug operator<<(QDebug dbg, const TransactionEntry &obj) {
   return dbg;
 }
 
+void TransactionEntry::generateXml(QXmlStreamWriter &xmlWriter) const {
+
+    xmlWriter.writeStartElement("TransactionEntry");
+
+    if (isZero()) {
+        xmlWriter.writeAttribute("isZero", "true");
+    } else {
+
+    xmlWriter.writeAttribute("size",qStringHex(srcID,8));
+    xmlWriter.writeAttribute("TransactionEntrySwitch",qStringHex(TransactionEntrySwitch,8));
+
+    }
+
+    xmlWriter.writeEndElement();
+}
+
 void TransactionEntry::serialize(QDataStream &ds) const {
   ds << srcID;
   ds << TransactionEntrySwitch;
@@ -43,6 +59,11 @@ quint32 TransactionEntry::getTransactionEntrySwitch() const {
 }
 
 void TransactionEntry::setTransactionEntrySwitch(const quint32 &value) {
-  TransactionEntrySwitch = value;
+    TransactionEntrySwitch = value;
+}
+
+bool TransactionEntry::isZero() const
+{
+    return srcID == 0 && TransactionEntrySwitch == 0;
 }
 } // namespace MSONcommon

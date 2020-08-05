@@ -40,6 +40,9 @@ public:
   bool isSTPcompressed();
   bool isCBcompressed();
 
+
+  void generateXml(QXmlStreamWriter &xmlWriter) const override;
+
 private:
   void deserialize(QDataStream &ds) override;
   void serialize(QDataStream &ds) const override;

@@ -191,7 +191,7 @@
 //}
 
 // ExtendedGUID ExtendedGUID::fromString(QStringView text) noexcept {
-//  if (text.size() > MaxStringEUuidLength)
+//  if (text.size() > MaxStringEUuidLength) 
 //    text =
 //        text.left(MaxStringEUuidLength); //
 //        text.truncate(MaxStringUuidLength);

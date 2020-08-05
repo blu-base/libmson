@@ -6,7 +6,7 @@ project(MSONParser LANGUAGES CXX)
 message(STATUS "Using CMake version: ${CMAKE_VERSION}")
 include(FeatureSummary)
 
-#### Constant definitions ###
+# ### Constant definitions ###
 
 set(QT_MIN_VERSION     "5.10.0")
 set(KF5_MIN_VERSION    "5.56.0")

@@ -414,6 +414,46 @@ FileChunkReference64x32 RootFileNodeList::getFcrFileNodeListRoot() const {
 
 void RootFileNodeList::setFcrFileNodeListRoot(
     const FileChunkReference64x32 &fcrFileNodeListRoot) {
-  m_fcrFileNodeListRoot = fcrFileNodeListRoot;
+    m_fcrFileNodeListRoot = fcrFileNodeListRoot;
+}
+
+void RootFileNodeList::generateXml(QXmlStreamWriter& xmlWriter) const
+{
+    xmlWriter.writeStartElement("RootFileNodeList");
+
+    xmlWriter.writeStartElement("fileNodeListFragments");
+    for(auto entry : m_fileNodeListFragments) {
+        entry->generateXml(xmlWriter);
+    }
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("objectSpaceManifestRoot");
+    m_objectSpaceManifestRoot.generateXml(xmlWriter);
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("fileNodeSequence");
+    for(auto entry : m_fileNodeSequence) {
+        entry->generateXml(xmlWriter);
+    }
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("objectSpaceManifestList");
+    for(auto entry : m_objectSpaceManifestList) {
+//        entry->generateXml(xmlWriter);
+    }
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("fileDataStoreListReference");
+    for(auto entry : m_fileDataStoreListReference) {
+        entry->generateXml(xmlWriter);
+    }
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("fcrFileNodeListRoot");
+    m_fcrFileNodeListRoot.generateXml(xmlWriter);
+    xmlWriter.writeEndElement();
+
+
+    xmlWriter.writeEndElement();
 }
 } // namespace MSONcommon

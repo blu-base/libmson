@@ -58,6 +58,8 @@ public:
   friend QDataStream &operator>>(QDataStream &ds, FileNodeListFragment &obj);
   friend QDebug operator<<(QDebug dbg, const FileNodeListFragment &obj);
 
+  void generateXml(QXmlStreamWriter &xmlWriter) const;
+
 private:
   /**
    * @brief creates FileNodeListFragment from QDataStream

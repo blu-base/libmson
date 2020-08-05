@@ -5,12 +5,15 @@
 
 #include <QDataStream>
 #include <QDebug>
+#include <QXmlStreamWriter>
 namespace MSONcommon {
 class TransactionEntry {
 private:
   quint32 srcID;
 
   quint32 TransactionEntrySwitch;
+
+
 
 public:
   TransactionEntry();
@@ -20,10 +23,14 @@ public:
   quint32 getTransactionEntrySwitch() const;
   void setTransactionEntrySwitch(const quint32 &value);
 
+  bool isZero() const;
+
   friend QDataStream &operator<<(QDataStream &ds, const TransactionEntry &obj);
   friend QDataStream &operator>>(QDataStream &ds, TransactionEntry &obj);
 
   friend QDebug operator<<(QDebug dbg, const TransactionEntry &obj);
+
+    void generateXml(QXmlStreamWriter &xmlWriter) const;
 
 private:
   void serialize(QDataStream &ds) const;

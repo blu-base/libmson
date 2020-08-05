@@ -73,7 +73,10 @@ quint64 FileNodeChunkReference::stp() const {
   case FNCR_STP_FORMAT::COMPRESSED_2BYTE:
     return (quint64)m_stp * 8u;
     break;
+  default:
+      return m_stp;
   }
+
 }
 
 void FileNodeChunkReference::setStp(const quint64 &stp) {
@@ -104,6 +107,8 @@ quint64 FileNodeChunkReference::cb() const {
   case FNCR_CB_FORMAT::COMPRESSED_2BYTE:
     return m_cb * 8u;
     break;
+  default:
+      return m_cb;
   }
 }
 
@@ -123,6 +128,60 @@ void FileNodeChunkReference::setCb(const quint64 &cb) {
     break;
   }
 }
+
+void FileNodeChunkReference::generateXml(QXmlStreamWriter& xmlWriter) const
+{
+    xmlWriter.writeStartElement("FileNodeChunkReference");
+
+    switch (m_stpFormat) {
+    case FNCR_STP_FORMAT::UNCOMPRESED_8BYTE:
+          xmlWriter.writeAttribute("stpFormat","UNCOMPRESED_8BYTE");
+      break;
+    case FNCR_STP_FORMAT::UNCOMPRESED_4BYTE:
+          xmlWriter.writeAttribute("stpFormat","UNCOMPRESED_4BYTE");
+      break;
+    case FNCR_STP_FORMAT::COMPRESSED_4BYTE:
+          xmlWriter.writeAttribute("stpFormat","COMPRESSED_4BYTE");
+      break;
+    case FNCR_STP_FORMAT::COMPRESSED_2BYTE:
+          xmlWriter.writeAttribute("stpFormat","COMPRESSED_2BYTE");
+      break;
+    }
+
+    switch (m_cbFormat) {
+    case FNCR_CB_FORMAT::UNCOMPRESED_8BYTE:
+      xmlWriter.writeAttribute("cbFormat","UNCOMPRESED_8BYTE");
+      break;
+    case FNCR_CB_FORMAT::UNCOMPRESED_4BYTE:
+      xmlWriter.writeAttribute("cbFormat","UNCOMPRESED_4BYTE");
+      break;
+    case FNCR_CB_FORMAT::COMPRESSED_1BYTE:
+      xmlWriter.writeAttribute("cbFormat","COMPRESSED_1BYTE");
+      break;
+    case FNCR_CB_FORMAT::COMPRESSED_2BYTE:
+      xmlWriter.writeAttribute("cbFormat","COMPRESSED_2BYTE");
+      break;
+    }
+
+
+    if (this->is_fcrNil()) {
+        xmlWriter.writeAttribute("fcrNil", "true");
+    } else if (this->is_fcrZero()) {
+        xmlWriter.writeAttribute("fcrZero", "true");
+    } else {
+        xmlWriter.writeStartElement("stp");
+        xmlWriter.writeCharacters(qStringHex(stp(),16));
+        xmlWriter.writeEndElement();
+
+        xmlWriter.writeStartElement("cb");
+        xmlWriter.writeCharacters(qStringHex(cb(),16));
+        xmlWriter.writeEndElement();
+    }
+
+
+    xmlWriter.writeEndElement();
+}
+
 
 void FileNodeChunkReference::deserialize(QDataStream &ds) {
 

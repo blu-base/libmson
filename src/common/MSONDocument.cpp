@@ -102,6 +102,10 @@ MSONDocument::~MSONDocument() {
   delete m_rootFileNodeList;
 }
 
+
+
+
+
 ///**
 // * @brief MSONDocument copy constructor
 // * @param source
@@ -378,6 +382,47 @@ QDataStream &operator>>(QDataStream &ds, MSONDocument &obj) {
   }
 
   return ds;
+}
+
+void MSONDocument::generateXml(QXmlStreamWriter& xmlWriter) const
+{
+    xmlWriter.setAutoFormatting(true);
+    xmlWriter.writeStartDocument();
+    xmlWriter.writeStartElement("MSONDocument");
+    xmlWriter.writeAttribute("isEncrypted", m_isEncrypted ? "true" : "false");
+
+    m_header->generateXml(xmlWriter);
+
+    xmlWriter.writeStartElement("freeChunkList");
+    for(auto entry : m_freeChunkList) {
+        entry->generateXml(xmlWriter);
+    }
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("transactionLog");
+    for(auto entry : m_transactionLog) {
+        entry->generateXml(xmlWriter);
+    }
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("hashedChunkList");
+    for(auto entry : m_hashedChunkList) {
+        entry->generateXml(xmlWriter);
+    }
+    xmlWriter.writeEndElement();
+
+
+    m_rootFileNodeList->generateXml(xmlWriter);
+
+    xmlWriter.writeStartElement("fileNodeList");
+    for(auto entry : m_fileNodeList) {
+        entry->generateXml(xmlWriter);
+    }
+    xmlWriter.writeEndElement();
+
+
+    xmlWriter.writeEndElement(); // MSONDocument
+    xmlWriter.writeEndDocument();
 }
 
 QDebug operator<<(QDebug dbg, const MSONDocument &obj) {

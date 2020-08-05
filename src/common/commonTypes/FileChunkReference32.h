@@ -3,6 +3,7 @@
 
 #include <QtCore/qglobal.h>
 
+
 #include "IFileChunkReference.h"
 
 class FileChunkReference32 : public IFileChunkReference<quint32, quint32> {
@@ -22,6 +23,8 @@ public:
   void setStp(const quint32 &stp) override;
   quint32 cb() const override;
   void setCb(const quint32 &cb) override;
+
+  void generateXml(QXmlStreamWriter &xmlWriter) const override;
 
 private:
   void deserialize(QDataStream &ds) override;

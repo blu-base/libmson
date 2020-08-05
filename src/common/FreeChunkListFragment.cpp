@@ -57,6 +57,34 @@ QDebug operator<<(QDebug dbg, const FreeChunkListFragment &obj) {
   return dbg;
 }
 
+void FreeChunkListFragment::generateXml(QXmlStreamWriter &xmlWriter) const {
+
+    xmlWriter.writeStartElement("FreeChunkListFragment");
+
+    xmlWriter.writeStartElement("size");
+    xmlWriter.writeCharacters(qStringHex(m_size,16));
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("crc");
+    xmlWriter.writeCharacters(qStringHex(crc,8));
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("fcrNextChunk");
+    fcrNextChunk.generateXml(xmlWriter);
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("fcrFreeChunks");
+    for(auto entry : fcrFreeChunk) {
+        entry.generateXml(xmlWriter);
+    }
+    xmlWriter.writeEndElement();
+
+
+
+    xmlWriter.writeEndElement();
+}
+
+
 FileChunkReference64x32 FreeChunkListFragment::getFcrNextChunk() const {
   return fcrNextChunk;
 }

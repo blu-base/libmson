@@ -47,6 +47,165 @@ MSONHeader::MSONHeader()
       bnNewestWritten{0}, reservedHeaderTailLength{
                               def_reservedHeaderTailLength} {}
 
+void MSONHeader::generateXml(QXmlStreamWriter& xmlWriter) const
+{
+    xmlWriter.writeStartElement("Header");
+
+    xmlWriter.writeStartElement("guidFileType");
+    xmlWriter.writeCharacters(guidFileType.toString());
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("guidFile");
+    xmlWriter.writeCharacters(guidFile.toString());
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("guidLegacyFileVersion");
+    xmlWriter.writeCharacters(guidLegacyFileVersion.toString());
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("guidFileFormat");
+    xmlWriter.writeCharacters(guidFileFormat.toString());
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("ffvLastWriterVersion");
+    xmlWriter.writeCharacters(QString::number(ffvLastWriterVersion));
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("ffvOldestWriterVersion");
+    xmlWriter.writeCharacters(QString::number(ffvOldestWriterVersion));
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("ffvNewestWriterVersion");
+    xmlWriter.writeCharacters(QString::number(ffvNewestWriterVersion));
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("ffvOldestReader");
+    xmlWriter.writeCharacters(QString::number(ffvOldestReader));
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("fcrLegacyFreeChunkList");
+    fcrLegacyFreeChunkList.generateXml(xmlWriter);
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("fcrLegacyTransactionLog");
+    fcrLegacyTransactionLog.generateXml(xmlWriter);
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("cTransactionsInLog");
+    xmlWriter.writeCharacters(QString::number(cTransactionsInLog));
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("cbLegacyExpectedFileLength");
+    xmlWriter.writeCharacters(QString::number(cbLegacyExpectedFileLength));
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("rgbPlaceholder");
+    xmlWriter.writeCharacters(QString::number(rgbPlaceholder));
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("fcrLegacyFileNodeListRoot");
+    fcrLegacyFileNodeListRoot.generateXml(xmlWriter);
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("cbLegacyFreeSpaceInFreeChunkList");
+    xmlWriter.writeCharacters(QString::number(cbLegacyFreeSpaceInFreeChunkList));
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("fNeedsDefrag");
+    xmlWriter.writeCharacters(QString::number(fNeedsDefrag));
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("fRepairedFile");
+    xmlWriter.writeCharacters(QString::number(fRepairedFile));
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("fNeedsGarbageCollect");
+    xmlWriter.writeCharacters(QString::number(fNeedsGarbageCollect));
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("fHasNoEmbeddedFileObjects");
+    xmlWriter.writeCharacters(QString::number(fHasNoEmbeddedFileObjects));
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("guidAncestor");
+    xmlWriter.writeCharacters(guidAncestor.toString());
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("crcName");
+    xmlWriter.writeCharacters(qStringHex(crcName,8));
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("fcrHashedChunkList");
+    fcrHashedChunkList.generateXml(xmlWriter);
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("fcrTransactionLog");
+    fcrTransactionLog.generateXml(xmlWriter);
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("fcrFileNodeListRoot");
+    fcrFileNodeListRoot.generateXml(xmlWriter);
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("fcrFreeChunkList");
+    fcrFreeChunkList.generateXml(xmlWriter);
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("cbExpectedFileLength");
+    xmlWriter.writeCharacters(qStringHex(cbExpectedFileLength,16));
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("cbFreeSpaceInFreeChunkList");
+    xmlWriter.writeCharacters(qStringHex(cbFreeSpaceInFreeChunkList,16));
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("guidFileVersion");
+    xmlWriter.writeCharacters(guidFileVersion.toString());
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("nFileVersionGeneration");
+    xmlWriter.writeCharacters(QString::number(nFileVersionGeneration));
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("guidDenyReadFileVersion");
+    xmlWriter.writeCharacters(guidDenyReadFileVersion.toString());
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("grfDebugLogFlags");
+    xmlWriter.writeCharacters(QString::number(grfDebugLogFlags));
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("fcrDebugLog");
+    fcrDebugLog.generateXml(xmlWriter);
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("fcrAllocVerificationFreeChunkList");
+    fcrAllocVerificationFreeChunkList.generateXml(xmlWriter);
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("bnCreated");
+    xmlWriter.writeCharacters(qStringHex(bnCreated,8));
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("bnLastWroteToThisFile");
+    xmlWriter.writeCharacters(qStringHex(bnLastWroteToThisFile,8));
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("bnOldestWritten");
+    xmlWriter.writeCharacters(qStringHex(bnOldestWritten,8));
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("bnNewestWritten");
+    xmlWriter.writeCharacters(qStringHex(bnNewestWritten,8));
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("reservedHeaderTailLength");
+    xmlWriter.writeCharacters(qStringHex(reservedHeaderTailLength,4));
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeEndElement(); // Header
+}
+
 QDataStream &operator<<(QDataStream &ds, const MSONHeader &obj) {
   // if byte order is big endian, change to little endian
   if (!ds.byteOrder()) {

@@ -6,6 +6,7 @@
 #include <QByteArray>
 #include <QString>
 #include <QUuid>
+#include <QXmlStreamWriter>
 #include <QtCore/qglobal.h>
 
 #include "commonTypes/FileChunkReference32.h"
@@ -69,6 +70,8 @@ public:
   friend QDataStream &operator>>(QDataStream &ds, MSONHeader &obj);
 
   friend QDebug operator<<(QDebug dbg, const MSONHeader &obj);
+
+  void generateXml(QXmlStreamWriter &xmlWriter) const;
 
   QUuid getGuidFileType() const;
   void setGuidFileType(const QUuid &value);

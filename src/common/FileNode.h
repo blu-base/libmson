@@ -5,6 +5,7 @@
 #include <QDataStream>
 #include <QDebug>
 #include <QtCore/qglobal.h>
+#include <QXmlStreamWriter>
 
 #include "FileNodeTypes/IFileNodeType.h"
 namespace MSONcommon {
@@ -61,6 +62,9 @@ public:
   friend QDataStream &operator>>(QDataStream &ds, FileNode &obj);
 
   friend QDebug operator<<(QDebug dbg, const FileNode &obj);
+
+  void generateXml(QXmlStreamWriter &xmlWriter) const;
+
 
   bool isValid();
   quint16 getFileNodeID() const;

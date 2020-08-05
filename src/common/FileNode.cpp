@@ -102,6 +102,26 @@ FileNode::FileNode(const FileNode &source)
 
 FileNode::~FileNode() {}
 
+void FileNode::generateXml(QXmlStreamWriter& xmlWriter) const
+{
+    xmlWriter.writeStartElement("FileNode");
+
+    xmlWriter.writeAttribute("fileNodeID", QString::number(fileNodeID));
+    xmlWriter.writeAttribute("fileNodeSize", qStringHex(fileNodeID,4));
+    xmlWriter.writeAttribute("stpFormat", QString::number(stpFormat));
+    xmlWriter.writeAttribute("cbFormat", QString::number(cbFormat));
+    xmlWriter.writeAttribute("baseType", qStringHex(baseType,2));
+
+    ///\todo IFileNodeType *fnt;
+    ///
+    xmlWriter.writeStartElement("FileNodeType");
+    // fnt->generateXml(xmlWriter);
+    xmlWriter.writeEndElement();
+
+
+    xmlWriter.writeEndElement();
+}
+
 QDataStream &operator>>(QDataStream &ds, FileNode &obj) {
   //  if (!ds.byteOrder()) {
   //    ds.setByteOrder(QDataStream::LittleEndian);

@@ -115,7 +115,7 @@ void RevisionManifestList::deserialize(QDataStream &ds) {
 void RevisionManifestList::toDebugString(QDebug dbg) const {
 
     dbg << "RevisionManifestList:\n";
-    dbg << "ref:                                      " << mRef << '\n';
+    dbg << "ref: " << mRef << '\n';
     dbg << "FileNodeListFragments count:              " << mFileNodeListFragments.size() << '\n';
     dbg << "RevisionManifests count:                  " << mRevisionManifests.size() << '\n';
     dbg << "RevisionRoleDeclarations count:           " << mRevisionRoleDeclarations.size() << '\n';

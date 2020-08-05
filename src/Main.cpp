@@ -3,6 +3,7 @@
 #include <QDataStream>
 #include <QDebug>
 #include <QFile>
+#include <QXmlStreamWriter>
 
 #include <QDir>
 
@@ -21,7 +22,12 @@ int main() {
   QFile file("../resources/sample-single-text/Section 1.one");
   file.open(QIODevice::ReadOnly);
 
+
   QDataStream in(&file); // read the data serialized from the file
+
+  QFile xmlFile("Section1.xml");
+  xmlFile.open(QIODevice::WriteOnly);
+  QXmlStreamWriter xmlWriter(&xmlFile);
 
   qDebug() << "Current pos in file: " << in.device()->pos();
 
@@ -33,10 +39,16 @@ int main() {
 
   in >> *mdoc;
 
+  mdoc->generateXml(xmlWriter);
+  xmlFile.close();
+
   qDebug() << *(MSONcommon::DocumentSingleton::getInstance()->getDoc());
 
+
+
+
   file.close();
+
   return 0;
 
-  unsigned long temp;
 }

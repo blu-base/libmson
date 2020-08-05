@@ -27,7 +27,22 @@ FileNodeListHeader::FileNodeListHeader(FileNodeList *parent)
     : m_fileNodeListID{0x10}, m_nFragmentSequence{0}, m_parent{parent} {}
 
 bool FileNodeListHeader::isValid() {
-  return isFileNodeListIDValid() && isNFragmentSequenceValid();
+    return isFileNodeListIDValid() && isNFragmentSequenceValid();
+}
+
+void FileNodeListHeader::generateXml(QXmlStreamWriter& xmlWriter) const
+{
+    xmlWriter.writeStartElement("FileNodeListHeader");
+
+    xmlWriter.writeStartElement("fileNodeListID");
+    xmlWriter.writeCharacters(QString::number(m_fileNodeListID));
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("nFragmentSequence");
+    xmlWriter.writeCharacters(QString::number(m_nFragmentSequence));
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeEndElement();
 }
 
 /**
