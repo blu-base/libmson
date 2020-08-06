@@ -10,9 +10,9 @@ private:
   FNCR_CB_FORMAT m_cbFormat;
   ObjectDeclaration2RefCountFND m_base;
 
-    QByteArray m_md5hash;
-public:
+  QByteArray m_md5hash;
 
+public:
   ReadOnlyObjectDeclaration2RefCountFND(FNCR_STP_FORMAT stpFormat,
                                         FNCR_CB_FORMAT cbFormat);
 
@@ -38,7 +38,7 @@ private:
 
   // IFileNodeType interface
 public:
-  virtual void generateXml(QXmlStreamWriter& xmlWriter) const override;
+  virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
 };
 
 #endif // READONLYOBJECTDECLARATION2REFCOUNTFND_H

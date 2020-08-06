@@ -10,6 +10,8 @@
 #include "commonTypes/FileChunkReference64x32.h"
 #include "commonTypes/FileNodeChunkReference.h"
 
+#include <QByteArray>
+
 namespace MSONcommon {
 
 class FileNodeListFragment {
@@ -22,6 +24,9 @@ private:
   std::vector<FileNode *> m_rgFileNodes;
 
   quint64 m_paddingLength;
+
+  /// \todo temporary Qbytearray to check junk in padding
+  QByteArray padding;
 
   FileChunkReference64x32 m_nextFragment;
   /**

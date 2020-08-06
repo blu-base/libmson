@@ -39,11 +39,11 @@ void ObjectInfoDependencyOverridesFND::deserialize(QDataStream &ds) {
   ds >> m_ref;
 
   if (m_ref.is_fcrNil()) {
-    //        ds >> data;
+    ds >> m_data;
   } else {
     quint64 currentloc = ds.device()->pos();
     ds.device()->seek(m_ref.stp());
-    //        ds >> data;
+    ds >> m_data;
     ds.device()->seek(currentloc);
   }
 }
@@ -59,32 +59,26 @@ void ObjectInfoDependencyOverridesFND::serialize(QDataStream &ds) const {
   ds << m_ref;
 
   if (m_ref.is_fcrNil()) {
-    //        ds << data;
+            ds << m_data;
   } else {
     quint64 currentloc = ds.device()->pos();
     ds.device()->seek(m_ref.stp());
-    //        ds << data;
+            ds << m_data;
     ds.device()->seek(currentloc);
   }
 }
 
 void ObjectInfoDependencyOverridesFND::toDebugString(QDebug dbg) const {
   dbg << " ObjectInfoDependencyOverridesFND:\n"
-      << " ref: "
-      << m_ref
-              << "data: " << m_data
-      << '\n';
+      << " ref: " << m_ref << "data: " << m_data << '\n';
 }
 
+void ObjectInfoDependencyOverridesFND::generateXml(
+    QXmlStreamWriter &xmlWriter) const {
+  xmlWriter.writeStartElement("ObjectInfoDependencyOverridesFND");
+  m_ref.generateXml(xmlWriter);
 
-void ObjectInfoDependencyOverridesFND::generateXml(QXmlStreamWriter& xmlWriter) const
-{
-    xmlWriter.writeStartElement("ObjectInfoDependencyOverridesFND");
-    m_ref.generateXml(xmlWriter);
+  m_data.generateXml(xmlWriter);
 
-    m_data.generateXml(xmlWriter);
-
-
-
-    xmlWriter.writeEndElement();
+  xmlWriter.writeEndElement();
 }

@@ -169,8 +169,8 @@ void FileNodeChunkReference::generateXml(QXmlStreamWriter& xmlWriter) const
     } else if (this->is_fcrZero()) {
         xmlWriter.writeAttribute("fcrZero", "true");
     } else {
-        xmlWriter.writeAttribute("stp",qStringHex(m_stp,16));
-        xmlWriter.writeAttribute("cb",qStringHex(m_cb,16));
+        xmlWriter.writeAttribute("stp",qStringHex(stp(),16));
+        xmlWriter.writeAttribute("cb",qStringHex(cb(),16));
     }
 
 

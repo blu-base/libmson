@@ -94,7 +94,7 @@ void CompactID::deserialize(QDataStream &ds) {
 
   m_n = temp & 0xFF;
 
-  guidIndex = (temp & 0xFFFFFF00) >> 8;
+  guidIndex = temp >> 8;
 }
 
 void CompactID::serialize(QDataStream &ds) const {

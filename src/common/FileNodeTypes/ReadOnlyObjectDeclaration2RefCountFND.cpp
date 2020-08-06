@@ -48,10 +48,9 @@ void ReadOnlyObjectDeclaration2RefCountFND::deserialize(QDataStream &ds) {
   m_base = ObjectDeclaration2RefCountFND(m_stpFormat, m_cbFormat);
   ds >> m_base;
 
-  char *md5hashRaw = nullptr;
-  ds.readRawData(md5hashRaw, 16);
+  m_md5hash.resize(16);
+  ds.readRawData(m_md5hash.data(),16);
 
-  m_md5hash = QByteArray(md5hashRaw,16);
 }
 
 void ReadOnlyObjectDeclaration2RefCountFND::serialize(QDataStream &ds) const {
@@ -77,7 +76,7 @@ void ReadOnlyObjectDeclaration2RefCountFND::generateXml(QXmlStreamWriter& xmlWri
     m_base.generateXml(xmlWriter);
 
     xmlWriter.writeStartElement("md5hash");
-    xmlWriter.writeCharacters(m_md5hash);
+    xmlWriter.writeCDATA(m_md5hash);
     xmlWriter.writeEndElement();
 
     xmlWriter.writeEndElement();

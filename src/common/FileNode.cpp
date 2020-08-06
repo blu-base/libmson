@@ -6,44 +6,6 @@
 
 #include <bitset>
 
-#include "commonTypes/Enums.h"
-
-//#include "FileNodeTypes/DataSignatureGroupDefinitionFND.h"
-//#include "FileNodeTypes/FileDataStoreListReferenceFND.h"
-//#include "FileNodeTypes/FileDataStoreObjectReferenceFND.h"
-//#include "FileNodeTypes/GlobalIdTableEntry2FNDX.h"
-//#include "FileNodeTypes/GlobalIdTableEntry3FNDX.h"
-//#include "FileNodeTypes/GlobalIdTableEntryFNDX.h"
-//#include "FileNodeTypes/GlobalIdTableStartFNDX.h"
-//#include "FileNodeTypes/HashedChunkDescriptor2FND.h"
-//#include "FileNodeTypes/ObjectDataEncryptionKeyV2FNDX.h"
-//#include "FileNodeTypes/ObjectDeclaration2LargeRefCountFND.h"
-//#include "FileNodeTypes/ObjectDeclaration2RefCountFND.h"
-//#include "FileNodeTypes/ObjectDeclarationFileData3LargeRefCountFND.h"
-//#include "FileNodeTypes/ObjectDeclarationFileData3RefCountFND.h"
-//#include "FileNodeTypes/ObjectDeclarationWithRefCount2FNDX.h"
-//#include "FileNodeTypes/ObjectDeclarationWithRefCountFNDX.h"
-//#include "FileNodeTypes/ObjectGroupEndFND.h"
-//#include "FileNodeTypes/ObjectGroupListReferenceFND.h"
-//#include "FileNodeTypes/ObjectGroupStartFND.h"
-//#include "FileNodeTypes/ObjectInfoDependencyOverridesFND.h"
-//#include "FileNodeTypes/ObjectRevisionWithRefCount2FNDX.h"
-//#include "FileNodeTypes/ObjectRevisionWithRefCountFNDX.h"
-//#include "FileNodeTypes/ObjectSpaceManifestListReferenceFND.h"
-//#include "FileNodeTypes/ObjectSpaceManifestListStartFND.h"
-//#include "FileNodeTypes/ObjectSpaceManifestRootFND.h"
-//#include "FileNodeTypes/ReadOnlyObjectDeclaration2LargeRefCountFND.h"
-//#include "FileNodeTypes/ReadOnlyObjectDeclaration2RefCountFND.h"
-//#include "FileNodeTypes/RevisionManifestListReferenceFND.h"
-//#include "FileNodeTypes/RevisionManifestListStartFND.h"
-//#include "FileNodeTypes/RevisionManifestStart4FND.h"
-//#include "FileNodeTypes/RevisionManifestStart6FND.h"
-//#include "FileNodeTypes/RevisionManifestStart7FND.h"
-//#include "FileNodeTypes/RevisionRoleAndContextDeclarationFND.h"
-//#include "FileNodeTypes/RevisionRoleDeclarationFND.h"
-//#include "FileNodeTypes/RootObjectReference2FNDX.h"
-//#include "FileNodeTypes/RootObjectReference3FND.h"
-
 #include "FileNodeTypes/ChunkTerminatorFND.h"
 #include "FileNodeTypes/DataSignatureGroupDefinitionFND.h"
 #include "FileNodeTypes/FileDataStoreListReferenceFND.h"
@@ -89,39 +51,34 @@ namespace MSONcommon {
 IFileNodeType *FileNode::getFnt() const { return fnt; }
 
 FileNode::FileNode()
-    : fileNodeID{}, fileNodeSize{}, stpFormat{}, cbFormat{}, baseType{},
+    : fileNodeID{}, fileNodeSize{4}, stpFormat{}, cbFormat{}, baseType{},
       reserved{}, fnt{nullptr} {}
 
 FileNode::FileNode(const FileNode &source)
     : fileNodeID{source.fileNodeID}, fileNodeSize{source.fileNodeSize},
       stpFormat{source.stpFormat}, cbFormat{source.cbFormat},
-      baseType{source.baseType}, reserved{}, fnt{nullptr}
-
-// TODO filenodetype
-{}
+      baseType{source.baseType}, reserved{}, fnt{source.fnt} {}
 
 FileNode::~FileNode() {}
 
-void FileNode::generateXml(QXmlStreamWriter& xmlWriter) const
-{
-    xmlWriter.writeStartElement("FileNode");
+void FileNode::generateXml(QXmlStreamWriter &xmlWriter) const {
+  xmlWriter.writeStartElement("FileNode");
 
-    xmlWriter.writeAttribute("fileNodeID", QString::number(fileNodeID));
-    xmlWriter.writeAttribute("fileNodeSize", qStringHex(fileNodeID,4));
-    xmlWriter.writeAttribute("stpFormat", QString::number(stpFormat));
-    xmlWriter.writeAttribute("cbFormat", QString::number(cbFormat));
-    xmlWriter.writeAttribute("baseType", qStringHex(baseType,2));
+  xmlWriter.writeAttribute("fileNodeID", qStringHex(fileNodeID, 3));
+  xmlWriter.writeAttribute("fileNodeSize", qStringHex(fileNodeSize, 4));
+  xmlWriter.writeAttribute("stpFormat", QString::number(stpFormat));
+  xmlWriter.writeAttribute("cbFormat", QString::number(cbFormat));
+  xmlWriter.writeAttribute("baseType", qStringHex(baseType, 2));
 
-    ///\todo IFileNodeType *fnt;
-    ///
-    xmlWriter.writeStartElement("FileNodeType");
-    if(fnt!= nullptr) {
-     fnt->generateXml(xmlWriter);
-    }
-    xmlWriter.writeEndElement();
+  ///\todo IFileNodeType *fnt;
+  ///
+  xmlWriter.writeStartElement("FileNodeType");
+  if (fnt != nullptr) {
+    fnt->generateXml(xmlWriter);
+  }
+  xmlWriter.writeEndElement();
 
-
-    xmlWriter.writeEndElement();
+  xmlWriter.writeEndElement();
 }
 
 QDataStream &operator>>(QDataStream &ds, FileNode &obj) {
@@ -274,15 +231,6 @@ QDataStream &operator>>(QDataStream &ds, FileNode &obj) {
     ds >> *obj.fnt;
   }
 
-  ////  switch(obj.baseType ) {
-  ////    case FileNodeType::ObjectSpaceManifestListReferenceFND:
-  //      obj.fileNodeType = new
-  //      ObjectSpaceManifestListReferenceFND(obj.stpFormat,obj.cbFormat); ds
-  //      >>
-  //      *(obj.fileNodeType);
-  ////      break;
-  ////  }
-
   return ds;
 }
 
@@ -306,6 +254,10 @@ QDebug operator<<(QDebug dbg, const FileNode &obj) {
 quint16 FileNode::getFileNodeID() const { return fileNodeID; }
 
 void FileNode::setFileNodeID(const quint16 &value) { fileNodeID = value; }
+
+FileNodeTypeID FileNode::getFileNodeTypeID() const {
+  return static_cast<FileNodeTypeID>(fileNodeID);
+}
 
 quint16 FileNode::getFileNodeSize() const { return fileNodeSize; }
 

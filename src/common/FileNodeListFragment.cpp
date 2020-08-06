@@ -56,79 +56,78 @@ FileChunkReference64x32 FileNodeListFragment::nextFragment() const {
 
 void FileNodeListFragment::setNextFragment(
     const FileChunkReference64x32 &nextFragment) {
-    m_nextFragment = nextFragment;
+  m_nextFragment = nextFragment;
 }
 
-void FileNodeListFragment::generateXml(QXmlStreamWriter& xmlWriter) const
-{
-    xmlWriter.writeStartElement("FileNodeListFragment");
+void FileNodeListFragment::generateXml(QXmlStreamWriter &xmlWriter) const {
+  xmlWriter.writeStartElement("FileNodeListFragment");
 
-    xmlWriter.writeStartElement("ref");
-    m_ref.generateXml(xmlWriter);
-    xmlWriter.writeEndElement();
+  xmlWriter.writeStartElement("ref");
+  m_ref.generateXml(xmlWriter);
+  xmlWriter.writeEndElement();
 
-    xmlWriter.writeStartElement("fnlheader");
-    m_fnlheader.generateXml(xmlWriter);
-    xmlWriter.writeEndElement();
+  m_fnlheader.generateXml(xmlWriter);
 
-    xmlWriter.writeStartElement("nextFragment");
+  xmlWriter.writeStartElement("rgFileNodes");
+  for (auto entry : m_rgFileNodes) {
+    entry->generateXml(xmlWriter);
+  }
+  xmlWriter.writeEndElement();
+
+  xmlWriter.writeStartElement("paddingLength");
+  xmlWriter.writeCharacters(qStringHex(m_paddingLength, 16));
+  xmlWriter.writeEndElement();
+
+  xmlWriter.writeStartElement("nextFragment");
+  if (!m_nextFragment.is_fcrNil() && !m_nextFragment.is_fcrZero()) {
     m_nextFragment.generateXml(xmlWriter);
-    xmlWriter.writeEndElement();
+  }
+  xmlWriter.writeEndElement();
 
-    xmlWriter.writeStartElement("rgFileNodes");
-    for(auto entry : m_rgFileNodes) {
-        entry->generateXml(xmlWriter);
-    }
-
-    xmlWriter.writeStartElement("paddingLength");
-    xmlWriter.writeCharacters(qStringHex(m_paddingLength,16));
-    xmlWriter.writeEndElement();
-
-    xmlWriter.writeEndElement();
-
-
-
-
-
-    xmlWriter.writeEndElement();
+  xmlWriter.writeEndElement();
 }
 
 void FileNodeListFragment::deserialize(QDataStream &ds) {
+    qInfo() << "FileNodeListFragment pos" << qStringHex(ds.device()->pos(),
+    16) << " size: " << qStringHex(m_ref.cb(),16);
   ds >> m_fnlheader;
 
   FileNode *fn = nullptr;
-
-  rgFileNodes() = std::vector<FileNode *>();
 
   quint32 fileNodeCount = UINT32_MAX;
 
   if (DocumentSingleton::getDoc()->getFileNodeCountMapping().contains(
           m_fnlheader.getFileNodeListID())) {
-    fileNodeCount =
+   fileNodeCount =
         DocumentSingleton::getDoc()
             ->getFileNodeCountMapping()[m_fnlheader.getFileNodeListID()];
+   qWarning() << "FileNodeListID " << m_fnlheader.getFileNodeListID() << " found in FileNodeCountMapping. count:" << fileNodeCount;
+
   }
   /// \todo this calculation is incorrect, not absolute
-  qint64 remainingBytes = m_ref.cb() - 20;
+  qint64 listSize = 0;
+  quint64 remainingBytes = 0;
   do {
 
     fn = new FileNode();
 
     ds >> *fn;
-
-    if (fn->getFileNodeID() != 0 &&
-        fn->getFileNodeID() !=
-            static_cast<quint16>(FileNodeTypeID::ChunkTerminatorFND)) {
+    listSize += fn->getFileNodeSize();
+    if (fn->getFileNodeID() != 0) {
       m_rgFileNodes.push_back(fn);
-      fileNodeCount--;
+      if (fn->getFileNodeTypeID() != FileNodeTypeID::ChunkTerminatorFND) {
+        fileNodeCount--;
+      } else {
+          /// \todo When ChunkTerminator found, is there really no filenode left?
+          qWarning() << "ChunkTerminatorFND found";
+          break;
+      }
     } else {
-      break;
+        break;
     }
 
-    /// \todo this calculation is incorrect, not absolutes
-    remainingBytes = m_ref.cb() - 20 - (ds.device()->pos() - m_ref.stp());
-
-  } while (remainingBytes > 4 && fileNodeCount > 0);
+    remainingBytes = m_ref.cb() - 36 - listSize -4;
+  } while ( (m_ref.cb() - 36 - listSize > 4) && (fileNodeCount > 0));
 
   if (MSONcommon::DocumentSingleton::getDoc()
           ->getFileNodeCountMapping()
@@ -137,16 +136,27 @@ void FileNodeListFragment::deserialize(QDataStream &ds) {
         ->getFileNodeCountMapping()[m_fnlheader.getFileNodeListID()] =
         fileNodeCount;
   }
-  /// \todo this calculation is incorrect, not absolutes
-  m_paddingLength = m_ref.cb() - 20 - (ds.device()->pos() - m_ref.stp());
-  ds.skipRawData(m_paddingLength);
+  m_paddingLength = m_ref.cb() - 36 - listSize ;
+
+
+  padding.resize(m_paddingLength);
+  ds.readRawData(padding.data(), m_paddingLength);
+
+
+  // Skip to end. Ignore ChunkTerminatorFND
+//  ds.device()->seek(m_ref.stp() + m_ref.cb() - 36);
 
   m_nextFragment = FileChunkReference64x32();
 
   ds >> m_nextFragment;
 
   // footer
-  ds.skipRawData(8);
+  quint64 temp;
+  ds >> temp;
+  if (temp != footer_magic_id) {
+    qWarning() << "FileNodeListFragment footer invalid";
+  }
+  qInfo() << "m_paddingLength" << qStringHex(m_paddingLength, 16);
 }
 
 void FileNodeListFragment::serialize(QDataStream &ds) const {}
@@ -163,25 +173,25 @@ void FileNodeListFragment::toDebugString(QDebug dbg) const {
 
 FileNodeListFragment::FileNodeListFragment(const FileChunkReference64 ref)
     : m_ref{ref}, m_fnlheader{}, m_rgFileNodes{}, m_paddingLength{},
-      m_nextFragment() {}
+      m_nextFragment(),padding{} {}
 
 FileNodeListFragment::FileNodeListFragment(const FileChunkReference64x32 ref)
     : m_ref(), m_fnlheader{}, m_rgFileNodes{}, m_paddingLength{},
-      m_nextFragment() {
+      m_nextFragment(),padding{} {
   m_ref.setCb(ref.cb());
   m_ref.setStp(ref.stp());
 }
 
 FileNodeListFragment::FileNodeListFragment(const FileChunkReference32 ref)
     : m_ref{}, m_fnlheader{}, m_rgFileNodes{}, m_paddingLength{},
-      m_nextFragment() {
+      m_nextFragment(),padding{} {
   m_ref.setCb(ref.cb());
   m_ref.setStp(ref.stp());
 }
 
 FileNodeListFragment::FileNodeListFragment(const FileNodeChunkReference ref)
     : m_ref{}, m_fnlheader{}, m_rgFileNodes{}, m_paddingLength{},
-      m_nextFragment() {
+      m_nextFragment(),padding{} {
   m_ref.setCb(ref.cb());
   m_ref.setStp(ref.stp());
 }

@@ -8,6 +8,8 @@
 #include <QXmlStreamWriter>
 
 #include "FileNodeTypes/IFileNodeType.h"
+
+#include "commonTypes/Enums.h"
 namespace MSONcommon {
 
 static constexpr const quint32 FileNode_maskReserved = 0x1;
@@ -69,6 +71,7 @@ public:
   bool isValid();
   quint16 getFileNodeID() const;
   void setFileNodeID(const quint16 &value);
+  FileNodeTypeID getFileNodeTypeID() const;
   quint16 getFileNodeSize() const;
   void setFileNodeSize(const quint16 &value);
   quint8 getStpFormat() const;
