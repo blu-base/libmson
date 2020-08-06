@@ -13,6 +13,11 @@ private:
   void deserialize(QDataStream& ds) override;
   void serialize(QDataStream& ds) const override;
   void toDebugString(QDebug dbg) const override;
+
+  // IFileNodeType interface
+public:
+  void generateXml(QXmlStreamWriter& xmlWriter) const override;
 };
+
 
 #endif // CHUNKTERMINATORFND_H

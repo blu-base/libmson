@@ -33,3 +33,15 @@ void ObjectGroupStartFND::toDebugString(QDebug dbg) const
     dbg << " ObjectGroupStartFND: \n"
         << " oid:  " << m_oid << '\n';
 }
+
+
+void ObjectGroupStartFND::generateXml(QXmlStreamWriter& xmlWriter) const
+{
+    xmlWriter.writeStartElement("ObjectGroupStartFND");
+
+    xmlWriter.writeStartElement("oid");
+    xmlWriter.writeCharacters(m_oid.toString());
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeEndElement();
+}

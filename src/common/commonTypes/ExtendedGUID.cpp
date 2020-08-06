@@ -331,7 +331,19 @@ bool ExtendedGUID::isValid() const {
 }
 
 bool ExtendedGUID::isNull() const {
-  return m_guid.toString() == "{00000000-0000-0000-0000-000000000000}";
+    return m_guid.toString() == "{00000000-0000-0000-0000-000000000000}";
+}
+
+QString ExtendedGUID::toString() const
+{
+  return QString("{" + m_guid.toString() + "," + QString::number(data_n) + "}");
+}
+
+void ExtendedGUID::generateXml(QXmlStreamWriter& xmlWriter) const
+{
+    xmlWriter.writeStartElement("ExtendedGUID");
+    xmlWriter.writeCharacters(toString());
+    xmlWriter.writeEndElement();
 }
 
 bool operator==(const ExtendedGUID &lhs, const ExtendedGUID &rhs) noexcept {

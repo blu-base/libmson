@@ -6,42 +6,54 @@
 
 ObjectSpaceManifestListReferenceFND::ObjectSpaceManifestListReferenceFND(
     FNCR_STP_FORMAT stpFormat, FNCR_CB_FORMAT cbFormat)
-    : ref{FileNodeChunkReference(stpFormat, cbFormat)} {}
+    : m_ref{FileNodeChunkReference(stpFormat, cbFormat)} {}
 ObjectSpaceManifestListReferenceFND::ObjectSpaceManifestListReferenceFND(
     quint8 stpFormat, quint8 cbFormat)
-    : ref{FileNodeChunkReference(stpFormat, cbFormat)} {}
+    : m_ref{FileNodeChunkReference(stpFormat, cbFormat)} {}
 
 ObjectSpaceManifestListReferenceFND::~ObjectSpaceManifestListReferenceFND() {}
 
 ExtendedGUID ObjectSpaceManifestListReferenceFND::getGosid() const {
-  return gosid;
+  return m_gosid;
 }
 
 void ObjectSpaceManifestListReferenceFND::setGosid(const ExtendedGUID &value) {
-  gosid = value;
+  m_gosid = value;
 }
 
 void ObjectSpaceManifestListReferenceFND::deserialize(QDataStream &ds) {
-  ds >> ref;
-  ds >> gosid;
+  ds >> m_ref;
+  ds >> m_gosid;
 }
 
 void ObjectSpaceManifestListReferenceFND::serialize(QDataStream &ds) const {
-  ds << ref;
-  ds << gosid;
+  ds << m_ref;
+  ds << m_gosid;
 }
 
 void ObjectSpaceManifestListReferenceFND::toDebugString(QDebug dbg) const {
   dbg << " ObjectSpaceManifestListReferenceFND:\n"
-      << " ref:   " << ref << '\n'
-      << " gosid: " << gosid << '\n';
+      << " ref:   " << m_ref << '\n'
+      << " gosid: " << m_gosid << '\n';
 }
 
 FileNodeChunkReference ObjectSpaceManifestListReferenceFND::getRef() const {
-  return ref;
+  return m_ref;
 }
 
 void ObjectSpaceManifestListReferenceFND::setRef(
     const FileNodeChunkReference &value) {
-  ref = value;
+  m_ref = value;
+}
+
+
+void ObjectSpaceManifestListReferenceFND::generateXml(QXmlStreamWriter& xmlWriter) const
+{
+    xmlWriter.writeStartElement("ObjectSpaceManifestListReferenceFND");
+    m_ref.generateXml(xmlWriter);
+
+    m_gosid.generateXml(xmlWriter);
+
+
+    xmlWriter.writeEndElement();
 }

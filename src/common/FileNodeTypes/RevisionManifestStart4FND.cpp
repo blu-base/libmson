@@ -2,64 +2,78 @@
 
 RevisionManifestStart4FND::RevisionManifestStart4FND() {}
 
-ExtendedGUID RevisionManifestStart4FND::getRid() const { return rid; }
+ExtendedGUID RevisionManifestStart4FND::getRid() const { return m_rid; }
 
 void RevisionManifestStart4FND::setRid(const ExtendedGUID &value) {
-  rid = value;
+  m_rid = value;
 }
 
 ExtendedGUID RevisionManifestStart4FND::getRidDependent() const {
-  return ridDependent;
+  return m_ridDependent;
 }
 
 void RevisionManifestStart4FND::setRidDependent(const ExtendedGUID &value) {
-  ridDependent = value;
+  m_ridDependent = value;
 }
 
 quint64 RevisionManifestStart4FND::getTimeCreation() const {
-  return timeCreation;
+  return m_timeCreation;
 }
 
 void RevisionManifestStart4FND::setTimeCreation(const quint64 &value) {
-  timeCreation = value;
+  m_timeCreation = value;
 }
 
 qint32 RevisionManifestStart4FND::getRevisionRole() const {
-  return revisionRole;
+  return m_revisionRole;
 }
 
 void RevisionManifestStart4FND::setRevisionRole(const qint32 &value) {
-  revisionRole = value;
+  m_revisionRole = value;
 }
 
 quint16 RevisionManifestStart4FND::getOdcsDefault() const {
-  return odcsDefault;
+  return m_odcsDefault;
 }
 
 void RevisionManifestStart4FND::setOdcsDefault(const quint16 &value) {
-  odcsDefault = value;
+  m_odcsDefault = value;
 }
 
 void RevisionManifestStart4FND::deserialize(QDataStream &ds) {
-  ds >> rid;
-  ds >> ridDependent;
-  ds >> timeCreation;
-  ds >> revisionRole;
-  ds >> odcsDefault;
+  ds >> m_rid;
+  ds >> m_ridDependent;
+  ds >> m_timeCreation;
+  ds >> m_revisionRole;
+  ds >> m_odcsDefault;
 }
 
 void RevisionManifestStart4FND::serialize(QDataStream &ds) const {
-  ds << rid;
-  ds << ridDependent;
-  ds << timeCreation;
-  ds << revisionRole;
-  ds << odcsDefault;
+  ds << m_rid;
+  ds << m_ridDependent;
+  ds << m_timeCreation;
+  ds << m_revisionRole;
+  ds << m_odcsDefault;
 }
 
 void RevisionManifestStart4FND::toDebugString(QDebug dbg) const {
   dbg << " RevisionManifestStart4FND:\n"
-      << " rid:          " << rid << '\n'
-      << " ridDependent: " << ridDependent << '\n'
-      << " revisionRole: " << revisionRole << '\n'
-      << " odcsDefault:  " << odcsDefault << '\n';
+      << " rid:          " << m_rid << '\n'
+      << " ridDependent: " << m_ridDependent << '\n'
+      << " timeCreation: " << m_timeCreation << '\n'
+      << " revisionRole: " << m_revisionRole << '\n'
+      << " odcsDefault:  " << m_odcsDefault << '\n';
+}
+
+void RevisionManifestStart4FND::generateXml(QXmlStreamWriter &xmlWriter) const {
+  xmlWriter.writeStartElement("RevisionManifestStart4FND");
+
+  xmlWriter.writeAttribute("revisionRole", QString::number(m_revisionRole));
+  xmlWriter.writeAttribute("timeCreation", QString::number(m_timeCreation));
+  xmlWriter.writeAttribute("odcsDefault", QString::number(m_revisionRole));
+
+  m_rid.generateXml(xmlWriter);
+  m_ridDependent.generateXml(xmlWriter);
+
+  xmlWriter.writeEndElement();
 }

@@ -5,20 +5,25 @@
 #include <QString>
 #include <QDataStream>
 #include <QDebug>
+#include <QXmlStreamWriter>
 
 class StringInStorageBuffer
 {
+private:
+    quint32 m_cch;
+
+    QString m_StringData;
 public:
   StringInStorageBuffer();
 
-  quint32 cch;
 
-  QString StringData;
 
   friend QDataStream &operator<<(QDataStream &ds,
                                  const StringInStorageBuffer &obj);
   friend QDataStream &operator>>(QDataStream &ds, StringInStorageBuffer &obj);
   friend QDebug operator<<(QDebug dbg, const StringInStorageBuffer &obj);
+
+  void generateXml(QXmlStreamWriter &xmlWriter) const;
 
   quint32 getCch() const;
   void setCch(const quint32& value);

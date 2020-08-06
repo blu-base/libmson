@@ -24,7 +24,41 @@ ObjectSpaceManifestList::~ObjectSpaceManifestList() {
 FileNodeChunkReference ObjectSpaceManifestList::getRef() const { return m_ref; }
 
 void ObjectSpaceManifestList::setRef(const FileNodeChunkReference &ref) {
-  m_ref = ref;
+    m_ref = ref;
+}
+
+void ObjectSpaceManifestList::generateXml(QXmlStreamWriter& xmlWriter) const
+{
+    xmlWriter.writeStartElement("ObjectSpaceManifestList");
+
+    xmlWriter.writeStartElement("ref");
+    m_ref.generateXml(xmlWriter);
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("objectSpaceManifestListStart");
+    m_objectSpaceManifestListStart.generateXml(xmlWriter);
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("fileNodeListFragments");
+    for (auto entry : m_fileNodeListFragments) {
+        entry->generateXml(xmlWriter);
+    }
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("revisionManifestLists");
+    for (auto entry : m_revisionManifestLists) {
+        entry->generateXml(xmlWriter);
+    }
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("fileNodeSequence");
+    for (auto entry : m_fileNodeSequence) {
+        entry->generateXml(xmlWriter);
+    }
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeEndElement();
+
 }
 
 QDataStream &operator>>(QDataStream &ds, ObjectSpaceManifestList &obj) {
@@ -41,12 +75,9 @@ void ObjectSpaceManifestList::deserialize(QDataStream &ds) {
   ds.device()->seek(m_ref.stp());
   qInfo() << "Parsing ObjectSpaceManifestList";
   FileNodeListFragment *fragment = new FileNodeListFragment(m_ref);
-
-  // \todo is stp absolute or relative here? the value indicates relative...
-  //  ds.device()->seek(m_ref.stp());
   ds >> *fragment;
 
-  m_fileNodeListFragments.push_back(fragment);
+   m_fileNodeListFragments.push_back(fragment);
 
   for (auto *entry : fragment->rgFileNodes()) {
     if (entry->getFileNodeID() !=
@@ -55,15 +86,6 @@ void ObjectSpaceManifestList::deserialize(QDataStream &ds) {
       m_fileNodeSequence.push_back(entry);
     }
   }
-
-  //  std::copy_if(fragment->rgFileNodes().begin(),
-  //  fragment->rgFileNodes().end(),
-  //               back_inserter(m_fileNodeSequence), [](FileNode *entry) {
-  //                 return entry->getFileNodeID() !=
-  //                            static_cast<quint16>(
-  //                                FileNodeTypeID::ChunkTerminatorFND) &&
-  //                        entry->getFileNodeID() != 0;
-  //               });
 
   FileChunkReference64x32 nextFragmentRef = fragment->nextFragment();
 
@@ -114,9 +136,9 @@ void ObjectSpaceManifestList::deserialize(QDataStream &ds) {
         dynamic_cast<RevisionManifestListReferenceFND *>(entry->getFnt());
 
     RevisionManifestList *rmfl =
-        new RevisionManifestList(revisionManifestListReferenceFND->ref);
+        new RevisionManifestList(revisionManifestListReferenceFND->getRef());
 
-    ds.device()->seek(revisionManifestListReferenceFND->ref.stp());
+    ds.device()->seek(revisionManifestListReferenceFND->getRef().stp());
     ds >> *rmfl;
 
     m_revisionManifestLists.push_back(rmfl);

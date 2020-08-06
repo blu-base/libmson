@@ -39,6 +39,8 @@ public:
   friend QDataStream &operator>>(QDataStream &ds, ObjectGroupList &obj);
   friend QDebug operator<<(QDebug dbg, const ObjectGroupList &obj);
 
+  void generateXml(QXmlStreamWriter &xmlWriter) const;
+
 private:
   /**
    * @brief creates ObjectGroupList from QDataStream

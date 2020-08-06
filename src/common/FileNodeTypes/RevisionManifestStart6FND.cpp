@@ -2,54 +2,68 @@
 
 RevisionManifestStart6FND::RevisionManifestStart6FND() {}
 
-ExtendedGUID RevisionManifestStart6FND::getRid() const { return rid; }
+ExtendedGUID RevisionManifestStart6FND::getRid() const { return m_rid; }
 
 void RevisionManifestStart6FND::setRid(const ExtendedGUID &value) {
-  rid = value;
+  m_rid = value;
 }
 
 ExtendedGUID RevisionManifestStart6FND::getRidDependent() const {
-  return ridDependent;
+  return m_ridDependent;
 }
 
 void RevisionManifestStart6FND::setRidDependent(const ExtendedGUID &value) {
-  ridDependent = value;
+  m_ridDependent = value;
 }
 
 qint32 RevisionManifestStart6FND::getRevisionRole() const {
-  return revisionRole;
+  return m_revisionRole;
 }
 
 void RevisionManifestStart6FND::setRevisionRole(const qint32 &value) {
-  revisionRole = value;
+  m_revisionRole = value;
 }
 
 quint16 RevisionManifestStart6FND::getOdcsDefault() const {
-  return odcsDefault;
+  return m_odcsDefault;
 }
 
 void RevisionManifestStart6FND::setOdcsDefault(const quint16 &value) {
-  odcsDefault = value;
+  m_odcsDefault = value;
 }
 
 void RevisionManifestStart6FND::deserialize(QDataStream &ds) {
-  ds >> rid;
-  ds >> ridDependent;
-  ds >> revisionRole;
-  ds >> odcsDefault;
+  ds >> m_rid;
+  ds >> m_ridDependent;
+  ds >> m_revisionRole;
+  ds >> m_odcsDefault;
 }
 
 void RevisionManifestStart6FND::serialize(QDataStream &ds) const {
-  ds << rid;
-  ds << ridDependent;
-  ds << revisionRole;
-  ds << odcsDefault;
+  ds << m_rid;
+  ds << m_ridDependent;
+  ds << m_revisionRole;
+  ds << m_odcsDefault;
 }
 
 void RevisionManifestStart6FND::toDebugString(QDebug dbg) const {
   dbg << " RevisionManifestStart6FND:\n"
-      << " rid:          " << rid << '\n'
-      << " ridDependent: " << ridDependent << '\n'
-      << " revisionRole: " << revisionRole << '\n'
-      << " odcsDefault:  " << odcsDefault << '\n';
+      << " rid:          " << m_rid << '\n'
+      << " ridDependent: " << m_ridDependent << '\n'
+      << " revisionRole: " << m_revisionRole << '\n'
+      << " odcsDefault:  " << m_odcsDefault << '\n';
+}
+
+
+void RevisionManifestStart6FND::generateXml(QXmlStreamWriter& xmlWriter) const
+{
+    xmlWriter.writeStartElement("RevisionManifestStart6FND");
+
+    xmlWriter.writeAttribute("revisionRole", QString::number(m_revisionRole));
+    xmlWriter.writeAttribute("odcsDefault", QString::number(m_revisionRole));
+
+    m_rid.generateXml(xmlWriter);
+    m_ridDependent.generateXml(xmlWriter);
+
+    xmlWriter.writeEndElement();
 }

@@ -7,11 +7,12 @@
 #include "IFileNodeType.h"
 
 class RootObjectReference2FNDX : public IFileNodeType {
+private:
+  CompactID m_oidRoot;
+  quint32 m_RootRole;
+
 public:
   RootObjectReference2FNDX();
-
-  CompactID oidRoot;
-  quint32 RootRole;
 
   CompactID getOidRoot() const;
   void setOidRoot(const CompactID &value);
@@ -23,6 +24,10 @@ private:
   void deserialize(QDataStream &ds) override;
   void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
+
+  // IFileNodeType interface
+public:
+  virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
 };
 
 #endif // ROOTOBJECTREFERENCE2FNDX_H

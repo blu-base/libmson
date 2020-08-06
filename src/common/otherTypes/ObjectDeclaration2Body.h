@@ -1,22 +1,24 @@
 #ifndef OBJECTDECLARATION2BODY_H
 #define OBJECTDECLARATION2BODY_H
 
+#include <QXmlStreamWriter>
 #include <QtCore/qglobal.h>
 
 #include "../commonTypes/CompactID.h"
 #include "../properties/JCID.h"
 
 class ObjectDeclaration2Body {
+private:
+  CompactID m_oid;
+  JCID m_jcid;
+
+  bool m_fHasOidReferences;
+  bool m_fHasOsidReferences;
+
+  quint8 m_fReserved2;
+
 public:
   ObjectDeclaration2Body();
-
-  CompactID oid;
-  JCID jcid;
-
-  bool fHasOidReferences;
-  bool fHasOsidReferences;
-
-  quint8 fReserved2;
 
   CompactID getOid() const;
   void setOid(const CompactID &value);
@@ -33,6 +35,8 @@ public:
                                  const ObjectDeclaration2Body &obj);
   friend QDataStream &operator>>(QDataStream &ds, ObjectDeclaration2Body &obj);
   friend QDebug operator<<(QDebug dbg, const ObjectDeclaration2Body &obj);
+
+  void generateXml(QXmlStreamWriter &xmlWriter) const;
 
 private:
   /**

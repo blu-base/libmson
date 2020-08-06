@@ -7,12 +7,14 @@
 
 class GlobalIdTableEntry2FNDX : public IFileNodeType
 {
+private:
+    quint32 m_iIndexMapFrom;
+
+    quint32 m_iIndexMapTo;
 public:
   GlobalIdTableEntry2FNDX();
 
-  quint32 iIndexMapFrom;
 
-  quint32 iIndexMapTo;
 
   quint32 getIIndexMapTo() const;
   void setIIndexMapTo(const quint32& value);
@@ -24,6 +26,10 @@ private:
   void deserialize(QDataStream& ds) override;
   void serialize(QDataStream& ds) const override;
   void toDebugString(QDebug dbg) const override;
+
+  // IFileNodeType interface
+public:
+  virtual void generateXml(QXmlStreamWriter& xmlWriter) const override;
 };
 
 #endif // GLOBALIDTABLEENTRY2FNDX_H

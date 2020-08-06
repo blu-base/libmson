@@ -28,6 +28,31 @@ FileNodeChunkReference ObjectGroupList::getRef() const { return m_ref; }
 
 void ObjectGroupList::setRef(const FileNodeChunkReference &ref) { m_ref = ref; }
 
+void ObjectGroupList::generateXml(QXmlStreamWriter& xmlWriter) const
+{
+    xmlWriter.writeStartElement("ObjectGroupList");
+
+    xmlWriter.writeStartElement("ref");
+    m_ref.generateXml(xmlWriter);
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("fileNodeSequence");
+    for(auto entry : m_fileNodeSequence) {
+        entry->generateXml(xmlWriter);
+    }
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("fileNodeListFragments");
+    for(auto entry : m_fileNodeListFragments) {
+        entry->generateXml(xmlWriter);
+    }
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeEndElement();
+
+
+}
+
 QDataStream &operator>>(QDataStream &ds, ObjectGroupList &obj) {
   obj.deserialize(ds);
   return ds;

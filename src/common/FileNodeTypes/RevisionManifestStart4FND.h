@@ -18,9 +18,7 @@
  * 2.5.6 RevisionManifestStart4FND
  */
 class RevisionManifestStart4FND : public IFileNodeType {
-public:
-  RevisionManifestStart4FND();
-
+private:
   /**
    * @var rid
    * @brief pecifies the identity of this revision (section 2.1.8).
@@ -29,7 +27,7 @@ public:
    * \li MUST be unique among RevisionManifestStart4FND.rid fields within the
    * containing revision manifest list.
    */
-  ExtendedGUID rid;
+  ExtendedGUID m_rid;
 
   /**
    * @var ridDependent
@@ -41,19 +39,19 @@ public:
    * Otherwise, this value MUST be equal to the RevisionManifestStart4FND.rid
    * field of a previous revision manifest within this revision manifest list.
    */
-  ExtendedGUID ridDependent;
+  ExtendedGUID m_ridDependent;
 
   /**
    * @var timeCreation
    * @brief undefined and must be ignored
    */
-  quint64 timeCreation;
+  quint64 m_timeCreation;
 
   /**
    * @var revisionRole
    * @brief specifies the revision role that labels this revision
    */
-  qint32 revisionRole;
+  qint32 m_revisionRole;
 
   /**
    * @var odcsDefault
@@ -62,7 +60,10 @@ public:
    *
    * MUST be 0 and MUST be ignored.
    */
-  quint16 odcsDefault;
+  quint16 m_odcsDefault;
+
+public:
+  RevisionManifestStart4FND();
 
   quint16 getOdcsDefault() const;
   void setOdcsDefault(const quint16 &value);
@@ -84,6 +85,10 @@ private:
   void deserialize(QDataStream &ds);
   void serialize(QDataStream &ds) const;
   void toDebugString(QDebug dbg) const;
+
+  // IFileNodeType interface
+public:
+  virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
 };
 
 #endif // REVISIONMANIFESTSTART4FND_H

@@ -7,11 +7,12 @@
 #include "IFileNodeType.h"
 
 class RootObjectReference3FND : public IFileNodeType {
+private:
+  ExtendedGUID m_oidRoot;
+  quint32 m_RootRole;
+
 public:
   RootObjectReference3FND();
-
-  ExtendedGUID oidRoot;
-  quint32 RootRole;
 
   // IFileNodeType interface
   ExtendedGUID getOidRoot() const;
@@ -24,6 +25,10 @@ private:
   void deserialize(QDataStream &ds) override;
   void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
+
+  // IFileNodeType interface
+public:
+  virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
 };
 
 #endif // ROOTOBJECTREFERENCE3FND_H

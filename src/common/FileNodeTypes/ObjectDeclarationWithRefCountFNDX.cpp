@@ -1,55 +1,72 @@
 #include "ObjectDeclarationWithRefCountFNDX.h"
 
+#include "../helper/Helper.h"
+
 ObjectDeclarationWithRefCountFNDX::ObjectDeclarationWithRefCountFNDX(
     FNCR_STP_FORMAT stpFormat, FNCR_CB_FORMAT cbFormat)
-    : objectRef(stpFormat, cbFormat), cRef{} {}
+    : m_objectRef(stpFormat, cbFormat), m_cRef{} {}
 
 ObjectDeclarationWithRefCountFNDX::ObjectDeclarationWithRefCountFNDX(
     quint8 stpFormat, quint8 cbFormat)
-    : objectRef(stpFormat, cbFormat), cRef{} {}
+    : m_objectRef(stpFormat, cbFormat), m_cRef{} {}
 
 ObjectDeclarationWithRefCountFNDX::~ObjectDeclarationWithRefCountFNDX() {}
 
 FileNodeChunkReference ObjectDeclarationWithRefCountFNDX::getObjectRef() const {
-  return objectRef;
+  return m_objectRef;
 }
 
 void ObjectDeclarationWithRefCountFNDX::setObjectRef(
     const FileNodeChunkReference &value) {
-  objectRef = value;
+  m_objectRef = value;
 }
 
 ObjectDeclarationWithRefCountBody
 ObjectDeclarationWithRefCountFNDX::getBody() const {
-  return body;
+  return m_body;
 }
 
 void ObjectDeclarationWithRefCountFNDX::setBody(
     const ObjectDeclarationWithRefCountBody &value) {
-  body = value;
+  m_body = value;
 }
 
-quint8 ObjectDeclarationWithRefCountFNDX::getCRef() const { return cRef; }
+quint8 ObjectDeclarationWithRefCountFNDX::getCRef() const { return m_cRef; }
 
 void ObjectDeclarationWithRefCountFNDX::setCRef(const quint8 &value) {
-  cRef = value;
+  m_cRef = value;
 }
 
 void ObjectDeclarationWithRefCountFNDX::deserialize(QDataStream &ds) {
-  ds >> objectRef;
-  ds >> body;
-  ds >> cRef;
+  ds >> m_objectRef;
+  ds >> m_body;
+  ds >> m_cRef;
 }
 
 void ObjectDeclarationWithRefCountFNDX::serialize(QDataStream &ds) const {
-  ds << objectRef;
-  ds << body;
-  ds << cRef;
+  ds << m_objectRef;
+  ds << m_body;
+  ds << m_cRef;
 }
 
 void ObjectDeclarationWithRefCountFNDX::toDebugString(QDebug dbg) const {
   dbg << " ObjectDeclarationWithRefCountFNDX:\n"
-      << " objectRef: " << objectRef << '\n'
-      << " body: " << body << '\n'
-      << " cRef: " << cRef << '\n';
+      << " objectRef: " << m_objectRef << '\n'
+      << " body: " << m_body << '\n'
+      << " cRef: " << qStringHex(m_cRef,2) << '\n';
+}
+
+
+void ObjectDeclarationWithRefCountFNDX::generateXml(QXmlStreamWriter& xmlWriter) const
+{
+    xmlWriter.writeStartElement("ObjectDeclarationWithRefCountFNDX");
+
+    xmlWriter.writeAttribute("cRef", qStringHex(m_cRef,2));
+
+    m_objectRef.generateXml(xmlWriter);
+    m_body.generateXml(xmlWriter);
+
+
+
+    xmlWriter.writeEndElement();
 }

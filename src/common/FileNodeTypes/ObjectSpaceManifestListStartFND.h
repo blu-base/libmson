@@ -3,8 +3,8 @@
 
 #include <QtCore/qglobal.h>
 
-#include "IFileNodeType.h"
 #include "../commonTypes/ExtendedGUID.h"
+#include "IFileNodeType.h"
 
 /**
  * @brief specifies the beginning of an object space manifest list
@@ -18,10 +18,7 @@
  * It must be in the root file node list
  */
 class ObjectSpaceManifestListStartFND : public IFileNodeType {
-public:
-  ObjectSpaceManifestListStartFND();
-  ~ObjectSpaceManifestListStartFND();
-
+private:
   /**
    * @brief specifies the identity of the object space
    * @var gosidRoot
@@ -29,7 +26,11 @@ public:
    * must be equal with ObjectSpaceManifestListReferenceFND.gosid
    * of the FileNode structure that referenced this file node list
    */
-  ExtendedGUID gosid;
+  ExtendedGUID m_gosid;
+
+public:
+  ObjectSpaceManifestListStartFND();
+  ~ObjectSpaceManifestListStartFND();
 
   ExtendedGUID getGosid() const;
   void setGosid(const ExtendedGUID &value);
@@ -39,7 +40,10 @@ private:
   void deserialize(QDataStream &ds);
   void serialize(QDataStream &ds) const;
   void toDebugString(QDebug dbg) const;
+
+  // IFileNodeType interface
+public:
+  virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
 };
 
 #endif // OBJECTSPACEMANIFESTLISTSTARTFND_H
-

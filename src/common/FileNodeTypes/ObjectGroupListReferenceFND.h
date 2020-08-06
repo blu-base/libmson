@@ -9,9 +9,9 @@
 
 class ObjectGroupListReferenceFND : public IFileNodeType {
 private:
-  FileNodeChunkReference mRef;
+  FileNodeChunkReference m_ref;
 
-  ExtendedGUID mObjectGroupID;
+  ExtendedGUID m_ObjectGroupID;
 
 public:
   ObjectGroupListReferenceFND(FNCR_STP_FORMAT stpFormat,
@@ -29,6 +29,10 @@ private:
   void deserialize(QDataStream &ds) override;
   void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
+
+  // IFileNodeType interface
+public:
+  virtual void generateXml(QXmlStreamWriter& xmlWriter) const override;
 };
 
 #endif // OBJECTGROUPLISTREFERENCEFND_H

@@ -8,19 +8,23 @@
 #include "IFileNodeType.h"
 
 class ObjectRevisionWithRefCountFNDX : public IFileNodeType {
+private:
+    FileNodeChunkReference m_ref;
+
+    CompactID m_oid;
+
+
+    bool m_fHasOidReferences;
+    bool m_fHasOsidReferences;
+
+    quint8 m_cRef;
 public:
   ObjectRevisionWithRefCountFNDX(FNCR_STP_FORMAT stpFormat,
                                  FNCR_CB_FORMAT cbFormat);
   ObjectRevisionWithRefCountFNDX(quint8 stpFormat, quint8 cbFormat);
   ~ObjectRevisionWithRefCountFNDX();
 
-  FileNodeChunkReference ref;
 
-  CompactID oid;
-
-  quint8 cRef;
-  bool fHasOidReferences;
-  bool fHasOsidReferences;
 
   FileNodeChunkReference getRef() const;
   void setRef(const FileNodeChunkReference &value);
@@ -38,6 +42,10 @@ private:
   void deserialize(QDataStream &ds) override;
   void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
+
+  // IFileNodeType interface
+public:
+  virtual void generateXml(QXmlStreamWriter& xmlWriter) const override;
 };
 
 #endif // OBJECTREVISIONWITHREFCOUNTFNDX_H

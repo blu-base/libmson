@@ -7,11 +7,13 @@
 #include "IFileNodeType.h"
 class ObjectGroupStartFND : public IFileNodeType
 {
+private:
+      ExtendedGUID m_oid;
 public:
   ObjectGroupStartFND();
 
 
-  ExtendedGUID m_oid;
+
 
   ExtendedGUID oid() const;
   void setOid(const ExtendedGUID &oid);
@@ -20,6 +22,10 @@ private:
   void deserialize(QDataStream &ds) override;
   void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
+
+  // IFileNodeType interface
+public:
+  virtual void generateXml(QXmlStreamWriter& xmlWriter) const override;
 };
 
 #endif // OBJECTGROUPSTARTFND_H

@@ -51,7 +51,8 @@ void ObjectDeclarationFileData3RefCountFND::setExtension(const StringInStorageBu
     m_Extension = Extension;
 }
 
-ObjectDeclarationFileData3RefCountFND::ObjectDeclarationFileData3RefCountFND()
+ObjectDeclarationFileData3RefCountFND::ObjectDeclarationFileData3RefCountFND() :
+    m_cRef(0)
 {
 
 }
@@ -80,10 +81,32 @@ void ObjectDeclarationFileData3RefCountFND::toDebugString(QDebug dbg) const
     dbg << " ObjectDeclarationFileData3RefCountFND\n"
         << " oid: " << m_oid << '\n'
         << " jcid: " << m_jcid << '\n'
-        << " cRef: " << qStringHex(m_cRef,4) << '\n'
+        << " cRef: " << qStringHex(m_cRef,2) << '\n'
            /// \todo get the file name/do something with the stringinstoragebuffer
         << " FileDataReference:\n"
            /// \todo get the file name/do something with the stringinstoragebuffer
         << " Extension:\n"
         << '\n';
+}
+
+
+void ObjectDeclarationFileData3RefCountFND::generateXml(QXmlStreamWriter& xmlWriter) const
+{
+    xmlWriter.writeStartElement("ObjectDeclarationFileData3RefCountFND");
+
+    xmlWriter.writeAttribute("cRef", qStringHex(m_cRef,2));
+
+    xmlWriter.writeStartElement("oid");
+    m_oid.generateXml(xmlWriter);
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("jcid");
+    m_jcid.generateXml(xmlWriter);
+    xmlWriter.writeEndElement();
+
+    m_FileDataReference.generateXml(xmlWriter);
+    m_Extension.generateXml(xmlWriter);
+
+
+    xmlWriter.writeEndElement();
 }

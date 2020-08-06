@@ -27,6 +27,8 @@ public:
   friend QDebug operator<<(QDebug dbg,
                            const ObjectInfoDependencyOverride8 &obj);
 
+  void generateXml(QXmlStreamWriter &xmlWriter) const;
+
   CompactID oid() const;
   void setOid(const CompactID &oid);
 

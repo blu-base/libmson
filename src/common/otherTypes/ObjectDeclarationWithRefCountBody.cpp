@@ -3,9 +3,29 @@
 #include <QDebug>
 
 #include "../commonTypes/CompactID.h"
+#include "../helper/Helper.h"
 #include "../properties/JCID.h"
 
-ObjectDeclarationWithRefCountBody::ObjectDeclarationWithRefCountBody() {}
+ObjectDeclarationWithRefCountBody::ObjectDeclarationWithRefCountBody()
+    : m_jci(), m_odcs(), m_fReserved1(), m_fReserved2(),
+      m_fHasOidReferences(false), m_fHasOsidReferences(false) {}
+
+void ObjectDeclarationWithRefCountBody::generateXml(
+    QXmlStreamWriter &xmlWriter) const {
+  xmlWriter.writeStartElement("ObjectDeclarationWithRefCountBody");
+  xmlWriter.writeAttribute("jci", qStringHex(m_jci, 2));
+  xmlWriter.writeAttribute("odcs", qStringHex(m_odcs, 1));
+  xmlWriter.writeAttribute("fReserved1", qStringHex(m_fReserved1, 1));
+  xmlWriter.writeAttribute("fReserved2", qStringHex(m_fReserved2, 8));
+  xmlWriter.writeAttribute("fHasOidReferences",
+                           m_fHasOsidReferences ? "true" : "false");
+  xmlWriter.writeAttribute("fHasOsidReferences",
+                           m_fHasOsidReferences ? "true" : "false");
+
+  m_oid.generateXml(xmlWriter);
+
+  xmlWriter.writeEndElement();
+}
 
 QDataStream &operator<<(QDataStream &ds,
                         const ObjectDeclarationWithRefCountBody &obj) {

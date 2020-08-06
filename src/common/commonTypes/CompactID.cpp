@@ -8,11 +8,13 @@
 #include <math.h>
 #include <string>
 
-uint8_t CompactID::getN() const { return n; }
+#include "../helper/Helper.h"
 
-void CompactID::setN(const uint8_t &value) { n = value; }
+quint8 CompactID::getN() const { return m_n; }
 
-uint32_t CompactID::getGuidIndex() const { return guidIndex; }
+void CompactID::setN(const quint8 &value) { m_n = value; }
+
+quint32 CompactID::getGuidIndex() const { return guidIndex; }
 
 /**
  * @brief CompactID::setGuidIndex
@@ -21,7 +23,7 @@ uint32_t CompactID::getGuidIndex() const { return guidIndex; }
  *
  * checks if uint32_t value
  */
-bool CompactID::setGuidIndex(const uint32_t &value) {
+bool CompactID::setGuidIndex(const quint32 &value) {
   if (value >= 0xFFFFFF) {
     return false;
   } else {
@@ -35,15 +37,15 @@ ExtendedGUID *CompactID::getExtendedGUID() const { return eguid; }
 void CompactID::setExtendedGUID(ExtendedGUID *const guid) { eguid = guid; }
 
 bool CompactID::isValid() const {
-  return n == eguid->getN() && guidIndex < 0xFFFFFF;
+  return m_n == eguid->getN() && guidIndex < 0xFFFFFF;
 }
 
-bool CompactID::isNull() const { return (n == 0) && (guidIndex == 0); }
+bool CompactID::isNull() const { return (m_n == 0) && (guidIndex == 0); }
 
 QByteArray CompactID::toByteArray() const {
   QByteArray raw;
 
-  raw.append(QByteArray::number(n, 16));
+  raw.append(QByteArray::number(m_n, 16));
 
   raw.append(QByteArray::number(guidIndex, 16).right(3));
 
@@ -52,38 +54,58 @@ QByteArray CompactID::toByteArray() const {
 
 QString CompactID::toString() const {
   return QString(QString::fromStdString(std::to_string(guidIndex) + ", " +
-                                        std::to_string(n)));
+                                        std::to_string(m_n)));
 }
 
-QDataStream &operator<<(QDataStream &s, const CompactID &obj) {
-  QByteArray bytes = obj.toByteArray();
-
-  if (s.writeRawData(bytes.data(), 4) != 4) {
-    s.setStatus(QDataStream::WriteFailed);
-  }
-
-  return s;
+void CompactID::generateXml(QXmlStreamWriter &xmlWriter) const {
+  xmlWriter.writeStartElement("CompactID");
+  xmlWriter.writeAttribute("guidIndex", qStringHex(guidIndex, 8));
+  xmlWriter.writeAttribute("n", qStringHex(m_n, 2));
+  xmlWriter.writeEndElement();
 }
 
-QDataStream &operator>>(QDataStream &s, CompactID &obj) {
+QDataStream &operator<<(QDataStream &ds, const CompactID &obj) {
 
-  QByteArray bytes(4, Qt::Uninitialized);
-  if (s.readRawData(bytes.data(), 4) != 4) {
-    s.setStatus(QDataStream::ReadPastEnd);
-    return s;
-  }
+  obj.serialize(ds);
+  return ds;
+}
 
-  obj.setN(bytes.at(0));
-  obj.setGuidIndex(bytes.right(3).toUInt());
+QDataStream &operator>>(QDataStream &ds, CompactID &obj) {
+  ds.setByteOrder(QDataStream::LittleEndian);
 
-  return s;
+  obj.deserialize(ds);
+  return ds;
 }
 
 QDebug operator<<(QDebug dbg, const CompactID &obj) {
-  QDebugStateSaver saver(dbg);
-  dbg.nospace() << "CompactID(" << obj.toString() << ')';
+  obj.toDebugString(dbg);
   return dbg;
 }
+
+void CompactID::toDebugString(QDebug dbg) const {
+  QDebugStateSaver saver(dbg);
+  dbg.nospace() << "CompactID(" << toString() << ')';
+}
+
+void CompactID::deserialize(QDataStream &ds) {
+  quint32 temp{};
+
+  ds >> temp;
+
+  m_n = temp & 0xFF;
+
+  guidIndex = (temp & 0xFFFFFF00) >> 8;
+}
+
+void CompactID::serialize(QDataStream &ds) const {
+  quint32 temp{};
+
+  temp += m_n;
+  temp += guidIndex << 8;
+
+  ds << temp;
+}
+
 
 bool operator==(const CompactID &lhs, const CompactID &rhs) noexcept {
   return lhs.getN() == rhs.getN() && lhs.getGuidIndex() == rhs.getGuidIndex();
@@ -93,22 +115,22 @@ bool operator!=(const CompactID &lhs, const CompactID &rhs) noexcept {
   return !(lhs == rhs);
 }
 
-CompactID::CompactID() : n{0}, guidIndex{0}, eguid{nullptr} {}
+CompactID::CompactID() : m_n{0}, guidIndex{0}, eguid{nullptr} {}
 
-CompactID::CompactID(ExtendedGUID *guid) : n{0}, guidIndex{0}, eguid{guid} {}
+CompactID::CompactID(ExtendedGUID *guid) : m_n{0}, guidIndex{0}, eguid{guid} {}
 
-CompactID::CompactID(const uint8_t n, const uint32_t guidIndex)
-    : n{n}, guidIndex{0}, eguid{nullptr} {
+CompactID::CompactID(const quint8 n, const quint32 guidIndex)
+    : m_n{n}, guidIndex{0}, eguid{nullptr} {
   setGuidIndex(guidIndex);
 }
 
-CompactID::CompactID(const uint8_t n, const uint32_t guidIndex,
+CompactID::CompactID(const quint8 n, const quint32 guidIndex,
                      ExtendedGUID *guid)
-    : n{n}, guidIndex{0}, eguid{guid} {
+    : m_n{n}, guidIndex{0}, eguid{guid} {
   setGuidIndex(guidIndex);
 }
 
-CompactID::CompactID(const QByteArray &bytes) : n{0}, guidIndex{0} {
+CompactID::CompactID(const QByteArray &bytes) : m_n{0}, guidIndex{0} {
   setN(bytes.at(0));
   setGuidIndex(bytes.right(3).toUInt());
 }

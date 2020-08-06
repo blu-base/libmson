@@ -3,31 +3,40 @@
 RevisionRoleDeclarationFND::RevisionRoleDeclarationFND() {}
 
 quint32 RevisionRoleDeclarationFND::getRevisionRole() const {
-  return RevisionRole;
+  return m_RevisionRole;
 }
 
 void RevisionRoleDeclarationFND::setRevisionRole(const quint32 &value) {
-  RevisionRole = value;
+  m_RevisionRole = value;
 }
 
-ExtendedGUID RevisionRoleDeclarationFND::getRid() const { return rid; }
+ExtendedGUID RevisionRoleDeclarationFND::getRid() const { return m_rid; }
 
 void RevisionRoleDeclarationFND::setRid(const ExtendedGUID &value) {
-  rid = value;
+  m_rid = value;
 }
 
 void RevisionRoleDeclarationFND::deserialize(QDataStream &ds) {
-  ds >> rid;
-  ds >> RevisionRole;
+  ds >> m_rid;
+  ds >> m_RevisionRole;
 }
 
 void RevisionRoleDeclarationFND::serialize(QDataStream &ds) const {
-  ds << rid;
-  ds << RevisionRole;
+  ds << m_rid;
+  ds << m_RevisionRole;
 }
 
 void RevisionRoleDeclarationFND::toDebugString(QDebug dbg) const {
   dbg << " RevisionRoleDeclarationFND:\n"
-      << " Rid: " << rid << '\n'
-      << " RevisionRole: " << RevisionRole << '\n';
+      << " Rid: " << m_rid << '\n'
+      << " RevisionRole: " << m_RevisionRole << '\n';
+}
+
+
+void RevisionRoleDeclarationFND::generateXml(QXmlStreamWriter& xmlWriter) const
+{
+    xmlWriter.writeStartElement("RevisionRoleDeclarationFND");
+    xmlWriter.writeAttribute("revisionRole", QString::number(m_RevisionRole));
+    m_rid.generateXml(xmlWriter);
+    xmlWriter.writeEndElement();
 }

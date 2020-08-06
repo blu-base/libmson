@@ -3,6 +3,8 @@
 
 #include <QtCore/qglobal.h>
 
+#include <QXmlStreamWriter>
+
 class JCID {
 private:
   quint16 m_index;
@@ -19,6 +21,8 @@ public:
   friend QDataStream &operator>>(QDataStream &ds, JCID &obj);
 
   friend QDebug operator<<(QDebug dbg, const JCID &obj);
+
+  void generateXml(QXmlStreamWriter &xmlWriter) const;
 
   quint16 index() const;
   void setIndex(const quint16 &index);

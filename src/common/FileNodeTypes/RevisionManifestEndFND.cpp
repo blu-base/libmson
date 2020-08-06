@@ -9,3 +9,10 @@ void RevisionManifestEndFND::serialize(QDataStream &ds) const {}
 void RevisionManifestEndFND::toDebugString(QDebug dbg) const {
   dbg << "RevisionManifestEndFND.\n";
 }
+
+
+void RevisionManifestEndFND::generateXml(QXmlStreamWriter& xmlWriter) const
+{
+    xmlWriter.writeStartElement("RevisionManifestEndFND");
+    xmlWriter.writeEndElement();
+}

@@ -2,10 +2,23 @@
 
 ObjectDeclaration2Body::ObjectDeclaration2Body() {}
 
-quint8 ObjectDeclaration2Body::getFReserved2() const { return fReserved2; }
+quint8 ObjectDeclaration2Body::getFReserved2() const { return m_fReserved2; }
 
 void ObjectDeclaration2Body::setFReserved2(const quint8 &value) {
-  fReserved2 = value;
+  m_fReserved2 = value;
+}
+
+void ObjectDeclaration2Body::generateXml(QXmlStreamWriter &xmlWriter) const {
+  xmlWriter.writeStartElement("ObjectDeclaration2Body");
+  xmlWriter.writeAttribute("fHasOidReferences",
+                           m_fHasOidReferences ? "true" : "false");
+  xmlWriter.writeAttribute("fHasOsidReferences",
+                           m_fHasOsidReferences ? "true" : "false");
+
+  m_oid.generateXml(xmlWriter);
+  m_jcid.generateXml(xmlWriter);
+
+  xmlWriter.writeEndElement();
 }
 
 QDataStream &operator<<(QDataStream &ds, const ObjectDeclaration2Body &obj) {
@@ -24,53 +37,53 @@ QDataStream &operator>>(QDataStream &ds, ObjectDeclaration2Body &obj) {
 }
 
 void ObjectDeclaration2Body::deserialize(QDataStream &ds) {
-  ds >> oid;
-  ds >> jcid;
+  ds >> m_oid;
+  ds >> m_jcid;
 
   quint8 temp;
   ds >> temp;
-  fHasOidReferences = temp & 0x1;
-  fHasOsidReferences = (temp >> 1) & 0x1;
+  m_fHasOidReferences = temp & 0x1;
+  m_fHasOsidReferences = (temp >> 1) & 0x1;
 }
 
 void ObjectDeclaration2Body::serialize(QDataStream &ds) const {
-  ds << oid;
-  ds << jcid;
+  ds << m_oid;
+  ds << m_jcid;
   quint8 temp{};
-  temp += fHasOidReferences;
-  temp += fHasOsidReferences << 1;
+  temp += m_fHasOidReferences;
+  temp += m_fHasOsidReferences << 1;
 
   ds << temp;
 }
 
 void ObjectDeclaration2Body::toDebugString(QDebug dbg) const {
   dbg << "  ObjectDeclaration2Body:"
-      << " HasOid: " << fHasOidReferences << " HasOsid: " << fHasOsidReferences
-      << '\n'
-      << "  oid:  " << oid << '\n'
-      << jcid;
+      << " HasOid: " << m_fHasOidReferences
+      << " HasOsid: " << m_fHasOsidReferences << '\n'
+      << "  oid:  " << m_oid << '\n'
+      << m_jcid;
 }
 
 bool ObjectDeclaration2Body::getFHasOsidReferences() const {
-  return fHasOsidReferences;
+  return m_fHasOsidReferences;
 }
 
 void ObjectDeclaration2Body::setFHasOsidReferences(bool value) {
-  fHasOsidReferences = value;
+  m_fHasOsidReferences = value;
 }
 
 bool ObjectDeclaration2Body::getFHasOidReferences() const {
-  return fHasOidReferences;
+  return m_fHasOidReferences;
 }
 
 void ObjectDeclaration2Body::setFHasOidReferences(bool value) {
-  fHasOidReferences = value;
+  m_fHasOidReferences = value;
 }
 
-JCID ObjectDeclaration2Body::getJcid() const { return jcid; }
+JCID ObjectDeclaration2Body::getJcid() const { return m_jcid; }
 
-void ObjectDeclaration2Body::setJcid(const JCID &value) { jcid = value; }
+void ObjectDeclaration2Body::setJcid(const JCID &value) { m_jcid = value; }
 
-CompactID ObjectDeclaration2Body::getOid() const { return oid; }
+CompactID ObjectDeclaration2Body::getOid() const { return m_oid; }
 
-void ObjectDeclaration2Body::setOid(const CompactID &value) { oid = value; }
+void ObjectDeclaration2Body::setOid(const CompactID &value) { m_oid = value; }

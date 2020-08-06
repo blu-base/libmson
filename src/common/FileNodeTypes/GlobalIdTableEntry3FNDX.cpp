@@ -1,48 +1,57 @@
 #include "GlobalIdTableEntry3FNDX.h"
 
 GlobalIdTableEntry3FNDX::GlobalIdTableEntry3FNDX()
-    : iIndexCopyFromStart{0}, cEntriesToCopy{0}, iIndexCopyToStart{0} {}
+    : m_iIndexCopyFromStart{0}, m_cEntriesToCopy{0}, m_iIndexCopyToStart{0} {}
 
 quint32 GlobalIdTableEntry3FNDX::getIIndexCopyFromStart() const {
-  return iIndexCopyFromStart;
+  return m_iIndexCopyFromStart;
 }
 
 void GlobalIdTableEntry3FNDX::setIIndexCopyFromStart(const quint32 &value) {
-  iIndexCopyFromStart = value;
+  m_iIndexCopyFromStart = value;
 }
 
 quint32 GlobalIdTableEntry3FNDX::getCEntriesToCopy() const {
-  return cEntriesToCopy;
+  return m_cEntriesToCopy;
 }
 
 void GlobalIdTableEntry3FNDX::setCEntriesToCopy(const quint32 &value) {
-  cEntriesToCopy = value;
+  m_cEntriesToCopy = value;
 }
 
 quint32 GlobalIdTableEntry3FNDX::getIIndexCopyToStart() const {
-  return iIndexCopyToStart;
+  return m_iIndexCopyToStart;
 }
 
 void GlobalIdTableEntry3FNDX::setIIndexCopyToStart(const quint32 &value) {
-  iIndexCopyToStart = value;
+  m_iIndexCopyToStart = value;
 }
 
 void GlobalIdTableEntry3FNDX::deserialize(QDataStream &ds) {
 
-  ds >> iIndexCopyFromStart;
-  ds >> cEntriesToCopy;
-  ds >> iIndexCopyToStart;
+  ds >> m_iIndexCopyFromStart;
+  ds >> m_cEntriesToCopy;
+  ds >> m_iIndexCopyToStart;
 }
 
 void GlobalIdTableEntry3FNDX::serialize(QDataStream &ds) const {
-  ds << iIndexCopyFromStart;
-  ds << cEntriesToCopy;
-  ds << iIndexCopyToStart;
+  ds << m_iIndexCopyFromStart;
+  ds << m_cEntriesToCopy;
+  ds << m_iIndexCopyToStart;
 }
 
 void GlobalIdTableEntry3FNDX::toDebugString(QDebug dbg) const {
   dbg << " GlobalIdTableEntry3FNDX: \n"
-      << " iIndexCopyFromStart: " << iIndexCopyFromStart << '\n'
-      << " cEntriesToCopy:      " << cEntriesToCopy << '\n'
-      << " iIndexCopyToStart:   " << iIndexCopyToStart << '\n';
+      << " iIndexCopyFromStart: " << m_iIndexCopyFromStart << '\n'
+      << " cEntriesToCopy:      " << m_cEntriesToCopy << '\n'
+      << " iIndexCopyToStart:   " << m_iIndexCopyToStart << '\n';
+}
+
+
+void GlobalIdTableEntry3FNDX::generateXml(QXmlStreamWriter& xmlWriter) const
+{
+    xmlWriter.writeStartElement("GlobalIdTableEntry3FNDX");
+    xmlWriter.writeAttribute("iIndexCopyFromStart", QString::number(m_iIndexCopyFromStart));
+    xmlWriter.writeAttribute("cEntriesToCopy", QString::number(m_cEntriesToCopy));
+    xmlWriter.writeAttribute("iIndexCopyToStart", QString::number(m_iIndexCopyToStart));
 }

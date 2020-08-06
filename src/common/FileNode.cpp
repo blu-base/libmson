@@ -115,7 +115,9 @@ void FileNode::generateXml(QXmlStreamWriter& xmlWriter) const
     ///\todo IFileNodeType *fnt;
     ///
     xmlWriter.writeStartElement("FileNodeType");
-    // fnt->generateXml(xmlWriter);
+    if(fnt!= nullptr) {
+     fnt->generateXml(xmlWriter);
+    }
     xmlWriter.writeEndElement();
 
 

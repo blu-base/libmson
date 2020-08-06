@@ -1,8 +1,41 @@
 #include "ObjectInfoDependencyOverrideData.h"
 #include <QDataStream>
 #include <QDebug>
+
+#include "../helper/Helper.h"
 ObjectInfoDependencyOverrideData::ObjectInfoDependencyOverrideData()
     : m_c8BitOverrides(), m_c32BitOverrides(), m_crc() {}
+
+void ObjectInfoDependencyOverrideData::generateXml(
+    QXmlStreamWriter &xmlWriter) const {
+  xmlWriter.writeStartElement("ObjectInfoDependencyOverrideData");
+
+  xmlWriter.writeStartElement("c8BitOverrides");
+  xmlWriter.writeCharacters(QString::number(m_c8BitOverrides));
+  xmlWriter.writeEndElement();
+
+  xmlWriter.writeStartElement("c32BitOverrides");
+  xmlWriter.writeCharacters(QString::number(m_c32BitOverrides));
+  xmlWriter.writeEndElement();
+
+  xmlWriter.writeStartElement("crc");
+  xmlWriter.writeCharacters(qStringHex(m_crc, 8));
+  xmlWriter.writeEndElement();
+
+  xmlWriter.writeStartElement("Overrides1");
+  for (auto entry : m_Overrides1) {
+    entry.generateXml(xmlWriter);
+  }
+  xmlWriter.writeEndElement();
+
+  xmlWriter.writeStartElement("m_Overrides2");
+  for (auto entry : m_Overrides1) {
+    entry.generateXml(xmlWriter);
+  }
+  xmlWriter.writeEndElement();
+
+  xmlWriter.writeEndElement();
+}
 
 QDataStream &operator<<(QDataStream &ds,
                         const ObjectInfoDependencyOverrideData &obj) {

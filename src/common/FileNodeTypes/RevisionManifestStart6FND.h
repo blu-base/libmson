@@ -16,51 +16,53 @@
  */
 class RevisionManifestStart6FND : public IFileNodeType
 {
+private:
+    /**
+     * @var rid
+     * @brief specifies the identity of this revision.
+     *
+     * \li MUST NOT be "{{00000000-0000-0000-0000-000000000000}, 0}"
+     * \li MUST be unique among RevisionManifestStart6FND.rid and
+     * RevisionManifestStart7FND.base.rid fields within the
+     * containing revision manifest list.
+     */
+    ExtendedGUID m_rid;
+
+    /**
+     * @var ridDependent
+     * @brief specifies the identity of a dependency revision
+     *
+     * If the value is "{{00000000-0000-0000-0000-000000000000}, 0}",
+     * then this revision manifest has no dependency revision.
+     *
+     * Otherwise, this value MUST be equal to the RevisionManifestStart6FND.rid and
+     * RevisionManifestStart7FND.base.rid fields of a previous revision manifest
+     * within this revision manifest list.
+     */
+    ExtendedGUID m_ridDependent;
+
+    /**
+     * @var revisionRole
+     * @brief specifies the revision role that labels this revision
+     */
+    qint32 m_revisionRole;
+
+    /**
+     * @var odcsDefault
+     * @brief specifies whether the data contained by this revision manifest is
+     * encrypted.
+     *
+     * Values:
+     * \li 0x0000 - No encryption.
+     * \li 0x0002 - Encrypted.
+     *
+     * If encrypted, Property sets within this revision manifest MUST be ignored and MUST NOT be altered.
+     */
+    quint16 m_odcsDefault;
 public:
   RevisionManifestStart6FND();
 
-  /**
-   * @var rid
-   * @brief specifies the identity of this revision.
-   *
-   * \li MUST NOT be "{{00000000-0000-0000-0000-000000000000}, 0}"
-   * \li MUST be unique among RevisionManifestStart6FND.rid and
-   * RevisionManifestStart7FND.base.rid fields within the
-   * containing revision manifest list.
-   */
-  ExtendedGUID rid;
 
-  /**
-   * @var ridDependent
-   * @brief specifies the identity of a dependency revision
-   *
-   * If the value is "{{00000000-0000-0000-0000-000000000000}, 0}",
-   * then this revision manifest has no dependency revision.
-   *
-   * Otherwise, this value MUST be equal to the RevisionManifestStart6FND.rid and
-   * RevisionManifestStart7FND.base.rid fields of a previous revision manifest
-   * within this revision manifest list.
-   */
-  ExtendedGUID ridDependent;
-
-  /**
-   * @var revisionRole
-   * @brief specifies the revision role that labels this revision
-   */
-  qint32 revisionRole;
-
-  /**
-   * @var odcsDefault
-   * @brief specifies whether the data contained by this revision manifest is
-   * encrypted.
-   *
-   * Values:
-   * \li 0x0000 - No encryption.
-   * \li 0x0002 - Encrypted.
-   *
-   * If encrypted, Property sets within this revision manifest MUST be ignored and MUST NOT be altered.
-   */
-  quint16 odcsDefault;
 
   quint16 getOdcsDefault() const;
   void setOdcsDefault(const quint16 &value);
@@ -79,9 +81,13 @@ public:
 
   // IFileNodeType interfaces
 private:
-  void deserialize(QDataStream &ds);
-  void serialize(QDataStream &ds) const;
-  void toDebugString(QDebug dbg) const;
+  void deserialize(QDataStream &ds) override;
+  void serialize(QDataStream &ds) const override;
+  void toDebugString(QDebug dbg) const override;
+
+  // IFileNodeType interface
+public:
+  virtual void generateXml(QXmlStreamWriter& xmlWriter) const override;
 };
 
 #endif // REVISIONMANIFESTSTART6FND_H

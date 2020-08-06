@@ -1,19 +1,27 @@
 #include "GlobalIdTableStartFNDX.h"
 
-GlobalIdTableStartFNDX::GlobalIdTableStartFNDX() : reserved{0} {}
+GlobalIdTableStartFNDX::GlobalIdTableStartFNDX() : m_reserved{0} {}
 
-quint8 GlobalIdTableStartFNDX::getReserved() const { return reserved; }
+quint8 GlobalIdTableStartFNDX::getReserved() const { return m_reserved; }
 
 void GlobalIdTableStartFNDX::setReserved(const quint8 &value) {
-  reserved = value;
+  m_reserved = value;
 }
 
-void GlobalIdTableStartFNDX::deserialize(QDataStream &ds) { ds >> reserved; }
+void GlobalIdTableStartFNDX::deserialize(QDataStream &ds) { ds >> m_reserved; }
 
 void GlobalIdTableStartFNDX::serialize(QDataStream &ds) const {
-  ds << reserved;
+  ds << m_reserved;
 }
 
 void GlobalIdTableStartFNDX::toDebugString(QDebug dbg) const {
-  dbg << " GloalIdTableStartFNDX: reserved: " << reserved << '\n';
+  dbg << " GloalIdTableStartFNDX: reserved: " << m_reserved << '\n';
+}
+
+
+void GlobalIdTableStartFNDX::generateXml(QXmlStreamWriter& xmlWriter) const
+{
+    xmlWriter.writeStartElement("GlobalIdTableStartFNDX");
+    xmlWriter.writeAttribute("reserved",QString::number(m_reserved));
+    xmlWriter.writeEndElement();
 }

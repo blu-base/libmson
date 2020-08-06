@@ -7,8 +7,8 @@
 
 class CompactID {
 private:
-  uint8_t n;
-  uint32_t guidIndex; // 24bits used.
+  quint8 m_n;
+  quint32 guidIndex; // 24bits used.
 
   // \todo weak pointer?
   ExtendedGUID *eguid;
@@ -16,16 +16,16 @@ private:
 public:
   CompactID();
   CompactID(ExtendedGUID *guid);
-  CompactID(const uint8_t n, const uint32_t compactEGUID);
-  CompactID(const uint8_t n, const uint32_t compactEGUID, ExtendedGUID *guid);
+  CompactID(const quint8 m_n, const quint32 compactEGUID);
+  CompactID(const quint8 m_n, const quint32 compactEGUID, ExtendedGUID *guid);
   CompactID(const QByteArray &bytes);
   ~CompactID();
 
-  uint8_t getN() const;
-  void setN(const uint8_t &value);
+  quint8 getN() const;
+  void setN(const quint8 &value);
 
-  uint32_t getGuidIndex() const;
-  bool setGuidIndex(const uint32_t &value);
+  quint32 getGuidIndex() const;
+  bool setGuidIndex(const quint32 &value);
 
   ExtendedGUID *getExtendedGUID() const;
   void setExtendedGUID(ExtendedGUID *const eguid);
@@ -44,6 +44,13 @@ public:
 
   friend bool operator==(const CompactID &lhs, const CompactID &rhs) noexcept;
   friend bool operator!=(const CompactID &lhs, const CompactID &rhs) noexcept;
+
+  void generateXml(QXmlStreamWriter &xmlWriter) const;
+
+private:
+void deserialize(QDataStream &ds);
+void serialize(QDataStream &ds) const;
+void toDebugString(QDebug dbg) const;
 };
 
 #endif // COMPACTID_H

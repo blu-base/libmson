@@ -35,12 +35,12 @@ void ReadOnlyObjectDeclaration2RefCountFND::setBase(
 }
 
 QByteArray ReadOnlyObjectDeclaration2RefCountFND::getMd5hash() const {
-  return md5hash;
+  return m_md5hash;
 }
 
 void ReadOnlyObjectDeclaration2RefCountFND::setMd5hash(
     const QByteArray &value) {
-  md5hash = value;
+  m_md5hash = value;
 }
 
 void ReadOnlyObjectDeclaration2RefCountFND::deserialize(QDataStream &ds) {
@@ -51,13 +51,13 @@ void ReadOnlyObjectDeclaration2RefCountFND::deserialize(QDataStream &ds) {
   char *md5hashRaw = nullptr;
   ds.readRawData(md5hashRaw, 16);
 
-  md5hash = QByteArray(md5hashRaw);
+  m_md5hash = QByteArray(md5hashRaw,16);
 }
 
 void ReadOnlyObjectDeclaration2RefCountFND::serialize(QDataStream &ds) const {
 
   ds << m_base;
-  ds << md5hash;
+  ds << m_md5hash;
 }
 
 void ReadOnlyObjectDeclaration2RefCountFND::toDebugString(QDebug dbg) const {
@@ -65,5 +65,20 @@ void ReadOnlyObjectDeclaration2RefCountFND::toDebugString(QDebug dbg) const {
   dbg << " ReadOnlyObjectDeclaration2RefCountFND\n"
       << " Base:\n"
       << m_base << '\n'
-      << " md5hash: " << md5hash.toHex() << '\n';
+      << " md5hash: " << m_md5hash.toHex() << '\n';
+}
+
+
+void ReadOnlyObjectDeclaration2RefCountFND::generateXml(QXmlStreamWriter& xmlWriter) const
+{
+
+    xmlWriter.writeStartElement("ReadOnlyObjectDeclaration2RefCountFND");
+
+    m_base.generateXml(xmlWriter);
+
+    xmlWriter.writeStartElement("md5hash");
+    xmlWriter.writeCharacters(m_md5hash);
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeEndElement();
 }

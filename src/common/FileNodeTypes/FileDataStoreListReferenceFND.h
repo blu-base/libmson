@@ -8,13 +8,16 @@
 #include "IFileNodeType.h"
 class FileDataStoreListReferenceFND : public IFileNodeType
 {
+private:
+        FileNodeChunkReference m_ref;
+
 public:
     FileDataStoreListReferenceFND(FNCR_STP_FORMAT stpFormat,
                                       FNCR_CB_FORMAT cbFormat);
     FileDataStoreListReferenceFND(quint8 stpFormat, quint8 cbFormat);
     ~FileDataStoreListReferenceFND();
 
-    FileNodeChunkReference ref;
+
 
 
     FileNodeChunkReference getRef() const;
@@ -24,6 +27,10 @@ private:
     void deserialize(QDataStream& ds) override;
     void serialize(QDataStream& ds) const override;
     void toDebugString(QDebug dbg) const override;
+
+    // IFileNodeType interface
+public:
+    virtual void generateXml(QXmlStreamWriter& xmlWriter) const override;
 };
 
 

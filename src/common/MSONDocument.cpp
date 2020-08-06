@@ -102,10 +102,6 @@ MSONDocument::~MSONDocument() {
   delete m_rootFileNodeList;
 }
 
-
-
-
-
 ///**
 // * @brief MSONDocument copy constructor
 // * @param source
@@ -341,23 +337,24 @@ QDataStream &operator>>(QDataStream &ds, MSONDocument &obj) {
         if (obj.FileNodeCountMapping.contains(entry->getSrcID())) {
           if (obj.FileNodeCountMapping[entry->getSrcID()] <
               entry->getTransactionEntrySwitch()) {
-            obj.FileNodeCountMapping[entry->getSrcID()] = entry->getTransactionEntrySwitch();
+            obj.FileNodeCountMapping[entry->getSrcID()] =
+                entry->getTransactionEntrySwitch();
           }
 
         } else {
-          obj.FileNodeCountMapping.insert(
-              entry->getSrcID(), entry->getTransactionEntrySwitch());
+          obj.FileNodeCountMapping.insert(entry->getSrcID(),
+                                          entry->getTransactionEntrySwitch());
         }
       }
 
-//      size_t i{0};
+      //      size_t i{0};
 
-//      while (i < tlf->getSizeTable().size()) {
-//      }
+      //      while (i < tlf->getSizeTable().size()) {
+      //      }
     }
 
-//    for (size_t i{0}; i < tlf->getSizeTable().size(); i++) {
-//    }
+    //    for (size_t i{0}; i < tlf->getSizeTable().size(); i++) {
+    //    }
 
   } while (!transLogRef.is_fcrNil() && !transLogRef.is_fcrZero());
 
@@ -384,45 +381,50 @@ QDataStream &operator>>(QDataStream &ds, MSONDocument &obj) {
   return ds;
 }
 
-void MSONDocument::generateXml(QXmlStreamWriter& xmlWriter) const
-{
-    xmlWriter.setAutoFormatting(true);
-    xmlWriter.writeStartDocument();
-    xmlWriter.writeStartElement("MSONDocument");
-    xmlWriter.writeAttribute("isEncrypted", m_isEncrypted ? "true" : "false");
+void MSONDocument::generateXml(QXmlStreamWriter &xmlWriter) const {
+  xmlWriter.setAutoFormatting(true);
+  xmlWriter.writeStartDocument();
+  xmlWriter.writeStartElement("MSONDocument");
+  xmlWriter.writeAttribute("isEncrypted", m_isEncrypted ? "true" : "false");
 
-    m_header->generateXml(xmlWriter);
+  m_header->generateXml(xmlWriter);
 
-    xmlWriter.writeStartElement("freeChunkList");
-    for(auto entry : m_freeChunkList) {
-        entry->generateXml(xmlWriter);
-    }
+  xmlWriter.writeStartElement("freeChunkList");
+  for (auto entry : m_freeChunkList) {
+    entry->generateXml(xmlWriter);
+  }
+  xmlWriter.writeEndElement();
+
+  xmlWriter.writeStartElement("transactionLog");
+  for (auto entry : m_transactionLog) {
+    entry->generateXml(xmlWriter);
+  }
+  xmlWriter.writeEndElement();
+
+  xmlWriter.writeStartElement("hashedChunkList");
+  for (auto entry : m_hashedChunkList) {
+    entry->generateXml(xmlWriter);
+  }
+  xmlWriter.writeEndElement();
+
+  m_rootFileNodeList->generateXml(xmlWriter);
+
+  xmlWriter.writeStartElement("fileNodeList");
+  for (auto entry : m_fileNodeList) {
+    entry->generateXml(xmlWriter);
+  }
+  xmlWriter.writeEndElement();
+
+  xmlWriter.writeStartElement("FileNodeCountMapping");
+  for (auto entry : FileNodeCountMapping.keys()) {
+    xmlWriter.writeStartElement("FileNodeCountMap");
+    xmlWriter.writeAttribute("key", qStringHex(entry,8));
+    xmlWriter.writeAttribute("value", qStringHex(FileNodeCountMapping[entry],8));
     xmlWriter.writeEndElement();
+  }
 
-    xmlWriter.writeStartElement("transactionLog");
-    for(auto entry : m_transactionLog) {
-        entry->generateXml(xmlWriter);
-    }
-    xmlWriter.writeEndElement();
-
-    xmlWriter.writeStartElement("hashedChunkList");
-    for(auto entry : m_hashedChunkList) {
-        entry->generateXml(xmlWriter);
-    }
-    xmlWriter.writeEndElement();
-
-
-    m_rootFileNodeList->generateXml(xmlWriter);
-
-    xmlWriter.writeStartElement("fileNodeList");
-    for(auto entry : m_fileNodeList) {
-        entry->generateXml(xmlWriter);
-    }
-    xmlWriter.writeEndElement();
-
-
-    xmlWriter.writeEndElement(); // MSONDocument
-    xmlWriter.writeEndDocument();
+  xmlWriter.writeEndElement(); // MSONDocument
+  xmlWriter.writeEndDocument();
 }
 
 QDebug operator<<(QDebug dbg, const MSONDocument &obj) {
@@ -439,52 +441,51 @@ QDebug operator<<(QDebug dbg, const MSONDocument &obj) {
   } else {
     dbg << '\n';
     for (auto key : obj.FileNodeCountMapping) {
-      dbg << qStringHex(key,8) << ", " << obj.FileNodeCountMapping[key] << '\n';
+      dbg << qStringHex(key, 8) << ", " << obj.FileNodeCountMapping[key]
+          << '\n';
     }
   }
 
-
-  dbg<< "FreeChunkList: ";
-  if(obj.m_freeChunkList.empty()) {
-      dbg << "no free chunks\n";
+  dbg << "FreeChunkList: ";
+  if (obj.m_freeChunkList.empty()) {
+    dbg << "no free chunks\n";
   } else {
-      dbg << '\n';
-      for (auto key : obj.m_freeChunkList) {
-          dbg << key << '\n';
-      }
+    dbg << '\n';
+    for (auto key : obj.m_freeChunkList) {
+      dbg << key << '\n';
+    }
   }
 
   dbg << "TransactionLog: ";
-  if(obj.m_transactionLog.empty()) {
-      dbg << "no transactions\n";
+  if (obj.m_transactionLog.empty()) {
+    dbg << "no transactions\n";
   } else {
-      dbg << '\n';
-      for (auto entry : obj.m_transactionLog) {
-          dbg << *entry << '\n';
-      }
+    dbg << '\n';
+    for (auto entry : obj.m_transactionLog) {
+      dbg << *entry << '\n';
+    }
   }
 
   dbg << "HashedChunkList: ";
-  if(obj.m_hashedChunkList.empty()) {
-      dbg << "no hashed chunks\n";
+  if (obj.m_hashedChunkList.empty()) {
+    dbg << "no hashed chunks\n";
   } else {
-      dbg << '\n';
-      for (auto entry : obj.m_hashedChunkList) {
-          dbg << *entry << '\n';
-      }
+    dbg << '\n';
+    for (auto entry : obj.m_hashedChunkList) {
+      dbg << *entry << '\n';
+    }
   }
-
 
   dbg << *obj.m_rootFileNodeList;
 
   dbg << "File Node List: ";
-  if(obj.m_fileNodeList.empty()) {
-      dbg << "no file nodes\n";
+  if (obj.m_fileNodeList.empty()) {
+    dbg << "no file nodes\n";
   } else {
-      dbg << '\n';
-      for (auto entry : obj.m_fileNodeList) {
-          dbg << *entry << '\n';
-      }
+    dbg << '\n';
+    for (auto entry : obj.m_fileNodeList) {
+      dbg << *entry << '\n';
+    }
   }
 
   return dbg;

@@ -3,22 +3,32 @@
 ObjectSpaceManifestRootFND::ObjectSpaceManifestRootFND() {}
 
 ExtendedGUID ObjectSpaceManifestRootFND::getGosidRoot() const {
-  return gosidRoot;
+  return m_gosidRoot;
 }
 
 void ObjectSpaceManifestRootFND::setGosidRoot(const ExtendedGUID &value) {
-  gosidRoot = value;
+  m_gosidRoot = value;
 }
 
 void ObjectSpaceManifestRootFND::deserialize(QDataStream &ds) {
-  ds >> gosidRoot;
+  ds >> m_gosidRoot;
 }
 
 void ObjectSpaceManifestRootFND::serialize(QDataStream &ds) const {
-  ds << gosidRoot;
+  ds << m_gosidRoot;
 }
 
 void ObjectSpaceManifestRootFND::toDebugString(QDebug dbg) const {
   dbg << " ObjectSpaceManifestRootFND:\n"
-      << " gosidRoot: " << gosidRoot << '\n';
+      << " gosidRoot: " << m_gosidRoot << '\n';
+}
+
+
+void ObjectSpaceManifestRootFND::generateXml(QXmlStreamWriter& xmlWriter) const
+{
+    xmlWriter.writeStartElement("ObjectSpaceManifestRootFND");
+
+    m_gosidRoot.generateXml(xmlWriter);
+
+    xmlWriter.writeEndElement();
 }

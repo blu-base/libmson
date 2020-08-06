@@ -15,17 +15,17 @@
 namespace MSONcommon {
 class RevisionManifestList {
 private:
-  FileNodeChunkReference mRef;
+  FileNodeChunkReference m_Ref;
 
-  std::vector<FileNodeListFragment *> mFileNodeListFragments;
-  std::vector<RevisionManifest *> mRevisionManifests;
-  std::vector<FileNode *> mRevisionRoleDeclarations;
+  std::vector<FileNodeListFragment *> m_FileNodeListFragments;
+  std::vector<RevisionManifest *> m_RevisionManifests;
+  std::vector<FileNode *> m_RevisionRoleDeclarations;
 
-  std::vector<FileNode *> mRevisionRoleAndContextDeclarations;
+  std::vector<FileNode *> m_RevisionRoleAndContextDeclarations;
 
-  std::vector<ObjectGroupList *> mObjectGroupLists;
+  std::vector<ObjectGroupList *> m_ObjectGroupLists;
 
-  std::vector<FileNode *> mFileNodeSequence;
+  std::vector<FileNode *> m_FileNodeSequence;
 
 public:
   RevisionManifestList(FileNodeChunkReference ref);
@@ -52,6 +52,8 @@ public:
   //  &obj);
   friend QDataStream &operator>>(QDataStream &ds, RevisionManifestList &obj);
   friend QDebug operator<<(QDebug dbg, const RevisionManifestList &obj);
+
+  void generateXml(QXmlStreamWriter &xmlWriter) const;
 
 private:
   /**

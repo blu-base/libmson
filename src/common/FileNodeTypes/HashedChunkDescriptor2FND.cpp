@@ -44,3 +44,17 @@ void HashedChunkDescriptor2FND::toDebugString(QDebug dbg) const {
       << " m_BlobRef:" << m_BlobRef << '\n'
       << " m_guidHash: " << m_guidHash.toHex() << '\n';
 }
+
+
+void HashedChunkDescriptor2FND::generateXml(QXmlStreamWriter& xmlWriter) const
+{
+    xmlWriter.writeStartElement("HashedChunkDescriptor2FND");
+
+    m_BlobRef.generateXml(xmlWriter);
+
+    xmlWriter.writeStartElement("guidHash");
+    xmlWriter.writeCDATA(m_guidHash);
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeEndElement();
+}

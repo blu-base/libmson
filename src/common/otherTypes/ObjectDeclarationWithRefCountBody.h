@@ -61,6 +61,8 @@ public:
   friend QDebug operator<<(QDebug dbg,
                            const ObjectDeclarationWithRefCountBody &obj);
 
+  void generateXml(QXmlStreamWriter &xmlWriter) const;
+
   CompactID getOid() const;
   void setOid(const CompactID &value);
 

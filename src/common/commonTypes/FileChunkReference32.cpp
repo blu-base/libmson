@@ -54,15 +54,8 @@ void FileChunkReference32::generateXml(QXmlStreamWriter& xmlWriter) const
     } else if (this->is_fcrZero()) {
         xmlWriter.writeAttribute("fcrZero", "true");
     } else {
-        xmlWriter.writeStartElement("stp");
-        xmlWriter.writeAttribute("type", "quint32");
-        xmlWriter.writeCharacters(qStringHex(m_stp,8));
-        xmlWriter.writeEndElement();
-
-        xmlWriter.writeStartElement("cb");
-        xmlWriter.writeAttribute("type", "quint32");
-        xmlWriter.writeCharacters(qStringHex(m_cb,8));
-        xmlWriter.writeEndElement();
+        xmlWriter.writeAttribute("stp",qStringHex(m_stp,8));
+        xmlWriter.writeAttribute("cb",qStringHex(m_cb,8));
     }
 
 

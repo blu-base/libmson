@@ -1,39 +1,41 @@
 #include "ObjectDataEncryptionKeyV2FNDX.h"
 
+#include "../helper/Helper.h"
+
 ObjectDataEncryptionKeyV2FNDX::ObjectDataEncryptionKeyV2FNDX(
     FNCR_STP_FORMAT stpFormat, FNCR_CB_FORMAT cbFormat)
-    : ref(stpFormat, cbFormat), header(), footer() {}
+    : m_ref(stpFormat, cbFormat), m_header(), m_footer() {}
 ObjectDataEncryptionKeyV2FNDX::ObjectDataEncryptionKeyV2FNDX(quint8 stpFormat,
                                                              quint8 cbFormat)
-    : ref(stpFormat, cbFormat), header(), footer() {}
+    : m_ref(stpFormat, cbFormat), m_header(), m_footer() {}
 
 QByteArray ObjectDataEncryptionKeyV2FNDX::getEncryptionData() const {
-  return EncryptionData;
+  return m_EncryptionData;
 }
 
 void ObjectDataEncryptionKeyV2FNDX::setEncryptionData(const QByteArray &value) {
-  EncryptionData = value;
+  m_EncryptionData = value;
 }
 
-quint64 ObjectDataEncryptionKeyV2FNDX::getFooter() const { return footer; }
+quint64 ObjectDataEncryptionKeyV2FNDX::getFooter() const { return m_footer; }
 
 void ObjectDataEncryptionKeyV2FNDX::setFooter(const quint64 &value) {
-  footer = value;
+  m_footer = value;
 }
 
-quint64 ObjectDataEncryptionKeyV2FNDX::getHeader() const { return header; }
+quint64 ObjectDataEncryptionKeyV2FNDX::getHeader() const { return m_header; }
 
 void ObjectDataEncryptionKeyV2FNDX::setHeader(const quint64 &value) {
-  header = value;
+  m_header = value;
 }
 
 FileNodeChunkReference ObjectDataEncryptionKeyV2FNDX::getRef() const {
-  return ref;
+  return m_ref;
 }
 
 void ObjectDataEncryptionKeyV2FNDX::setRef(
     const FileNodeChunkReference &value) {
-  ref = value;
+  m_ref = value;
 }
 
 /**
@@ -43,14 +45,14 @@ void ObjectDataEncryptionKeyV2FNDX::setRef(
  * \todo there is probably an error here
  */
 void ObjectDataEncryptionKeyV2FNDX::deserialize(QDataStream &ds) {
-  ds >> ref;
+  ds >> m_ref;
 
   quint64 currentloc = ds.device()->pos();
 
-  ds.device()->seek(ref.stp());
-  ds >> header;
-  EncryptionData = ds.device()->peek(ref.cb());
-  ds >> footer;
+  ds.device()->seek(m_ref.stp());
+  ds >> m_header;
+  m_EncryptionData = ds.device()->peek(m_ref.cb());
+  ds >> m_footer;
 
   ds.device()->seek(currentloc);
 }
@@ -63,10 +65,29 @@ void ObjectDataEncryptionKeyV2FNDX::deserialize(QDataStream &ds) {
  * unimplemented
  */
 void ObjectDataEncryptionKeyV2FNDX::serialize(QDataStream &ds) const {
-  ds << ref;
+  ds << m_ref;
 }
 
 void ObjectDataEncryptionKeyV2FNDX::toDebugString(QDebug dbg) const {
   dbg << " ObjectDataEncryptionKeyV2FNDX:\n"
-      << " Ref: " << ref << '\n';
+      << " Ref: " << m_ref << '\n';
+}
+
+
+void ObjectDataEncryptionKeyV2FNDX::generateXml(QXmlStreamWriter& xmlWriter) const
+{
+    xmlWriter.writeStartElement("ObjectDataEncryptionKeyV2FNDX");
+
+    xmlWriter.writeAttribute("header", qStringHex(m_header,16));
+    xmlWriter.writeAttribute("footer", qStringHex(m_header,16));
+
+
+    m_ref.generateXml(xmlWriter);
+
+    xmlWriter.writeStartElement("m_EncryptionData");
+    xmlWriter.writeCDATA(m_EncryptionData);
+    xmlWriter.writeEndElement();
+
+
+    xmlWriter.writeEndElement();
 }

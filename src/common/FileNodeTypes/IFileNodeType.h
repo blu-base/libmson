@@ -5,6 +5,7 @@
 
 #include <QDataStream>
 #include <QDebug>
+#include <QXmlStreamWriter>
 
 /**
  * @class IFileNodeType
@@ -25,6 +26,8 @@ public:
 
   friend QDebug operator<<(QDebug dbg, const IFileNodeType &obj);
   ;
+
+  virtual void generateXml(QXmlStreamWriter &xmlWriter) const = 0;
 
 private:
   /**

@@ -1,79 +1,102 @@
 #include "ObjectRevisionWithRefCount2FNDX.h"
 
+#include "../helper/Helper.h"
+
 ObjectRevisionWithRefCount2FNDX::ObjectRevisionWithRefCount2FNDX(
     FNCR_STP_FORMAT stpFormat, FNCR_CB_FORMAT cbFormat)
-    : ref{FileNodeChunkReference(stpFormat, cbFormat)} {}
+    : m_ref{FileNodeChunkReference(stpFormat, cbFormat)},
+      m_fHasOidReferences(false), m_fHasOsidReferences(false), m_cRef(0) {}
 ObjectRevisionWithRefCount2FNDX::ObjectRevisionWithRefCount2FNDX(
     quint8 stpFormat, quint8 cbFormat)
-    : ref{FileNodeChunkReference(stpFormat, cbFormat)} {}
+    : m_ref{FileNodeChunkReference(stpFormat, cbFormat)},
+      m_fHasOidReferences(false), m_fHasOsidReferences(false), m_cRef(0) {}
 
-quint32 ObjectRevisionWithRefCount2FNDX::getCRef() const { return cRef; }
+quint32 ObjectRevisionWithRefCount2FNDX::getCRef() const { return m_cRef; }
 
 void ObjectRevisionWithRefCount2FNDX::setCRef(const quint32 &value) {
-  cRef = value;
+  m_cRef = value;
 }
 
 bool ObjectRevisionWithRefCount2FNDX::getFHasOsidReferences() const {
-  return fHasOsidReferences;
+  return m_fHasOsidReferences;
 }
 
 void ObjectRevisionWithRefCount2FNDX::setFHasOsidReferences(bool value) {
-  fHasOsidReferences = value;
+  m_fHasOsidReferences = value;
 }
 
 bool ObjectRevisionWithRefCount2FNDX::getFHasOidReferences() const {
-  return fHasOidReferences;
+  return m_fHasOidReferences;
 }
 
 void ObjectRevisionWithRefCount2FNDX::setFHasOidReferences(bool value) {
-  fHasOidReferences = value;
+  m_fHasOidReferences = value;
 }
 
-CompactID ObjectRevisionWithRefCount2FNDX::getOid() const { return oid; }
+CompactID ObjectRevisionWithRefCount2FNDX::getOid() const { return m_oid; }
 
 void ObjectRevisionWithRefCount2FNDX::setOid(const CompactID &value) {
-  oid = value;
+  m_oid = value;
 }
 
 FileNodeChunkReference ObjectRevisionWithRefCount2FNDX::getRef() const {
-  return ref;
+  return m_ref;
 }
 
 void ObjectRevisionWithRefCount2FNDX::setRef(
     const FileNodeChunkReference &value) {
-  ref = value;
+  m_ref = value;
 }
 
 void ObjectRevisionWithRefCount2FNDX::deserialize(QDataStream &ds) {
-  ds >> ref;
-  ds >> oid;
+  ds >> m_ref;
+  ds >> m_oid;
 
   quint32 temp;
   ds >> temp;
 
-  fHasOidReferences = temp & 0x1;
-  fHasOsidReferences = (temp & 0x2) >> 1;
+  m_fHasOidReferences = temp & 0x1;
+  m_fHasOsidReferences = (temp & 0x2) >> 1;
 
-  ds >> cRef;
+  ds >> m_cRef;
 }
 
 void ObjectRevisionWithRefCount2FNDX::serialize(QDataStream &ds) const {
-  ds << ref;
-  ds << oid;
+  ds << m_ref;
+  ds << m_oid;
 
   quint32 temp{0};
 
-  temp += fHasOidReferences;
-  temp += fHasOsidReferences << 1;
+  temp += m_fHasOidReferences;
+  temp += m_fHasOsidReferences << 1;
 
   ds << temp;
 
-  ds << cRef;
+  ds << m_cRef;
 }
 
 void ObjectRevisionWithRefCount2FNDX::toDebugString(QDebug dbg) const {
   dbg << " ObjectRevisionWithRefCount2FNDX: \n"
-      << " ref: " << ref << "oid: " << oid
-      << " fHasOidReferences: " << fHasOidReferences
-      << " fHasOsidReferences: " << fHasOsidReferences << "cRef: " << cRef;
+      << " ref: " << m_ref << "oid: " << m_oid
+      << " fHasOidReferences: " << m_fHasOidReferences
+      << " fHasOsidReferences: " << m_fHasOsidReferences << "cRef: " << m_cRef;
+}
+
+void ObjectRevisionWithRefCount2FNDX::generateXml(
+    QXmlStreamWriter &xmlWriter) const {
+
+    xmlWriter.writeStartElement("ObjectRevisionWithRefCount2FNDX");
+
+
+    xmlWriter.writeAttribute("cRef", qStringHex(m_cRef,8));
+    xmlWriter.writeAttribute("fHasOidReferences", m_fHasOidReferences ? "true": "false");
+    xmlWriter.writeAttribute("fHasOsidReferences", m_fHasOsidReferences ? "true": "false");
+
+    m_ref.generateXml(xmlWriter);
+
+    m_oid.generateXml(xmlWriter);
+
+
+
+    xmlWriter.writeEndElement();
 }

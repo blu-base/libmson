@@ -7,18 +7,25 @@
 #include "FileNode.h"
 namespace MSONcommon {
 class RevisionManifest {
+private:
+      std::vector<FileNode*> m_FileNodeSquence;
 public:
-  std::vector<FileNode *> FileNodeSquence;
+
 
   RevisionManifest();
   ~RevisionManifest();
 
-  std::vector<FileNode *> getFileNodeSquence() const;
+  std::vector<FileNode *> &getFileNodeSquence();
   void setFileNodeSquence(const std::vector<FileNode *> &value);
+
+
 
   friend QDataStream &operator<<(QDataStream &ds, const RevisionManifest &obj);
   friend QDataStream &operator>>(QDataStream &ds, RevisionManifest &obj);
   friend QDebug operator<<(QDebug dbg, const RevisionManifest &obj);
+
+  void generateXml(QXmlStreamWriter &xmlWriter) const;
+
 
 private:
   /**

@@ -38,6 +38,10 @@ private:
   void deserialize(QDataStream &ds) override;
   void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
+
+  // IFileNodeType interface
+public:
+  virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
 };
 
 #endif // READONLYOBJECTDECLARATION2LARGEREFCOUNTFND_H

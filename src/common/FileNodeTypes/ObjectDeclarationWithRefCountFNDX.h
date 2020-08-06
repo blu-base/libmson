@@ -8,17 +8,20 @@
 #include "IFileNodeType.h"
 
 class ObjectDeclarationWithRefCountFNDX : public IFileNodeType {
+private:
+
+    FileNodeChunkReference m_objectRef;
+
+    ObjectDeclarationWithRefCountBody m_body;
+
+    quint8 m_cRef;
 public:
   ObjectDeclarationWithRefCountFNDX(FNCR_STP_FORMAT stpFormat,
                                     FNCR_CB_FORMAT cbFormat);
   ObjectDeclarationWithRefCountFNDX(quint8 stpFormat, quint8 cbFormat);
   ~ObjectDeclarationWithRefCountFNDX();
 
-  FileNodeChunkReference objectRef;
 
-  ObjectDeclarationWithRefCountBody body;
-
-  quint8 cRef;
 
   FileNodeChunkReference getObjectRef() const;
   void setObjectRef(const FileNodeChunkReference &value);
@@ -33,6 +36,10 @@ private:
   void deserialize(QDataStream &ds) override;
   void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
+
+  // IFileNodeType interface
+public:
+  virtual void generateXml(QXmlStreamWriter& xmlWriter) const override;
 };
 
 #endif // OBJECTDECLARATIONWITHREFCOUNTFNDX_H

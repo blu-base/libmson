@@ -3,36 +3,47 @@
 RevisionRoleAndContextDeclarationFND::RevisionRoleAndContextDeclarationFND() {}
 
 ExtendedGUID RevisionRoleAndContextDeclarationFND::getGctxid() const {
-  return gctxid;
+  return m_gctxid;
 }
 
 void RevisionRoleAndContextDeclarationFND::setGctxid(
     const ExtendedGUID &value) {
-  gctxid = value;
+  m_gctxid = value;
 }
 
 RevisionRoleDeclarationFND
 RevisionRoleAndContextDeclarationFND::getBase() const {
-  return base;
+  return m_base;
 }
 
 void RevisionRoleAndContextDeclarationFND::setBase(
     const RevisionRoleDeclarationFND &value) {
-  base = value;
+  m_base = value;
 }
 
 void RevisionRoleAndContextDeclarationFND::deserialize(QDataStream &ds) {
-  ds >> base;
-  ds >> gctxid;
+  ds >> m_base;
+  ds >> m_gctxid;
 }
 
 void RevisionRoleAndContextDeclarationFND::serialize(QDataStream &ds) const {
-  ds << base;
-  ds << gctxid;
+  ds << m_base;
+  ds << m_gctxid;
 }
 
 void RevisionRoleAndContextDeclarationFND::toDebugString(QDebug dbg) const {
   dbg << " RevisionRoleAndContextDeclarationFND\n"
       << " Base:\n"
-      << base << "gctxid: " << gctxid << '\n';
+      << m_base << "gctxid: " << m_gctxid << '\n';
+}
+
+void RevisionRoleAndContextDeclarationFND::generateXml(
+    QXmlStreamWriter &xmlWriter) const {
+  xmlWriter.writeStartElement("RevisionRoleAndContextDeclarationFND");
+
+  m_base.generateXml(xmlWriter);
+
+  m_gctxid.generateXml(xmlWriter);
+
+  xmlWriter.writeEndElement();
 }

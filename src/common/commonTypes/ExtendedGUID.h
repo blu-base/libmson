@@ -6,6 +6,7 @@
 #include <QDataStream>
 #include <QDebug>
 #include <QUuid>
+#include <QXmlStreamWriter>
 
 class ExtendedGUID {
 
@@ -28,6 +29,8 @@ public:
   bool isValid() const;
   bool isNull() const;
 
+  QString toString() const;
+
   //  bool equals(const ExtendedGUID &extGuid) const;
 
   friend QDataStream &operator<<(QDataStream &ds, const ExtendedGUID &obj);
@@ -35,6 +38,8 @@ public:
   friend QDataStream &operator>>(QDataStream &ds, ExtendedGUID &obj);
   friend QDebug operator<<(QDebug dbg, const ExtendedGUID &obj);
   ;
+
+
 
   friend bool operator==(const ExtendedGUID &lhs,
                          const ExtendedGUID &rhs) noexcept;
@@ -44,6 +49,8 @@ public:
                          const ExtendedGUID &rhs) noexcept;
   friend bool operator>=(const ExtendedGUID &lhs,
                          const ExtendedGUID &rhs) noexcept;
+
+  void generateXml(QXmlStreamWriter &xmlWriter) const;
 
 private:
   void deserialize(QDataStream &ds);

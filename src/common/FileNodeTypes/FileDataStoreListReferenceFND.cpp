@@ -2,30 +2,38 @@
 
 FileDataStoreListReferenceFND::FileDataStoreListReferenceFND(
     FNCR_STP_FORMAT stpFormat, FNCR_CB_FORMAT cbFormat)
-    : ref(stpFormat, cbFormat) {}
+    : m_ref(stpFormat, cbFormat) {}
 
 FileDataStoreListReferenceFND::FileDataStoreListReferenceFND(quint8 stpFormat,
                                                              quint8 cbFormat)
-    : ref(stpFormat, cbFormat) {}
+    : m_ref(stpFormat, cbFormat) {}
 
 FileDataStoreListReferenceFND::~FileDataStoreListReferenceFND() {}
 
 FileNodeChunkReference FileDataStoreListReferenceFND::getRef() const {
-  return ref;
+  return m_ref;
 }
 
 void FileDataStoreListReferenceFND::setRef(
     const FileNodeChunkReference &value) {
-  ref = value;
+  m_ref = value;
 }
 
-void FileDataStoreListReferenceFND::deserialize(QDataStream &ds) { ds >> ref; }
+void FileDataStoreListReferenceFND::deserialize(QDataStream &ds) { ds >> m_ref; }
 
 void FileDataStoreListReferenceFND::serialize(QDataStream &ds) const {
-  ds << ref;
+  ds << m_ref;
 }
 
 void FileDataStoreListReferenceFND::toDebugString(QDebug dbg) const {
   dbg << " FileDataStoreObjectReferenceFND:\n"
-      << " ref: " << ref << '\n';
+      << " ref: " << m_ref << '\n';
+}
+
+
+void FileDataStoreListReferenceFND::generateXml(QXmlStreamWriter& xmlWriter) const
+{
+    xmlWriter.writeStartElement("FileDataStoreListReferenceFND");
+    m_ref.generateXml(xmlWriter);
+    xmlWriter.writeEndElement();
 }

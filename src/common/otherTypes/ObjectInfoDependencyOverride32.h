@@ -34,6 +34,8 @@ public:
   quint32 cRef() const;
   void setCRef(const quint32 &cRef);
 
+  void generateXml(QXmlStreamWriter &xmlWriter) const;
+
 private:
   /**
    * @brief creates ObjectInfoDependencyOverride32 from QDataStream

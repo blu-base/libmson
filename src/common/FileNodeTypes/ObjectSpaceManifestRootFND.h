@@ -19,10 +19,7 @@
  * It must be in the root file node list
  */
 class ObjectSpaceManifestRootFND : public IFileNodeType {
-public:
-  ObjectSpaceManifestRootFND();
-  ~ObjectSpaceManifestRootFND();
-
+private:
   /**
    * @brief specifies the identity of the root object space
    * @var gosidRoot
@@ -30,7 +27,11 @@ public:
    * must be equal with ObjectSpaceManifestListReferenceFND.gosid
    * in the object space manifest list
    */
-  ExtendedGUID gosidRoot;
+  ExtendedGUID m_gosidRoot;
+
+public:
+  ObjectSpaceManifestRootFND();
+  ~ObjectSpaceManifestRootFND();
 
   ExtendedGUID getGosidRoot() const;
   void setGosidRoot(const ExtendedGUID &value);
@@ -40,6 +41,10 @@ private:
   void deserialize(QDataStream &ds);
   void serialize(QDataStream &ds) const;
   void toDebugString(QDebug dbg) const;
+
+  // IFileNodeType interface
+public:
+  virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
 };
 
 #endif // OBJECTSPACEMANIFESTROOTFND_H

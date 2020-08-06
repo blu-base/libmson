@@ -44,6 +44,9 @@ public:
   friend QDataStream &operator>>(QDataStream &ds, ObjectSpaceManifestList &obj);
   friend QDebug operator<<(QDebug dbg, const ObjectSpaceManifestList &obj);
 
+  void generateXml(QXmlStreamWriter &xmlWriter) const;
+
+
 private:
   /**
    * @brief creates ObjectSpaceManifestList from QDataStream

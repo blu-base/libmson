@@ -3,6 +3,8 @@
 
 #include <QtCore/qglobal.h>
 
+#include <QXmlStreamWriter>
+
 #include "ObjectInfoDependencyOverride32.h"
 #include "ObjectInfoDependencyOverride8.h"
 
@@ -43,6 +45,8 @@ public:
 
   friend QDebug operator<<(QDebug dbg,
                            const ObjectInfoDependencyOverrideData &obj);
+
+  void generateXml(QXmlStreamWriter &xmlWriter) const;
 
   quint32 c8BitOverrides() const;
   void setC8BitOverrides(const quint32 &c8BitOverrides);

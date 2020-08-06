@@ -308,8 +308,9 @@ void RootFileNodeList::deserialize(QDataStream &ds) {
     auto *objectSpaceManifestListReference =
         dynamic_cast<ObjectSpaceManifestListReferenceFND *>(entry->getFnt());
 
+    auto ref = objectSpaceManifestListReference->getRef();
     ObjectSpaceManifestList *osml =
-        new ObjectSpaceManifestList(objectSpaceManifestListReference->ref);
+        new ObjectSpaceManifestList(ref);
 
     ds >> *osml;
 
@@ -439,7 +440,7 @@ void RootFileNodeList::generateXml(QXmlStreamWriter& xmlWriter) const
 
     xmlWriter.writeStartElement("objectSpaceManifestList");
     for(auto entry : m_objectSpaceManifestList) {
-//        entry->generateXml(xmlWriter);
+        entry->generateXml(xmlWriter);
     }
     xmlWriter.writeEndElement();
 

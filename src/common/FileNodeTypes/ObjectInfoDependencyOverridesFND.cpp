@@ -2,31 +2,31 @@
 
 ObjectInfoDependencyOverridesFND::ObjectInfoDependencyOverridesFND(
     FNCR_STP_FORMAT stpFormat, FNCR_CB_FORMAT cbFormat)
-    : ref(stpFormat, cbFormat) {}
+    : m_ref(stpFormat, cbFormat) {}
 
 ObjectInfoDependencyOverridesFND::ObjectInfoDependencyOverridesFND(
     quint8 stpFormat, quint8 cbFormat)
-    : ref(stpFormat, cbFormat) {}
+    : m_ref(stpFormat, cbFormat) {}
 
 ObjectInfoDependencyOverridesFND::~ObjectInfoDependencyOverridesFND() {}
 
 ObjectInfoDependencyOverrideData
 ObjectInfoDependencyOverridesFND::getData() const {
-  return data;
+  return m_data;
 }
 
 void ObjectInfoDependencyOverridesFND::setData(
     const ObjectInfoDependencyOverrideData &value) {
-  data = value;
+  m_data = value;
 }
 
 FileNodeChunkReference ObjectInfoDependencyOverridesFND::getRef() const {
-  return ref;
+  return m_ref;
 }
 
 void ObjectInfoDependencyOverridesFND::setRef(
     const FileNodeChunkReference &value) {
-  ref = value;
+  m_ref = value;
 }
 
 /**
@@ -36,13 +36,13 @@ void ObjectInfoDependencyOverridesFND::setRef(
  * \todo check if device/seek stuff is working
  */
 void ObjectInfoDependencyOverridesFND::deserialize(QDataStream &ds) {
-  ds >> ref;
+  ds >> m_ref;
 
-  if (ref.is_fcrNil()) {
+  if (m_ref.is_fcrNil()) {
     //        ds >> data;
   } else {
     quint64 currentloc = ds.device()->pos();
-    ds.device()->seek(ref.stp());
+    ds.device()->seek(m_ref.stp());
     //        ds >> data;
     ds.device()->seek(currentloc);
   }
@@ -56,13 +56,13 @@ void ObjectInfoDependencyOverridesFND::deserialize(QDataStream &ds) {
  * \todo ObjectInfoDependencyOverrideData is not yet parsed.
  */
 void ObjectInfoDependencyOverridesFND::serialize(QDataStream &ds) const {
-  ds << ref;
+  ds << m_ref;
 
-  if (ref.is_fcrNil()) {
+  if (m_ref.is_fcrNil()) {
     //        ds << data;
   } else {
     quint64 currentloc = ds.device()->pos();
-    ds.device()->seek(ref.stp());
+    ds.device()->seek(m_ref.stp());
     //        ds << data;
     ds.device()->seek(currentloc);
   }
@@ -71,7 +71,20 @@ void ObjectInfoDependencyOverridesFND::serialize(QDataStream &ds) const {
 void ObjectInfoDependencyOverridesFND::toDebugString(QDebug dbg) const {
   dbg << " ObjectInfoDependencyOverridesFND:\n"
       << " ref: "
-      << ref
-      //        << "data: " << data
+      << m_ref
+              << "data: " << m_data
       << '\n';
+}
+
+
+void ObjectInfoDependencyOverridesFND::generateXml(QXmlStreamWriter& xmlWriter) const
+{
+    xmlWriter.writeStartElement("ObjectInfoDependencyOverridesFND");
+    m_ref.generateXml(xmlWriter);
+
+    m_data.generateXml(xmlWriter);
+
+
+
+    xmlWriter.writeEndElement();
 }

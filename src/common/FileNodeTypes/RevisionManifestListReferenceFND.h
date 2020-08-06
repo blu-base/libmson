@@ -15,6 +15,13 @@
  * 2.5.4 ObjectSpaceManifestRootFND
  */
 class RevisionManifestListReferenceFND : public IFileNodeType {
+private:
+    /**
+     * @brief specifies the location and size of the first FileNodeListFragment
+     * structure in the revision manifest list.
+     * @var ref
+     */
+    FileNodeChunkReference m_ref;
 public:
   RevisionManifestListReferenceFND(FNCR_STP_FORMAT stpFormat,
                                    FNCR_CB_FORMAT cbFormat);
@@ -22,12 +29,7 @@ public:
 
   ~RevisionManifestListReferenceFND();
 
-  /**
-   * @brief specifies the location and size of the first FileNodeListFragment
-   * structure in the revision manifest list.
-   * @var ref
-   */
-  FileNodeChunkReference ref;
+
 
   // IFileNodeType interface
   FileNodeChunkReference getRef() const;
@@ -37,6 +39,10 @@ private:
   void deserialize(QDataStream &ds);
   void serialize(QDataStream &ds) const;
   void toDebugString(QDebug dbg) const;
+
+  // IFileNodeType interface
+public:
+  virtual void generateXml(QXmlStreamWriter& xmlWriter) const override;
 };
 
 #endif // REVISIONMANIFESTLISTREFERENCEFND_H

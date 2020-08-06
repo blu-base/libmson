@@ -7,17 +7,19 @@
 #include "IFileNodeType.h"
 
 class ObjectDataEncryptionKeyV2FNDX : public IFileNodeType {
+private:
+    FileNodeChunkReference m_ref;
+
+    quint64 m_header;
+    quint64 m_footer;
+
+    QByteArray m_EncryptionData;
 public:
   ObjectDataEncryptionKeyV2FNDX(FNCR_STP_FORMAT stpFormat,
                                 FNCR_CB_FORMAT cbFormat);
   ObjectDataEncryptionKeyV2FNDX(quint8 stpFormat, quint8 cbFormat);
 
-  FileNodeChunkReference ref;
 
-  quint64 header;
-  quint64 footer;
-
-  QByteArray EncryptionData;
 
   FileNodeChunkReference getRef() const;
   void setRef(const FileNodeChunkReference &value);
@@ -35,6 +37,10 @@ private:
   void deserialize(QDataStream &ds) override;
   void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
+
+  // IFileNodeType interface
+public:
+  virtual void generateXml(QXmlStreamWriter& xmlWriter) const override;
 };
 
 #endif // OBJECTDATAENCRYPTIONKEYV2FNDX_H

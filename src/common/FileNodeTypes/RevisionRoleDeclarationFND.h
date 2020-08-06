@@ -3,28 +3,31 @@
 
 #include <QtCore/qglobal.h>
 
-#include "IFileNodeType.h"
 #include "../commonTypes/ExtendedGUID.h"
+#include "IFileNodeType.h"
 
-class RevisionRoleDeclarationFND : public IFileNodeType
-{
+class RevisionRoleDeclarationFND : public IFileNodeType {
+private:
+  ExtendedGUID m_rid;
+  quint32 m_RevisionRole;
+
 public:
   RevisionRoleDeclarationFND();
 
-  ExtendedGUID rid;
-  quint32 RevisionRole;
-
-
   ExtendedGUID getRid() const;
-  void setRid(const ExtendedGUID& value);
+  void setRid(const ExtendedGUID &value);
 
   quint32 getRevisionRole() const;
-  void setRevisionRole(const quint32& value);
+  void setRevisionRole(const quint32 &value);
 
 private:
-  void deserialize(QDataStream& ds) override;
-  void serialize(QDataStream& ds) const override;
+  void deserialize(QDataStream &ds) override;
+  void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
+
+  // IFileNodeType interface
+public:
+  virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
 };
 
 #endif // REVISIONROLEDECLARATIONFND_H

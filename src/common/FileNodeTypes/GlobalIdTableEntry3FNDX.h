@@ -7,15 +7,17 @@
 
 class GlobalIdTableEntry3FNDX : public IFileNodeType
 {
+private:
+    quint32 m_iIndexCopyFromStart;
+
+    quint32 m_cEntriesToCopy;
+
+    quint32 m_iIndexCopyToStart;
 public:
   GlobalIdTableEntry3FNDX();
 
 
-  quint32 iIndexCopyFromStart;
 
-  quint32 cEntriesToCopy;
-
-  quint32 iIndexCopyToStart;
 
 
   quint32 getIIndexCopyFromStart() const;
@@ -30,6 +32,10 @@ private:
   void deserialize(QDataStream& ds) override;
   void serialize(QDataStream& ds) const override;
   void toDebugString(QDebug dbg) const override;
+
+  // IFileNodeType interface
+public:
+  virtual void generateXml(QXmlStreamWriter& xmlWriter) const override;
 };
 
 #endif // GLOBALIDTABLEENTRY3FNDX_H

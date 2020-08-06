@@ -71,6 +71,19 @@ JCID::JCID()
     : m_index{}, m_IsBinary{false}, m_IsPropertySet{false},
       m_IsGraphNode{false}, m_IsFileData{false}, m_IsReadOnly{true} {}
 
+void JCID::generateXml(QXmlStreamWriter &xmlWriter) const {
+  xmlWriter.writeStartElement("JCID");
+  xmlWriter.writeAttribute("index", qStringHex(m_index, 4));
+  xmlWriter.writeAttribute("isBinary", m_IsBinary ? "true" : "false");
+  xmlWriter.writeAttribute("IsPropertySet", m_IsPropertySet ? "true" : "false");
+  xmlWriter.writeAttribute("IsGraphNode", m_IsGraphNode ? "true" : "false");
+  xmlWriter.writeAttribute("IsFileData", m_IsFileData ? "true" : "false");
+  xmlWriter.writeAttribute("IsReadOnly", m_IsReadOnly ? "true" : "false");
+
+
+  xmlWriter.writeEndElement();
+}
+
 QDataStream &operator<<(QDataStream &ds, const JCID &obj) {
   obj.serialize(ds);
   return ds;
