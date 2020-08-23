@@ -24,7 +24,17 @@ ObjectDeclaration2Body ObjectDeclaration2RefCountFND::getBody() const {
 
 void ObjectDeclaration2RefCountFND::setBody(
     const ObjectDeclaration2Body &value) {
-  m_body = value;
+    m_body = value;
+}
+
+ObjectSpaceObjectPropSet ObjectDeclaration2RefCountFND::getPropSet() const
+{
+    return m_blob;
+}
+
+void ObjectDeclaration2RefCountFND::setPropSet(const ObjectSpaceObjectPropSet& value)
+{
+    m_blob = value;
 }
 
 FileNodeChunkReference ObjectDeclaration2RefCountFND::getBlobRef() const {
@@ -41,12 +51,23 @@ void ObjectDeclaration2RefCountFND::deserialize(QDataStream &ds) {
 
   ds >> m_body;
   ds >> m_cRef;
+
+
+  // getting remote ObjectPropSet
+  quint64 curLocation = ds.device()->pos();
+  quint64 destLocation = m_blobRef.stp();
+
+  ds.device()->seek(destLocation);
+  ds >> m_blob;
+  ds.device()->seek(curLocation);
 }
 
 void ObjectDeclaration2RefCountFND::serialize(QDataStream &ds) const {
   ds << m_blobRef;
   ds << m_body;
   ds << m_cRef;
+
+
 }
 
 void ObjectDeclaration2RefCountFND::toDebugString(QDebug dbg) const {
@@ -66,6 +87,8 @@ void ObjectDeclaration2RefCountFND::generateXml(QXmlStreamWriter& xmlWriter) con
     m_blobRef.generateXml(xmlWriter);
 
     m_body.generateXml(xmlWriter);
+
+    m_blob.generateXml(xmlWriter);
 
     xmlWriter.writeEndElement();
 }

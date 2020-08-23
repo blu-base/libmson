@@ -7,3 +7,8 @@ void PropertyType_Bool::deserialize(QDataStream &ds) {}
 void PropertyType_Bool::serialize(QDataStream &ds) const {}
 
 void PropertyType_Bool::toDebugString(QDebug dbg) const {}
+
+
+void PropertyType_Bool::generateXml(QXmlStreamWriter& xmlWriter) const
+{
+}

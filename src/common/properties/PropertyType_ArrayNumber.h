@@ -11,22 +11,20 @@
 class PropertyType_ArrayNumber : public IPropertyType {
 private:
   quint32 m_cCIDs;
-  std::vector<CompactID> m_data;
 
 public:
   PropertyType_ArrayNumber();
 
-  // IPropertyType interface
-  std::vector<CompactID> data() const;
-  void setData(const std::vector<CompactID> &data);
-
   quint32 cCIDs() const;
   void setCCIDs(const quint32 &cCIDs);
+
+  virtual void generateXml(QXmlStreamWriter& xmlWriter) const override;
 
 private:
   void deserialize(QDataStream &ds) override;
   void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
+
 };
 
 #endif // PROPERTYTYPE_ARRAYOFCONTEXTIDS_H

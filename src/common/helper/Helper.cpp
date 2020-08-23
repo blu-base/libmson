@@ -26,3 +26,41 @@ quint64 roundUpMultiple(const quint64 numToRound, const quint64 multiple) {
     return numToRound + multiple - remainder;
   }
 }
+
+
+std::vector<MSONcommon::FileNodeListFragment> parseFileNodeListFragments(QDataStream& ds, FileChunkReference64x32& ref)
+{
+    quint64 preLocation = ds.device()->pos();
+    std::vector<MSONcommon::FileNodeListFragment> fragments {};
+
+    ds.device()->seek(ref.stp());
+    // Parse all fragments and add them to m_fileNodeSequence
+   MSONcommon::FileNodeListFragment fragment(ref);
+
+
+    ds >> fragment;
+    fragments.push_back(fragment);
+
+    FileChunkReference64x32 nextFragmentRef = fragment.nextFragment();
+
+    while (!nextFragmentRef.is_fcrNil() && !nextFragmentRef.is_fcrZero()) {
+      MSONcommon::FileNodeListFragment nextFragment (nextFragmentRef);
+      ds.device()->seek(nextFragmentRef.stp());
+      ds >> nextFragment;
+
+      nextFragmentRef = nextFragment.nextFragment();
+      fragments.push_back(nextFragment);
+    }
+
+    ds.device()->seek(preLocation);
+    return fragments;
+}
+
+
+
+std::vector<MSONcommon::FileNodeListFragment> parseFileNodeListFragments(QDataStream& ds, FileNodeChunkReference& ref)
+{
+    FileChunkReference64x32 tref(ref.stp(),static_cast<quint32>(ref.cb()) );
+
+    return parseFileNodeListFragments(ds,tref);
+}

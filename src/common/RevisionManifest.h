@@ -8,15 +8,15 @@
 namespace MSONcommon {
 class RevisionManifest {
 private:
-      std::vector<FileNode*> m_FileNodeSquence;
+      std::vector<FileNode> m_FileNodeSquence;
 public:
 
 
   RevisionManifest();
   ~RevisionManifest();
 
-  std::vector<FileNode *> &getFileNodeSquence();
-  void setFileNodeSquence(const std::vector<FileNode *> &value);
+  std::vector<FileNode> &getFileNodeSquence();
+  void setFileNodeSquence(const std::vector<FileNode> &value);
 
 
 

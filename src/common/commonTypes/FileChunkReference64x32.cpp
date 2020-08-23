@@ -5,8 +5,16 @@
 FileChunkReference64x32::FileChunkReference64x32()
     : IFileChunkReference<quint64, quint32>() {}
 
+FileChunkReference64x32::FileChunkReference64x32(const quint64& stp, const quint32& cb)
+    : FileChunkReference64x32()
+{
+    setStp(stp);
+    setCb(cb);
+
+}
+
 FileChunkReference64x32::FileChunkReference64x32(FCR_INITTYPE inittype)
-    : IFileChunkReference<quint64, quint32>() {
+    : FileChunkReference64x32() {
   switch (inittype) {
   case FCR_INITTYPE::FCRNIL:
     this->set_fcrNil();

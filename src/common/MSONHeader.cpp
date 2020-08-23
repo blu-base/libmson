@@ -23,7 +23,7 @@ static constexpr const quint32 def_reservedHeaderTailLength = 728;
 
 MSONHeader::MSONHeader()
     : // guidFileType {QUuid::fromString(QString(v_guidFileType_One))},
-      guidFile{QUuid()}, guidLegacyFileVersion{QUuid()}, guidFileFormat{QUuid(
+      guidFile{QUuid().createUuid()}, guidLegacyFileVersion{QUuid()}, guidFileFormat{QUuid(
                                                              v_guidFileFormat)},
       ffvLastWriterVersion{0x0000002A}, ffvOldestWriterVersion{0x0000002A},
       ffvNewestWriterVersion{0x0000002A}, ffvOldestReader{0x0000002A},
@@ -33,14 +33,15 @@ MSONHeader::MSONHeader()
       fcrLegacyFileNodeListRoot{FileChunkReference32(FCR_INITTYPE::FCRNIL)},
       cbLegacyFreeSpaceInFreeChunkList{0}, fNeedsDefrag{0}, fRepairedFile{0},
       fNeedsGarbageCollect{0}, fHasNoEmbeddedFileObjects{0},
-      guidAncestor{QUuid()}, crcName{0}, // TODO init crcName properly
+      guidAncestor{QUuid()}, crcName{0}, /// \todo init crcName properly
       fcrHashedChunkList{FileChunkReference64x32()},
       fcrTransactionLog{FileChunkReference64x32()},
       fcrFileNodeListRoot{FileChunkReference64x32()},
       fcrFreeChunkList{FileChunkReference64x32()}, cbExpectedFileLength{0},
       cbFreeSpaceInFreeChunkList{0},
-      guidFileVersion{QUuid()},         // TODO check actual initialization
-      guidDenyReadFileVersion{QUuid()}, // TODO check actual initialization
+      guidFileVersion{QUuid()},         /// \todo check actual initialization
+      nFileVersionGeneration{},
+      guidDenyReadFileVersion{QUuid()}, /// \todo  check actual initialization
       grfDebugLogFlags{0}, fcrDebugLog{FileChunkReference64x32()},
       fcrAllocVerificationFreeChunkList{FileChunkReference64x32()},
       bnCreated{0}, bnLastWroteToThisFile{0}, bnOldestWritten{0},

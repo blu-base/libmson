@@ -3,10 +3,11 @@
 
 #include <QtCore/qglobal.h>
 
-#include "../commonTypes/ExtendedGUID.h"
+#include <QUuid>
+
 #include "IFileNodeType.h"
 
-class GlobalIdTableEntryFNDX : public IFileNodeType {
+class  GlobalIdTableEntryFNDX : public IFileNodeType {
 private:
     quint32 m_index;
 

@@ -21,10 +21,14 @@ public:
   quint32 cCIDs() const;
   void setCCIDs(const quint32 &cCIDs);
 
+  virtual void generateXml(QXmlStreamWriter& xmlWriter) const override;
+
 private:
   void deserialize(QDataStream &ds) override;
   void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
+
+
 };
 
 #endif // PROPERTYTYPE_ARRAYOFOBJECTSPACEIDS_H

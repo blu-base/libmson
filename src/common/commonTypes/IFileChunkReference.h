@@ -18,8 +18,11 @@ protected:
   S m_stp;
   C m_cb;
 
+
+
 public:
-  //  IFileChunkReference();
+//    IFileChunkReference();
+
 
   virtual bool is_fcrNil() const = 0;
   virtual bool is_fcrZero() const = 0;

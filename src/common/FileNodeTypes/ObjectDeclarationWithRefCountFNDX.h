@@ -3,8 +3,10 @@
 
 #include <QtCore/qglobal.h>
 
+
 #include "../commonTypes/FileNodeChunkReference.h"
 #include "../otherTypes/ObjectDeclarationWithRefCountBody.h"
+#include "../otherTypes/ObjectSpaceObjectPropSet.h"
 #include "IFileNodeType.h"
 
 class ObjectDeclarationWithRefCountFNDX : public IFileNodeType {
@@ -15,6 +17,8 @@ private:
     ObjectDeclarationWithRefCountBody m_body;
 
     quint8 m_cRef;
+
+    ObjectSpaceObjectPropSet m_blob;
 public:
   ObjectDeclarationWithRefCountFNDX(FNCR_STP_FORMAT stpFormat,
                                     FNCR_CB_FORMAT cbFormat);
@@ -31,6 +35,9 @@ public:
 
   quint8 getCRef() const;
   void setCRef(const quint8 &value);
+
+  ObjectSpaceObjectPropSet getPropSet() const;
+  void setPropSet(const ObjectSpaceObjectPropSet &value);
 
 private:
   void deserialize(QDataStream &ds) override;

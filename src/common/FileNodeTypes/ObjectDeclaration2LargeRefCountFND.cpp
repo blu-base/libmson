@@ -39,6 +39,14 @@ void ObjectDeclaration2LargeRefCountFND::deserialize(QDataStream &ds) {
   ds >> m_BlobRef;
   ds >> m_body;
   ds >> m_cRef;
+
+  // getting remote ObjectPropSet
+  quint64 curLocation = ds.device()->pos();
+  quint64 destLocation = m_BlobRef.stp();
+
+  ds.device()->seek(destLocation);
+  ds >> m_blob;
+  ds.device()->seek(curLocation);
 }
 
 void ObjectDeclaration2LargeRefCountFND::serialize(QDataStream &ds) const {
@@ -67,7 +75,7 @@ void ObjectDeclaration2LargeRefCountFND::generateXml(QXmlStreamWriter& xmlWriter
 
     m_body.generateXml(xmlWriter);
 
-
+    m_blob.generateXml(xmlWriter);
 
     xmlWriter.writeEndElement();
 }

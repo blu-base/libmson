@@ -8,17 +8,17 @@ ObjectSpaceManifestList::ObjectSpaceManifestList(FileNodeChunkReference &ref)
     : m_ref{ref} {}
 
 ObjectSpaceManifestList::~ObjectSpaceManifestList() {
-  for (auto *fnlf : m_fileNodeListFragments) {
-    delete fnlf;
-  };
+//  for (auto *fnlf : m_fileNodeListFragments) {
+//    delete fnlf;
+//  };
 
   for (auto *rml : m_revisionManifestLists) {
     delete rml;
   }
 
-  for (auto *fns : m_fileNodeSequence) {
-    delete fns;
-  }
+//  for (auto *fns : m_fileNodeSequence) {
+//    delete fns;
+//  }
 }
 
 FileNodeChunkReference ObjectSpaceManifestList::getRef() const { return m_ref; }
@@ -39,11 +39,11 @@ void ObjectSpaceManifestList::generateXml(QXmlStreamWriter& xmlWriter) const
     m_objectSpaceManifestListStart.generateXml(xmlWriter);
     xmlWriter.writeEndElement();
 
-    xmlWriter.writeStartElement("fileNodeListFragments");
-    for (auto entry : m_fileNodeListFragments) {
-        entry->generateXml(xmlWriter);
-    }
-    xmlWriter.writeEndElement();
+//    xmlWriter.writeStartElement("fileNodeListFragments");
+//    for (const auto& entry : m_fileNodeListFragments) {
+//        entry.generateXml(xmlWriter);
+//    }
+//    xmlWriter.writeEndElement();
 
     xmlWriter.writeStartElement("revisionManifestLists");
     for (auto entry : m_revisionManifestLists) {
@@ -52,8 +52,8 @@ void ObjectSpaceManifestList::generateXml(QXmlStreamWriter& xmlWriter) const
     xmlWriter.writeEndElement();
 
     xmlWriter.writeStartElement("fileNodeSequence");
-    for (auto entry : m_fileNodeSequence) {
-        entry->generateXml(xmlWriter);
+    for (const auto& entry : m_fileNodeSequence) {
+        entry.generateXml(xmlWriter);
     }
     xmlWriter.writeEndElement();
 
@@ -72,68 +72,45 @@ QDebug operator<<(QDebug dbg, const ObjectSpaceManifestList &obj) {
 }
 
 void ObjectSpaceManifestList::deserialize(QDataStream &ds) {
-  ds.device()->seek(m_ref.stp());
   qInfo() << "Parsing ObjectSpaceManifestList";
-  FileNodeListFragment *fragment = new FileNodeListFragment(m_ref);
-  ds >> *fragment;
+  m_fileNodeListFragments = parseFileNodeListFragments(ds, m_ref);
 
-   m_fileNodeListFragments.push_back(fragment);
-
-  for (auto *entry : fragment->rgFileNodes()) {
-    if (entry->getFileNodeID() !=
-            static_cast<quint16>(FileNodeTypeID::ChunkTerminatorFND) &&
-        entry->getFileNodeID() != 0) {
-      m_fileNodeSequence.push_back(entry);
-    }
+  for(const auto& fragment : m_fileNodeListFragments) {
+      const auto& rgFileNodes = fragment.rgFileNodes();
+      copy_if(rgFileNodes.begin(), rgFileNodes.end(),
+              back_inserter(m_fileNodeSequence), [](const FileNode& entry) {
+                return entry.getFileNodeTypeID() !=
+                       FileNodeTypeID::ChunkTerminatorFND;
+              });
   }
 
-  FileChunkReference64x32 nextFragmentRef = fragment->nextFragment();
 
-  while (!nextFragmentRef.is_fcrNil() && !nextFragmentRef.is_fcrZero()) {
-    FileNodeListFragment *nextFragment =
-        new FileNodeListFragment(nextFragmentRef);
-
-    ds.device()->seek(nextFragmentRef.stp());
-    ds >> *nextFragment;
-
-    nextFragmentRef = nextFragment->nextFragment();
-    m_fileNodeListFragments.push_back(nextFragment);
-
-    copy_if(
-        nextFragment->rgFileNodes().begin(), nextFragment->rgFileNodes().end(),
-        back_inserter(m_fileNodeSequence), [](FileNode *entry) {
-          return entry->getFileNodeID() !=
-                     static_cast<quint16>(FileNodeTypeID::ChunkTerminatorFND) &&
-                 entry->getFileNodeID() != 0;
-        });
-  }
-
-  std::vector<FileNode *> objectSpaceManifestListStarts{};
+  std::vector<FileNode> objectSpaceManifestListStarts{};
 
   std::copy_if(m_fileNodeSequence.begin(), m_fileNodeSequence.end(),
                back_inserter(objectSpaceManifestListStarts),
-               [](FileNode *entry) {
-                 return entry->getFileNodeID() ==
+               [](FileNode entry) {
+                 return entry.getFileNodeID() ==
                         static_cast<quint16>(
                             FileNodeTypeID::ObjectSpaceManifestListStartFND);
                });
 
   if (objectSpaceManifestListStarts.size() == 1) {
-    m_objectSpaceManifestListStart = *objectSpaceManifestListStarts.at(0);
+    m_objectSpaceManifestListStart = objectSpaceManifestListStarts.at(0);
   }
 
-  std::vector<FileNode *> revisionManifestListRefs{};
+  std::vector<FileNode> revisionManifestListRefs{};
 
   std::copy_if(m_fileNodeSequence.begin(), m_fileNodeSequence.end(),
-               back_inserter(revisionManifestListRefs), [](FileNode *entry) {
-                 return entry->getFileNodeID() ==
+               back_inserter(revisionManifestListRefs), [](FileNode entry) {
+                 return entry.getFileNodeID() ==
                         static_cast<quint16>(
                             FileNodeTypeID::RevisionManifestListReferenceFND);
                });
 
-  for (FileNode *entry : revisionManifestListRefs) {
+  for (FileNode entry : revisionManifestListRefs) {
     auto *revisionManifestListReferenceFND =
-        dynamic_cast<RevisionManifestListReferenceFND *>(entry->getFnt());
+        dynamic_cast<RevisionManifestListReferenceFND *>(entry.getFnt());
 
     RevisionManifestList *rmfl =
         new RevisionManifestList(revisionManifestListReferenceFND->getRef());
@@ -152,8 +129,8 @@ void ObjectSpaceManifestList::toDebugString(QDebug dbg) const {
   if (m_fileNodeListFragments.size() == 0) {
     dbg << "none\n";
   } else {
-    for (auto *entry : m_fileNodeListFragments) {
-      dbg << *entry;
+    for (const auto& entry : m_fileNodeListFragments) {
+      dbg << entry;
     }
   }
 
@@ -172,18 +149,18 @@ void ObjectSpaceManifestList::toDebugString(QDebug dbg) const {
   if (m_fileNodeSequence.size() == 0) {
     dbg << "none\n";
   } else {
-    for (auto *entry : m_fileNodeSequence) {
-      dbg << *entry;
+    for (const auto& entry : m_fileNodeSequence) {
+      dbg << entry;
     }
   }
 }
 
-std::vector<FileNode *> ObjectSpaceManifestList::getFileNodeSequence() const {
+std::vector<FileNode> ObjectSpaceManifestList::getFileNodeSequence() const {
   return m_fileNodeSequence;
 }
 
 void ObjectSpaceManifestList::setFileNodeSequence(
-    const std::vector<FileNode *> &value) {
+    const std::vector<FileNode> &value) {
   m_fileNodeSequence = value;
 }
 
@@ -206,13 +183,13 @@ void ObjectSpaceManifestList::setObjectSpaceManifestListStart(
   m_objectSpaceManifestListStart = value;
 }
 
-std::vector<FileNodeListFragment *>
+std::vector<FileNodeListFragment>
 ObjectSpaceManifestList::getFileNodeListFragments() const {
   return m_fileNodeListFragments;
 }
 
 void ObjectSpaceManifestList::setFileNodeListFragments(
-    const std::vector<FileNodeListFragment *> &value) {
+    const std::vector<FileNodeListFragment> &value) {
   m_fileNodeListFragments = value;
 }
 } // namespace MSONcommon

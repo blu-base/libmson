@@ -18,7 +18,8 @@ set (MSONcommon_PART_SRCS
 
     common/MSONDocument.cpp
 
-    common/DocumentSingleton.cpp
+#    common/DocumentSingleton.cpp
+    common/DocumentManager.cpp
 
 #    common/MSONStreamReader.cpp
     common/FileNodeListFragment.cpp
@@ -185,12 +186,12 @@ set (MSONParser_SRCS
     Main.cpp
     )
 add_executable(
-    MSONParser
+    one2xml
     ${MSONParser_SRCS}
     )
 
 target_link_libraries(
-    MSONParser
+    one2xml
     MSONcommon
     MSONParser_import
     MSONParser_export
@@ -200,11 +201,13 @@ target_link_libraries(
 
 
 
-install(TARGETS MSONParser DESTINATION ${PLUGIN_INSTALL_DIR}/)
+install(TARGETS one2xml DESTINATION ${PLUGIN_INSTALL_DIR}/)
 
 add_custom_command(
-        TARGET MSONParser POST_BUILD
+        TARGET one2xml POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy
-                "${CMAKE_SOURCE_DIR}/resources/sample-single-text/*"
-                "${CMAKE_CURRENT_BINARY_DIR}/resources/sample-single-text/")
+                "${CMAKE_SOURCE_DIR}/resources/sample-*"
+                "${CMAKE_CURRENT_BINARY_DIR}/resources/")
+
+
 

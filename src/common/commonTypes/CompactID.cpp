@@ -92,7 +92,7 @@ void CompactID::deserialize(QDataStream &ds) {
 
   ds >> temp;
 
-  m_n = temp & 0xFF;
+  m_n = static_cast<quint8>(temp & 0xFF);
 
   guidIndex = temp >> 8;
 }

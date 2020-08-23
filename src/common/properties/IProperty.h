@@ -3,6 +3,8 @@
 
 #include <QtCore/qglobal.h>
 
+#include <QXmlStreamWriter>
+
 class IProperty {
 protected:
   IProperty();
@@ -12,6 +14,8 @@ public:
   friend QDataStream &operator>>(QDataStream &ds, IProperty &obj);
 
   friend QDebug operator<<(QDebug dbg, const IProperty &obj);
+
+  virtual void generateXml(QXmlStreamWriter &xmlWriter) const = 0;
 
 private:
   /**

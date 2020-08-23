@@ -37,6 +37,8 @@ public:
 
   friend QDebug operator<<(QDebug dbg, const PropertyType_ArrayOfPropertyValues &obj);
 
+  virtual void generateXml(QXmlStreamWriter& xmlWriter) const override;
+
   quint32 cProperties() const;
   void setCProperties(const quint32 &cProperties);
 
@@ -47,9 +49,11 @@ public:
   void setData(const std::vector<PropertySet> &data);
 
 private:
-  void deserialize(QDataStream &ds);
-  void serialize(QDataStream &ds) const;
-  void toDebugString(QDebug dbg) const;
+  void deserialize(QDataStream &ds) override;
+  void serialize(QDataStream &ds) const override;
+  void toDebugString(QDebug dbg) const override;
+
+
 };
 
 #endif // PROPERTYTYPE_ARRAYOFPROPERTYVALUES_H

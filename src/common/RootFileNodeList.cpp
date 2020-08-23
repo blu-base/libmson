@@ -206,28 +206,29 @@ RootFileNodeList::RootFileNodeList(FileChunkReference64x32 &reference)
 //}
 
 RootFileNodeList::~RootFileNodeList() {
-  for (auto *entry : m_fileNodeListFragments) {
-    delete entry;
-  }
+//  for (auto *entry : m_fileNodeListFragments) {
+//    delete entry;
+//  }
 
-  for (auto *entry : m_fileNodeSequence) {
-    delete entry;
-  }
+//  for (auto *entry : m_fileNodeSequence) {
+//    delete entry;
+//  }
   for (auto *entry : m_objectSpaceManifestList) {
     delete entry;
   }
-  for (auto *entry : m_fileDataStoreListReference) {
-    delete entry;
-  }
+//  for (auto *entry : m_fileDataStoreListReference) {
+//    delete entry;
+//  }
+
 }
 
-std::vector<FileNode *>
+std::vector<FileNode>
 RootFileNodeList::getFileDataStoreListReference() const {
   return m_fileDataStoreListReference;
 }
 
 void RootFileNodeList::setFileDataStoreListReference(
-    const std::vector<FileNode *> &value) {
+    const std::vector<FileNode> &value) {
   m_fileDataStoreListReference = value;
 }
 
@@ -245,76 +246,87 @@ QDebug operator<<(QDebug dbg, const RootFileNodeList &obj) {
 void RootFileNodeList::deserialize(QDataStream &ds) {
   qInfo() << "Parsing RootFileNodeList";
 
-  FileNodeListFragment *fragment =
-      new FileNodeListFragment(m_fcrFileNodeListRoot);
-  ds.device()->seek(m_fcrFileNodeListRoot.stp());
+  m_fileNodeListFragments = parseFileNodeListFragments(ds,m_fcrFileNodeListRoot);
 
-  ds >> *fragment;
-
-  m_fileNodeListFragments.push_back(fragment);
-
-  for (auto *entry : fragment->rgFileNodes()) {
-    if (entry->getFileNodeID() !=
-        static_cast<quint16>(FileNodeTypeID::ChunkTerminatorFND)) {
-      m_fileNodeSequence.push_back(entry);
-    }
+  for(const auto& fragment : m_fileNodeListFragments) {
+      const auto& rgFileNodes = fragment.rgFileNodes();
+      copy_if(rgFileNodes.begin(), rgFileNodes.end(),
+              back_inserter(m_fileNodeSequence), [](const FileNode& entry) {
+                return entry.getFileNodeTypeID() !=
+                       FileNodeTypeID::ChunkTerminatorFND;
+              });
   }
 
-  //  copy_if(fragment->rgFileNodes().begin(), fragment->rgFileNodes().end(),
-  //          back_inserter(m_fileNodeSequence), [](FileNode *entry) {
-  //            return entry->getFileNodeID() !=
-  //                   static_cast<quint16>(FileNodeTypeID::ChunkTerminatorFND);
-  //          });
 
-  FileChunkReference64x32 nextFragmentRef = fragment->nextFragment();
+//  // Parse all fragments and add them to m_fileNodeSequence
+//  FileNodeListFragment *fragment =
+//      new FileNodeListFragment(m_fcrFileNodeListRoot);
+//  ds.device()->seek(m_fcrFileNodeListRoot.stp());
 
-  while (!nextFragmentRef.is_fcrNil() && !nextFragmentRef.is_fcrZero()) {
-    FileNodeListFragment *nextFragment =
-        new FileNodeListFragment(nextFragmentRef);
+//  ds >> *fragment;
+//  m_fileNodeListFragments.push_back(fragment);
 
-    ds.device()->seek(nextFragmentRef.stp());
-    ds >> *nextFragment;
+  // this copies the whole vector... \todo find a way to do the copy_if
+//  // operation with on reference operation
+//  auto rgFileNodes = fragment->rgFileNodes();
+//  copy_if(rgFileNodes.begin(), rgFileNodes.end(),
+//          back_inserter(m_fileNodeSequence), [](FileNode *entry) {
+//            return entry->getFileNodeTypeID() !=
+//                   FileNodeTypeID::ChunkTerminatorFND;
+//          });
 
-    nextFragmentRef = nextFragment->nextFragment();
-    m_fileNodeListFragments.push_back(nextFragment);
+//  FileChunkReference64x32 nextFragmentRef = fragment->nextFragment();
 
-    //    for (auto entry : nextFragment->rgFileNodes()) {
-    //      if (entry->getFileNodeID() ==
-    //          static_cast<quint16>(FileNodeTypeID::ChunkTerminatorFND)) {
-    //        break;
-    //      }
-    //      m_fileNodeSequence.push_back(entry);
-    //    }
+//  while (!nextFragmentRef.is_fcrNil() && !nextFragmentRef.is_fcrZero()) {
+//    FileNodeListFragment *nextFragment =
+//        new FileNodeListFragment(nextFragmentRef);
 
-    copy_if(nextFragment->rgFileNodes().begin(),
-            nextFragment->rgFileNodes().end(),
-            back_inserter(m_fileNodeSequence), [](FileNode *entry) {
-              return entry->getFileNodeID() !=
-                     static_cast<quint16>(FileNodeTypeID::ChunkTerminatorFND);
-            });
-  }
+//    ds.device()->seek(nextFragmentRef.stp());
+//    ds >> *nextFragment;
 
-  std::vector<FileNode *> objectSpaceManifestListReferences{};
+//    nextFragmentRef = nextFragment->nextFragment();
+//    m_fileNodeListFragments.push_back(nextFragment);
 
-  std::copy_if(
-      m_fileNodeSequence.begin(), m_fileNodeSequence.end(),
-      back_inserter(objectSpaceManifestListReferences), [](FileNode *entry) {
-        return entry->getFileNodeID() ==
-               static_cast<quint16>(
-                   FileNodeTypeID::ObjectSpaceManifestListReferenceFND);
-      });
+//    copy_if(nextFragment->rgFileNodes().begin(),
+//            nextFragment->rgFileNodes().end(),
+//            back_inserter(m_fileNodeSequence), [](FileNode *entry) {
+//              return entry->getFileNodeTypeID() !=
+//                     FileNodeTypeID::ChunkTerminatorFND;
+//            });
+//  }
+
+  // Parsing ObjectSpaceManifestLists
+  std::vector<FileNode> objectSpaceManifestListReferences{};
+
+  std::copy_if(m_fileNodeSequence.begin(), m_fileNodeSequence.end(),
+               back_inserter(objectSpaceManifestListReferences),
+               [](const FileNode &entry) {
+                 return entry.getFileNodeTypeID() ==
+                        FileNodeTypeID::ObjectSpaceManifestListReferenceFND;
+               });
 
   for (auto entry : objectSpaceManifestListReferences) {
     auto *objectSpaceManifestListReference =
-        dynamic_cast<ObjectSpaceManifestListReferenceFND *>(entry->getFnt());
+        dynamic_cast<ObjectSpaceManifestListReferenceFND *>(entry.getFnt());
 
     auto ref = objectSpaceManifestListReference->getRef();
-    ObjectSpaceManifestList *osml =
-        new ObjectSpaceManifestList(ref);
+    ObjectSpaceManifestList *osml = new ObjectSpaceManifestList(ref);
 
     ds >> *osml;
 
     m_objectSpaceManifestList.push_back(osml);
+  }
+
+  // Parsing ObjectSpaceManifestRoot
+  auto manifestRoot =
+      std::find_if(m_fileNodeSequence.begin(), m_fileNodeSequence.end(),
+                   [](FileNode entry) {
+                     return entry.getFileNodeTypeID() ==
+                            FileNodeTypeID::ObjectSpaceManifestRootFND;
+                   });
+
+  if (manifestRoot != m_fileNodeSequence.end()) {
+    m_objectSpaceManifestRoot = *manifestRoot;
   }
 
   qInfo() << "Finished parsing RootFileNodeList";
@@ -334,19 +346,20 @@ void RootFileNodeList::toDebugString(QDebug dbg) const {
   if (m_fileNodeListFragments.size() == 0) {
     dbg << "none\n";
   } else {
-    for (auto *entry : m_fileNodeListFragments) {
-      dbg << *entry;
+    for (const auto& entry : m_fileNodeListFragments) {
+      dbg << entry;
     }
   }
 
-  dbg << "\n\nRootFileNodeList objectSpaceManifestRoot....\n" << m_objectSpaceManifestRoot << '\n';
+  dbg << "\n\nRootFileNodeList objectSpaceManifestRoot....\n"
+      << m_objectSpaceManifestRoot << '\n';
 
   dbg << "\n\nRootFileNodeList fileNodeSequence....\n";
   if (m_fileNodeSequence.size() == 0) {
     dbg << "none\n";
   } else {
-    for (auto *entry : m_fileNodeSequence) {
-      dbg << *entry;
+    for (const auto& entry : m_fileNodeSequence) {
+      dbg << entry;
     }
   }
 
@@ -363,12 +376,13 @@ void RootFileNodeList::toDebugString(QDebug dbg) const {
   if (m_fileDataStoreListReference.size() == 0) {
     dbg << "none\n";
   } else {
-    for (auto *entry : m_fileDataStoreListReference) {
-      dbg << *entry;
+    for (const auto& entry : m_fileDataStoreListReference) {
+      dbg << entry;
     }
   }
 
-  dbg << "\n\nRootFileNodeList fcrFileNodeListRoot....\n" << m_fcrFileNodeListRoot << '\n';
+  dbg << "\n\nRootFileNodeList fcrFileNodeListRoot....\n"
+      << m_fcrFileNodeListRoot << '\n';
   dbg << "\n\n\n";
 }
 
@@ -382,16 +396,16 @@ void RootFileNodeList::setObjectSpaceManifestLists(
   m_objectSpaceManifestList = value;
 }
 
-std::vector<FileNode *> RootFileNodeList::getFileNodeSequence() const {
+std::vector<FileNode> RootFileNodeList::getFileNodeSequence() const {
   return m_fileNodeSequence;
 }
 
 void RootFileNodeList::setFileNodeSequence(
-    const std::vector<FileNode *> &value) {
+    const std::vector<FileNode> &value) {
   m_fileNodeSequence = value;
 }
 
-FileNode RootFileNodeList::getObjectSpaceManifestRoot() const {
+FileNode RootFileNodeList::getObjectSpaceManifestRoot() {
   return m_objectSpaceManifestRoot;
 }
 
@@ -399,13 +413,13 @@ void RootFileNodeList::setObjectSpaceManifestRoot(const FileNode &value) {
   m_objectSpaceManifestRoot = value;
 }
 
-std::vector<FileNodeListFragment *>
+std::vector<FileNodeListFragment>
 RootFileNodeList::getFileNodeListFragments() const {
   return m_fileNodeListFragments;
 }
 
 void RootFileNodeList::setFileNodeListFragments(
-    const std::vector<FileNodeListFragment *> &value) {
+    const std::vector<FileNodeListFragment> &value) {
   m_fileNodeListFragments = value;
 }
 
@@ -415,46 +429,44 @@ FileChunkReference64x32 RootFileNodeList::getFcrFileNodeListRoot() const {
 
 void RootFileNodeList::setFcrFileNodeListRoot(
     const FileChunkReference64x32 &fcrFileNodeListRoot) {
-    m_fcrFileNodeListRoot = fcrFileNodeListRoot;
+  m_fcrFileNodeListRoot = fcrFileNodeListRoot;
 }
 
-void RootFileNodeList::generateXml(QXmlStreamWriter& xmlWriter) const
-{
-    xmlWriter.writeStartElement("RootFileNodeList");
+void RootFileNodeList::generateXml(QXmlStreamWriter &xmlWriter) const {
+  xmlWriter.writeStartElement("RootFileNodeList");
 
-    xmlWriter.writeStartElement("fileNodeListFragments");
-    for(auto entry : m_fileNodeListFragments) {
-        entry->generateXml(xmlWriter);
-    }
-    xmlWriter.writeEndElement();
+//  xmlWriter.writeStartElement("fileNodeListFragments");
+//  for (const auto& entry : m_fileNodeListFragments) {
+//    entry.generateXml(xmlWriter);
+//  }
+//  xmlWriter.writeEndElement();
 
-    xmlWriter.writeStartElement("objectSpaceManifestRoot");
-    m_objectSpaceManifestRoot.generateXml(xmlWriter);
-    xmlWriter.writeEndElement();
+  xmlWriter.writeStartElement("objectSpaceManifestRoot");
+  m_objectSpaceManifestRoot.generateXml(xmlWriter);
+  xmlWriter.writeEndElement();
 
-    xmlWriter.writeStartElement("fileNodeSequence");
-    for(auto entry : m_fileNodeSequence) {
-        entry->generateXml(xmlWriter);
-    }
-    xmlWriter.writeEndElement();
+  xmlWriter.writeStartElement("fileNodeSequences");
+  for (const auto& entry : m_fileNodeSequence) {
+    entry.generateXml(xmlWriter);
+  }
+  xmlWriter.writeEndElement();
 
-    xmlWriter.writeStartElement("objectSpaceManifestList");
-    for(auto entry : m_objectSpaceManifestList) {
-        entry->generateXml(xmlWriter);
-    }
-    xmlWriter.writeEndElement();
+  xmlWriter.writeStartElement("objectSpaceManifestLists");
+  for (auto entry : m_objectSpaceManifestList) {
+    entry->generateXml(xmlWriter);
+  }
+  xmlWriter.writeEndElement();
 
-    xmlWriter.writeStartElement("fileDataStoreListReference");
-    for(auto entry : m_fileDataStoreListReference) {
-        entry->generateXml(xmlWriter);
-    }
-    xmlWriter.writeEndElement();
+  xmlWriter.writeStartElement("fileDataStoreListReferences");
+  for (const auto& entry : m_fileDataStoreListReference) {
+    entry.generateXml(xmlWriter);
+  }
+  xmlWriter.writeEndElement();
 
-    xmlWriter.writeStartElement("fcrFileNodeListRoot");
-    m_fcrFileNodeListRoot.generateXml(xmlWriter);
-    xmlWriter.writeEndElement();
+  xmlWriter.writeStartElement("fcrFileNodeListRoot");
+  m_fcrFileNodeListRoot.generateXml(xmlWriter);
+  xmlWriter.writeEndElement();
 
-
-    xmlWriter.writeEndElement();
+  xmlWriter.writeEndElement();
 }
 } // namespace MSONcommon

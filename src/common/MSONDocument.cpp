@@ -305,9 +305,8 @@ QDataStream &operator>>(QDataStream &ds, MSONDocument &obj) {
   obj.m_header = new MSONHeader();
   ds >> *obj.m_header;
 
+  // Parsing FreeChunkList
   FileChunkReference64x32 freeChunkRef = obj.m_header->getFcrFreeChunkList();
-
-  // if freeChunks exists deserialize them
   if (!freeChunkRef.is_fcrNil() && !freeChunkRef.is_fcrZero()) {
     do {
       FreeChunkListFragment *fclf =
@@ -321,8 +320,8 @@ QDataStream &operator>>(QDataStream &ds, MSONDocument &obj) {
     } while (!freeChunkRef.is_fcrNil() && !freeChunkRef.is_fcrZero());
   }
 
+  // Parsing TransactionLog
   FileChunkReference64x32 transLogRef = obj.getHeader()->getFcrTransactionLog();
-
   do {
     TransactionLogFragment *tlf = new TransactionLogFragment(transLogRef.cb());
     ds.device()->seek(transLogRef.stp());
@@ -346,18 +345,11 @@ QDataStream &operator>>(QDataStream &ds, MSONDocument &obj) {
                                           entry->getTransactionEntrySwitch());
         }
       }
-
-      //      size_t i{0};
-
-      //      while (i < tlf->getSizeTable().size()) {
-      //      }
     }
-
-    //    for (size_t i{0}; i < tlf->getSizeTable().size(); i++) {
-    //    }
 
   } while (!transLogRef.is_fcrNil() && !transLogRef.is_fcrZero());
 
+  // Parsing HashedChunkList
   FileChunkReference64x32 hashChunkRef =
       obj.getHeader()->getFcrHashedChunkList();
 
@@ -370,6 +362,7 @@ QDataStream &operator>>(QDataStream &ds, MSONDocument &obj) {
     } while (!hashChunkRef.is_fcrNil() && !hashChunkRef.is_fcrZero());
   }
 
+  // Parsing RootFileNodeList
   if (!obj.getHeader()->getFcrFileNodeListRoot().is_fcrNil() &&
       !obj.getHeader()->getFcrFileNodeListRoot().is_fcrZero()) {
 
@@ -377,6 +370,8 @@ QDataStream &operator>>(QDataStream &ds, MSONDocument &obj) {
         new RootFileNodeList(obj.getHeader()->getFcrFileNodeListRoot());
     ds >> *obj.m_rootFileNodeList;
   }
+
+  // Filling the GlobalIdentificationTable
 
   return ds;
 }
@@ -418,8 +413,9 @@ void MSONDocument::generateXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("FileNodeCountMapping");
   for (auto entry : FileNodeCountMapping.keys()) {
     xmlWriter.writeStartElement("FileNodeCountMap");
-    xmlWriter.writeAttribute("key", qStringHex(entry,8));
-    xmlWriter.writeAttribute("value", qStringHex(FileNodeCountMapping[entry],8));
+    xmlWriter.writeAttribute("key", qStringHex(entry, 8));
+    xmlWriter.writeAttribute("value",
+                             qStringHex(FileNodeCountMapping[entry], 8));
     xmlWriter.writeEndElement();
   }
 

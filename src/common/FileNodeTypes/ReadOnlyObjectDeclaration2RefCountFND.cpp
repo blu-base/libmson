@@ -76,7 +76,7 @@ void ReadOnlyObjectDeclaration2RefCountFND::generateXml(QXmlStreamWriter& xmlWri
     m_base.generateXml(xmlWriter);
 
     xmlWriter.writeStartElement("md5hash");
-    xmlWriter.writeCDATA(m_md5hash);
+    xmlWriter.writeCharacters(m_md5hash.toHex());
     xmlWriter.writeEndElement();
 
     xmlWriter.writeEndElement();

@@ -5,6 +5,7 @@
 
 #include "../commonTypes/CompactID.h"
 #include "../commonTypes/FileNodeChunkReference.h"
+#include "../otherTypes/ObjectSpaceObjectPropSet.h"
 #include "IFileNodeType.h"
 
 class ObjectRevisionWithRefCountFNDX : public IFileNodeType {
@@ -18,6 +19,8 @@ private:
     bool m_fHasOsidReferences;
 
     quint8 m_cRef;
+
+    ObjectSpaceObjectPropSet m_blob;
 public:
   ObjectRevisionWithRefCountFNDX(FNCR_STP_FORMAT stpFormat,
                                  FNCR_CB_FORMAT cbFormat);
@@ -36,6 +39,9 @@ public:
   void setFHasOidReferences(bool value);
   bool getFHasOsidReferences() const;
   void setFHasOsidReferences(bool value);
+
+  ObjectSpaceObjectPropSet getPropSet() const;
+  void setPropSet(const ObjectSpaceObjectPropSet &value);
 
   // IFileNodeType interface
 private:

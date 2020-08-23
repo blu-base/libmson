@@ -37,10 +37,28 @@ void ObjectDeclarationWithRefCountFNDX::setCRef(const quint8 &value) {
   m_cRef = value;
 }
 
+ObjectSpaceObjectPropSet ObjectDeclarationWithRefCountFNDX::getPropSet() const {
+  return m_blob;
+}
+
+void ObjectDeclarationWithRefCountFNDX::setPropSet(
+    const ObjectSpaceObjectPropSet &value) {
+    m_blob = value;
+}
+
+
 void ObjectDeclarationWithRefCountFNDX::deserialize(QDataStream &ds) {
   ds >> m_objectRef;
   ds >> m_body;
   ds >> m_cRef;
+
+  // getting remote ObjectPropSet
+  quint64 curLocation = ds.device()->pos();
+  quint64 destLocation = m_objectRef.stp();
+
+  ds.device()->seek(destLocation);
+  ds >> m_blob;
+  ds.device()->seek(curLocation);
 }
 
 void ObjectDeclarationWithRefCountFNDX::serialize(QDataStream &ds) const {
@@ -66,7 +84,7 @@ void ObjectDeclarationWithRefCountFNDX::generateXml(QXmlStreamWriter& xmlWriter)
     m_objectRef.generateXml(xmlWriter);
     m_body.generateXml(xmlWriter);
 
-
+    m_blob.generateXml(xmlWriter);
 
     xmlWriter.writeEndElement();
 }

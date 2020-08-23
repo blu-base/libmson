@@ -6,17 +6,26 @@
 QByteArray PropertyType_FourBytesOfData::data() const { return m_data; }
 
 void PropertyType_FourBytesOfData::setData(const QByteArray &data) {
-  m_data = data;
+    m_data = data;
+}
+
+void PropertyType_FourBytesOfData::generateXml(QXmlStreamWriter& xmlWriter) const
+{
+    xmlWriter.writeStartElement("FourBytesOfData");
+    xmlWriter.writeCharacters(m_data.toHex());
+    xmlWriter.writeEndElement();
 }
 
 PropertyType_FourBytesOfData::PropertyType_FourBytesOfData() {}
 
 void PropertyType_FourBytesOfData::deserialize(QDataStream &ds) {
 
-  char *raw;
-  uint len = 4;
-  ds.readBytes(raw, len);
-  m_data = QByteArray(raw, len);
+
+    char* rawBody = new char[4];
+    ds.readRawData(rawBody, 4);
+
+    m_data = QByteArray(QByteArray::fromRawData(rawBody, 4));
+
 }
 
 void PropertyType_FourBytesOfData::serialize(QDataStream &ds) const {

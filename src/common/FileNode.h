@@ -28,6 +28,9 @@ static constexpr const quint32 FileNode_shiftFileNodeID = 0;
 
 class FileNode {
 protected:
+  // nonessential. position in byte stream. for debug purposes.
+  quint64 stp;
+
   quint16 fileNodeID;
   quint16 fileNodeSize;
 
@@ -80,6 +83,8 @@ public:
   void setCbFormat(const quint8 &value);
   quint8 getBaseType() const;
   void setBaseType(const quint8 &value);
+
+  quint64 getStp() const;
 
   void setFileNodeType(const IFileNodeType &value);
   IFileNodeType *getFnt() const;

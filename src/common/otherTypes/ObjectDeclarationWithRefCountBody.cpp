@@ -46,7 +46,7 @@ QDebug operator<<(QDebug dbg, const ObjectDeclarationWithRefCountBody &obj) {
 
 void ObjectDeclarationWithRefCountBody::deserialize(QDataStream &ds) {
   ds >> m_oid;
-  quint64 temp;
+  quint32 temp;
 
   ds >> temp;
   m_jci = temp & 0x3FF;
@@ -54,6 +54,8 @@ void ObjectDeclarationWithRefCountBody::deserialize(QDataStream &ds) {
   m_fReserved1 = (temp >> 14) & 0x3;
   m_fHasOidReferences = (temp >> 16) & 0x1;
   m_fHasOsidReferences = (temp >> 17) & 0x1;
+
+  ds.device()->skip(2u);
 }
 
 void ObjectDeclarationWithRefCountBody::serialize(QDataStream &ds) const {

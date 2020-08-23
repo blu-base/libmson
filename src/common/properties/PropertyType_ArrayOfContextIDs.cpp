@@ -37,3 +37,19 @@ void PropertyType_ArrayOfContextIDs::serialize(QDataStream &ds) const {
 }
 
 void PropertyType_ArrayOfContextIDs::toDebugString(QDebug dbg) const {}
+
+
+void PropertyType_ArrayOfContextIDs::generateXml(QXmlStreamWriter& xmlWriter) const
+{
+    xmlWriter.writeStartElement("ArrayOfContextIDs");
+    xmlWriter.writeAttribute("cCID", QString::number(m_cCIDs));
+
+    xmlWriter.writeStartElement("CompactIDs");
+    for(const auto& entry : m_data) {
+        entry.generateXml(xmlWriter);
+    }
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeEndElement();
+
+}

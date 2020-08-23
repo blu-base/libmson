@@ -2,6 +2,17 @@
 
 ObjectSpaceObjectPropSet::ObjectSpaceObjectPropSet() {}
 
+ObjectSpaceObjectPropSet::ObjectSpaceObjectPropSet(QDataStream &ds, const FileNodeChunkReference& ref)
+{
+   quint64 currentLocation = ds.device()->pos();
+
+   ds.device()->seek(ref.stp());
+   deserialize(ds);
+
+   ds.device()->seek(currentLocation);
+
+}
+
 QDataStream &operator<<(QDataStream &ds, const ObjectSpaceObjectPropSet &obj) {
     obj.serialize(ds);
     return ds;
@@ -58,6 +69,34 @@ PropertySet ObjectSpaceObjectPropSet::body() const
 void ObjectSpaceObjectPropSet::setBody(const PropertySet& body)
 {
     m_body = body;
+}
+
+void ObjectSpaceObjectPropSet::generateXml(QXmlStreamWriter& xmlWriter) const
+{
+    xmlWriter.writeStartElement("ObjectSpaceObjectPropSet");
+    xmlWriter.writeAttribute("paddingLength", QString::number(m_paddingLength));
+
+    xmlWriter.writeStartElement("ObjectSpaceObjectStreamOfOIDs");
+    if(m_OIDs.header().count() > 0) {
+        m_OIDs.generateXml(xmlWriter);
+    }
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("ObjectSpaceObjectStreamOfOSIDs");
+    if(m_OSIDs.header().count() > 0) {
+        m_OSIDs.generateXml(xmlWriter);
+    }
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("ObjectSpaceObjectStreamOfContextIDs");
+    if(m_ContextIDs.header().count() > 0) {
+        m_ContextIDs.generateXml(xmlWriter);
+    }
+    xmlWriter.writeEndElement();
+
+    m_body.generateXml(xmlWriter);
+
+    xmlWriter.writeEndElement();
 }
 
 void ObjectSpaceObjectPropSet::deserialize(QDataStream& ds)

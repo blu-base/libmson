@@ -1,11 +1,11 @@
 #include "RevisionManifest.h"
 namespace MSONcommon {
-std::vector<FileNode *> &RevisionManifest::getFileNodeSquence()  {
+std::vector<FileNode> &RevisionManifest::getFileNodeSquence()  {
   return m_FileNodeSquence;
 }
 
 void RevisionManifest::setFileNodeSquence(
-    const std::vector<FileNode *> &value) {
+    const std::vector<FileNode> &value) {
     m_FileNodeSquence = value;
 }
 
@@ -14,8 +14,8 @@ void RevisionManifest::generateXml(QXmlStreamWriter& xmlWriter) const
     xmlWriter.writeStartElement("RevisionManifest");
 
     xmlWriter.writeStartElement("FileNodeSquence");
-    for(auto entry: m_FileNodeSquence) {
-        entry->generateXml(xmlWriter);
+    for(const auto& entry: m_FileNodeSquence) {
+        entry.generateXml(xmlWriter);
     }
     xmlWriter.writeEndElement();
 
@@ -48,8 +48,5 @@ void RevisionManifest::toDebugString(QDebug dbg) const {}
 RevisionManifest::RevisionManifest() : m_FileNodeSquence{} {}
 
 RevisionManifest::~RevisionManifest() {
-  for (auto *entry : m_FileNodeSquence) {
-    delete entry;
-  }
 }
 } // namespace MSONcommon

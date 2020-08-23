@@ -6,6 +6,7 @@
 #include <QDataStream>
 #include <QDebug>
 #include <vector>
+#include <QXmlStreamWriter>
 
 #include "PropertyID.h"
 #include "IPropertyType.h"
@@ -14,7 +15,7 @@ private:
   /**
    * @brief number of PropertyIDs in this Set
    */
-  quint32 m_cProperties;
+  quint16 m_cProperties;
 
   /**
    * @brief vector of PropertyID objects in this Set
@@ -34,8 +35,10 @@ public:
   friend QDataStream &operator>>(QDataStream &ds, PropertySet &obj);
   friend QDebug operator<<(QDebug dbg, const PropertySet &obj);
 
-  quint32 cProperties() const;
-  void setCProperties(const quint32 &cProperties);
+  void generateXml(QXmlStreamWriter &xmlWriter) const;
+
+  quint16 cProperties() const;
+  void setCProperties(const quint16 &cProperties);
 
   std::vector<PropertyID> rgPrids() const;
   void setRgPrids(const std::vector<PropertyID> &rgPrids);

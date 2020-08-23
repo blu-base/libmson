@@ -13,9 +13,11 @@ private:
 public:
   PropertyType_ObjectID();
 
-  // IPropertyType interface
+
   CompactID data() const;
   void setData(const CompactID &data);
+
+   virtual void generateXml(QXmlStreamWriter& xmlWriter) const override;
 
 private:
   void deserialize(QDataStream &ds) override;

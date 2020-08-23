@@ -51,11 +51,11 @@ namespace MSONcommon {
 IFileNodeType *FileNode::getFnt() const { return fnt; }
 
 FileNode::FileNode()
-    : fileNodeID{}, fileNodeSize{4}, stpFormat{}, cbFormat{}, baseType{},
+    : stp{}, fileNodeID{}, fileNodeSize{4}, stpFormat{}, cbFormat{}, baseType{},
       reserved{}, fnt{nullptr} {}
 
 FileNode::FileNode(const FileNode &source)
-    : fileNodeID{source.fileNodeID}, fileNodeSize{source.fileNodeSize},
+    : stp{source.stp}, fileNodeID{source.fileNodeID}, fileNodeSize{source.fileNodeSize},
       stpFormat{source.stpFormat}, cbFormat{source.cbFormat},
       baseType{source.baseType}, reserved{}, fnt{source.fnt} {}
 
@@ -63,6 +63,8 @@ FileNode::~FileNode() {}
 
 void FileNode::generateXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("FileNode");
+
+  xmlWriter.writeAttribute("stp", qStringHex(getStp(), 16));
 
   xmlWriter.writeAttribute("fileNodeID", qStringHex(fileNodeID, 3));
   xmlWriter.writeAttribute("fileNodeSize", qStringHex(fileNodeSize, 4));
@@ -72,20 +74,26 @@ void FileNode::generateXml(QXmlStreamWriter &xmlWriter) const {
 
   ///\todo IFileNodeType *fnt;
   ///
-  xmlWriter.writeStartElement("FileNodeType");
+
   if (fnt != nullptr) {
     fnt->generateXml(xmlWriter);
+  } else {
+    xmlWriter.writeStartElement("NoFileNodeType");
+    xmlWriter.writeEndElement();
   }
-  xmlWriter.writeEndElement();
 
   xmlWriter.writeEndElement();
 }
 
 QDataStream &operator>>(QDataStream &ds, FileNode &obj) {
+
+
   //  if (!ds.byteOrder()) {
   //    ds.setByteOrder(QDataStream::LittleEndian);
   //  }
   ds.setByteOrder(QDataStream::LittleEndian);
+  obj.stp = ds.device()->pos();
+  qDebug() << "FileNode stp: "<< qStringHex(obj.stp, 16);
   quint32 temp;
   ds >> temp;
 
@@ -274,4 +282,9 @@ void FileNode::setCbFormat(const quint8 &value) { cbFormat = value; }
 quint8 FileNode::getBaseType() const { return baseType; }
 
 void FileNode::setBaseType(const quint8 &value) { baseType = value; }
+
+quint64 FileNode::getStp() const
+{
+    return stp;
+}
 } // namespace MSONcommon

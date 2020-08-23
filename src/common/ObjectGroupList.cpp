@@ -5,22 +5,22 @@ namespace MSONcommon {
 ObjectGroupList::ObjectGroupList(FileNodeChunkReference ref) : m_ref{ref} {}
 
 ObjectGroupList::~ObjectGroupList() {
-  for (auto *entry : m_fileNodeSequence) {
-    delete entry;
-  }
+//  for (auto *entry : m_fileNodeSequence) {
+//    delete entry;
+//  }
 
-  for (auto *entry : m_fileNodeListFragments) {
-    delete entry;
-  }
+//  for (auto *entry : m_fileNodeListFragments) {
+//    delete entry;
+//  }
 }
 
-std::vector<FileNodeListFragment *>
+std::vector<FileNodeListFragment>
 ObjectGroupList::getFileNodeListFragments() {
   return m_fileNodeListFragments;
 }
 
 void ObjectGroupList::setFileNodeListFragments(
-    const std::vector<FileNodeListFragment *> &value) {
+    const std::vector<FileNodeListFragment> &value) {
   m_fileNodeListFragments = value;
 }
 
@@ -37,16 +37,16 @@ void ObjectGroupList::generateXml(QXmlStreamWriter& xmlWriter) const
     xmlWriter.writeEndElement();
 
     xmlWriter.writeStartElement("fileNodeSequence");
-    for(auto entry : m_fileNodeSequence) {
-        entry->generateXml(xmlWriter);
+    for(const auto& entry : m_fileNodeSequence) {
+        entry.generateXml(xmlWriter);
     }
     xmlWriter.writeEndElement();
 
-    xmlWriter.writeStartElement("fileNodeListFragments");
-    for(auto entry : m_fileNodeListFragments) {
-        entry->generateXml(xmlWriter);
-    }
-    xmlWriter.writeEndElement();
+//    xmlWriter.writeStartElement("fileNodeListFragments");
+//    for(const auto& entry : m_fileNodeListFragments) {
+//        entry.generateXml(xmlWriter);
+//    }
+//    xmlWriter.writeEndElement();
 
     xmlWriter.writeEndElement();
 
@@ -65,17 +65,17 @@ QDebug operator<<(QDebug dbg, const ObjectGroupList &obj) {
 
 void ObjectGroupList::deserialize(QDataStream &ds) {
 
-  FileNodeListFragment *fragment = new FileNodeListFragment(m_ref);
+  FileNodeListFragment fragment (m_ref);
 
   ds.device()->seek(m_ref.stp());
-  ds >> *fragment;
+  ds >> fragment;
 
   m_fileNodeListFragments.push_back(fragment);
 
-  for (auto *entry : fragment->rgFileNodes()) {
-    if (entry->getFileNodeID() !=
+  for (const auto& entry : fragment.rgFileNodes()) {
+    if (entry.getFileNodeID() !=
             static_cast<quint16>(FileNodeTypeID::ChunkTerminatorFND) &&
-        entry->getFileNodeID() != 0) {
+        entry.getFileNodeID() != 0) {
       m_fileNodeSequence.push_back(entry);
     }
   }
@@ -87,22 +87,22 @@ void ObjectGroupList::deserialize(QDataStream &ds) {
   //                            FileNodeTypeID::ChunkTerminatorFND);
   //               });
 
-  FileChunkReference64x32 nextFragmentRef = fragment->nextFragment();
+  FileChunkReference64x32 nextFragmentRef = fragment.nextFragment();
 
   while (!nextFragmentRef.is_fcrNil() && !nextFragmentRef.is_fcrZero()) {
-    FileNodeListFragment *nextFragment =
-        new FileNodeListFragment(nextFragmentRef);
+    FileNodeListFragment nextFragment (nextFragmentRef);
 
     ds.device()->seek(nextFragmentRef.stp());
-    ds >> *nextFragment;
+    ds >> nextFragment;
 
-    nextFragmentRef = nextFragment->nextFragment();
+    nextFragmentRef = nextFragment.nextFragment();
     m_fileNodeListFragments.push_back(nextFragment);
 
-    copy_if(nextFragment->rgFileNodes().begin(),
-            nextFragment->rgFileNodes().end(),
-            back_inserter(m_fileNodeSequence), [](FileNode *entry) {
-              return entry->getFileNodeID() !=
+    auto RgFileNodes = nextFragment.rgFileNodes();
+    copy_if(RgFileNodes.begin(),
+            RgFileNodes.end(),
+            back_inserter(m_fileNodeSequence), [](FileNode entry) {
+              return entry.getFileNodeID() !=
                      static_cast<quint16>(FileNodeTypeID::ChunkTerminatorFND);
             });
   }
@@ -110,12 +110,12 @@ void ObjectGroupList::deserialize(QDataStream &ds) {
 
 void ObjectGroupList::toDebugString(QDebug dbg) const {}
 
-std::vector<FileNode *> ObjectGroupList::getFileNodeSequence() const {
+std::vector<FileNode> ObjectGroupList::getFileNodeSequence() const {
   return m_fileNodeSequence;
 }
 
 void ObjectGroupList::setFileNodeSequence(
-    const std::vector<FileNode *> &value) {
+    const std::vector<FileNode> &value) {
   m_fileNodeSequence = value;
 }
 } // namespace MSONcommon

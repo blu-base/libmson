@@ -10,7 +10,7 @@
 #include "IPropertyType.h"
 #include "PropertySet.h"
 
-class prtArrayOfPropertyValues {
+class prtArrayOfPropertyValues : public IPropertyType{
 private:
   /**
    * @brief how many Property elements in this array
@@ -23,8 +23,6 @@ private:
    *
    */
   PropertyID m_prid;
-
-  QByteArray m_Data;
 
   std::vector<PropertySet> m_dataVector;
 
@@ -44,16 +42,15 @@ public:
   PropertyID prid() const;
   void setPrid(const PropertyID &prid);
 
-  QByteArray Data() const;
-  void setData(const QByteArray &Data);
-
   std::vector<PropertySet> dataVector() const;
   void setDataVector(const std::vector<PropertySet> &dataVector);
 
+  virtual void generateXml(QXmlStreamWriter& xmlWriter) const override;
+
 private:
-  void deserialize(QDataStream &ds);
-  void serialize(QDataStream &ds) const;
-  void toDebugString(QDebug dbg) const;
+  void deserialize(QDataStream &ds) override;
+  void serialize(QDataStream &ds) const override;
+  void toDebugString(QDebug dbg) const override;
 };
 
 #endif // PRTARRAYOFPROPERTYVALUES_H

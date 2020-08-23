@@ -34,6 +34,8 @@ public:
   std::vector<CompactID> body() const;
   void setBody(const std::vector<CompactID> &body);
 
+  void generateXml(QXmlStreamWriter &xmlWriter) const;
+
   /**
    * @brief pushbackToBody
    * @param entry

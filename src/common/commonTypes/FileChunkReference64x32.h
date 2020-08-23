@@ -8,6 +8,7 @@ class FileChunkReference64x32 : public IFileChunkReference<quint64,quint32>
 {
 public:
   FileChunkReference64x32();
+  FileChunkReference64x32(const quint64& stp, const quint32& cb);
 
   FileChunkReference64x32(FCR_INITTYPE inittype);
   virtual ~FileChunkReference64x32();

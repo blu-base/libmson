@@ -12,15 +12,17 @@
 namespace MSONcommon {
 class RootFileNodeList {
 private:
-  std::vector<FileNodeListFragment *> m_fileNodeListFragments;
+    /** raw, fragmented FileNode list, can be ignored after defragmenting into m_fileNodeSequence */
+  std::vector<FileNodeListFragment> m_fileNodeListFragments;
 
   FileNode m_objectSpaceManifestRoot;
 
-  std::vector<FileNode *> m_fileNodeSequence;
+  /** Unfragmented FileNode list */
+  std::vector<FileNode> m_fileNodeSequence;
 
   std::vector<ObjectSpaceManifestList *> m_objectSpaceManifestList;
 
-  std::vector<FileNode *> m_fileDataStoreListReference;
+  std::vector<FileNode> m_fileDataStoreListReference;
 
   FileChunkReference64x32 m_fcrFileNodeListRoot;
 
@@ -37,22 +39,22 @@ public:
   ~RootFileNodeList();
 
   //
-  std::vector<FileNodeListFragment *> getFileNodeListFragments() const;
+  std::vector<FileNodeListFragment> getFileNodeListFragments() const;
   void
-  setFileNodeListFragments(const std::vector<FileNodeListFragment *> &value);
+  setFileNodeListFragments(const std::vector<FileNodeListFragment> &value);
 
-  FileNode getObjectSpaceManifestRoot() const;
+  FileNode getObjectSpaceManifestRoot() ;
   void setObjectSpaceManifestRoot(const FileNode &value);
 
-  std::vector<FileNode *> getFileNodeSequence() const;
-  void setFileNodeSequence(const std::vector<FileNode *> &value);
+  std::vector<FileNode> getFileNodeSequence() const;
+  void setFileNodeSequence(const std::vector<FileNode> &value);
 
   std::vector<ObjectSpaceManifestList *> getObjectSpaceManifestLists() const;
   void setObjectSpaceManifestLists(
       const std::vector<ObjectSpaceManifestList *> &value);
 
-  std::vector<FileNode *> getFileDataStoreListReference() const;
-  void setFileDataStoreListReference(const std::vector<FileNode *> &value);
+  std::vector<FileNode> getFileDataStoreListReference() const;
+  void setFileDataStoreListReference(const std::vector<FileNode> &value);
   FileChunkReference64x32 getFcrFileNodeListRoot() const;
   void
   setFcrFileNodeListRoot(const FileChunkReference64x32 &fcrFileNodeListRoot);

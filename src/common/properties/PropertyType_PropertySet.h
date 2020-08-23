@@ -13,9 +13,10 @@ private:
 public:
   PropertyType_PropertySet();
 
-  // IPropertyType interface
   PropertySet data() const;
   void setData(const PropertySet &data);
+
+  virtual void generateXml(QXmlStreamWriter& xmlWriter) const override;
 
 private:
   void deserialize(QDataStream &ds) override;

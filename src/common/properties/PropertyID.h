@@ -5,9 +5,11 @@
 #include <QtCore/qglobal.h>
 
 #include "../commonTypes/Enums.h"
+#include <QXmlStreamWriter>
 
 class PropertyID : public IProperty {
 private:
+  quint32 m_value;
   PropertyIDs m_id;
   PropertyIDType m_type;
 
@@ -24,12 +26,20 @@ public:
   PropertyIDType type() const;
   void setType(const PropertyIDType &type);
 
+  quint32 value() const;
+
+  static QString idToString(const PropertyIDs &val) ;
+  static QString typeToString(const PropertyIDType &val) ;
+
   /**
    * @brief returns a bool sized value if PropertyID is of a bool type property
    * @return -1 if PropertyID is not bool type, else 0 for false, 1 for true;
    */
   int boolValue() const;
   void setBoolValue(bool boolValue);
+
+
+  void generateXml(QXmlStreamWriter &xmlWriter) const;
 
 private:
   void deserialize(QDataStream &ds) override;

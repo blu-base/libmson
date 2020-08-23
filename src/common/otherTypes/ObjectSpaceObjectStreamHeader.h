@@ -2,6 +2,7 @@
 #define OBJECTSPACEOBJECTSTREAMHEADER_H
 
 #include <QtCore/qglobal.h>
+#include <QXmlStreamWriter>
 
 class ObjectSpaceObjectStreamHeader
 {
@@ -35,6 +36,8 @@ public:
   void setExtendedStreamsPresence(const ExtendedStreamPresence &extendedStreamPresence);
   bool OsidStream_isNotPresent() const;
   void setOsidStreamPresence(const OsidStreamPresence &osidStreamPresence);
+
+  void generateXml(QXmlStreamWriter &xmlWriter) const;
 
   friend QDataStream &operator<<(QDataStream &ds,
                                  const ObjectSpaceObjectStreamHeader &obj);

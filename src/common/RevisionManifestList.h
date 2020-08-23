@@ -17,34 +17,34 @@ class RevisionManifestList {
 private:
   FileNodeChunkReference m_Ref;
 
-  std::vector<FileNodeListFragment *> m_FileNodeListFragments;
+  std::vector<FileNodeListFragment> m_FileNodeListFragments;
   std::vector<RevisionManifest *> m_RevisionManifests;
-  std::vector<FileNode *> m_RevisionRoleDeclarations;
+  std::vector<FileNode> m_RevisionRoleDeclarations;
 
-  std::vector<FileNode *> m_RevisionRoleAndContextDeclarations;
+  std::vector<FileNode> m_RevisionRoleAndContextDeclarations;
 
   std::vector<ObjectGroupList *> m_ObjectGroupLists;
 
-  std::vector<FileNode *> m_FileNodeSequence;
+  std::vector<FileNode> m_FileNodeSequence;
 
 public:
   RevisionManifestList(FileNodeChunkReference ref);
   ~RevisionManifestList();
 
-  std::vector<FileNodeListFragment *> getFileNodeListFragments() const;
+  std::vector<FileNodeListFragment> getFileNodeListFragments() const;
   void
-  setFileNodeListFragments(const std::vector<FileNodeListFragment *> &value);
+  setFileNodeListFragments(const std::vector<FileNodeListFragment> &value);
   std::vector<RevisionManifest *> getRevisionManifests() const;
   void setRevisionManifests(const std::vector<RevisionManifest *> &value);
-  std::vector<FileNode *> getRevisionRoleDeclarations() const;
-  void setRevisionRoleDeclarations(const std::vector<FileNode *> &value);
-  std::vector<FileNode *> getRevisionRoleAndContextDeclarations() const;
+  std::vector<FileNode> getRevisionRoleDeclarations() const;
+  void setRevisionRoleDeclarations(const std::vector<FileNode> &value);
+  std::vector<FileNode> getRevisionRoleAndContextDeclarations() const;
   void
-  setRevisionRoleAndContextDeclarations(const std::vector<FileNode *> &value);
+  setRevisionRoleAndContextDeclarations(const std::vector<FileNode> &value);
   std::vector<ObjectGroupList *> getObjectGroupLists() const;
   void setObjectGroupLists(const std::vector<ObjectGroupList *> &value);
-  std::vector<FileNode *> getFileNodeSequence() const;
-  void setFileNodeSequence(const std::vector<FileNode *> &value);
+  std::vector<FileNode> getFileNodeSequence() const;
+  void setFileNodeSequence(const std::vector<FileNode> &value);
   FileNodeChunkReference getRef() const;
   void setRef(const FileNodeChunkReference &ref);
 

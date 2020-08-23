@@ -10,7 +10,15 @@ PropertyType_FourBytesOfLengthFollowedByData::data() const {
 
 void PropertyType_FourBytesOfLengthFollowedByData::setData(
     const QByteArray &data) {
-  m_data = data;
+    m_data = data;
+}
+
+void PropertyType_FourBytesOfLengthFollowedByData::generateXml(QXmlStreamWriter& xmlWriter) const
+{
+    xmlWriter.writeStartElement("FourBytesOfLengthFollowedByData");
+    xmlWriter.writeAttribute("cb", QString::number(m_cb));
+    xmlWriter.writeCharacters(m_data.toHex());
+    xmlWriter.writeEndElement();
 }
 
 quint32 PropertyType_FourBytesOfLengthFollowedByData::cb() const
@@ -24,16 +32,19 @@ void PropertyType_FourBytesOfLengthFollowedByData::setCb(const quint32& cb)
 }
 
 PropertyType_FourBytesOfLengthFollowedByData::
-PropertyType_FourBytesOfLengthFollowedByData() {}
+PropertyType_FourBytesOfLengthFollowedByData() : m_cb(){}
 
 void PropertyType_FourBytesOfLengthFollowedByData::deserialize(
         QDataStream &ds) {
 
   ds >> m_cb;
 
-  char * raw = nullptr;
-  ds.readRawData(raw, m_cb);
-  m_data.fromRawData(raw,m_cb);
+  char* rawBody = new char[m_cb];
+  ds.readRawData(rawBody, m_cb);
+
+  m_data = QByteArray(QByteArray::fromRawData(rawBody, m_cb));
+
+
 }
 
 void PropertyType_FourBytesOfLengthFollowedByData::serialize(

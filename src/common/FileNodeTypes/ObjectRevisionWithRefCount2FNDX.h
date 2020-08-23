@@ -5,6 +5,7 @@
 
 #include "../commonTypes/CompactID.h"
 #include "../commonTypes/FileNodeChunkReference.h"
+#include "../otherTypes/ObjectSpaceObjectPropSet.h"
 #include "IFileNodeType.h"
 
 class ObjectRevisionWithRefCount2FNDX : public IFileNodeType {
@@ -19,7 +20,7 @@ private:
 
     quint32 m_cRef;
 
-
+    ObjectSpaceObjectPropSet m_blob;
 public:
   ObjectRevisionWithRefCount2FNDX(FNCR_STP_FORMAT stpFormat,
                                   FNCR_CB_FORMAT cbFormat);
@@ -40,6 +41,9 @@ public:
 
   quint32 getCRef() const;
   void setCRef(const quint32 &value);
+
+  ObjectSpaceObjectPropSet getPropSet() const;
+  void setPropSet(const ObjectSpaceObjectPropSet &value);
 
 private:
   void deserialize(QDataStream &ds) override;

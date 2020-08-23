@@ -48,6 +48,16 @@ void ObjectRevisionWithRefCount2FNDX::setRef(
   m_ref = value;
 }
 
+ObjectSpaceObjectPropSet ObjectRevisionWithRefCount2FNDX::getPropSet() const {
+  return m_blob;
+}
+
+void ObjectRevisionWithRefCount2FNDX::setPropSet(
+    const ObjectSpaceObjectPropSet &value) {
+    m_blob = value;
+}
+
+
 void ObjectRevisionWithRefCount2FNDX::deserialize(QDataStream &ds) {
   ds >> m_ref;
   ds >> m_oid;
@@ -59,6 +69,14 @@ void ObjectRevisionWithRefCount2FNDX::deserialize(QDataStream &ds) {
   m_fHasOsidReferences = (temp & 0x2) >> 1;
 
   ds >> m_cRef;
+
+  // getting remote ObjectPropSet
+  quint64 curLocation = ds.device()->pos();
+  quint64 destLocation = m_ref.stp();
+
+  ds.device()->seek(destLocation);
+  ds >> m_blob;
+  ds.device()->seek(curLocation);
 }
 
 void ObjectRevisionWithRefCount2FNDX::serialize(QDataStream &ds) const {
@@ -96,7 +114,7 @@ void ObjectRevisionWithRefCount2FNDX::generateXml(
 
     m_oid.generateXml(xmlWriter);
 
-
+  m_blob.generateXml(xmlWriter);
 
     xmlWriter.writeEndElement();
 }

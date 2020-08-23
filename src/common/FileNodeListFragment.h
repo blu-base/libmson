@@ -21,12 +21,10 @@ private:
 
   FileNodeListHeader m_fnlheader;
 
-  std::vector<FileNode *> m_rgFileNodes;
+  std::vector<FileNode> m_rgFileNodes;
 
   quint64 m_paddingLength;
 
-  /// \todo temporary Qbytearray to check junk in padding
-  QByteArray padding;
 
   FileChunkReference64x32 m_nextFragment;
   /**
@@ -34,7 +32,7 @@ private:
    *
    * \todo find a static place for footer_magic_id
    */
-  const quint64 footer_magic_id = 0x8BC215C38233BA4B;
+  static constexpr const quint64 footer_magic_id = 0x8BC215C38233BA4B;
 
 public:
   FileNodeListFragment(const FileChunkReference64 ref);
@@ -51,8 +49,8 @@ public:
 
   FileNodeListHeader fnlheader() const;
   void setFnlheader(const FileNodeListHeader &fnlheader);
-  std::vector<FileNode *> rgFileNodes() const;
-  void setRgFileNodes(const std::vector<FileNode *> &rgFileNodes);
+  std::vector<FileNode> rgFileNodes() const;
+  void setRgFileNodes(const std::vector<FileNode> &rgFileNodes);
   quint64 paddingLength() const;
   void setPaddingLength(const quint64 &paddingLength);
   FileChunkReference64x32 nextFragment() const;

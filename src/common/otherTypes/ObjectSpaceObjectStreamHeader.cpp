@@ -50,7 +50,16 @@ bool ObjectSpaceObjectStreamHeader::OsidStream_isNotPresent() const {
 
 void ObjectSpaceObjectStreamHeader::setOsidStreamPresence(
     const OsidStreamPresence &osidStreamPresence) {
-  m_OsidStreamNotPresent = static_cast<bool>(osidStreamPresence);
+    m_OsidStreamNotPresent = static_cast<bool>(osidStreamPresence);
+}
+
+void ObjectSpaceObjectStreamHeader::generateXml(QXmlStreamWriter& xmlWriter) const
+{
+    xmlWriter.writeStartElement("ObjectSpaceObjectStreamHeader");
+    xmlWriter.writeAttribute("count", QString::number(m_count));
+    xmlWriter.writeAttribute("OsidStreamNotPresent", m_OsidStreamNotPresent ? "True" : "False");
+    xmlWriter.writeAttribute("ExtendedStreamsPresent", m_ExtendedStreamsPresent ? "True" : "False");
+    xmlWriter.writeEndElement();
 }
 
 QDataStream &operator<<(QDataStream &ds,

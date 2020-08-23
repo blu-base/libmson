@@ -9,7 +9,7 @@ class PropertyType_NoData : public IPropertyType
 public:
   PropertyType_NoData();
 
-  // IPropertyType interface
+   virtual void generateXml(QXmlStreamWriter& xmlWriter) const override;
 private:
   void deserialize(QDataStream& ds) override;
   void serialize(QDataStream& ds) const override;

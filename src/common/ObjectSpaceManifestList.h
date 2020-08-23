@@ -14,28 +14,28 @@ class ObjectSpaceManifestList {
 private:
   FileNodeChunkReference m_ref;
 
-  std::vector<FileNodeListFragment *> m_fileNodeListFragments;
+  std::vector<FileNodeListFragment> m_fileNodeListFragments;
 
   FileNode m_objectSpaceManifestListStart;
 
   std::vector<RevisionManifestList *> m_revisionManifestLists;
 
-  std::vector<FileNode *> m_fileNodeSequence;
+  std::vector<FileNode> m_fileNodeSequence;
 
 public:
   ObjectSpaceManifestList(FileNodeChunkReference &ref);
   ~ObjectSpaceManifestList();
 
-  std::vector<FileNodeListFragment *> getFileNodeListFragments() const;
+  std::vector<FileNodeListFragment> getFileNodeListFragments() const;
   void
-  setFileNodeListFragments(const std::vector<FileNodeListFragment *> &value);
+  setFileNodeListFragments(const std::vector<FileNodeListFragment> &value);
   FileNode getObjectSpaceManifestListStart() const;
   void setObjectSpaceManifestListStart(const FileNode &value);
   std::vector<RevisionManifestList *> getRevisionManifestLists();
   void
   setRevisionManifestLists(const std::vector<RevisionManifestList *> &value);
-  std::vector<FileNode *> getFileNodeSequence() const;
-  void setFileNodeSequence(const std::vector<FileNode *> &value);
+  std::vector<FileNode> getFileNodeSequence() const;
+  void setFileNodeSequence(const std::vector<FileNode> &value);
   FileNodeChunkReference getRef() const;
   void setRef(const FileNodeChunkReference &ref);
 

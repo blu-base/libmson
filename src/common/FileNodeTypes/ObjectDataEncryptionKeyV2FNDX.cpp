@@ -51,6 +51,7 @@ void ObjectDataEncryptionKeyV2FNDX::deserialize(QDataStream &ds) {
 
   ds.device()->seek(m_ref.stp());
   ds >> m_header;
+  /// \todo read data chunk
   m_EncryptionData = ds.device()->peek(m_ref.cb());
   ds >> m_footer;
 

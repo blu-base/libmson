@@ -42,7 +42,8 @@ enum class FileNodeTypeID : quint16 {
   HashedChunkDescriptor2FND = 0x0C2,
   ReadOnlyObjectDeclaration2RefCountFND = 0x0C4,
   ReadOnlyObjectDeclaration2LargeRefCountFND = 0x0C5,
-  ChunkTerminatorFND = 0x0FF
+  ChunkTerminatorFND = 0x0FF,
+  InvalidFND = 0xFFF,
 };
 
 enum class PropertyIDType : quint8 {
@@ -62,6 +63,7 @@ enum class PropertyIDType : quint8 {
   ArrayOfContextIDs = 0xD,
   ArrayOfPropertyValues = 0x10,
   PropertySet = 0x11,
+  InvalidType = 0xFF,
 };
 
 enum class PropertyIDs : quint32 {
@@ -87,17 +89,8 @@ enum class PropertyIDs : quint32 {
   NumberListFormat = 0x1C001C1A,
   LayoutMaxWidth = 0x14001C1B,
   LayoutMaxHeight = 0x14001C1C,
-  ContentChildNodesOfOutlineElement = 0x24001C1F,
-  ContentChildNodesOfPageManifest = 0x24001C1F,
-  ElementChildNodesOfSection = 0x24001C20,
-  ElementChildNodesOfPage = 0x24001C20,
-  ElementChildNodesOfTitle = 0x24001C20,
-  ElementChildNodesOfOutline = 0x24001C20,
-  ElementChildNodesOfOutlineElement = 0x24001C20,
-  ElementChildNodesOfTable = 0x24001C20,
-  ElementChildNodesOfTableRow = 0x24001C20,
-  ElementChildNodesOfTableCell = 0x24001C20,
-  ElementChildNodesOfVersionHistory = 0x24001C20,
+  ContentChildNodes = 0x24001C1F,
+  ElementChildNodes = 0x24001C20,
   EnableHistory = 0x08001E1E,
   RichEditTextUnicode = 0x1C001C22,
   ListNodes = 0x24001C26,
@@ -207,7 +200,49 @@ enum class PropertyIDs : quint32 {
   PageMarginOriginX = 0x14001D0F,
   PageMarginOriginY = 0x14001D10,
   WzHyperlinkUrl = 0x1C001E20,
-  TaskTagDueDate = 0x1400346B
+  TaskTagDueDate = 0x1400346B,
+
+  // undocumented ids
+
+  AuthorInitials =  0x1c001df8,
+
+  //some windows live stuff, eg:
+  // &lt;resolutionId provider=&quot;Windows Live&quot; hash=&quot;abcdefg==&quot;&gt;
+  // &lt;localId cid=&quot;abcdefg&quot;/&gt;&lt;/resolutionId&gt;
+   ResolutionID = 0x1c001e30,
+
+};
+
+enum class JCIDs : quint32 {
+jcidReadOnlyPersistablePropertyContainerForAuthor = 0x00120001,
+jcidPersistablePropertyContainerForTOC = 0x00020001,
+jcidPersistablePropertyContainerForTOCSection = 0x00020001,
+jcidSectionNode = 0x00060007,
+jcidPageSeriesNode = 0x00060008,
+jcidPageNode = 0x0006000B,
+jcidOutlineNode = 0x0006000C,
+jcidOutlineElementNode = 0x0006000D,
+jcidRichTextOENode = 0x0006000E,
+jcidImageNode = 0x00060011,
+jcidNumberListNode = 0x00060012,
+jcidOutlineGroup = 0x00060019,
+jcidTableNode = 0x00060022,
+jcidTableRowNode = 0x00060023,
+jcidTableCellNode = 0x00060024,
+jcidTitleNode = 0x0006002C,
+jcidPageMetaData = 0x00020030,
+jcidSectionMetaData = 0x00020031,
+jcidEmbeddedFileNode = 0x00060035,
+jcidPageManifestNode = 0x00060037,
+jcidConflictPageMetaData = 0x00020038,
+jcidVersionHistoryContent = 0x0006003C,
+jcidVersionProxy = 0x0006003D,
+jcidNoteTagSharedDefinitionContainer = 0x00120043,
+jcidRevisionMetaData = 0x00020044,
+jcidVersionHistoryMetaData = 0x00020046,
+jcidParagraphStyleObject = 0x0012004D,
+jcidParagraphStyleObjectForText = 0x0012004D,
+none = 0x00000000
 };
 
 #endif // ENUMS_H

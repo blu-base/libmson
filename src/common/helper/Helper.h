@@ -4,6 +4,9 @@
 #include <QString>
 #include <QtCore/qglobal.h>
 
+#include "../FileNodeListFragment.h"
+#include <vector>
+
 template <class _InIt, class _OutIt, class _Pr>
 inline void copy_closed(_InIt _First, _InIt _Last, _OutIt _Dest, _Pr _Pred);
 
@@ -26,5 +29,9 @@ QString qStringHex(const T val, const quint8 width)
  * It's used to calculate the padding of m_FileData
  */
 quint64 roundUpMultiple(const quint64 numToRound, const quint64 multiple);
+
+std::vector <MSONcommon::FileNodeListFragment> parseFileNodeListFragments(QDataStream &ds, FileChunkReference64x32 &ref);
+std::vector <MSONcommon::FileNodeListFragment> parseFileNodeListFragments(QDataStream &ds, FileNodeChunkReference &ref);
+
 
 #endif // HELPER_H

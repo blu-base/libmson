@@ -15,7 +15,7 @@ void GlobalIdTableStartFNDX::serialize(QDataStream &ds) const {
 }
 
 void GlobalIdTableStartFNDX::toDebugString(QDebug dbg) const {
-  dbg << " GloalIdTableStartFNDX: reserved: " << m_reserved << '\n';
+  dbg << " GlobalIdTableStartFNDX: reserved: " << m_reserved << '\n';
 }
 
 

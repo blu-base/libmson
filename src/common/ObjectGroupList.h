@@ -16,21 +16,21 @@ class ObjectGroupList {
 private:
   FileNodeChunkReference m_ref;
 
-  std::vector<FileNode *> m_fileNodeSequence;
+  std::vector<FileNode> m_fileNodeSequence;
 
-  std::vector<FileNodeListFragment *> m_fileNodeListFragments;
+  std::vector<FileNodeListFragment> m_fileNodeListFragments;
 
 public:
   ObjectGroupList(FileNodeChunkReference ref);
   ~ObjectGroupList();
 
-  std::vector<FileNode *> getFileNodeSequence() const;
-  void setFileNodeSequence(const std::vector<FileNode *> &value);
+  std::vector<FileNode> getFileNodeSequence() const;
+  void setFileNodeSequence(const std::vector<FileNode> &value);
 
-  std::vector<FileNodeListFragment *> getFileNodeListFragments();
+  std::vector<FileNodeListFragment> getFileNodeListFragments();
 
   void
-  setFileNodeListFragments(const std::vector<FileNodeListFragment *> &value);
+  setFileNodeListFragments(const std::vector<FileNodeListFragment> &value);
   FileNodeChunkReference getRef() const;
   void setRef(const FileNodeChunkReference &ref);
 

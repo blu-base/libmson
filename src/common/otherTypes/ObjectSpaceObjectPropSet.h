@@ -12,6 +12,8 @@
 
 #include "../properties/PropertySet.h"
 
+#include "../commonTypes/FileNodeChunkReference.h"
+
 
 
 /// \todo counting inside the streamheaders
@@ -28,6 +30,7 @@ private:
 
 public:
   ObjectSpaceObjectPropSet();
+  ObjectSpaceObjectPropSet(QDataStream &ds, const FileNodeChunkReference &ref);
 
 
   friend QDataStream &operator<<(QDataStream &ds,
@@ -49,6 +52,8 @@ public:
 
   PropertySet body() const;
   void setBody(const PropertySet& body);
+
+  void generateXml(QXmlStreamWriter &xmlWriter) const;
 
 private:
   /**

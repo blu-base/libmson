@@ -5,6 +5,7 @@
 
 #include "../commonTypes/FileNodeChunkReference.h"
 #include "../otherTypes/ObjectDeclarationWithRefCountBody.h"
+#include "../otherTypes/ObjectSpaceObjectPropSet.h"
 #include "IFileNodeType.h"
 
 class ObjectDeclarationWithRefCount2FNDX : public IFileNodeType {
@@ -14,6 +15,8 @@ private:
     ObjectDeclarationWithRefCountBody m_body;
 
     quint32 m_cRef;
+
+    ObjectSpaceObjectPropSet m_blob;
 public:
   ObjectDeclarationWithRefCount2FNDX(FNCR_STP_FORMAT stpFormat,
                                      FNCR_CB_FORMAT cbFormat);
@@ -31,6 +34,9 @@ public:
   quint32 getCRef() const;
   void setCRef(const quint32 &value);
 
+
+  ObjectSpaceObjectPropSet getPropSet() const;
+  void setPropSet(const ObjectSpaceObjectPropSet &value);
 private:
   void deserialize(QDataStream &ds) override;
   void serialize(QDataStream &ds) const override;
