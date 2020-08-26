@@ -41,11 +41,12 @@ void StringInStorageBuffer::setStringData(const QString &value) {
 void StringInStorageBuffer::deserialize(QDataStream &ds) {
   ds >> m_cch;
 
-  QByteArray rawstring = QByteArray(m_cch * 2, Qt::Uninitialized);
+  char *rawBody = new char[m_cch * 2];
+  ds.readRawData(rawBody, m_cch * 2);
+  QByteArray rawstring = QByteArray(QByteArray::fromRawData(rawBody, m_cch * 2));
 
-  ds.readRawData(rawstring.data(), m_cch * 2);
 
-  m_StringData = QString(rawstring);
+  m_StringData = QString::fromUtf8(rawstring, m_cch*2);
 }
 
 void StringInStorageBuffer::serialize(QDataStream &ds) const {}

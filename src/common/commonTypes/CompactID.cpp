@@ -59,7 +59,7 @@ QString CompactID::toString() const {
 
 void CompactID::generateXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("CompactID");
-  xmlWriter.writeAttribute("guidIndex", qStringHex(guidIndex, 8));
+  xmlWriter.writeAttribute("guidIndex", qStringHex(guidIndex, 12));
   xmlWriter.writeAttribute("n", qStringHex(m_n, 2));
   xmlWriter.writeEndElement();
 }
@@ -94,7 +94,7 @@ void CompactID::deserialize(QDataStream &ds) {
 
   m_n = static_cast<quint8>(temp & 0xFF);
 
-  guidIndex = temp >> 8;
+  guidIndex = (temp >> 8);
 }
 
 void CompactID::serialize(QDataStream &ds) const {

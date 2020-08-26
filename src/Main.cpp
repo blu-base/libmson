@@ -26,7 +26,7 @@ QStringList fileDirs(QDir &dir, const bool recursively) {
     dir.setNameFilters(onenotefileextensions);
     dir.setFilter(QDir::Files);
     for (const auto &entry : dir.entryList()) {
-      files << entry;
+      files << dir.filePath(entry);
     }
     if (recursively) {
       dir.setNameFilters(QStringList() << "*");
@@ -136,43 +136,21 @@ int main(int argc, char *argv[]) {
 
   for (const auto &entry : files) {
 
+    QFileInfo file(entry);
+
+    QString outputPath;
+    QString baseFileName = file.fileName().left(file.fileName().lastIndexOf('.'));
+    if (outputSet) {
+      outputPath = parser.value(output);
+    } else {
+      outputPath = entry.left(entry.lastIndexOf("/"));
+    }
+
     QUuid guid = manager.parseDocument(entry);
-    manager.generateXml(guid, entry + ".xml");
+
+    manager.generateXml(guid, outputPath + "/" + baseFileName + ".xml");
     manager.removeDocument(guid);
   }
-
-
-  //  qDebug() << "CWD: " << QDir::currentPath();
-  //  //  QFile file("../resources/sample-single-text/Notizbuch
-  //  öffnen.onetoc2");
-
-  //  ;
-  ////  file.open(QIODevice::ReadOnly);
-
-  ////  QDataStream in(&file); // read the data serialized from the file
-
-  //  QFile xmlFile("Section1.xml");
-  ////  QFile xmlFile("Notizbuch.xml");
-  //  xmlFile.open(QIODevice::WriteOnly);
-  //  QXmlStreamWriter xmlWriter(&xmlFile);
-  //  xmlWriter.setCodec("UTF-16");
-
-  ////  qDebug() << "Current pos in file: " << in.device()->pos();
-
-  //  MSONcommon::DocumentManager manager{};
-
-  //  QUuid guid =
-  //  manager.parseDocument("../resources/sample-single-text/Section 1.one");
-  ////  QUuid guid =
-  /// manager.parseDocument("../resources/sample-single-text/Notizbuch
-  ///öffnen.onetoc2");
-
-  //  manager.getDocument(guid)->generateXml(xmlWriter);
-  //  xmlFile.close();
-
-  //  manager.removeDocuments();
-
-  ////  file.close();
 
   return 0;
 }

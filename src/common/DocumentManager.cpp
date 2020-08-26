@@ -20,25 +20,36 @@ bool MSONcommon::DocumentManager::containsDocument(const QUuid &guidFile) {
 }
 
 QUuid MSONcommon::DocumentManager::parseDocument(QDataStream &ds) {
+  QUuid guid;
+  if (ds.device()->isReadable()) {
+    MSONDocument *newDoc = new MSONDocument();
 
-  MSONDocument *newDoc = new MSONDocument();
+    ds >> *newDoc;
 
-  ds >> *newDoc;
+    guid = newDoc->getHeader()->getGuidFile();
 
-  QUuid guid = newDoc->getHeader()->getGuidFile();
-
-  docs.insert(guid, newDoc);
+    docs.insert(guid, newDoc);
+  } else {
+      qWarning() << "ERROR: Stream not readable" << '\n';
+  }
 
   return guid;
 }
 
 QUuid MSONcommon::DocumentManager::parseDocument(QString fileName) {
-  QFile file (fileName);
-  file.open(QIODevice::ReadOnly);
-  QDataStream in(&file);
+  QFile file(fileName);
 
-  QUuid newDocId = parseDocument(in);
-  file.close();
+  bool couldopen = file.open(QIODevice::ReadOnly);
+
+  QUuid newDocId;
+  if (couldopen) {
+    QDataStream in(&file);
+
+    newDocId = parseDocument(in);
+    file.close();
+  } else {
+    qWarning() << "ERROR: could not open file: " << fileName << '\n';
+  }
 
   return newDocId;
 }
@@ -98,12 +109,10 @@ MSONcommon::DocumentManager::parseDirectory(QDir dir,
 
 bool MSONcommon::DocumentManager::removeDocument(const QUuid &guidFile) {
 
- return docs.remove(guidFile);
+  return docs.remove(guidFile);
 }
 
-void MSONcommon::DocumentManager::removeDocuments() {
-  docs.clear();
-}
+void MSONcommon::DocumentManager::removeDocuments() { docs.clear(); }
 
 MSONcommon::MSONDocument *
 MSONcommon::DocumentManager::getDocument(const QUuid &guidFile) {
@@ -136,24 +145,23 @@ QList<QUuid> MSONcommon::DocumentManager::getDocumentIDs() {
 
 QMap<QUuid, MSONcommon::MSONDocument *>
 MSONcommon::DocumentManager::getDocumentsMap() {
-    return docs;
+  return docs;
 }
 
-void MSONcommon::DocumentManager::generateXml(const QUuid& guidFile, const QString& outputfile)
-{
-    auto it = docs.find(guidFile);
+void MSONcommon::DocumentManager::generateXml(const QUuid &guidFile,
+                                              const QString &outputfile) {
+  auto it = docs.find(guidFile);
 
-    if(it !=docs.end()) {
-        if (!outputfile.isEmpty()) {
-            QFile xmlFile(outputfile);
+  if (it != docs.end()) {
+    if (!outputfile.isEmpty()) {
+      QFile xmlFile(outputfile);
 
-            xmlFile.open(QIODevice::WriteOnly);
-            QXmlStreamWriter xmlWriter(&xmlFile);
+      xmlFile.open(QIODevice::WriteOnly);
+      QXmlStreamWriter xmlWriter(&xmlFile);
 
-            docs[guidFile]->generateXml(xmlWriter);
+      docs[guidFile]->generateXml(xmlWriter);
 
-            xmlFile.close();
-        }
+      xmlFile.close();
     }
-
+  }
 }

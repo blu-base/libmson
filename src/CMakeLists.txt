@@ -134,6 +134,8 @@ set (MSONcommon_PART_SRCS
     common/properties/PropertyType_PropertySet.cpp
 
 
+    common/simpleTypes/LayoutAlignment.cpp
+
 
     common/helper/Helper.cpp
     )
@@ -202,12 +204,6 @@ target_link_libraries(
 
 
 install(TARGETS one2xml DESTINATION ${PLUGIN_INSTALL_DIR}/)
-
-add_custom_command(
-        TARGET one2xml POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy
-                "${CMAKE_SOURCE_DIR}/resources/sample-*"
-                "${CMAKE_CURRENT_BINARY_DIR}/resources/")
 
 
 

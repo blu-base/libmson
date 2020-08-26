@@ -13,6 +13,8 @@
 
 #include "../helper/Helper.h"
 
+#include "../simpleTypes/LayoutAlignment.h"
+
 quint16 PropertySet::cProperties() const { return m_cProperties; }
 
 void PropertySet::setCProperties(const quint16 &cProperties) {
@@ -99,10 +101,10 @@ void PropertySet::deserialize(QDataStream &ds) {
     //            PropertySet"; break;
     //        }
 
-//    if (propID.type() == PropertyIDType::InvalidType) {
-//      qWarning() << "Encountered invalid PropertyType";
-//      break;
-//    }
+    //    if (propID.type() == PropertyIDType::InvalidType) {
+    //      qWarning() << "Encountered invalid PropertyType";
+    //      break;
+    //    }
 
     if (prop != nullptr) {
       ds >> *prop;
@@ -137,6 +139,7 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
     xmlWriter.writeStartElement("PropertyID");
 
     xmlWriter.writeAttribute("ID", PropertyID::idToString(m_rgPrids[i].id()));
+
     xmlWriter.writeAttribute("Type",
                              PropertyID::typeToString(m_rgPrids[i].type()));
     xmlWriter.writeAttribute("boolValue",
@@ -154,6 +157,10 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
       bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
       float pagewidth;
       bytes >> pagewidth;
+      // Validity specified by MS-ONE, sec 2.3.6
+      if (pagewidth < 2.0 || pagewidth > 44.0) {
+        xmlWriter.writeAttribute("valid", "False");
+      }
       xmlWriter.writeCharacters(QString::number(pagewidth, 'f', 5));
       xmlWriter.writeEndElement();
       break;
@@ -166,6 +173,12 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
       bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
       float pageheight;
       bytes >> pageheight;
+      // Validity specified by MS-ONE, sec 2.3.7,
+      // though does not check: (PageMarginTop + PageMarginBottom + 0.5 <
+      // pageheight)
+      if (pageheight < 0.5 || pageheight > 44.0) {
+        xmlWriter.writeAttribute("valid", "False");
+      }
       xmlWriter.writeCharacters(QString::number(pageheight, 'f', 5));
       xmlWriter.writeEndElement();
       break;
@@ -173,28 +186,23 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
     case PropertyIDs::OutlineElementChildLevel: {
       xmlWriter.writeStartElement("IndentationLevel");
       auto *body = static_cast<PropertyType_OneByteOfData *>(m_rgData[i]);
-      xmlWriter.writeCharacters(QString(body->data().toUInt()));
+      QDataStream bytes(body->data());
+
+      uint8_t val;
+      bytes >> val;
+
+      xmlWriter.writeCharacters(QString::number(val));
       xmlWriter.writeEndElement();
       break;
     }
-      //    case PropertyIDs::Bold:
-      //      m_id_string = "Bold";
-      //      break;
-      //    case PropertyIDs::Italic:
-      //      m_id_string = "Italic";
-      //      break;
-      //    case PropertyIDs::Underline:
-      //      m_id_string = "Underline";
-      //      break;
-      //    case PropertyIDs::Strikethrough:
-      //      m_id_string = "Strikethrough";
-      //      break;
-      //    case PropertyIDs::Superscript:
-      //      m_id_string = "Superscript";
-      //      break;
-      //    case PropertyIDs::Subscript:
-      //      m_id_string = "Subscript";
-      //      break;
+    case PropertyIDs::Bold:
+    case PropertyIDs::Italic:
+    case PropertyIDs::Underline:
+    case PropertyIDs::Strikethrough:
+    case PropertyIDs::Superscript:
+    case PropertyIDs::Subscript:
+      break;
+
     case PropertyIDs::Font: {
       xmlWriter.writeStartElement("Font");
       if (m_rgPrids[i].type() ==
@@ -208,33 +216,104 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
       xmlWriter.writeEndElement();
       break;
     }
-      //    case PropertyIDs::FontSize:
-      //      m_id_string = "FontSize";
-      //      break;
-      //    case PropertyIDs::FontColor:
-      //      m_id_string = "FontColor";
-      //      break;
-      //    case PropertyIDs::Highlight:
-      //      m_id_string = "Highlight";
-      //      break;
-      //    case PropertyIDs::RgOutlineIndentDistance:
-      //      m_id_string = "RgOutlineIndentDistance";
-      //      break;
-      //    case PropertyIDs::BodyTextAlignment:
-      //      m_id_string = "BodyTextAlignment";
-      //      break;
-      //    case PropertyIDs::OffsetFromParentHoriz:
-      //      m_id_string = "OffsetFromParentHoriz";
-      //      break;
-      //    case PropertyIDs::OffsetFromParentVert:
-      //      m_id_string = "OffsetFromParentVert";
-      //      break;
-      //    case PropertyIDs::NumberListFormat:
+    case PropertyIDs::FontSize: {
+      xmlWriter.writeStartElement("FontSize");
+      auto body = static_cast<PropertyType_FourBytesOfData *>(m_rgData[i]);
+      QDataStream bytes(body->data());
+      bytes.setByteOrder(QDataStream::LittleEndian);
+      bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
+      uint16_t val;
+      bytes >> val;
+      // validity given by MS-ONE sec 2.3.16
+      if (val < 12 || val > 288) {
+        xmlWriter.writeAttribute("valid", "false");
+      }
+      xmlWriter.writeCharacters(QString::number(val, 'f', 5));
+      xmlWriter.writeEndElement();
+      break;
+    }
+    case PropertyIDs::FontColor: {
+      xmlWriter.writeStartElement("COLORREF");
+      auto body = static_cast<PropertyType_FourBytesOfData *>(m_rgData[i]);
+      QString string = body->data().toHex();
+      xmlWriter.writeCharacters("0x" + string);
+      xmlWriter.writeEndElement();
+      break;
+    }
+    case PropertyIDs::Highlight: {
+      xmlWriter.writeStartElement("COLORREF");
+      auto body = static_cast<PropertyType_FourBytesOfData *>(m_rgData[i]);
+      QString string = body->data().toHex();
+      xmlWriter.writeCharacters("0x" + string);
+      xmlWriter.writeEndElement();
+      break;
+    }
+    case PropertyIDs::RgOutlineIndentDistance: {
+      xmlWriter.writeStartElement("RgOutlineIndentDistance");
+      auto body = static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
+          m_rgData[i]);
+      QDataStream bytes(body->data());
+      bytes.setByteOrder(QDataStream::LittleEndian);
+      bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
+      uint8_t count;
+      bytes >> count;
+      xmlWriter.writeAttribute("count", QString::number(count));
+      char *rawBody = new char[3];
+      bytes.readRawData(rawBody, 3);
+      QByteArray unused = QByteArray(QByteArray::fromRawData(rawBody, 3));
+      xmlWriter.writeAttribute("unused-bytes", unused.toHex());
+
+      for (size_t j = 0; j < count; j++) {
+        float indentation;
+        bytes >> indentation;
+        xmlWriter.writeStartElement("IndentDistance");
+        xmlWriter.writeCharacters(QString::number(indentation, 'f', 5));
+        xmlWriter.writeEndElement();
+      }
+      xmlWriter.writeEndElement();
+      break;
+    }
+      //          case PropertyIDs::BodyTextAlignment:
+      //            break;
+    case PropertyIDs::OffsetFromParentHoriz: {
+      xmlWriter.writeStartElement("OffsetFromParentHoriz");
+      auto body = static_cast<PropertyType_FourBytesOfData *>(m_rgData[i]);
+      QDataStream bytes(body->data());
+      bytes.setByteOrder(QDataStream::LittleEndian);
+      bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
+      float val;
+      bytes >> val;
+      xmlWriter.writeCharacters(QString::number(val, 'f', 5));
+      xmlWriter.writeEndElement();
+      break;
+    }
+    case PropertyIDs::OffsetFromParentVert: {
+      xmlWriter.writeStartElement("OffsetFromParentVert");
+      auto body = static_cast<PropertyType_FourBytesOfData *>(m_rgData[i]);
+      QDataStream bytes(body->data());
+      bytes.setByteOrder(QDataStream::LittleEndian);
+      bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
+      float val;
+      bytes >> val;
+      xmlWriter.writeCharacters(QString::number(val, 'f', 5));
+      xmlWriter.writeEndElement();
+      break;
+    }
+      //    case PropertyIDs:::
       //      m_id_string = "NumberListFormat";
       //      break;
-      //    case PropertyIDs::LayoutMaxWidth:
-      //      m_id_string = "LayoutMaxWidth";
-      //      break;
+    case PropertyIDs::LayoutMaxWidth: {
+      xmlWriter.writeStartElement("LayoutMaxWidth");
+      auto body = static_cast<PropertyType_FourBytesOfData *>(m_rgData[i]);
+      QDataStream bytes(body->data());
+      bytes.setByteOrder(QDataStream::LittleEndian);
+      bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
+      float val;
+      bytes >> val;
+      xmlWriter.writeCharacters(QString::number(val, 'f', 5));
+      xmlWriter.writeEndElement();
+      break;
+    }
     case PropertyIDs::LayoutMaxHeight: {
       xmlWriter.writeStartElement("LayoutMaxHeight");
       auto body = static_cast<PropertyType_FourBytesOfData *>(m_rgData[i]);
@@ -256,15 +335,24 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
       //    case PropertyIDs::EnableHistory:
       //      m_id_string = "EnableHistory";
       //      break;
-      //    case PropertyIDs::RichEditTextUnicode:
-      //      m_id_string = "RichEditTextUnicode";
-      //      break;
+    case PropertyIDs::RichEditTextUnicode: {
+      xmlWriter.writeStartElement("RichEditTextUnicode");
+      auto body = static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
+          m_rgData[i]);
+      QString string = QString::fromUtf16(
+          reinterpret_cast<const ushort *>(body->data().constData()));
+
+      xmlWriter.writeCharacters(string);
+      xmlWriter.writeEndElement();
+      break;
+    }
       //    case PropertyIDs::ListNodes:
       //      m_id_string = "ListNodes";
       //      break;
     case PropertyIDs::NotebookManagementEntityGuid: {
       xmlWriter.writeStartElement("NotebookManagementEntityGuid");
-      auto body = static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(m_rgData[i]);
+      auto body = static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
+          m_rgData[i]);
       QDataStream bytes(body->data());
       bytes.setByteOrder(QDataStream::LittleEndian);
       bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
@@ -274,15 +362,21 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
       xmlWriter.writeEndElement();
       break;
     }
-      //    case PropertyIDs::OutlineElementRTL:
-      //      m_id_string = "OutlineElementRTL";
-      //      break;
+    case PropertyIDs::OutlineElementRTL:
+      break;
       //    case PropertyIDs::LanguageID:
       //      m_id_string = "LanguageID";
       //      break;
-      //    case PropertyIDs::LayoutAlignmentInParent:
-      //      m_id_string = "LayoutAlignmentInParent";
-      //      break;
+    case PropertyIDs::LayoutAlignmentInParent: {
+      auto body = static_cast<PropertyType_FourBytesOfData *>(m_rgData[i]);
+      QDataStream bytes(body->data());
+      bytes.setByteOrder(QDataStream::LittleEndian);
+      bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
+      LayoutAlignment val;
+      bytes >> val;
+      val.generateXml(xmlWriter);
+      break;
+    }
       //    case PropertyIDs::PictureContainer:
       //      m_id_string = "PictureContainer";
       //      break;
@@ -334,42 +428,39 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
       xmlWriter.writeEndElement();
       break;
     }
-      //    case PropertyIDs::ListFont:
-      //      m_id_string = "ListFont";
-      //      break;
+    case PropertyIDs::ListFont: {
+      xmlWriter.writeStartElement("ListFont");
+      if (m_rgPrids[i].type() ==
+          PropertyIDType::FourBytesOfLengthFollowedByData) {
+        auto body = static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
+            m_rgData[i]);
+        QString string =
+            QString::fromUtf8(body->data().constData(), body->cb());
+        xmlWriter.writeCharacters(string);
+      }
+      xmlWriter.writeEndElement();
+      break;
+    }
       //    case PropertyIDs::TopologyCreationTimeStamp:
       //      m_id_string = "TopologyCreationTimeStamp";
       //      break;
       //    case PropertyIDs::LayoutAlignmentSelf:
       //      m_id_string = "LayoutAlignmentSelf";
       //      break;
-      //    case PropertyIDs::IsTitleTime:
-      //      m_id_string = "IsTitleTime";
-      //      break;
-      //    case PropertyIDs::IsBoilerText:
-      //      m_id_string = "IsBoilerText";
-      //      break;
+    case PropertyIDs::IsTitleTime:
+    case PropertyIDs::IsBoilerText:
+      break;
       //    case PropertyIDs::PageSize:
       //      m_id_string = "PageSize";
       //      break;
-      //    case PropertyIDs::PortraitPage:
-      //      m_id_string = "PortraitPage";
-      //      break;
-      //    case PropertyIDs::EnforceOutlineStructure:
-      //      m_id_string = "EnforceOutlineStructure";
-      //      break;
-      //    case PropertyIDs::EditRootRTL:
-      //      m_id_string = "EditRootRTL";
-      //      break;
-      //    case PropertyIDs::CannotBeSelected:
-      //      m_id_string = "CannotBeSelected";
-      //      break;
-      //    case PropertyIDs::IsTitleText:
-      //      m_id_string = "IsTitleText";
-      //      break;
-      //    case PropertyIDs::IsTitleDate:
-      //      m_id_string = "IsTitleDate";
-      //      break;
+    case PropertyIDs::LayoutResolveChildCollisions:
+    case PropertyIDs::PortraitPage:
+    case PropertyIDs::EnforceOutlineStructure:
+    case PropertyIDs::EditRootRTL:
+    case PropertyIDs::CannotBeSelected:
+    case PropertyIDs::IsTitleText:
+    case PropertyIDs::IsTitleDate:
+      break;
       //    case PropertyIDs::ListRestart:
       //      m_id_string = "ListRestart";
       //      break;
@@ -385,18 +476,23 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
       //    case PropertyIDs::LayoutResolveChildCollisions:
       //      m_id_string = "LayoutResolveChildCollisions";
       //      break;
-      //    case PropertyIDs::IsReadOnly:
-      //      m_id_string = "IsReadOnly";
-      //      break;
+    case PropertyIDs::IsReadOnly:
+      break;
       //    case PropertyIDs::LayoutMinimumOutlineWidth:
       //      m_id_string = "LayoutMinimumOutlineWidth";
       //      break;
       //    case PropertyIDs::LayoutCollisionPriority:
       //      m_id_string = "LayoutCollisionPriority";
       //      break;
-      //    case PropertyIDs::CachedTitleString:
-      //      m_id_string = "CachedTitleString";
-      //      break;
+    case PropertyIDs::CachedTitleString: {
+      xmlWriter.writeStartElement("wz");
+      auto body = static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
+          m_rgData[i]);
+      QString string = QString::fromUtf8(body->data().constData(), body->cb());
+      xmlWriter.writeCharacters(string);
+      xmlWriter.writeEndElement();
+      break;
+    }
       //    case PropertyIDs::DescendantsCannotBeMoved:
       //      m_id_string = "DescendantsCannotBeMoved";
       //      break;
@@ -412,9 +508,8 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
       //    case PropertyIDs::CreationTimeStamp:
       //      m_id_string = "CreationTimeStamp";
       //      break;
-      //    case PropertyIDs::Deletable:
-      //      m_id_string = "Deletable";
-      //      break;
+    case PropertyIDs::Deletable:
+      break;
       //    case PropertyIDs::ListMSAAIndex:
       //      m_id_string = "ListMSAAIndex";
       //      break;
@@ -424,9 +519,15 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
       //    case PropertyIDs::IRecordMedia:
       //      m_id_string = "IRecordMedia";
       //      break;
-      //    case PropertyIDs::CachedTitleStringFromPage:
-      //      m_id_string = "CachedTitleStringFromPage";
-      //      break;
+    case PropertyIDs::CachedTitleStringFromPage: {
+      xmlWriter.writeStartElement("wz");
+      auto body = static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
+          m_rgData[i]);
+      QString string = QString::fromUtf8(body->data().constData(), body->cb());
+      xmlWriter.writeCharacters(string);
+      xmlWriter.writeEndElement();
+      break;
+    }
       //    case PropertyIDs::RowCount:
       //      m_id_string = "RowCount";
       //      break;
@@ -484,18 +585,42 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
       //    case PropertyIDs::EmbeddedFileContainer:
       //      m_id_string = "EmbeddedFileContainer";
       //      break;
-      //    case PropertyIDs::EmbeddedFileName:
-      //      m_id_string = "EmbeddedFileName";
-      //      break;
-      //    case PropertyIDs::SourceFilepath:
-      //      m_id_string = "SourceFilepath";
-      //      break;
+    case PropertyIDs::EmbeddedFileName: {
+      xmlWriter.writeStartElement("EmbeddedFileName");
+      auto body = static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
+          m_rgData[i]);
+      QString string = QString::fromUtf16(
+          reinterpret_cast<const ushort *>(body->data().constData()));
+
+      xmlWriter.writeCharacters(string);
+      xmlWriter.writeEndElement();
+      break;
+    }
+    case PropertyIDs::SourceFilepath: {
+      xmlWriter.writeStartElement("SourceFilepath");
+      auto body = static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
+          m_rgData[i]);
+      QString string = QString::fromUtf16(
+          reinterpret_cast<const ushort *>(body->data().constData()));
+
+      xmlWriter.writeCharacters(string);
+      xmlWriter.writeEndElement();
+      break;
+    }
       //    case PropertyIDs::ConflictingUserName:
       //      m_id_string = "ConflictingUserName";
       //      break;
-      //    case PropertyIDs::ImageFilename:
-      //      m_id_string = "ImageFilename";
-      //      break;
+    case PropertyIDs::ImageFilename: {
+      xmlWriter.writeStartElement("ImageFilename");
+      auto body = static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
+          m_rgData[i]);
+      QString string = QString::fromUtf16(
+          reinterpret_cast<const ushort *>(body->data().constData()));
+
+      xmlWriter.writeCharacters(string);
+      xmlWriter.writeEndElement();
+      break;
+    }
       //    case PropertyIDs::IsConflictObjectForSelection:
       //      m_id_string = "IsConflictObjectForSelection";
       //      break;
@@ -508,30 +633,25 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
       //    case PropertyIDs::TextRunFormatting:
       //      m_id_string = "TextRunFormatting";
       //      break;
-      //    case PropertyIDs::Hyperlink:
-      //      m_id_string = "Hyperlink";
-      //      break;
+    case PropertyIDs::Hyperlink:
+      break;
       //    case PropertyIDs::UnderlineType:
       //      m_id_string = "UnderlineType";
       //      break;
-      //    case PropertyIDs::Hidden:
-      //      m_id_string = "Hidden";
-      //      break;
-      //    case PropertyIDs::HyperlinkProtected:
-      //      m_id_string = "HyperlinkProtected";
-      //      break;
+    case PropertyIDs::Hidden:
+    case PropertyIDs::HyperlinkProtected:
+      break;
       //    case PropertyIDs::TextRunIsEmbeddedObject:
       //      m_id_string = "TextRunIsEmbeddedObject";
       //      break;
       //    case PropertyIDs::ImageAltText:
       //      m_id_string = "ImageAltText";
       //      break;
-      //    case PropertyIDs::MathFormatting:
-      //      m_id_string = "MathFormatting";
-      //      break;
-    case PropertyIDs::ParagraphStyle: {
+    case PropertyIDs::MathFormatting:
       break;
-    }
+      //    case PropertyIDs::ParagraphStyle: {
+      //      break;
+      //    }
       //    case PropertyIDs::ParagraphSpaceBefore:
       //      m_id_string = "ParagraphSpaceBefore";
       //      break;
@@ -627,7 +747,7 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
       //      m_id_string = "ImageUploadState";
       //      break;
     case PropertyIDs::TextExtendedAscii: {
-      xmlWriter.writeStartElement("Author");
+      xmlWriter.writeStartElement("String");
       auto body = static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
           m_rgData[i]);
       QString string = QString::fromUtf8(body->data().constData(), body->cb());

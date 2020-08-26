@@ -136,12 +136,11 @@ void FileNodeListFragment::deserialize(QDataStream &ds) {
 //  m_paddingLength = m_ref.cb() - 36 - listSize ;
   m_paddingLength = m_ref.stp() + m_ref.cb() - ds.device()->pos() - 20 ;
 
-  char* rawBody = new char[m_paddingLength];
-  ds.readRawData(rawBody, m_paddingLength);
+//  char* rawBody = new char[m_paddingLength];
+//  ds.readRawData(rawBody, m_paddingLength);
+//  QByteArray padding = QByteArray(QByteArray::fromRawData(rawBody, m_paddingLength));
 
-  QByteArray padding = QByteArray(QByteArray::fromRawData(rawBody, m_paddingLength));
-
-//  ds.skipRawData(m_paddingLength);
+  ds.skipRawData(m_paddingLength);
 
   // Skip to end. Ignore ChunkTerminatorFND
   ds.device()->seek(m_ref.stp() + m_ref.cb() - 20);
