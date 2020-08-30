@@ -2,13 +2,12 @@
 
 StringInStorageBuffer::StringInStorageBuffer() : m_cch(0) {}
 
-void StringInStorageBuffer::generateXml(QXmlStreamWriter& xmlWriter) const
-{
-    xmlWriter.writeStartElement("StringInStorageBuffer");
-    xmlWriter.writeAttribute("cch", QString::number(m_cch));
+void StringInStorageBuffer::generateXml(QXmlStreamWriter &xmlWriter) const {
+  xmlWriter.writeStartElement("StringInStorageBuffer");
+  xmlWriter.writeAttribute("cch", QString::number(m_cch));
 
-    xmlWriter.writeCharacters(m_StringData);
-    xmlWriter.writeEndElement();
+  xmlWriter.writeCharacters(m_StringData);
+  xmlWriter.writeEndElement();
 }
 
 QDataStream &operator<<(QDataStream &ds, const StringInStorageBuffer &obj) {
@@ -41,12 +40,9 @@ void StringInStorageBuffer::setStringData(const QString &value) {
 void StringInStorageBuffer::deserialize(QDataStream &ds) {
   ds >> m_cch;
 
-  char *rawBody = new char[m_cch * 2];
-  ds.readRawData(rawBody, m_cch * 2);
-  QByteArray rawstring = QByteArray(QByteArray::fromRawData(rawBody, m_cch * 2));
+  QByteArray rawstring = ds.device()->read(m_cch * 2);
 
-
-  m_StringData = QString::fromUtf8(rawstring, m_cch*2);
+  m_StringData = QString::fromUtf8(rawstring, m_cch * 2);
 }
 
 void StringInStorageBuffer::serialize(QDataStream &ds) const {}

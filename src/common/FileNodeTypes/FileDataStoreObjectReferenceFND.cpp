@@ -27,9 +27,27 @@ void FileDataStoreObjectReferenceFND::setGuidReference(const QUuid &value) {
   m_guidReference = value;
 }
 
+FileDataStoreObject
+FileDataStoreObjectReferenceFND::getFileDataStoreObject() const {
+  return m_blob;
+}
+
+void FileDataStoreObjectReferenceFND::setFileDataStoreObject(
+    const FileDataStoreObject &value) {
+  m_blob = value;
+}
+
 void FileDataStoreObjectReferenceFND::deserialize(QDataStream &ds) {
   ds >> m_ref;
   ds >> m_guidReference;
+
+  // getting remote FileDataStoreObject
+  quint64 origLocation = ds.device()->pos();
+  quint64 destLocation = m_ref.stp();
+
+  ds.device()->seek(destLocation);
+  ds >> m_blob;
+  ds.device()->seek(origLocation);
 }
 
 void FileDataStoreObjectReferenceFND::serialize(QDataStream &ds) const {
@@ -43,16 +61,16 @@ void FileDataStoreObjectReferenceFND::toDebugString(QDebug dbg) const {
       << " guidReference: " << m_guidReference << '\n';
 }
 
+void FileDataStoreObjectReferenceFND::generateXml(
+    QXmlStreamWriter &xmlWriter) const {
+  xmlWriter.writeStartElement("FileDataStoreObjectReferenceFND");
+  m_ref.generateXml(xmlWriter);
 
-void FileDataStoreObjectReferenceFND::generateXml(QXmlStreamWriter& xmlWriter) const
-{
-    xmlWriter.writeStartElement("FileDataStoreObjectReferenceFND");
-    m_ref.generateXml(xmlWriter);
+  xmlWriter.writeStartElement("guidReference");
+  xmlWriter.writeCharacters(m_guidReference.toString());
+  xmlWriter.writeEndElement();
 
-    xmlWriter.writeStartElement("guidReference");
-    xmlWriter.writeCharacters(m_guidReference.toString());
-    xmlWriter.writeEndElement();
+  m_blob.generateXml(xmlWriter);
 
-
-    xmlWriter.writeEndElement();
+  xmlWriter.writeEndElement();
 }

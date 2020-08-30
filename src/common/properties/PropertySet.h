@@ -5,12 +5,12 @@
 
 #include <QDataStream>
 #include <QDebug>
-#include <vector>
 #include <QXmlStreamWriter>
+#include <vector>
 
-#include "PropertyID.h"
 #include "IPropertyType.h"
-class PropertySet {
+#include "PropertyID.h"
+    class PropertySet {
 private:
   /**
    * @brief number of PropertyIDs in this Set
@@ -26,7 +26,7 @@ private:
    * @brief vector which contains the data associated to the PropertyIDs in
    * m_rgPrids
    */
-  std::vector<IPropertyType*> m_rgData;
+  std::vector<IPropertyType *> m_rgData;
 
 public:
   PropertySet();
@@ -43,8 +43,8 @@ public:
   std::vector<PropertyID> rgPrids() const;
   void setRgPrids(const std::vector<PropertyID> &rgPrids);
 
-  std::vector<IPropertyType*> rgData() const;
-  void setRgData(const std::vector<IPropertyType*> &rgData);
+  std::vector<IPropertyType *> rgData() const;
+  void setRgData(const std::vector<IPropertyType *> &rgData);
 
 private:
   void deserialize(QDataStream &ds);

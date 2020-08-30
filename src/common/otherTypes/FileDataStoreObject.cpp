@@ -6,7 +6,7 @@
 #include "../helper/Helper.h"
 
 FileDataStoreObject::FileDataStoreObject()
-    : m_cbLength(), m_unused(), m_reserved() {}
+    : m_cbLength(), m_unused(), m_reserved(), m_padding() {}
 
 QDataStream &operator<<(QDataStream &ds, const FileDataStoreObject &obj) {
   obj.serialize(ds);
@@ -50,6 +50,25 @@ void FileDataStoreObject::setGuidFooter(const QUuid &guidFooter) {
   m_guidFooter = guidFooter;
 }
 
+void FileDataStoreObject::generateXml(QXmlStreamWriter &xmlWriter) const {
+  xmlWriter.writeStartElement("FileDataStoreObject");
+  xmlWriter.writeAttribute("cb", QString::number(m_cbLength));
+
+  xmlWriter.writeStartElement("guidHeader");
+  xmlWriter.writeCharacters(m_guidHeader.toString());
+  xmlWriter.writeEndElement();
+
+  xmlWriter.writeStartElement("guidFooter");
+  xmlWriter.writeCharacters(m_guidFooter.toString());
+  xmlWriter.writeEndElement();
+
+  xmlWriter.writeStartElement("FileData");
+  xmlWriter.writeCharacters(m_FileData.toHex());
+  xmlWriter.writeEndElement();
+
+  xmlWriter.writeEndElement();
+}
+
 void FileDataStoreObject::deserialize(QDataStream &ds) {
 
   ds >> m_guidHeader;
@@ -58,13 +77,9 @@ void FileDataStoreObject::deserialize(QDataStream &ds) {
   ds >> m_reserved;
 
   /// \todo reading a large File to memory might be manipulated here
-  char *raw;
-
   uint len = roundUpMultiple(m_cbLength, 8);
-  m_padding = len - m_cbLength;
-  ds.readBytes(raw, len);
 
-  m_FileData = QByteArray(raw);
+  m_FileData = ds.device()->read(len);
 
   ds >> m_guidFooter;
 }

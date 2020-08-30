@@ -48,12 +48,12 @@ void MSONDocument::setTransactionLog(
   m_transactionLog = transactionLog;
 }
 
-std::vector<FileNodeListFragment *> &MSONDocument::getHashedChunkList() {
+std::vector<FileNodeListFragment> &MSONDocument::getHashedChunkList() {
   return m_hashedChunkList;
 }
 
 void MSONDocument::setHashedChunkList(
-    const std::vector<FileNodeListFragment *> &hashedChunkList) {
+    const std::vector<FileNodeListFragment> &hashedChunkList) {
   m_hashedChunkList = hashedChunkList;
 }
 
@@ -89,10 +89,6 @@ MSONDocument::~MSONDocument() {
   }
   for (auto *tl : m_transactionLog) {
     delete tl;
-  }
-
-  for (auto *hcl : m_hashedChunkList) {
-    delete hcl;
   }
 
   for (auto *fnl : m_fileNodeList) {
@@ -354,12 +350,7 @@ QDataStream &operator>>(QDataStream &ds, MSONDocument &obj) {
       obj.getHeader()->getFcrHashedChunkList();
 
   if (!hashChunkRef.is_fcrNil() && !hashChunkRef.is_fcrZero()) {
-    do {
-      FileNodeListFragment *hcl = new FileNodeListFragment(hashChunkRef);
-      ds.device()->seek(hashChunkRef.stp());
-      ds >> *hcl;
-      hashChunkRef = hcl->nextFragment();
-    } while (!hashChunkRef.is_fcrNil() && !hashChunkRef.is_fcrZero());
+    obj.m_hashedChunkList = parseFileNodeListFragments(ds, hashChunkRef);
   }
 
   // Parsing RootFileNodeList
@@ -398,7 +389,7 @@ void MSONDocument::generateXml(QXmlStreamWriter &xmlWriter) const {
 
   xmlWriter.writeStartElement("hashedChunkList");
   for (auto entry : m_hashedChunkList) {
-    entry->generateXml(xmlWriter);
+    entry.generateXml(xmlWriter);
   }
   xmlWriter.writeEndElement();
 
@@ -468,7 +459,7 @@ QDebug operator<<(QDebug dbg, const MSONDocument &obj) {
   } else {
     dbg << '\n';
     for (auto entry : obj.m_hashedChunkList) {
-      dbg << *entry << '\n';
+      dbg << entry << '\n';
     }
   }
 

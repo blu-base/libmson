@@ -32,8 +32,7 @@ public:
   ~RevisionManifestList();
 
   std::vector<FileNodeListFragment> getFileNodeListFragments() const;
-  void
-  setFileNodeListFragments(const std::vector<FileNodeListFragment> &value);
+  void setFileNodeListFragments(const std::vector<FileNodeListFragment> &value);
   std::vector<RevisionManifest *> getRevisionManifests() const;
   void setRevisionManifests(const std::vector<RevisionManifest *> &value);
   std::vector<FileNode> getRevisionRoleDeclarations() const;

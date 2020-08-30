@@ -48,9 +48,9 @@ public:
   void generateXml(QXmlStreamWriter &xmlWriter) const;
 
 private:
-void deserialize(QDataStream &ds);
-void serialize(QDataStream &ds) const;
-void toDebugString(QDebug dbg) const;
+  void deserialize(QDataStream &ds);
+  void serialize(QDataStream &ds) const;
+  void toDebugString(QDebug dbg) const;
 };
 
 #endif // COMPACTID_H

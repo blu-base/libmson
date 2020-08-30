@@ -1,35 +1,33 @@
 #ifndef STRINGINSTORAGEBUFFER_H
 #define STRINGINSTORAGEBUFFER_H
 
-#include <QtCore/qglobal.h>
-#include <QString>
 #include <QDataStream>
 #include <QDebug>
+#include <QString>
 #include <QXmlStreamWriter>
+#include <QtCore/qglobal.h>
 
-class StringInStorageBuffer
-{
+class StringInStorageBuffer {
 private:
-    quint32 m_cch;
+  quint32 m_cch;
 
-    QString m_StringData;
+  QString m_StringData;
+
 public:
   StringInStorageBuffer();
-
-
 
   friend QDataStream &operator<<(QDataStream &ds,
                                  const StringInStorageBuffer &obj);
   friend QDataStream &operator>>(QDataStream &ds, StringInStorageBuffer &obj);
   friend QDebug operator<<(QDebug dbg, const StringInStorageBuffer &obj);
 
-  void generateXml(QXmlStreamWriter &xmlWriter) const;
-
   quint32 getCch() const;
-  void setCch(const quint32& value);
+  void setCch(const quint32 &value);
 
   QString getStringData() const;
-  void setStringData(const QString& value);
+  void setStringData(const QString &value);
+
+  void generateXml(QXmlStreamWriter &xmlWriter) const;
 
 private:
   /**

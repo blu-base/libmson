@@ -80,15 +80,12 @@ public:
   ExtendedGUID getRid() const;
   void setRid(const ExtendedGUID &value);
 
-  // IFileNodeType interfaces
+  virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
+
 private:
   void deserialize(QDataStream &ds);
   void serialize(QDataStream &ds) const;
   void toDebugString(QDebug dbg) const;
-
-  // IFileNodeType interface
-public:
-  virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
 };
 
 #endif // REVISIONMANIFESTSTART4FND_H

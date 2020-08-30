@@ -24,7 +24,7 @@ void ObjectSpaceManifestListStartFND::toDebugString(QDebug dbg) const {
 
 void ObjectSpaceManifestListStartFND::generateXml(
     QXmlStreamWriter &xmlWriter) const {
-    xmlWriter.writeStartElement("ObjectSpaceManifestListStartFND");
-    m_gosid.generateXml(xmlWriter);
-    xmlWriter.writeEndElement();
+  xmlWriter.writeStartElement("ObjectSpaceManifestListStartFND");
+  m_gosid.generateXml(xmlWriter);
+  xmlWriter.writeEndElement();
 }

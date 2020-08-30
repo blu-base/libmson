@@ -4,6 +4,7 @@
 #include "IFileNodeType.h"
 #include "ObjectDeclaration2RefCountFND.h"
 #include <QtCore/qglobal.h>
+
 class ReadOnlyObjectDeclaration2RefCountFND : public IFileNodeType {
 private:
   FNCR_STP_FORMAT m_stpFormat;
@@ -31,14 +32,12 @@ public:
 
   FNCR_STP_FORMAT getStpFormat() const;
 
+  virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
+
 private:
   void deserialize(QDataStream &ds) override;
   void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
-
-  // IFileNodeType interface
-public:
-  virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
 };
 
 #endif // READONLYOBJECTDECLARATION2REFCOUNTFND_H

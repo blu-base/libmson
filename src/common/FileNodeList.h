@@ -9,7 +9,7 @@
 #include "commonTypes/FileChunkReference64x32.h"
 namespace MSONcommon {
 
-    /// \todo FileNodeList class seems duplicate with FileNodeListFragment
+/// \todo FileNodeList class seems duplicate with FileNodeListFragment
 class FileNodeList {
 private:
   FileNodeListHeader m_fileNodeListHeader;

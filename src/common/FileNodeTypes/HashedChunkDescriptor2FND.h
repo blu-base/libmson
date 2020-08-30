@@ -2,6 +2,7 @@
 #define HASHEDCHUNKDESCRIPTOR2FND_H
 
 #include "../commonTypes/FileNodeChunkReference.h"
+#include "../otherTypes/ObjectSpaceObjectPropSet.h"
 #include "IFileNodeType.h"
 #include <QtCore/qglobal.h>
 
@@ -10,6 +11,8 @@ private:
   FileNodeChunkReference m_BlobRef;
 
   QByteArray m_guidHash;
+
+  ObjectSpaceObjectPropSet m_blob;
 
 public:
   HashedChunkDescriptor2FND(FNCR_STP_FORMAT stpFormat, FNCR_CB_FORMAT cbFormat);
@@ -22,14 +25,15 @@ public:
   QByteArray guidHash() const;
   void setGuidHash(const QByteArray &guidHash);
 
+  ObjectSpaceObjectPropSet getPropSet() const;
+  void setPropSet(const ObjectSpaceObjectPropSet &value);
+
+  virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
+
 private:
   void deserialize(QDataStream &ds) override;
   void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
-
-  // IFileNodeType interface
-public:
-  virtual void generateXml(QXmlStreamWriter& xmlWriter) const override;
 };
 
 #endif // HASHEDCHUNKDESCRIPTOR2FND_H

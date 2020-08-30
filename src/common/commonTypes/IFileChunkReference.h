@@ -18,11 +18,8 @@ protected:
   S m_stp;
   C m_cb;
 
-
-
 public:
-//    IFileChunkReference();
-
+  //    IFileChunkReference();
 
   virtual bool is_fcrNil() const = 0;
   virtual bool is_fcrZero() const = 0;
@@ -35,7 +32,6 @@ public:
 
   virtual C cb() const = 0;
   virtual void setCb(const C &cb) = 0;
-
 
   virtual void generateXml(QXmlStreamWriter &xmlWriter) const = 0;
 
@@ -72,11 +68,5 @@ private:
     return dbg;
   };
 };
-
-// template <typename S, typename C>
-// QDataStream &operator<<(QDataStream &s, const IFileChunkReference<S, C>
-// &obj); template <typename S, typename C> QDataStream &operator>>(QDataStream
-// &s, IFileChunkReference<S, C> &obj); template <typename S, typename C> QDebug
-// operator<<(QDebug dbg, const IFileChunkReference<S, C> &obj);
 
 #endif // IFILECHUNKREFERENCE_H

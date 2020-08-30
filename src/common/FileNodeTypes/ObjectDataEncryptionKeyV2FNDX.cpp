@@ -52,7 +52,7 @@ void ObjectDataEncryptionKeyV2FNDX::deserialize(QDataStream &ds) {
   ds.device()->seek(m_ref.stp());
   ds >> m_header;
   /// \todo read data chunk
-  m_EncryptionData = ds.device()->peek(m_ref.cb());
+  m_EncryptionData = ds.device()->read(m_ref.cb() - 16);
   ds >> m_footer;
 
   ds.device()->seek(currentloc);
@@ -74,21 +74,18 @@ void ObjectDataEncryptionKeyV2FNDX::toDebugString(QDebug dbg) const {
       << " Ref: " << m_ref << '\n';
 }
 
+void ObjectDataEncryptionKeyV2FNDX::generateXml(
+    QXmlStreamWriter &xmlWriter) const {
+  xmlWriter.writeStartElement("ObjectDataEncryptionKeyV2FNDX");
 
-void ObjectDataEncryptionKeyV2FNDX::generateXml(QXmlStreamWriter& xmlWriter) const
-{
-    xmlWriter.writeStartElement("ObjectDataEncryptionKeyV2FNDX");
+  xmlWriter.writeAttribute("header", qStringHex(m_header, 16));
+  xmlWriter.writeAttribute("footer", qStringHex(m_header, 16));
 
-    xmlWriter.writeAttribute("header", qStringHex(m_header,16));
-    xmlWriter.writeAttribute("footer", qStringHex(m_header,16));
+  m_ref.generateXml(xmlWriter);
 
+  xmlWriter.writeStartElement("m_EncryptionData");
+  xmlWriter.writeCDATA(m_EncryptionData);
+  xmlWriter.writeEndElement();
 
-    m_ref.generateXml(xmlWriter);
-
-    xmlWriter.writeStartElement("m_EncryptionData");
-    xmlWriter.writeCDATA(m_EncryptionData);
-    xmlWriter.writeEndElement();
-
-
-    xmlWriter.writeEndElement();
+  xmlWriter.writeEndElement();
 }

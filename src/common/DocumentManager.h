@@ -14,8 +14,6 @@
 
 namespace MSONcommon {
 
-
-
 class DocumentManager {
 private:
   QMap<QUuid, MSONDocument *> docs;
@@ -71,9 +69,8 @@ public:
   /** Return the complete storage of this Manager */
   QMap<QUuid, MSONDocument *> getDocumentsMap();
 
-  void generateXml(const QUuid &guidFile, const QString& outputfile);
+  void generateXml(const QUuid &guidFile, const QString &outputfile);
 };
-
 
 } // namespace MSONcommon
 

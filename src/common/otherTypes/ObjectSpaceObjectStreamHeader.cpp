@@ -14,25 +14,22 @@ void ObjectSpaceObjectStreamHeader::setCount(const quint32 &count) {
   m_count = count & 0xFFFFFF;
 }
 
-bool ObjectSpaceObjectStreamHeader::incrementCount()
-{
-    if( m_count == 0xFFFFFF) {
-        return false;
-    } else {
-        m_count++;
-        return true;
-    }
-
+bool ObjectSpaceObjectStreamHeader::incrementCount() {
+  if (m_count == 0xFFFFFF) {
+    return false;
+  } else {
+    m_count++;
+    return true;
+  }
 }
 
-bool ObjectSpaceObjectStreamHeader::decrementCount()
-{
-    if( m_count > 0) {
-        m_count--;
-        return true;
-    } else {
-        return false;
-    }
+bool ObjectSpaceObjectStreamHeader::decrementCount() {
+  if (m_count > 0) {
+    m_count--;
+    return true;
+  } else {
+    return false;
+  }
 }
 
 bool ObjectSpaceObjectStreamHeader::ExtendedStream_isPresent() const {
@@ -50,16 +47,18 @@ bool ObjectSpaceObjectStreamHeader::OsidStream_isNotPresent() const {
 
 void ObjectSpaceObjectStreamHeader::setOsidStreamPresence(
     const OsidStreamPresence &osidStreamPresence) {
-    m_OsidStreamNotPresent = static_cast<bool>(osidStreamPresence);
+  m_OsidStreamNotPresent = static_cast<bool>(osidStreamPresence);
 }
 
-void ObjectSpaceObjectStreamHeader::generateXml(QXmlStreamWriter& xmlWriter) const
-{
-    xmlWriter.writeStartElement("ObjectSpaceObjectStreamHeader");
-    xmlWriter.writeAttribute("count", QString::number(m_count));
-    xmlWriter.writeAttribute("OsidStreamNotPresent", m_OsidStreamNotPresent ? "True" : "False");
-    xmlWriter.writeAttribute("ExtendedStreamsPresent", m_ExtendedStreamsPresent ? "True" : "False");
-    xmlWriter.writeEndElement();
+void ObjectSpaceObjectStreamHeader::generateXml(
+    QXmlStreamWriter &xmlWriter) const {
+  xmlWriter.writeStartElement("ObjectSpaceObjectStreamHeader");
+  xmlWriter.writeAttribute("count", QString::number(m_count));
+  xmlWriter.writeAttribute("OsidStreamNotPresent",
+                           m_OsidStreamNotPresent ? "True" : "False");
+  xmlWriter.writeAttribute("ExtendedStreamsPresent",
+                           m_ExtendedStreamsPresent ? "True" : "False");
+  xmlWriter.writeEndElement();
 }
 
 QDataStream &operator<<(QDataStream &ds,
@@ -98,11 +97,10 @@ void ObjectSpaceObjectStreamHeader::serialize(QDataStream &ds) const {
 }
 
 void ObjectSpaceObjectStreamHeader::toDebugString(QDebug dbg) const {
-    dbg << "ObjectSpaceObjectStreamHeader:\n"
-        << " count: " << m_count << "\n"
-        << "ExtendedStreamsPresent: " << m_ExtendedStreamsPresent << '\n'
-        << "OsidStreamNotPresent:   " << m_OsidStreamNotPresent << '\n';
-
+  dbg << "ObjectSpaceObjectStreamHeader:\n"
+      << " count: " << m_count << "\n"
+      << "ExtendedStreamsPresent: " << m_ExtendedStreamsPresent << '\n'
+      << "OsidStreamNotPresent:   " << m_OsidStreamNotPresent << '\n';
 }
 
 ObjectSpaceObjectStreamHeader::ObjectSpaceObjectStreamHeader()
@@ -110,12 +108,14 @@ ObjectSpaceObjectStreamHeader::ObjectSpaceObjectStreamHeader()
       m_ExtendedStreamsPresent(false) {}
 
 ObjectSpaceObjectStreamHeader::ObjectSpaceObjectStreamHeader(
-    const OsidStreamPresence &osidStreamPresence, const ExtendedStreamPresence &extendedStreamPresence)
+    const OsidStreamPresence &osidStreamPresence,
+    const ExtendedStreamPresence &extendedStreamPresence)
     : m_count(0), m_OsidStreamNotPresent(static_cast<bool>(osidStreamPresence)),
       m_ExtendedStreamsPresent(static_cast<bool>(extendedStreamPresence)) {}
 
 ObjectSpaceObjectStreamHeader::ObjectSpaceObjectStreamHeader(
-    const quint32 &count, const OsidStreamPresence &osidStreamPresence, const ExtendedStreamPresence &extendedStreamPresence)
+    const quint32 &count, const OsidStreamPresence &osidStreamPresence,
+    const ExtendedStreamPresence &extendedStreamPresence)
     : m_count(0), m_OsidStreamNotPresent(static_cast<bool>(osidStreamPresence)),
       m_ExtendedStreamsPresent(static_cast<bool>(extendedStreamPresence)) {
   this->setCount(count);

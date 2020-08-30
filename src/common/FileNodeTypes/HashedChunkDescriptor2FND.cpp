@@ -25,13 +25,27 @@ void HashedChunkDescriptor2FND::setGuidHash(const QByteArray &guidHash) {
   m_guidHash = guidHash;
 }
 
+ObjectSpaceObjectPropSet HashedChunkDescriptor2FND::getPropSet() const {
+  return m_blob;
+}
+
+void HashedChunkDescriptor2FND::setPropSet(
+    const ObjectSpaceObjectPropSet &value) {
+  m_blob = value;
+}
+
 void HashedChunkDescriptor2FND::deserialize(QDataStream &ds) {
   ds >> m_BlobRef;
 
-  int length = 16;
-  char mguidHashRaw[length];
-  ds.readRawData(mguidHashRaw, length);
-  m_guidHash = QByteArray(mguidHashRaw);
+  m_guidHash = ds.device()->read(16);
+
+  // getting remote ObjectPropSet
+  quint64 curLocation = ds.device()->pos();
+  quint64 destLocation = m_BlobRef.stp();
+
+  ds.device()->seek(destLocation);
+  ds >> m_blob;
+  ds.device()->seek(curLocation);
 }
 
 void HashedChunkDescriptor2FND::serialize(QDataStream &ds) const {
@@ -45,16 +59,16 @@ void HashedChunkDescriptor2FND::toDebugString(QDebug dbg) const {
       << " m_guidHash: " << m_guidHash.toHex() << '\n';
 }
 
+void HashedChunkDescriptor2FND::generateXml(QXmlStreamWriter &xmlWriter) const {
+  xmlWriter.writeStartElement("HashedChunkDescriptor2FND");
 
-void HashedChunkDescriptor2FND::generateXml(QXmlStreamWriter& xmlWriter) const
-{
-    xmlWriter.writeStartElement("HashedChunkDescriptor2FND");
+  m_BlobRef.generateXml(xmlWriter);
 
-    m_BlobRef.generateXml(xmlWriter);
+  xmlWriter.writeStartElement("guidHash");
+  xmlWriter.writeCharacters(m_guidHash.toHex());
+  xmlWriter.writeEndElement();
 
-    xmlWriter.writeStartElement("guidHash");
-    xmlWriter.writeCDATA(m_guidHash);
-    xmlWriter.writeEndElement();
+  m_blob.generateXml(xmlWriter);
 
-    xmlWriter.writeEndElement();
+  xmlWriter.writeEndElement();
 }

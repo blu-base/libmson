@@ -4,8 +4,8 @@
 #include <QByteArray>
 #include <QDataStream>
 #include <QDebug>
-#include <QtCore/qglobal.h>
 #include <QXmlStreamWriter>
+#include <QtCore/qglobal.h>
 
 #include "FileNodeTypes/IFileNodeType.h"
 
@@ -69,7 +69,6 @@ public:
   friend QDebug operator<<(QDebug dbg, const FileNode &obj);
 
   void generateXml(QXmlStreamWriter &xmlWriter) const;
-
 
   bool isValid();
   quint16 getFileNodeID() const;

@@ -67,7 +67,7 @@ void FileNodeListFragment::generateXml(QXmlStreamWriter &xmlWriter) const {
   m_fnlheader.generateXml(xmlWriter);
 
   xmlWriter.writeStartElement("rgFileNodes");
-  for (const auto& entry : m_rgFileNodes) {
+  for (const auto &entry : m_rgFileNodes) {
     entry.generateXml(xmlWriter);
   }
   xmlWriter.writeEndElement();
@@ -86,20 +86,25 @@ void FileNodeListFragment::generateXml(QXmlStreamWriter &xmlWriter) const {
 }
 
 void FileNodeListFragment::deserialize(QDataStream &ds) {
-    qInfo() << "FileNodeListFragment pos" << qStringHex(ds.device()->pos(),
-    16) << " size: " << qStringHex(m_ref.cb(),16);
+  qInfo() << "FileNodeListFragment pos" << qStringHex(ds.device()->pos(), 16)
+          << " size: " << qStringHex(m_ref.cb(), 16);
+  quint64 origLocation = ds.device()->pos();
+
+  ds.device()->seek(m_ref.stp());
+
   ds >> m_fnlheader;
 
   quint32 fileNodeCount = UINT32_MAX;
 
-//  if (DocumentSingleton::getDoc()->getFileNodeCountMapping().contains(
-//          m_fnlheader.getFileNodeListID())) {
-//   fileNodeCount =
-//        DocumentSingleton::getDoc()
-//            ->getFileNodeCountMapping()[m_fnlheader.getFileNodeListID()];
-//   qWarning() << "FileNodeListID " << m_fnlheader.getFileNodeListID() << " found in FileNodeCountMapping. count:" << fileNodeCount;
+  //  if (DocumentSingleton::getDoc()->getFileNodeCountMapping().contains(
+  //          m_fnlheader.getFileNodeListID())) {
+  //   fileNodeCount =
+  //        DocumentSingleton::getDoc()
+  //            ->getFileNodeCountMapping()[m_fnlheader.getFileNodeListID()];
+  //   qWarning() << "FileNodeListID " << m_fnlheader.getFileNodeListID() << "
+  //   found in FileNodeCountMapping. count:" << fileNodeCount;
 
-//  }
+  //  }
   /// \todo this calculation is incorrect, not absolute
   quint64 listSize = 0;
   quint64 remainingBytes = 0;
@@ -113,32 +118,32 @@ void FileNodeListFragment::deserialize(QDataStream &ds) {
       if (fn.getFileNodeTypeID() != FileNodeTypeID::ChunkTerminatorFND) {
         fileNodeCount--;
       } else {
-          /// \todo When ChunkTerminator found, is there really no filenode left?
-          qWarning() << "ChunkTerminatorFND found";
-          break;
+        /// \todo When ChunkTerminator found, is there really no filenode left?
+        qWarning() << "ChunkTerminatorFND found";
+        break;
       }
     } else {
-        qWarning() << "FileNodeListFragment ended early";
-        break;
+      qWarning() << "FileNodeListFragment ended early";
+      break;
     }
 
     remainingBytes = m_ref.stp() + m_ref.cb() - ds.device()->pos();
-  } while ( (remainingBytes - 20 > 4) && (fileNodeCount > 0));
+  } while ((remainingBytes - 20 > 4) && (fileNodeCount > 0));
 
-//  if (MSONcommon::DocumentSingleton::getDoc()
-//          ->getFileNodeCountMapping()
-//          .contains(m_fnlheader.getFileNodeListID())) {
-//    MSONcommon::DocumentSingleton::getDoc()
-//        ->getFileNodeCountMapping()[m_fnlheader.getFileNodeListID()] =
-//        fileNodeCount;
-//  }
+  //  if (MSONcommon::DocumentSingleton::getDoc()
+  //          ->getFileNodeCountMapping()
+  //          .contains(m_fnlheader.getFileNodeListID())) {
+  //    MSONcommon::DocumentSingleton::getDoc()
+  //        ->getFileNodeCountMapping()[m_fnlheader.getFileNodeListID()] =
+  //        fileNodeCount;
+  //  }
 
-//  m_paddingLength = m_ref.cb() - 36 - listSize ;
-  m_paddingLength = m_ref.stp() + m_ref.cb() - ds.device()->pos() - 20 ;
+  //  m_paddingLength = m_ref.cb() - 36 - listSize ;
+  m_paddingLength = m_ref.stp() + m_ref.cb() - ds.device()->pos() - 20;
 
-//  char* rawBody = new char[m_paddingLength];
-//  ds.readRawData(rawBody, m_paddingLength);
-//  QByteArray padding = QByteArray(QByteArray::fromRawData(rawBody, m_paddingLength));
+  //  char* rawBody = new char[m_paddingLength];
+  //  ds.readRawData(rawBody, m_paddingLength);
+  //  QByteArray padding = ds.device()->read(m_paddingLength);
 
   ds.skipRawData(m_paddingLength);
 
@@ -148,7 +153,6 @@ void FileNodeListFragment::deserialize(QDataStream &ds) {
   m_nextFragment = FileChunkReference64x32();
   ds >> m_nextFragment;
 
-
   // footer
   quint64 temp;
   ds >> temp;
@@ -156,6 +160,7 @@ void FileNodeListFragment::deserialize(QDataStream &ds) {
     qWarning() << "FileNodeListFragment footer invalid";
   }
   qInfo() << "m_paddingLength" << qStringHex(m_paddingLength, 16);
+  ds.device()->seek(origLocation);
 }
 
 void FileNodeListFragment::serialize(QDataStream &ds) const {}
@@ -165,10 +170,14 @@ void FileNodeListFragment::toDebugString(QDebug dbg) const {
       << "FileNodeListHeader:\n"
       << m_fnlheader;
 
-  for (const auto& entry : m_rgFileNodes) {
+  for (const auto &entry : m_rgFileNodes) {
     dbg << entry << '\n';
   }
 }
+
+FileNodeListFragment::FileNodeListFragment()
+    : m_ref{}, m_fnlheader{}, m_rgFileNodes{}, m_paddingLength{},
+      m_nextFragment() {}
 
 FileNodeListFragment::FileNodeListFragment(const FileChunkReference64 ref)
     : m_ref{ref}, m_fnlheader{}, m_rgFileNodes{}, m_paddingLength{},
@@ -201,9 +210,9 @@ FileNodeListFragment::FileNodeListFragment(const FileNodeChunkReference ref)
  * \todo deleting next fragment likely breaks the whole list, revise
  */
 FileNodeListFragment::~FileNodeListFragment() {
-//  for (auto *fn : m_rgFileNodes) {
-//    delete fn;
-//  }
+  //  for (auto *fn : m_rgFileNodes) {
+  //    delete fn;
+  //  }
 }
 
 QDataStream &operator<<(QDataStream &ds, const FileNodeListFragment &obj) {

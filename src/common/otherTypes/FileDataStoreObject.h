@@ -5,6 +5,7 @@
 #include <cstdlib>
 
 #include <QUuid>
+#include <QXmlStreamWriter>
 
 class FileDataStoreObject {
 private:
@@ -67,6 +68,8 @@ public:
 
   QUuid guidFooter() const;
   void setGuidFooter(const QUuid &guidFooter);
+
+  void generateXml(QXmlStreamWriter &xmlWriter) const;
 
 private:
   /**

@@ -8,57 +8,55 @@ ObjectSpaceManifestList::ObjectSpaceManifestList(FileNodeChunkReference &ref)
     : m_ref{ref} {}
 
 ObjectSpaceManifestList::~ObjectSpaceManifestList() {
-//  for (auto *fnlf : m_fileNodeListFragments) {
-//    delete fnlf;
-//  };
+  //  for (auto *fnlf : m_fileNodeListFragments) {
+  //    delete fnlf;
+  //  };
 
   for (auto *rml : m_revisionManifestLists) {
     delete rml;
   }
 
-//  for (auto *fns : m_fileNodeSequence) {
-//    delete fns;
-//  }
+  //  for (auto *fns : m_fileNodeSequence) {
+  //    delete fns;
+  //  }
 }
 
 FileNodeChunkReference ObjectSpaceManifestList::getRef() const { return m_ref; }
 
 void ObjectSpaceManifestList::setRef(const FileNodeChunkReference &ref) {
-    m_ref = ref;
+  m_ref = ref;
 }
 
-void ObjectSpaceManifestList::generateXml(QXmlStreamWriter& xmlWriter) const
-{
-    xmlWriter.writeStartElement("ObjectSpaceManifestList");
+void ObjectSpaceManifestList::generateXml(QXmlStreamWriter &xmlWriter) const {
+  xmlWriter.writeStartElement("ObjectSpaceManifestList");
 
-    xmlWriter.writeStartElement("ref");
-    m_ref.generateXml(xmlWriter);
-    xmlWriter.writeEndElement();
+  xmlWriter.writeStartElement("ref");
+  m_ref.generateXml(xmlWriter);
+  xmlWriter.writeEndElement();
 
-    xmlWriter.writeStartElement("objectSpaceManifestListStart");
-    m_objectSpaceManifestListStart.generateXml(xmlWriter);
-    xmlWriter.writeEndElement();
+  xmlWriter.writeStartElement("objectSpaceManifestListStart");
+  m_objectSpaceManifestListStart.generateXml(xmlWriter);
+  xmlWriter.writeEndElement();
 
-//    xmlWriter.writeStartElement("fileNodeListFragments");
-//    for (const auto& entry : m_fileNodeListFragments) {
-//        entry.generateXml(xmlWriter);
-//    }
-//    xmlWriter.writeEndElement();
+  //    xmlWriter.writeStartElement("fileNodeListFragments");
+  //    for (const auto& entry : m_fileNodeListFragments) {
+  //        entry.generateXml(xmlWriter);
+  //    }
+  //    xmlWriter.writeEndElement();
 
-    xmlWriter.writeStartElement("revisionManifestLists");
-    for (auto entry : m_revisionManifestLists) {
-        entry->generateXml(xmlWriter);
-    }
-    xmlWriter.writeEndElement();
+  xmlWriter.writeStartElement("revisionManifestLists");
+  for (auto entry : m_revisionManifestLists) {
+    entry->generateXml(xmlWriter);
+  }
+  xmlWriter.writeEndElement();
 
-    xmlWriter.writeStartElement("fileNodeSequence");
-    for (const auto& entry : m_fileNodeSequence) {
-        entry.generateXml(xmlWriter);
-    }
-    xmlWriter.writeEndElement();
+  xmlWriter.writeStartElement("fileNodeSequence");
+  for (const auto &entry : m_fileNodeSequence) {
+    entry.generateXml(xmlWriter);
+  }
+  xmlWriter.writeEndElement();
 
-    xmlWriter.writeEndElement();
-
+  xmlWriter.writeEndElement();
 }
 
 QDataStream &operator>>(QDataStream &ds, ObjectSpaceManifestList &obj) {
@@ -75,15 +73,14 @@ void ObjectSpaceManifestList::deserialize(QDataStream &ds) {
   qInfo() << "Parsing ObjectSpaceManifestList";
   m_fileNodeListFragments = parseFileNodeListFragments(ds, m_ref);
 
-  for(const auto& fragment : m_fileNodeListFragments) {
-      const auto& rgFileNodes = fragment.rgFileNodes();
-      copy_if(rgFileNodes.begin(), rgFileNodes.end(),
-              back_inserter(m_fileNodeSequence), [](const FileNode& entry) {
-                return entry.getFileNodeTypeID() !=
-                       FileNodeTypeID::ChunkTerminatorFND;
-              });
+  for (const auto &fragment : m_fileNodeListFragments) {
+    const auto &rgFileNodes = fragment.rgFileNodes();
+    copy_if(rgFileNodes.begin(), rgFileNodes.end(),
+            back_inserter(m_fileNodeSequence), [](const FileNode &entry) {
+              return entry.getFileNodeTypeID() !=
+                     FileNodeTypeID::ChunkTerminatorFND;
+            });
   }
-
 
   std::vector<FileNode> objectSpaceManifestListStarts{};
 
@@ -129,7 +126,7 @@ void ObjectSpaceManifestList::toDebugString(QDebug dbg) const {
   if (m_fileNodeListFragments.size() == 0) {
     dbg << "none\n";
   } else {
-    for (const auto& entry : m_fileNodeListFragments) {
+    for (const auto &entry : m_fileNodeListFragments) {
       dbg << entry;
     }
   }
@@ -149,7 +146,7 @@ void ObjectSpaceManifestList::toDebugString(QDebug dbg) const {
   if (m_fileNodeSequence.size() == 0) {
     dbg << "none\n";
   } else {
-    for (const auto& entry : m_fileNodeSequence) {
+    for (const auto &entry : m_fileNodeSequence) {
       dbg << entry;
     }
   }

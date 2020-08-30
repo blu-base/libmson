@@ -24,17 +24,16 @@ ObjectDeclaration2Body ObjectDeclaration2RefCountFND::getBody() const {
 
 void ObjectDeclaration2RefCountFND::setBody(
     const ObjectDeclaration2Body &value) {
-    m_body = value;
+  m_body = value;
 }
 
-ObjectSpaceObjectPropSet ObjectDeclaration2RefCountFND::getPropSet() const
-{
-    return m_blob;
+ObjectSpaceObjectPropSet ObjectDeclaration2RefCountFND::getPropSet() const {
+  return m_blob;
 }
 
-void ObjectDeclaration2RefCountFND::setPropSet(const ObjectSpaceObjectPropSet& value)
-{
-    m_blob = value;
+void ObjectDeclaration2RefCountFND::setPropSet(
+    const ObjectSpaceObjectPropSet &value) {
+  m_blob = value;
 }
 
 FileNodeChunkReference ObjectDeclaration2RefCountFND::getBlobRef() const {
@@ -52,7 +51,6 @@ void ObjectDeclaration2RefCountFND::deserialize(QDataStream &ds) {
   ds >> m_body;
   ds >> m_cRef;
 
-
   // getting remote ObjectPropSet
   quint64 curLocation = ds.device()->pos();
   quint64 destLocation = m_blobRef.stp();
@@ -66,8 +64,6 @@ void ObjectDeclaration2RefCountFND::serialize(QDataStream &ds) const {
   ds << m_blobRef;
   ds << m_body;
   ds << m_cRef;
-
-
 }
 
 void ObjectDeclaration2RefCountFND::toDebugString(QDebug dbg) const {
@@ -77,18 +73,17 @@ void ObjectDeclaration2RefCountFND::toDebugString(QDebug dbg) const {
       << m_body << " cRef: " << qStringHex(m_cRef, 2) << 'n';
 }
 
+void ObjectDeclaration2RefCountFND::generateXml(
+    QXmlStreamWriter &xmlWriter) const {
+  xmlWriter.writeStartElement("ObjectDeclaration2RefCountFND");
 
-void ObjectDeclaration2RefCountFND::generateXml(QXmlStreamWriter& xmlWriter) const
-{
-    xmlWriter.writeStartElement("ObjectDeclaration2RefCountFND");
+  xmlWriter.writeAttribute("cRef", qStringHex(m_cRef, 16));
 
-    xmlWriter.writeAttribute("cRef", qStringHex(m_cRef, 16));
+  m_blobRef.generateXml(xmlWriter);
 
-    m_blobRef.generateXml(xmlWriter);
+  m_body.generateXml(xmlWriter);
 
-    m_body.generateXml(xmlWriter);
+  m_blob.generateXml(xmlWriter);
 
-    m_blob.generateXml(xmlWriter);
-
-    xmlWriter.writeEndElement();
+  xmlWriter.writeEndElement();
 }

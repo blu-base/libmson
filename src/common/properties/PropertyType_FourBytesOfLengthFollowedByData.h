@@ -19,12 +19,12 @@ public:
   PropertyType_FourBytesOfLengthFollowedByData();
 
   quint32 cb() const;
-  void setCb(const quint32& cb);
+  void setCb(const quint32 &cb);
 
   QByteArray data() const;
   void setData(const QByteArray &data);
 
-  virtual void generateXml(QXmlStreamWriter& xmlWriter) const override;
+  virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
 
 private:
   void deserialize(QDataStream &ds) override;

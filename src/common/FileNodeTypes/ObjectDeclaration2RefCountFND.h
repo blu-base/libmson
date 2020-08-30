@@ -10,13 +10,12 @@
 
 class ObjectDeclaration2RefCountFND : public IFileNodeType {
 private:
-    FileNodeChunkReference m_blobRef;
+  FileNodeChunkReference m_blobRef;
+  ObjectDeclaration2Body m_body;
+  quint8 m_cRef;
 
-    ObjectDeclaration2Body m_body;
+  ObjectSpaceObjectPropSet m_blob;
 
-    quint8 m_cRef;
-
-    ObjectSpaceObjectPropSet m_blob;
 public:
   ObjectDeclaration2RefCountFND(FNCR_STP_FORMAT stpFormat,
                                 FNCR_CB_FORMAT cbFormat);
@@ -35,14 +34,12 @@ public:
   quint8 getCRef() const;
   void setCRef(const quint8 &value);
 
+  virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
+
 private:
   void deserialize(QDataStream &ds) override;
   void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
-
-  // IFileNodeType interface
-public:
-  virtual void generateXml(QXmlStreamWriter& xmlWriter) const override;
 };
 
 #endif // OBJECTDECLARATION2REFCOUNTFND_H

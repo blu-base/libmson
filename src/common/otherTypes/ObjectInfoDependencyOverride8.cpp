@@ -3,7 +3,7 @@
 #include <QDataStream>
 #include <QDebug>
 
-ObjectInfoDependencyOverride8::ObjectInfoDependencyOverride8() : m_cRef(){}
+ObjectInfoDependencyOverride8::ObjectInfoDependencyOverride8() : m_cRef() {}
 
 void ObjectInfoDependencyOverride8::generateXml(
     QXmlStreamWriter &xmlWriter) const {

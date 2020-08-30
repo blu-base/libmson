@@ -4,16 +4,16 @@
 #include "../commonTypes/CompactID.h"
 #include "../commonTypes/StringInStorageBuffer.h"
 #include "../properties/JCID.h"
+
 #include "IFileNodeType.h"
+
 #include <QtCore/qglobal.h>
 
 class ObjectDeclarationFileData3LargeRefCountFND : public IFileNodeType {
 private:
   CompactID m_oid;
   JCID m_jcid;
-
   quint32 m_cRef;
-
   StringInStorageBuffer m_FileDataReference;
   StringInStorageBuffer m_Extension;
 
@@ -35,14 +35,12 @@ public:
   StringInStorageBuffer Extension() const;
   void setExtension(const StringInStorageBuffer &Extension);
 
+  virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
+
 private:
   void deserialize(QDataStream &ds) override;
   void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
-
-  // IFileNodeType interface
-public:
-  virtual void generateXml(QXmlStreamWriter& xmlWriter) const override;
 };
 
 #endif // OBJECTDECLARATIONFILEDATA3LARGEREFCOUNTFND_H

@@ -38,15 +38,15 @@ void ObjectDeclarationWithRefCount2FNDX::setCRef(const quint32 &value) {
   m_cRef = value;
 }
 
-ObjectSpaceObjectPropSet ObjectDeclarationWithRefCount2FNDX::getPropSet() const {
+ObjectSpaceObjectPropSet
+ObjectDeclarationWithRefCount2FNDX::getPropSet() const {
   return m_blob;
 }
 
 void ObjectDeclarationWithRefCount2FNDX::setPropSet(
     const ObjectSpaceObjectPropSet &value) {
-    m_blob = value;
+  m_blob = value;
 }
-
 
 void ObjectDeclarationWithRefCount2FNDX::deserialize(QDataStream &ds) {
   ds >> m_objectRef;

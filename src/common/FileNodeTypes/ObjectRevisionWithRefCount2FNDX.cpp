@@ -54,9 +54,8 @@ ObjectSpaceObjectPropSet ObjectRevisionWithRefCount2FNDX::getPropSet() const {
 
 void ObjectRevisionWithRefCount2FNDX::setPropSet(
     const ObjectSpaceObjectPropSet &value) {
-    m_blob = value;
+  m_blob = value;
 }
-
 
 void ObjectRevisionWithRefCount2FNDX::deserialize(QDataStream &ds) {
   ds >> m_ref;
@@ -103,18 +102,19 @@ void ObjectRevisionWithRefCount2FNDX::toDebugString(QDebug dbg) const {
 void ObjectRevisionWithRefCount2FNDX::generateXml(
     QXmlStreamWriter &xmlWriter) const {
 
-    xmlWriter.writeStartElement("ObjectRevisionWithRefCount2FNDX");
+  xmlWriter.writeStartElement("ObjectRevisionWithRefCount2FNDX");
 
+  xmlWriter.writeAttribute("cRef", qStringHex(m_cRef, 8));
+  xmlWriter.writeAttribute("fHasOidReferences",
+                           m_fHasOidReferences ? "true" : "false");
+  xmlWriter.writeAttribute("fHasOsidReferences",
+                           m_fHasOsidReferences ? "true" : "false");
 
-    xmlWriter.writeAttribute("cRef", qStringHex(m_cRef,8));
-    xmlWriter.writeAttribute("fHasOidReferences", m_fHasOidReferences ? "true": "false");
-    xmlWriter.writeAttribute("fHasOsidReferences", m_fHasOsidReferences ? "true": "false");
+  m_ref.generateXml(xmlWriter);
 
-    m_ref.generateXml(xmlWriter);
-
-    m_oid.generateXml(xmlWriter);
+  m_oid.generateXml(xmlWriter);
 
   m_blob.generateXml(xmlWriter);
 
-    xmlWriter.writeEndElement();
+  xmlWriter.writeEndElement();
 }

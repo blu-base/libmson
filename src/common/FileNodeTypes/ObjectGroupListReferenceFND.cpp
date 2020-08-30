@@ -17,7 +17,9 @@ void ObjectGroupListReferenceFND::setObjectGroupID(
   m_ObjectGroupID = objectGroupID;
 }
 
-FileNodeChunkReference ObjectGroupListReferenceFND::ref() const { return m_ref; }
+FileNodeChunkReference ObjectGroupListReferenceFND::ref() const {
+  return m_ref;
+}
 
 void ObjectGroupListReferenceFND::setRef(const FileNodeChunkReference &ref) {
   m_ref = ref;
@@ -39,14 +41,13 @@ void ObjectGroupListReferenceFND::toDebugString(QDebug dbg) const {
       << " ObjectGroupID: " << m_ObjectGroupID << '\n';
 }
 
+void ObjectGroupListReferenceFND::generateXml(
+    QXmlStreamWriter &xmlWriter) const {
+  xmlWriter.writeStartElement("ObjectGroupListReferenceFND");
 
-void ObjectGroupListReferenceFND::generateXml(QXmlStreamWriter& xmlWriter) const
-{
-    xmlWriter.writeStartElement("ObjectGroupListReferenceFND");
+  m_ref.generateXml(xmlWriter);
 
-    m_ref.generateXml(xmlWriter);
+  m_ObjectGroupID.generateXml(xmlWriter);
 
-    m_ObjectGroupID.generateXml(xmlWriter);
-
-    xmlWriter.writeEndElement();
+  xmlWriter.writeEndElement();
 }

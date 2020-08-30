@@ -6,26 +6,26 @@
 #include "../commonTypes/CompactID.h"
 #include "../commonTypes/FileNodeChunkReference.h"
 #include "../otherTypes/ObjectSpaceObjectPropSet.h"
+
 #include "IFileNodeType.h"
 
 class ObjectRevisionWithRefCount2FNDX : public IFileNodeType {
 private:
+  FileNodeChunkReference m_ref;
 
-    FileNodeChunkReference m_ref;
+  CompactID m_oid;
 
-    CompactID m_oid;
+  bool m_fHasOidReferences;
+  bool m_fHasOsidReferences;
 
-    bool m_fHasOidReferences;
-    bool m_fHasOsidReferences;
+  quint32 m_cRef;
 
-    quint32 m_cRef;
+  ObjectSpaceObjectPropSet m_blob;
 
-    ObjectSpaceObjectPropSet m_blob;
 public:
   ObjectRevisionWithRefCount2FNDX(FNCR_STP_FORMAT stpFormat,
                                   FNCR_CB_FORMAT cbFormat);
   ObjectRevisionWithRefCount2FNDX(quint8 stpFormat, quint8 cbFormat);
-
 
   FileNodeChunkReference getRef() const;
   void setRef(const FileNodeChunkReference &value);
@@ -45,14 +45,12 @@ public:
   ObjectSpaceObjectPropSet getPropSet() const;
   void setPropSet(const ObjectSpaceObjectPropSet &value);
 
+  virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
+
 private:
   void deserialize(QDataStream &ds) override;
   void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
-
-  // IFileNodeType interface
-public:
-  virtual void generateXml(QXmlStreamWriter& xmlWriter) const override;
 };
 
 #endif // OBJECTREVISIONWITHREFCOUNT2FNDX_H

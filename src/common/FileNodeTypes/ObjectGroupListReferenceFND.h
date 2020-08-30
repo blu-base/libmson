@@ -5,12 +5,12 @@
 
 #include "../commonTypes/ExtendedGUID.h"
 #include "../commonTypes/FileNodeChunkReference.h"
+
 #include "IFileNodeType.h"
 
 class ObjectGroupListReferenceFND : public IFileNodeType {
 private:
   FileNodeChunkReference m_ref;
-
   ExtendedGUID m_ObjectGroupID;
 
 public:
@@ -25,14 +25,12 @@ public:
   ExtendedGUID objectGroupID() const;
   void setObjectGroupID(const ExtendedGUID &objectGroupID);
 
+  virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
+
 private:
   void deserialize(QDataStream &ds) override;
   void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
-
-  // IFileNodeType interface
-public:
-  virtual void generateXml(QXmlStreamWriter& xmlWriter) const override;
 };
 
 #endif // OBJECTGROUPLISTREFERENCEFND_H

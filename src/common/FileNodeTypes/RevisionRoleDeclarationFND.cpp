@@ -32,11 +32,10 @@ void RevisionRoleDeclarationFND::toDebugString(QDebug dbg) const {
       << " RevisionRole: " << m_RevisionRole << '\n';
 }
 
-
-void RevisionRoleDeclarationFND::generateXml(QXmlStreamWriter& xmlWriter) const
-{
-    xmlWriter.writeStartElement("RevisionRoleDeclarationFND");
-    xmlWriter.writeAttribute("revisionRole", QString::number(m_RevisionRole));
-    m_rid.generateXml(xmlWriter);
-    xmlWriter.writeEndElement();
+void RevisionRoleDeclarationFND::generateXml(
+    QXmlStreamWriter &xmlWriter) const {
+  xmlWriter.writeStartElement("RevisionRoleDeclarationFND");
+  xmlWriter.writeAttribute("revisionRole", QString::number(m_RevisionRole));
+  m_rid.generateXml(xmlWriter);
+  xmlWriter.writeEndElement();
 }

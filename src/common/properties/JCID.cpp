@@ -20,7 +20,7 @@ bool JCID::IsBinary() const {
 
 void JCID::setIsBinary(bool IsBinary) {
   m_value = (m_value & JCID_imaskIsBinary) +
-               (static_cast<quint32>(IsBinary) << JCID_shiftIsBinary);
+            (static_cast<quint32>(IsBinary) << JCID_shiftIsBinary);
   ;
 }
 
@@ -30,7 +30,7 @@ bool JCID::IsPropertySet() const {
 
 void JCID::setIsPropertySet(bool IsPropertySet) {
   m_value = (m_value & JCID_imaskIsPropertySet) +
-                    (static_cast<quint32>(IsPropertySet) << JCID_shiftIsPropertySet);
+            (static_cast<quint32>(IsPropertySet) << JCID_shiftIsPropertySet);
   ;
 }
 
@@ -40,7 +40,7 @@ bool JCID::IsGraphNode() const {
 
 void JCID::setIsGraphNode(bool IsGraphNode) {
   m_value = (m_value & JCID_imaskIsGraphNode) +
-                  (static_cast<quint32>(IsGraphNode) << JCID_shiftIsGraphNode);
+            (static_cast<quint32>(IsGraphNode) << JCID_shiftIsGraphNode);
   ;
 }
 
@@ -50,7 +50,7 @@ bool JCID::IsFileData() const {
 
 void JCID::setIsFileData(bool IsFileData) {
   m_value = (m_value & JCID_imaskIsFileData) +
-                 (static_cast<quint32>(IsFileData) << JCID_shiftIsFileData);
+            (static_cast<quint32>(IsFileData) << JCID_shiftIsFileData);
   ;
 }
 
@@ -60,130 +60,132 @@ bool JCID::IsReadOnly() const {
 
 void JCID::setIsReadOnly(bool IsReadOnly) {
   m_value = (m_value & JCID_imaskIsReadOnly) +
-                 (static_cast<quint32>(IsReadOnly) << JCID_shiftIsReadOnly);
+            (static_cast<quint32>(IsReadOnly) << JCID_shiftIsReadOnly);
   ;
 }
 
-JCIDs JCID::type() const
-{
-    switch (m_value) {
-    case 0x00120001:
-        return JCIDs::jcidReadOnlyPersistablePropertyContainerForAuthor;
-    case 0x00020001:
-        return JCIDs::jcidPersistablePropertyContainerForTOC;
-    case 0x00060007:
-        return JCIDs::jcidSectionNode;
-    case 0x00060008:
-        return JCIDs::jcidPageSeriesNode;
-    case 0x0006000B:
-        return JCIDs::jcidPageNode;
-    case 0x0006000C:
-        return JCIDs::jcidOutlineNode;
-    case 0x0006000D:
-        return JCIDs::jcidOutlineElementNode;
-    case 0x0006000E:
-        return JCIDs::jcidRichTextOENode;
-    case 0x00060011:
-        return JCIDs::jcidImageNode;
-    case 0x00060012:
-        return JCIDs::jcidNumberListNode;
-    case 0x00060019:
-        return JCIDs::jcidOutlineGroup;
-    case 0x00060022:
-        return JCIDs::jcidTableNode;
-    case 0x00060023:
-        return JCIDs::jcidTableRowNode;
-    case 0x00060024:
-        return JCIDs::jcidTableCellNode;
-    case 0x0006002C:
-        return JCIDs::jcidTitleNode;
-    case 0x00020030:
-        return JCIDs::jcidPageMetaData;
-    case 0x00020031:
-        return JCIDs::jcidSectionMetaData;
-    case 0x00060035:
-        return JCIDs::jcidEmbeddedFileNode;
-    case 0x00060037:
-        return JCIDs::jcidPageManifestNode;
-    case 0x00020038:
-        return JCIDs::jcidConflictPageMetaData;
-    case 0x0006003C:
-        return JCIDs::jcidVersionHistoryContent;
-    case 0x0006003D:
-        return JCIDs::jcidVersionProxy;
-    case 0x00120043:
-        return JCIDs::jcidNoteTagSharedDefinitionContainer;
-    case 0x00020044:
-        return JCIDs::jcidRevisionMetaData;
-    case 0x00020046:
-        return JCIDs::jcidVersionHistoryMetaData;
-    case 0x0012004D:
-        return JCIDs::jcidParagraphStyleObject;
-    case 0x00000000:
-    default:
-        return JCIDs::none;
-    }
+JCIDs JCID::type() const {
+  return static_cast<JCIDs>(m_value);
+
+  //    switch (m_value) {
+  //    case 0x00120001:
+  //        return JCIDs::jcidReadOnlyPersistablePropertyContainerForAuthor;
+  //    case 0x00020001:
+  //        return JCIDs::jcidPersistablePropertyContainerForTOC;
+  //    case 0x00060007:
+  //        return JCIDs::jcidSectionNode;
+  //    case 0x00060008:
+  //        return JCIDs::jcidPageSeriesNode;
+  //    case 0x0006000B:
+  //        return JCIDs::jcidPageNode;
+  //    case 0x0006000C:
+  //        return JCIDs::jcidOutlineNode;
+  //    case 0x0006000D:
+  //        return JCIDs::jcidOutlineElementNode;
+  //    case 0x0006000E:
+  //        return JCIDs::jcidRichTextOENode;
+  //    case 0x00060011:
+  //        return JCIDs::jcidImageNode;
+  //    case 0x00060012:
+  //        return JCIDs::jcidNumberListNode;
+  //    case 0x00060019:
+  //        return JCIDs::jcidOutlineGroup;
+  //    case 0x00060022:
+  //        return JCIDs::jcidTableNode;
+  //    case 0x00060023:
+  //        return JCIDs::jcidTableRowNode;
+  //    case 0x00060024:
+  //        return JCIDs::jcidTableCellNode;
+  //    case 0x0006002C:
+  //        return JCIDs::jcidTitleNode;
+  //    case 0x00020030:
+  //        return JCIDs::jcidPageMetaData;
+  //    case 0x00020031:
+  //        return JCIDs::jcidSectionMetaData;
+  //    case 0x00060035:
+  //        return JCIDs::jcidEmbeddedFileNode;
+  //    case 0x00060037:
+  //        return JCIDs::jcidPageManifestNode;
+  //    case 0x00020038:
+  //        return JCIDs::jcidConflictPageMetaData;
+  //    case 0x0006003C:
+  //        return JCIDs::jcidVersionHistoryContent;
+  //    case 0x0006003D:
+  //        return JCIDs::jcidVersionProxy;
+  //    case 0x00120043:
+  //        return JCIDs::jcidNoteTagSharedDefinitionContainer;
+  //    case 0x00020044:
+  //        return JCIDs::jcidRevisionMetaData;
+  //    case 0x00020046:
+  //        return JCIDs::jcidVersionHistoryMetaData;
+  //    case 0x0012004D:
+  //        return JCIDs::jcidParagraphStyleObject;
+  //    case 0x00000000:
+  //    default:
+  //        return JCIDs::none;
+  //    }
 }
 
-QString JCID::typeToString() const
-{
-    switch (m_value) {
-    case 0x00120001:
-        return QString("jcidReadOnlyPersistablePropertyContainerForAuthor");
-    case 0x00020001:
-        return QString("jcidPersistablePropertyContainerForTOC");
-    case 0x00060007:
-        return QString("jcidSectionNode");
-    case 0x00060008:
-        return QString("jcidPageSeriesNode");
-    case 0x0006000B:
-        return QString("jcidPageNode");
-    case 0x0006000C:
-        return QString("jcidOutlineNode");
-    case 0x0006000D:
-        return QString("jcidOutlineElementNode");
-    case 0x0006000E:
-        return QString("jcidRichTextOENode");
-    case 0x00060011:
-        return QString("jcidImageNode");
-    case 0x00060012:
-        return QString("jcidNumberListNode");
-    case 0x00060019:
-        return QString("jcidOutlineGroup");
-    case 0x00060022:
-        return QString("jcidTableNode");
-    case 0x00060023:
-        return QString("jcidTableRowNode");
-    case 0x00060024:
-        return QString("jcidTableCellNode");
-    case 0x0006002C:
-        return QString("jcidTitleNode");
-    case 0x00020030:
-        return QString("jcidPageMetaData");
-    case 0x00020031:
-        return QString("jcidSectionMetaData");
-    case 0x00060035:
-        return QString("jcidEmbeddedFileNode");
-    case 0x00060037:
-        return QString("jcidPageManifestNode");
-    case 0x00020038:
-        return QString("jcidConflictPageMetaData");
-    case 0x0006003C:
-        return QString("jcidVersionHistoryContent");
-    case 0x0006003D:
-        return QString("jcidVersionProxy");
-    case 0x00120043:
-        return QString("jcidNoteTagSharedDefinitionContainer");
-    case 0x00020044:
-        return QString("jcidRevisionMetaData");
-    case 0x00020046:
-        return QString("jcidVersionHistoryMetaData");
-    case 0x0012004D:
-        return QString("jcidParagraphStyleObject");
-    case 0x00000000:
-    default:
-        return QString("none");
-    }
+QString JCID::typeToString() const {
+
+  switch (type()) {
+  case JCIDs::jcidReadOnlyPersistablePropertyContainerForAuthor:
+    return QString("jcidReadOnlyPersistablePropertyContainerForAuthor");
+  case JCIDs::jcidPersistablePropertyContainerForTOC:
+    return QString("jcidPersistablePropertyContainerForTOC");
+  case JCIDs::jcidSectionNode:
+    return QString("jcidSectionNode");
+  case JCIDs::jcidPageSeriesNode:
+    return QString("jcidPageSeriesNode");
+  case JCIDs::jcidPageNode:
+    return QString("jcidPageNode");
+  case JCIDs::jcidOutlineNode:
+    return QString("jcidOutlineNode");
+  case JCIDs::jcidOutlineElementNode:
+    return QString("jcidOutlineElementNode");
+  case JCIDs::jcidRichTextOENode:
+    return QString("jcidRichTextOENode");
+  case JCIDs::jcidImageNode:
+    return QString("jcidImageNode");
+  case JCIDs::jcidNumberListNode:
+    return QString("jcidNumberListNode");
+  case JCIDs::jcidOutlineGroup:
+    return QString("jcidOutlineGroup");
+  case JCIDs::jcidTableNode:
+    return QString("jcidTableNode");
+  case JCIDs::jcidTableRowNode:
+    return QString("jcidTableRowNode");
+  case JCIDs::jcidTableCellNode:
+    return QString("jcidTableCellNode");
+  case JCIDs::jcidTitleNode:
+    return QString("jcidTitleNode");
+  case JCIDs::jcidPageMetaData:
+    return QString("jcidPageMetaData");
+  case JCIDs::jcidSectionMetaData:
+    return QString("jcidSectionMetaData");
+  case JCIDs::jcidEmbeddedFileNode:
+    return QString("jcidEmbeddedFileNode");
+  case JCIDs::jcidPageManifestNode:
+    return QString("jcidPageManifestNode");
+  case JCIDs::jcidConflictPageMetaData:
+    return QString("jcidConflictPageMetaData");
+  case JCIDs::jcidVersionHistoryContent:
+    return QString("jcidVersionHistoryContent");
+  case JCIDs::jcidVersionProxy:
+    return QString("jcidVersionProxy");
+  case JCIDs::jcidNoteTagSharedDefinitionContainer:
+    return QString("jcidNoteTagSharedDefinitionContainer");
+  case JCIDs::jcidRevisionMetaData:
+    return QString("jcidRevisionMetaData");
+  case JCIDs::jcidVersionHistoryMetaData:
+    return QString("jcidVersionHistoryMetaData");
+  case JCIDs::jcidParagraphStyleObject:
+    return QString("jcidParagraphStyleObject");
+  case JCIDs::none:
+    return QString("none");
+  default:
+    return QString("unspecified");
+  }
 }
 
 void JCID::deserialize(QDataStream &ds) { ds >> m_value; }
@@ -199,8 +201,7 @@ void JCID::toDebugString(QDebug dbg) const {
       << " m_IsReadOnly: " << IsReadOnly() << '\n';
 }
 
-JCID::JCID()
-    : m_value() {}
+JCID::JCID() : m_value() {}
 
 void JCID::generateXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("JCID");

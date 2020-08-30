@@ -258,9 +258,7 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
       uint8_t count;
       bytes >> count;
       xmlWriter.writeAttribute("count", QString::number(count));
-      char *rawBody = new char[3];
-      bytes.readRawData(rawBody, 3);
-      QByteArray unused = QByteArray(QByteArray::fromRawData(rawBody, 3));
+      QByteArray unused = bytes.device()->read(3);
       xmlWriter.writeAttribute("unused-bytes", unused.toHex());
 
       for (size_t j = 0; j < count; j++) {
@@ -791,8 +789,8 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
       //    case PropertyIDs::TaskTagDueDate:
       //      m_id_string = "TaskTagDueDate";
       //      break;
-    case PropertyIDs::AuthorInitials: {
-      xmlWriter.writeStartElement("AuthorInitials");
+    case PropertyIDs::undoc_AuthorInitials: {
+      xmlWriter.writeStartElement("undoc_AuthorInitials");
       if (m_rgPrids[i].type() ==
           PropertyIDType::FourBytesOfLengthFollowedByData) {
         auto body = static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
@@ -804,8 +802,8 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
       xmlWriter.writeEndElement();
       break;
     }
-    case PropertyIDs::ResolutionID: {
-      xmlWriter.writeStartElement("ResolutionID");
+    case PropertyIDs::undoc_ResolutionID: {
+      xmlWriter.writeStartElement("undoc_ResolutionID");
       if (m_rgPrids[i].type() ==
           PropertyIDType::FourBytesOfLengthFollowedByData) {
         auto body = static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
@@ -813,6 +811,27 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
         QString string =
             QString::fromUtf8(body->data().constData(), body->cb());
         xmlWriter.writeCharacters(string);
+      }
+      xmlWriter.writeEndElement();
+      break;
+    }
+    case PropertyIDs::undoc_StrokesBlob: {
+      xmlWriter.writeStartElement("undoc_StrokesBlob");
+      m_rgData[i]->generateXml(xmlWriter);
+      xmlWriter.writeEndElement();
+      break;
+    }
+    case PropertyIDs::undoc_IndexOfStrokes: {
+      xmlWriter.writeStartElement("undoc_NumberOfStrokes");
+      if (m_rgPrids[i].type() == PropertyIDType::FourBytesOfData) {
+        auto body =
+            static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+        QDataStream bytes(body);
+        bytes.setByteOrder(QDataStream::LittleEndian);
+        bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
+        uint32_t val;
+        bytes >> val;
+        xmlWriter.writeCharacters(QString::number(val));
       }
       xmlWriter.writeEndElement();
       break;

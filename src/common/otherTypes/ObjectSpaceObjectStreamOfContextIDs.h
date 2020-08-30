@@ -16,5 +16,4 @@ public:
   ~ObjectSpaceObjectStreamOfContextIDs();
 };
 
-
 #endif // OBJECTSPACEOBJECTSTREAMOFCONTEXTIDS_H

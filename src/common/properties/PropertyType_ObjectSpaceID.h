@@ -7,11 +7,10 @@
 
 class PropertyType_ObjectSpaceID : public IPropertyType {
 private:
-
 public:
   PropertyType_ObjectSpaceID();
 
-  virtual void generateXml(QXmlStreamWriter& xmlWriter) const override;
+  virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
 
 private:
   void deserialize(QDataStream &ds) override;

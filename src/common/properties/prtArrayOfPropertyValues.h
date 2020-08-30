@@ -10,7 +10,7 @@
 #include "IPropertyType.h"
 #include "PropertySet.h"
 
-class prtArrayOfPropertyValues : public IPropertyType{
+class prtArrayOfPropertyValues : public IPropertyType {
 private:
   /**
    * @brief how many Property elements in this array
@@ -45,7 +45,7 @@ public:
   std::vector<PropertySet> dataVector() const;
   void setDataVector(const std::vector<PropertySet> &dataVector);
 
-  virtual void generateXml(QXmlStreamWriter& xmlWriter) const override;
+  virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
 
 private:
   void deserialize(QDataStream &ds) override;

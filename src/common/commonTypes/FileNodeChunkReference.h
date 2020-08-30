@@ -40,7 +40,6 @@ public:
   bool isSTPcompressed();
   bool isCBcompressed();
 
-
   void generateXml(QXmlStreamWriter &xmlWriter) const override;
 
 private:

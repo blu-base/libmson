@@ -2,10 +2,9 @@
 #include <QDebug>
 PropertyType_NoData::PropertyType_NoData() {}
 
-void PropertyType_NoData::generateXml(QXmlStreamWriter& xmlWriter) const
-{
-    xmlWriter.writeStartElement("NoData");
-    xmlWriter.writeEndElement();
+void PropertyType_NoData::generateXml(QXmlStreamWriter &xmlWriter) const {
+  xmlWriter.writeStartElement("NoData");
+  xmlWriter.writeEndElement();
 }
 
 void PropertyType_NoData::deserialize(QDataStream &ds) {}

@@ -13,10 +13,8 @@ namespace MSONcommon {
 FileNodeChunkReference RevisionManifestList::getRef() const { return m_Ref; }
 
 void RevisionManifestList::setRef(const FileNodeChunkReference &ref) {
-    m_Ref = ref;
+  m_Ref = ref;
 }
-
-
 
 QDataStream &operator>>(QDataStream &ds, RevisionManifestList &obj) {
   obj.deserialize(ds);
@@ -28,66 +26,64 @@ QDebug operator<<(QDebug dbg, const RevisionManifestList &obj) {
   return dbg;
 }
 
-void RevisionManifestList::generateXml(QXmlStreamWriter& xmlWriter) const
-{
-    xmlWriter.writeStartElement("RevisionManifestList");
+void RevisionManifestList::generateXml(QXmlStreamWriter &xmlWriter) const {
+  xmlWriter.writeStartElement("RevisionManifestList");
 
-    xmlWriter.writeStartElement("ref");
-    m_Ref.generateXml(xmlWriter);
-    xmlWriter.writeEndElement();
+  xmlWriter.writeStartElement("ref");
+  m_Ref.generateXml(xmlWriter);
+  xmlWriter.writeEndElement();
 
-//    xmlWriter.writeStartElement("FileNodeListFragments");
-//    for (const auto& entry : m_FileNodeListFragments) {
-//        entry.generateXml(xmlWriter);
-//    }
-//    xmlWriter.writeEndElement();
+  //    xmlWriter.writeStartElement("FileNodeListFragments");
+  //    for (const auto& entry : m_FileNodeListFragments) {
+  //        entry.generateXml(xmlWriter);
+  //    }
+  //    xmlWriter.writeEndElement();
 
-    xmlWriter.writeStartElement("RevisionManifests");
-    for (const auto& entry : m_RevisionManifests) {
-        entry->generateXml(xmlWriter);
-    }
-    xmlWriter.writeEndElement();
+  xmlWriter.writeStartElement("RevisionManifests");
+  for (const auto &entry : m_RevisionManifests) {
+    entry->generateXml(xmlWriter);
+  }
+  xmlWriter.writeEndElement();
 
-    xmlWriter.writeStartElement("RevisionRoleDeclarations");
-    for (const auto& entry : m_RevisionRoleDeclarations) {
-        entry.generateXml(xmlWriter);
-    }
-    xmlWriter.writeEndElement();
+  xmlWriter.writeStartElement("RevisionRoleDeclarations");
+  for (const auto &entry : m_RevisionRoleDeclarations) {
+    entry.generateXml(xmlWriter);
+  }
+  xmlWriter.writeEndElement();
 
-    xmlWriter.writeStartElement("RevisionRoleAndContextDeclarations");
-    for (const auto& entry : m_RevisionRoleAndContextDeclarations) {
-        entry.generateXml(xmlWriter);
-    }
-    xmlWriter.writeEndElement();
+  xmlWriter.writeStartElement("RevisionRoleAndContextDeclarations");
+  for (const auto &entry : m_RevisionRoleAndContextDeclarations) {
+    entry.generateXml(xmlWriter);
+  }
+  xmlWriter.writeEndElement();
 
-    xmlWriter.writeStartElement("ObjectGroupLists");
-    for (auto entry : m_ObjectGroupLists) {
-        entry->generateXml(xmlWriter);
-    }
-    xmlWriter.writeEndElement();
+  xmlWriter.writeStartElement("ObjectGroupLists");
+  for (auto entry : m_ObjectGroupLists) {
+    entry->generateXml(xmlWriter);
+  }
+  xmlWriter.writeEndElement();
 
-    xmlWriter.writeStartElement("FileNodeSequence");
-    for (const auto& entry : m_FileNodeSequence) {
-        entry.generateXml(xmlWriter);
-    }
-    xmlWriter.writeEndElement();
+  xmlWriter.writeStartElement("FileNodeSequence");
+  for (const auto &entry : m_FileNodeSequence) {
+    entry.generateXml(xmlWriter);
+  }
+  xmlWriter.writeEndElement();
 
-    xmlWriter.writeEndElement();
+  xmlWriter.writeEndElement();
 }
 
 void RevisionManifestList::deserialize(QDataStream &ds) {
 
-  m_FileNodeListFragments = parseFileNodeListFragments(ds,m_Ref);
+  m_FileNodeListFragments = parseFileNodeListFragments(ds, m_Ref);
 
-  for(const auto& fragment : m_FileNodeListFragments) {
-      const auto& rgFileNodes = fragment.rgFileNodes();
-      copy_if(rgFileNodes.begin(), rgFileNodes.end(),
-              back_inserter(m_FileNodeSequence), [](FileNode entry) {
-                return entry.getFileNodeTypeID() !=
-                       FileNodeTypeID::ChunkTerminatorFND;
-              });
+  for (const auto &fragment : m_FileNodeListFragments) {
+    const auto &rgFileNodes = fragment.rgFileNodes();
+    copy_if(rgFileNodes.begin(), rgFileNodes.end(),
+            back_inserter(m_FileNodeSequence), [](FileNode entry) {
+              return entry.getFileNodeTypeID() !=
+                     FileNodeTypeID::ChunkTerminatorFND;
+            });
   }
-
 
   //  copy_if(fragment->rgFileNodes().begin(), fragment->rgFileNodes().end(),
   //          back_inserter(mFileNodeSequence), [](FileNode *entry) {
@@ -138,8 +134,7 @@ void RevisionManifestList::deserialize(QDataStream &ds) {
       if (fn.getFileNodeID() ==
           static_cast<quint16>(FileNodeTypeID::ObjectDataEncryptionKeyV2FNDX)) {
 
-
-//        MSONcommon::DocumentSingleton::getDoc()->setIsEncrypted(true);
+        //        MSONcommon::DocumentSingleton::getDoc()->setIsEncrypted(true);
       }
 
       revManifest->getFileNodeSquence().push_back(fn);
@@ -159,50 +154,50 @@ void RevisionManifestList::deserialize(QDataStream &ds) {
       }
     }
   }
-
 }
 
 void RevisionManifestList::toDebugString(QDebug dbg) const {
 
-    dbg << "RevisionManifestList:\n";
-    dbg << "ref: " << m_Ref << '\n';
-    dbg << "FileNodeListFragments count:              " << m_FileNodeListFragments.size() << '\n';
-    dbg << "RevisionManifests count:                  " << m_RevisionManifests.size() << '\n';
-    dbg << "RevisionRoleDeclarations count:           " << m_RevisionRoleDeclarations.size() << '\n';
-    dbg << "RevisionRoleAndContextDeclarations count: " << m_RevisionRoleAndContextDeclarations.size() << '\n';
-    dbg << "ObjectGroupLists count:                   " << m_ObjectGroupLists.size() << '\n';
-    dbg << "FileNodeSequence count:                   " << m_FileNodeSequence.size() << '\n';
+  dbg << "RevisionManifestList:\n";
+  dbg << "ref: " << m_Ref << '\n';
+  dbg << "FileNodeListFragments count:              "
+      << m_FileNodeListFragments.size() << '\n';
+  dbg << "RevisionManifests count:                  "
+      << m_RevisionManifests.size() << '\n';
+  dbg << "RevisionRoleDeclarations count:           "
+      << m_RevisionRoleDeclarations.size() << '\n';
+  dbg << "RevisionRoleAndContextDeclarations count: "
+      << m_RevisionRoleAndContextDeclarations.size() << '\n';
+  dbg << "ObjectGroupLists count:                   "
+      << m_ObjectGroupLists.size() << '\n';
+  dbg << "FileNodeSequence count:                   "
+      << m_FileNodeSequence.size() << '\n';
 
+  dbg << "\nRevisionManifestList FileNodeListFragments....\n";
+  for (size_t i{0}; i < m_FileNodeListFragments.size(); i++) {
+    dbg << m_FileNodeListFragments[i];
+  }
 
-    dbg << "\nRevisionManifestList FileNodeListFragments....\n";
-    for(size_t i {0}; i < m_FileNodeListFragments.size(); i++) {
-        dbg << m_FileNodeListFragments[i];
-    }
-
-    dbg << "\nRevisionManifestList RevisionManifests....\n";
-    for(size_t i {0}; i < m_RevisionManifests.size(); i++) {
-        dbg << *m_RevisionManifests[i];
-    }
-    dbg << "\nRevisionManifestList RevisionRoleDeclarations....\n";
-    for(size_t i {0}; i < m_RevisionRoleDeclarations.size(); i++) {
-        dbg << m_RevisionRoleDeclarations[i];
-    }
-    dbg << "\nRevisionManifestList RevisionRoleAndContextDeclarations....\n";
-    for(size_t i {0}; i < m_RevisionRoleAndContextDeclarations.size(); i++) {
-        dbg << m_RevisionRoleAndContextDeclarations[i];
-    }
-    dbg << "\nRevisionManifestList ObjectGroupLists....\n";
-    for(size_t i {0}; i < m_ObjectGroupLists.size(); i++) {
-        dbg << m_ObjectGroupLists[i];
-    }
-    dbg << "\nRevisionManifestList FileNodeSequence....\n";
-    for(size_t i {0}; i < m_FileNodeSequence.size(); i++) {
-        dbg << m_FileNodeSequence[i];
-    }
-
-
-
-
+  dbg << "\nRevisionManifestList RevisionManifests....\n";
+  for (size_t i{0}; i < m_RevisionManifests.size(); i++) {
+    dbg << *m_RevisionManifests[i];
+  }
+  dbg << "\nRevisionManifestList RevisionRoleDeclarations....\n";
+  for (size_t i{0}; i < m_RevisionRoleDeclarations.size(); i++) {
+    dbg << m_RevisionRoleDeclarations[i];
+  }
+  dbg << "\nRevisionManifestList RevisionRoleAndContextDeclarations....\n";
+  for (size_t i{0}; i < m_RevisionRoleAndContextDeclarations.size(); i++) {
+    dbg << m_RevisionRoleAndContextDeclarations[i];
+  }
+  dbg << "\nRevisionManifestList ObjectGroupLists....\n";
+  for (size_t i{0}; i < m_ObjectGroupLists.size(); i++) {
+    dbg << m_ObjectGroupLists[i];
+  }
+  dbg << "\nRevisionManifestList FileNodeSequence....\n";
+  for (size_t i{0}; i < m_FileNodeSequence.size(); i++) {
+    dbg << m_FileNodeSequence[i];
+  }
 }
 
 RevisionManifestList::RevisionManifestList(FileNodeChunkReference ref)
@@ -217,7 +212,6 @@ RevisionManifestList::~RevisionManifestList() {
   for (auto *entry : m_ObjectGroupLists) {
     delete entry;
   }
-
 }
 
 std::vector<FileNode> RevisionManifestList::getFileNodeSequence() const {

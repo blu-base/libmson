@@ -29,8 +29,7 @@ public:
 
   std::vector<FileNodeListFragment> getFileNodeListFragments();
 
-  void
-  setFileNodeListFragments(const std::vector<FileNodeListFragment> &value);
+  void setFileNodeListFragments(const std::vector<FileNodeListFragment> &value);
   FileNodeChunkReference getRef() const;
   void setRef(const FileNodeChunkReference &ref);
 

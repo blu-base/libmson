@@ -1,7 +1,6 @@
 #ifndef PROPERTYTYPE_ARRAYOFPROPERTYVALUES_H
 #define PROPERTYTYPE_ARRAYOFPROPERTYVALUES_H
 
-
 #include "PropertyID.h"
 #include <QByteArray>
 #include <QDataStream>
@@ -11,7 +10,7 @@
 #include "IPropertyType.h"
 #include "PropertySet.h"
 
-class PropertyType_ArrayOfPropertyValues : public IPropertyType{
+class PropertyType_ArrayOfPropertyValues : public IPropertyType {
 private:
   /**
    * @brief how many Property elements in this array
@@ -35,9 +34,10 @@ public:
   friend QDataStream &operator>>(QDataStream &ds,
                                  PropertyType_ArrayOfPropertyValues &obj);
 
-  friend QDebug operator<<(QDebug dbg, const PropertyType_ArrayOfPropertyValues &obj);
+  friend QDebug operator<<(QDebug dbg,
+                           const PropertyType_ArrayOfPropertyValues &obj);
 
-  virtual void generateXml(QXmlStreamWriter& xmlWriter) const override;
+  virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
 
   quint32 cProperties() const;
   void setCProperties(const quint32 &cProperties);
@@ -52,8 +52,6 @@ private:
   void deserialize(QDataStream &ds) override;
   void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
-
-
 };
 
 #endif // PROPERTYTYPE_ARRAYOFPROPERTYVALUES_H

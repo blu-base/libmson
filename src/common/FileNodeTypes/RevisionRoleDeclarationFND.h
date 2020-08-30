@@ -20,14 +20,12 @@ public:
   quint32 getRevisionRole() const;
   void setRevisionRole(const quint32 &value);
 
+  virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
+
 private:
   void deserialize(QDataStream &ds) override;
   void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
-
-  // IFileNodeType interface
-public:
-  virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
 };
 
 #endif // REVISIONROLEDECLARATIONFND_H

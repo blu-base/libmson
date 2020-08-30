@@ -3,7 +3,6 @@
 
 #include <QtCore/qglobal.h>
 
-
 #include "IFileChunkReference.h"
 
 class FileChunkReference32 : public IFileChunkReference<quint32, quint32> {
@@ -12,8 +11,6 @@ public:
   FileChunkReference32(FCR_INITTYPE inittype);
 
   virtual ~FileChunkReference32();
-
-  // IFileChunkReference interface
 
   bool is_fcrNil() const override;
   bool is_fcrZero() const override;

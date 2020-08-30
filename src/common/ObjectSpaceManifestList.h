@@ -27,8 +27,7 @@ public:
   ~ObjectSpaceManifestList();
 
   std::vector<FileNodeListFragment> getFileNodeListFragments() const;
-  void
-  setFileNodeListFragments(const std::vector<FileNodeListFragment> &value);
+  void setFileNodeListFragments(const std::vector<FileNodeListFragment> &value);
   FileNode getObjectSpaceManifestListStart() const;
   void setObjectSpaceManifestListStart(const FileNode &value);
   std::vector<RevisionManifestList *> getRevisionManifestLists();
@@ -45,7 +44,6 @@ public:
   friend QDebug operator<<(QDebug dbg, const ObjectSpaceManifestList &obj);
 
   void generateXml(QXmlStreamWriter &xmlWriter) const;
-
 
 private:
   /**

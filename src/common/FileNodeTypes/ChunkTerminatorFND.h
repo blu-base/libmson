@@ -1,23 +1,18 @@
 #ifndef CHUNKTERMINATORFND_H
 #define CHUNKTERMINATORFND_H
 
-#include <QtCore/qglobal.h>
 #include "IFileNodeType.h"
-class ChunkTerminatorFND : public IFileNodeType
-{
+#include <QtCore/qglobal.h>
+class ChunkTerminatorFND : public IFileNodeType {
 public:
   ChunkTerminatorFND();
 
-  // IFileNodeType interface
+  void generateXml(QXmlStreamWriter &xmlWriter) const override;
+
 private:
-  void deserialize(QDataStream& ds) override;
-  void serialize(QDataStream& ds) const override;
+  void deserialize(QDataStream &ds) override;
+  void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
-
-  // IFileNodeType interface
-public:
-  void generateXml(QXmlStreamWriter& xmlWriter) const override;
 };
-
 
 #endif // CHUNKTERMINATORFND_H

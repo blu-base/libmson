@@ -47,11 +47,11 @@ void GlobalIdTableEntry3FNDX::toDebugString(QDebug dbg) const {
       << " iIndexCopyToStart:   " << m_iIndexCopyToStart << '\n';
 }
 
-
-void GlobalIdTableEntry3FNDX::generateXml(QXmlStreamWriter& xmlWriter) const
-{
-    xmlWriter.writeStartElement("GlobalIdTableEntry3FNDX");
-    xmlWriter.writeAttribute("iIndexCopyFromStart", QString::number(m_iIndexCopyFromStart));
-    xmlWriter.writeAttribute("cEntriesToCopy", QString::number(m_cEntriesToCopy));
-    xmlWriter.writeAttribute("iIndexCopyToStart", QString::number(m_iIndexCopyToStart));
+void GlobalIdTableEntry3FNDX::generateXml(QXmlStreamWriter &xmlWriter) const {
+  xmlWriter.writeStartElement("GlobalIdTableEntry3FNDX");
+  xmlWriter.writeAttribute("iIndexCopyFromStart",
+                           QString::number(m_iIndexCopyFromStart));
+  xmlWriter.writeAttribute("cEntriesToCopy", QString::number(m_cEntriesToCopy));
+  xmlWriter.writeAttribute("iIndexCopyToStart",
+                           QString::number(m_iIndexCopyToStart));
 }

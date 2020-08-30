@@ -45,21 +45,19 @@ quint32 FileChunkReference32::cb() const { return m_cb; }
 
 void FileChunkReference32::setCb(const quint32 &cb) { m_cb = cb; }
 
-void FileChunkReference32::generateXml(QXmlStreamWriter& xmlWriter) const
-{
-    xmlWriter.writeStartElement("FileChunkReference32");
+void FileChunkReference32::generateXml(QXmlStreamWriter &xmlWriter) const {
+  xmlWriter.writeStartElement("FileChunkReference32");
 
-    if (this->is_fcrNil()) {
-        xmlWriter.writeAttribute("fcrNil", "true");
-    } else if (this->is_fcrZero()) {
-        xmlWriter.writeAttribute("fcrZero", "true");
-    } else {
-        xmlWriter.writeAttribute("stp",qStringHex(m_stp,8));
-        xmlWriter.writeAttribute("cb",qStringHex(m_cb,8));
-    }
+  if (this->is_fcrNil()) {
+    xmlWriter.writeAttribute("fcrNil", "true");
+  } else if (this->is_fcrZero()) {
+    xmlWriter.writeAttribute("fcrZero", "true");
+  } else {
+    xmlWriter.writeAttribute("stp", qStringHex(m_stp, 8));
+    xmlWriter.writeAttribute("cb", qStringHex(m_cb, 8));
+  }
 
-
-    xmlWriter.writeEndElement();
+  xmlWriter.writeEndElement();
 }
 
 void FileChunkReference32::deserialize(QDataStream &ds) {
@@ -73,7 +71,7 @@ void FileChunkReference32::serialize(QDataStream &ds) const {
 }
 
 void FileChunkReference32::toDebugString(QDebug dbg) const {
-    dbg.noquote();
+  dbg.noquote();
   dbg << "FileChunkReference32(";
   if (is_fcrNil()) {
     dbg << "fcrNil";

@@ -55,9 +55,10 @@ FileNode::FileNode()
       reserved{}, fnt{nullptr} {}
 
 FileNode::FileNode(const FileNode &source)
-    : stp{source.stp}, fileNodeID{source.fileNodeID}, fileNodeSize{source.fileNodeSize},
-      stpFormat{source.stpFormat}, cbFormat{source.cbFormat},
-      baseType{source.baseType}, reserved{}, fnt{source.fnt} {}
+    : stp{source.stp}, fileNodeID{source.fileNodeID},
+      fileNodeSize{source.fileNodeSize}, stpFormat{source.stpFormat},
+      cbFormat{source.cbFormat}, baseType{source.baseType}, reserved{},
+      fnt{source.fnt} {}
 
 FileNode::~FileNode() {}
 
@@ -87,13 +88,12 @@ void FileNode::generateXml(QXmlStreamWriter &xmlWriter) const {
 
 QDataStream &operator>>(QDataStream &ds, FileNode &obj) {
 
-
   //  if (!ds.byteOrder()) {
   //    ds.setByteOrder(QDataStream::LittleEndian);
   //  }
   ds.setByteOrder(QDataStream::LittleEndian);
   obj.stp = ds.device()->pos();
-  qDebug() << "FileNode stp: "<< qStringHex(obj.stp, 16);
+  //  qDebug() << "FileNode stp: "<< qStringHex(obj.stp, 16);
   quint32 temp;
   ds >> temp;
 
@@ -283,8 +283,5 @@ quint8 FileNode::getBaseType() const { return baseType; }
 
 void FileNode::setBaseType(const quint8 &value) { baseType = value; }
 
-quint64 FileNode::getStp() const
-{
-    return stp;
-}
+quint64 FileNode::getStp() const { return stp; }
 } // namespace MSONcommon

@@ -74,9 +74,8 @@ quint64 FileNodeChunkReference::stp() const {
     return (quint64)m_stp * 8u;
     break;
   default:
-      return m_stp;
+    return m_stp;
   }
-
 }
 
 void FileNodeChunkReference::setStp(const quint64 &stp) {
@@ -108,7 +107,7 @@ quint64 FileNodeChunkReference::cb() const {
     return m_cb * 8u;
     break;
   default:
-      return m_cb;
+    return m_cb;
   }
 }
 
@@ -129,54 +128,50 @@ void FileNodeChunkReference::setCb(const quint64 &cb) {
   }
 }
 
-void FileNodeChunkReference::generateXml(QXmlStreamWriter& xmlWriter) const
-{
-    xmlWriter.writeStartElement("FileNodeChunkReference");
+void FileNodeChunkReference::generateXml(QXmlStreamWriter &xmlWriter) const {
+  xmlWriter.writeStartElement("FileNodeChunkReference");
 
-    switch (m_stpFormat) {
-    case FNCR_STP_FORMAT::UNCOMPRESED_8BYTE:
-          xmlWriter.writeAttribute("stpFormat","UNCOMPRESED_8BYTE");
-      break;
-    case FNCR_STP_FORMAT::UNCOMPRESED_4BYTE:
-          xmlWriter.writeAttribute("stpFormat","UNCOMPRESED_4BYTE");
-      break;
-    case FNCR_STP_FORMAT::COMPRESSED_4BYTE:
-          xmlWriter.writeAttribute("stpFormat","COMPRESSED_4BYTE");
-      break;
-    case FNCR_STP_FORMAT::COMPRESSED_2BYTE:
-          xmlWriter.writeAttribute("stpFormat","COMPRESSED_2BYTE");
-      break;
-    }
+  switch (m_stpFormat) {
+  case FNCR_STP_FORMAT::UNCOMPRESED_8BYTE:
+    xmlWriter.writeAttribute("stpFormat", "UNCOMPRESED_8BYTE");
+    break;
+  case FNCR_STP_FORMAT::UNCOMPRESED_4BYTE:
+    xmlWriter.writeAttribute("stpFormat", "UNCOMPRESED_4BYTE");
+    break;
+  case FNCR_STP_FORMAT::COMPRESSED_4BYTE:
+    xmlWriter.writeAttribute("stpFormat", "COMPRESSED_4BYTE");
+    break;
+  case FNCR_STP_FORMAT::COMPRESSED_2BYTE:
+    xmlWriter.writeAttribute("stpFormat", "COMPRESSED_2BYTE");
+    break;
+  }
 
-    switch (m_cbFormat) {
-    case FNCR_CB_FORMAT::UNCOMPRESED_8BYTE:
-      xmlWriter.writeAttribute("cbFormat","UNCOMPRESED_8BYTE");
-      break;
-    case FNCR_CB_FORMAT::UNCOMPRESED_4BYTE:
-      xmlWriter.writeAttribute("cbFormat","UNCOMPRESED_4BYTE");
-      break;
-    case FNCR_CB_FORMAT::COMPRESSED_1BYTE:
-      xmlWriter.writeAttribute("cbFormat","COMPRESSED_1BYTE");
-      break;
-    case FNCR_CB_FORMAT::COMPRESSED_2BYTE:
-      xmlWriter.writeAttribute("cbFormat","COMPRESSED_2BYTE");
-      break;
-    }
+  switch (m_cbFormat) {
+  case FNCR_CB_FORMAT::UNCOMPRESED_8BYTE:
+    xmlWriter.writeAttribute("cbFormat", "UNCOMPRESED_8BYTE");
+    break;
+  case FNCR_CB_FORMAT::UNCOMPRESED_4BYTE:
+    xmlWriter.writeAttribute("cbFormat", "UNCOMPRESED_4BYTE");
+    break;
+  case FNCR_CB_FORMAT::COMPRESSED_1BYTE:
+    xmlWriter.writeAttribute("cbFormat", "COMPRESSED_1BYTE");
+    break;
+  case FNCR_CB_FORMAT::COMPRESSED_2BYTE:
+    xmlWriter.writeAttribute("cbFormat", "COMPRESSED_2BYTE");
+    break;
+  }
 
+  if (this->is_fcrNil()) {
+    xmlWriter.writeAttribute("fcrNil", "true");
+  } else if (this->is_fcrZero()) {
+    xmlWriter.writeAttribute("fcrZero", "true");
+  } else {
+    xmlWriter.writeAttribute("stp", qStringHex(stp(), 16));
+    xmlWriter.writeAttribute("cb", qStringHex(cb(), 16));
+  }
 
-    if (this->is_fcrNil()) {
-        xmlWriter.writeAttribute("fcrNil", "true");
-    } else if (this->is_fcrZero()) {
-        xmlWriter.writeAttribute("fcrZero", "true");
-    } else {
-        xmlWriter.writeAttribute("stp",qStringHex(stp(),16));
-        xmlWriter.writeAttribute("cb",qStringHex(cb(),16));
-    }
-
-
-    xmlWriter.writeEndElement();
+  xmlWriter.writeEndElement();
 }
-
 
 void FileNodeChunkReference::deserialize(QDataStream &ds) {
 
@@ -269,7 +264,7 @@ void FileNodeChunkReference::serialize(QDataStream &ds) const {
 }
 
 void FileNodeChunkReference::toDebugString(QDebug dbg) const {
-    dbg.noquote();
+  dbg.noquote();
   dbg << "FileNodeChunkReference(";
   if (is_fcrNil()) {
     dbg << "fcrNil";

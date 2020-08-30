@@ -1,24 +1,24 @@
 #ifndef OBJECTINFODEPENDENCYOVERRIDESFND_H
 #define OBJECTINFODEPENDENCYOVERRIDESFND_H
 
-#include <QtCore/qglobal.h>
-#include "IFileNodeType.h"
 #include "../commonTypes/FileNodeChunkReference.h"
 #include "../otherTypes/ObjectInfoDependencyOverrideData.h"
 
-class ObjectInfoDependencyOverridesFND : public IFileNodeType
-{
-private:
-      FileNodeChunkReference m_ref;
+#include "IFileNodeType.h"
 
-        ObjectInfoDependencyOverrideData m_data;
+#include <QtCore/qglobal.h>
+
+class ObjectInfoDependencyOverridesFND : public IFileNodeType {
+private:
+  FileNodeChunkReference m_ref;
+
+  ObjectInfoDependencyOverrideData m_data;
+
 public:
-  ObjectInfoDependencyOverridesFND(FNCR_STP_FORMAT stpFormat, FNCR_CB_FORMAT cbFormat);
+  ObjectInfoDependencyOverridesFND(FNCR_STP_FORMAT stpFormat,
+                                   FNCR_CB_FORMAT cbFormat);
   ObjectInfoDependencyOverridesFND(quint8 stpFormat, quint8 cbFormat);
   ~ObjectInfoDependencyOverridesFND();
-
-
-
 
   /**
    * @brief container
@@ -27,22 +27,18 @@ public:
    * If ref is fcrNil, then data tails ref in the stream
    */
 
-
-
   FileNodeChunkReference getRef() const;
-  void setRef(const FileNodeChunkReference& value);
+  void setRef(const FileNodeChunkReference &value);
 
   ObjectInfoDependencyOverrideData getData() const;
-  void setData(const ObjectInfoDependencyOverrideData& value);
+  void setData(const ObjectInfoDependencyOverrideData &value);
+
+  virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
 
 private:
-  void deserialize(QDataStream& ds) override;
-  void serialize(QDataStream& ds) const override;
+  void deserialize(QDataStream &ds) override;
+  void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
-
-  // IFileNodeType interface
-public:
-  virtual void generateXml(QXmlStreamWriter& xmlWriter) const override;
 };
 
 #endif // OBJECTINFODEPENDENCYOVERRIDESFND_H

@@ -18,10 +18,8 @@ void GlobalIdTableStartFNDX::toDebugString(QDebug dbg) const {
   dbg << " GlobalIdTableStartFNDX: reserved: " << m_reserved << '\n';
 }
 
-
-void GlobalIdTableStartFNDX::generateXml(QXmlStreamWriter& xmlWriter) const
-{
-    xmlWriter.writeStartElement("GlobalIdTableStartFNDX");
-    xmlWriter.writeAttribute("reserved",QString::number(m_reserved));
-    xmlWriter.writeEndElement();
+void GlobalIdTableStartFNDX::generateXml(QXmlStreamWriter &xmlWriter) const {
+  xmlWriter.writeStartElement("GlobalIdTableStartFNDX");
+  xmlWriter.writeAttribute("reserved", QString::number(m_reserved));
+  xmlWriter.writeEndElement();
 }

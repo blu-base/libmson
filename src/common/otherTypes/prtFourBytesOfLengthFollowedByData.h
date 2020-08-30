@@ -7,33 +7,32 @@
 #include <QDataStream>
 #include <QDebug>
 
-class prtFourBytesOfLengthFollowedByData
-{
+class prtFourBytesOfLengthFollowedByData {
 private:
-    quint32 m_cb;
-    QByteArray m_Data;
+  quint32 m_cb;
+  QByteArray m_Data;
 
 public:
   prtFourBytesOfLengthFollowedByData();
 
+  friend QDataStream &operator<<(QDataStream &ds,
+                                 const prtFourBytesOfLengthFollowedByData &obj);
+  friend QDataStream &operator>>(QDataStream &ds,
+                                 prtFourBytesOfLengthFollowedByData &obj);
 
+  friend QDebug operator<<(QDebug dbg,
+                           const prtFourBytesOfLengthFollowedByData &obj);
 
-friend QDataStream &operator<<(QDataStream &ds, const prtFourBytesOfLengthFollowedByData &obj);
-friend QDataStream &operator>>(QDataStream &ds, prtFourBytesOfLengthFollowedByData &obj);
+  quint32 cb() const;
+  void setCb(const quint32 &cb);
 
-friend QDebug operator<<(QDebug dbg, const prtFourBytesOfLengthFollowedByData &obj);
-
-
-quint32 cb() const;
-void setCb(const quint32& cb);
-
-QByteArray Data() const;
-void setData(const QByteArray& Data);
+  QByteArray Data() const;
+  void setData(const QByteArray &Data);
 
 private:
-void deserialize(QDataStream &ds);
-void serialize(QDataStream &ds) const;
-void toDebugString(QDebug dbg) const;
+  void deserialize(QDataStream &ds);
+  void serialize(QDataStream &ds) const;
+  void toDebugString(QDebug dbg) const;
 };
 
 #endif // PRTFOURBYTESOFLENGTHFOLLOWEDBYDATA_H

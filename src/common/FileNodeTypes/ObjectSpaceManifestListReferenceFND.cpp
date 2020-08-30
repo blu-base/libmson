@@ -46,14 +46,12 @@ void ObjectSpaceManifestListReferenceFND::setRef(
   m_ref = value;
 }
 
+void ObjectSpaceManifestListReferenceFND::generateXml(
+    QXmlStreamWriter &xmlWriter) const {
+  xmlWriter.writeStartElement("ObjectSpaceManifestListReferenceFND");
+  m_ref.generateXml(xmlWriter);
 
-void ObjectSpaceManifestListReferenceFND::generateXml(QXmlStreamWriter& xmlWriter) const
-{
-    xmlWriter.writeStartElement("ObjectSpaceManifestListReferenceFND");
-    m_ref.generateXml(xmlWriter);
+  m_gosid.generateXml(xmlWriter);
 
-    m_gosid.generateXml(xmlWriter);
-
-
-    xmlWriter.writeEndElement();
+  xmlWriter.writeEndElement();
 }

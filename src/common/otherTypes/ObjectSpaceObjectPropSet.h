@@ -6,59 +6,55 @@
 #include <QDataStream>
 #include <QDebug>
 
+#include "ObjectSpaceObjectStreamOfContextIDs.h"
 #include "ObjectSpaceObjectStreamOfOIDs.h"
 #include "ObjectSpaceObjectStreamOfOSIDs.h"
-#include "ObjectSpaceObjectStreamOfContextIDs.h"
 
 #include "../properties/PropertySet.h"
 
 #include "../commonTypes/FileNodeChunkReference.h"
 
-
-
 /// \todo counting inside the streamheaders
-class ObjectSpaceObjectPropSet
-{
+class ObjectSpaceObjectPropSet {
 private:
-    ObjectSpaceObjectStreamOfOIDs m_OIDs;
-    ObjectSpaceObjectStreamOfOSIDs m_OSIDs;
-    ObjectSpaceObjectStreamOfContextIDs m_ContextIDs;
+  ObjectSpaceObjectStreamOfOIDs m_OIDs;
+  ObjectSpaceObjectStreamOfOSIDs m_OSIDs;
+  ObjectSpaceObjectStreamOfContextIDs m_ContextIDs;
 
-    PropertySet m_body;
+  PropertySet m_body;
 
-    quint64 m_paddingLength;
+  quint64 m_paddingLength;
 
 public:
   ObjectSpaceObjectPropSet();
   ObjectSpaceObjectPropSet(QDataStream &ds, const FileNodeChunkReference &ref);
 
-
   friend QDataStream &operator<<(QDataStream &ds,
                                  const ObjectSpaceObjectPropSet &obj);
-  friend QDataStream &operator>>(QDataStream &ds, ObjectSpaceObjectPropSet &obj);
+  friend QDataStream &operator>>(QDataStream &ds,
+                                 ObjectSpaceObjectPropSet &obj);
 
   friend QDebug operator<<(QDebug dbg, const ObjectSpaceObjectPropSet &obj);
 
-
-
   ObjectSpaceObjectStreamOfOIDs OIDs() const;
-  void setOIDs(const ObjectSpaceObjectStreamOfOIDs& OIDs);
+  void setOIDs(const ObjectSpaceObjectStreamOfOIDs &OIDs);
 
   ObjectSpaceObjectStreamOfOSIDs OSIDs() const;
-  void setOSIDs(const ObjectSpaceObjectStreamOfOSIDs& OSIDs);
+  void setOSIDs(const ObjectSpaceObjectStreamOfOSIDs &OSIDs);
 
   ObjectSpaceObjectStreamOfContextIDs ContextIDs() const;
-  void setContextIDs(const ObjectSpaceObjectStreamOfContextIDs& ContextIDs);
+  void setContextIDs(const ObjectSpaceObjectStreamOfContextIDs &ContextIDs);
 
   PropertySet body() const;
-  void setBody(const PropertySet& body);
+  void setBody(const PropertySet &body);
 
   void generateXml(QXmlStreamWriter &xmlWriter) const;
 
 private:
   /**
    * @brief creates ObjectSpaceObjectPropSet from QDataStream
-   * @param ds <QDataStream> containing the deserializable ObjectSpaceObjectPropSet
+   * @param ds <QDataStream> containing the deserializable
+   * ObjectSpaceObjectPropSet
    *
    * Note, that only 4GB of an FileDataStoreObject can be parsed because an
    * limitation of QByteArray
@@ -78,7 +74,6 @@ private:
    * @param dbg <QDebug> string builder for the debug information
    */
   void toDebugString(QDebug dbg) const;
-
 };
 
 #endif // OBJECTSPACEOBJECTPROPSET_H

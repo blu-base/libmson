@@ -63,19 +63,18 @@ void ObjectDeclaration2LargeRefCountFND::toDebugString(QDebug dbg) const {
       << " cRef: " << qStringHex(m_cRef, 8) << '\n';
 }
 
+void ObjectDeclaration2LargeRefCountFND::generateXml(
+    QXmlStreamWriter &xmlWriter) const {
 
-void ObjectDeclaration2LargeRefCountFND::generateXml(QXmlStreamWriter& xmlWriter) const
-{
+  xmlWriter.writeStartElement("ObjectDeclaration2LargeRefCountFND");
 
-    xmlWriter.writeStartElement("ObjectDeclaration2LargeRefCountFND");
+  xmlWriter.writeAttribute("cRef", qStringHex(m_cRef, 8));
 
-    xmlWriter.writeAttribute("cRef", qStringHex(m_cRef, 8));
+  m_BlobRef.generateXml(xmlWriter);
 
-    m_BlobRef.generateXml(xmlWriter);
+  m_body.generateXml(xmlWriter);
 
-    m_body.generateXml(xmlWriter);
+  m_blob.generateXml(xmlWriter);
 
-    m_blob.generateXml(xmlWriter);
-
-    xmlWriter.writeEndElement();
+  xmlWriter.writeEndElement();
 }

@@ -28,8 +28,8 @@ public:
 
   quint32 value() const;
 
-  static QString idToString(const PropertyIDs &val) ;
-  static QString typeToString(const PropertyIDType &val) ;
+  static QString idToString(const PropertyIDs &val);
+  static QString typeToString(const PropertyIDType &val);
 
   /**
    * @brief returns a bool sized value if PropertyID is of a bool type property
@@ -37,7 +37,6 @@ public:
    */
   int boolValue() const;
   void setBoolValue(bool boolValue);
-
 
   void generateXml(QXmlStreamWriter &xmlWriter) const;
 

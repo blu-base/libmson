@@ -26,15 +26,13 @@ void GlobalIdTableEntryFNDX::toDebugString(QDebug dbg) const {
       << " GUID:  " << m_guid << '\n';
 }
 
+void GlobalIdTableEntryFNDX::generateXml(QXmlStreamWriter &xmlWriter) const {
+  xmlWriter.writeStartElement("GlobalIdTableEntryFNDX");
+  xmlWriter.writeAttribute("index", QString::number(m_index));
 
-void GlobalIdTableEntryFNDX::generateXml(QXmlStreamWriter& xmlWriter) const
-{
-    xmlWriter.writeStartElement("GlobalIdTableEntryFNDX");
-    xmlWriter.writeAttribute("index", QString::number(m_index));
+  xmlWriter.writeStartElement("guid");
+  xmlWriter.writeCharacters(m_guid.toString());
+  xmlWriter.writeEndElement();
 
-    xmlWriter.writeStartElement("guid");
-    xmlWriter.writeCharacters(m_guid.toString());
-    xmlWriter.writeEndElement();
-
-    xmlWriter.writeEndElement();
+  xmlWriter.writeEndElement();
 }

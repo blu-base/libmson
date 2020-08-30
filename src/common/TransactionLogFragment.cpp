@@ -46,8 +46,8 @@ void TransactionLogFragment::toDebugString(QDebug dbg) const {
   dbg << "TransactionLogFragment: size: "
       << QString("0x%1").arg(m_size, 16, 16, QLatin1Char('0')) << '\n'
       << " nextFragment: " << nextFragment << '\n';
-  for (TransactionEntry * te : sizeTable) {
-    dbg << *te ;
+  for (TransactionEntry *te : sizeTable) {
+    dbg << *te;
   }
 }
 
@@ -65,29 +65,26 @@ QDebug operator<<(QDebug dbg, const TransactionLogFragment &obj) {
   return dbg;
 }
 
-void TransactionLogFragment::generateXml(QXmlStreamWriter& xmlWriter) const
-{
-    xmlWriter.writeStartElement("TransactionLogFragment");
+void TransactionLogFragment::generateXml(QXmlStreamWriter &xmlWriter) const {
+  xmlWriter.writeStartElement("TransactionLogFragment");
 
-    xmlWriter.writeStartElement("size");
-    xmlWriter.writeCharacters(qStringHex(m_size,16));
-    xmlWriter.writeEndElement();
+  xmlWriter.writeStartElement("size");
+  xmlWriter.writeCharacters(qStringHex(m_size, 16));
+  xmlWriter.writeEndElement();
 
-    xmlWriter.writeStartElement("nextFragment");
-    nextFragment.generateXml(xmlWriter);
-    xmlWriter.writeEndElement();
+  xmlWriter.writeStartElement("nextFragment");
+  nextFragment.generateXml(xmlWriter);
+  xmlWriter.writeEndElement();
 
-    xmlWriter.writeStartElement("sizeTable");
-    for(auto entry : sizeTable) {
-        if(! entry->isZero()) {
-        entry->generateXml(xmlWriter);
-        }
+  xmlWriter.writeStartElement("sizeTable");
+  for (auto entry : sizeTable) {
+    if (!entry->isZero()) {
+      entry->generateXml(xmlWriter);
     }
-    xmlWriter.writeEndElement();
+  }
+  xmlWriter.writeEndElement();
 
-
-    xmlWriter.writeEndElement();
-
+  xmlWriter.writeEndElement();
 }
 
 std::vector<TransactionEntry *> TransactionLogFragment::getSizeTable() const {

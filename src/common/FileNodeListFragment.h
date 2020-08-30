@@ -25,7 +25,6 @@ private:
 
   quint64 m_paddingLength;
 
-
   FileChunkReference64x32 m_nextFragment;
   /**
    * @brief footer_magic_id
@@ -35,6 +34,7 @@ private:
   static constexpr const quint64 footer_magic_id = 0x8BC215C38233BA4B;
 
 public:
+  FileNodeListFragment();
   FileNodeListFragment(const FileChunkReference64 ref);
   FileNodeListFragment(const FileChunkReference64x32 ref);
   FileNodeListFragment(const FileChunkReference32 ref);

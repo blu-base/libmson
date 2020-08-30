@@ -17,14 +17,12 @@ public:
   CompactID data() const;
   void setData(const CompactID &data);
 
-  virtual void generateXml(QXmlStreamWriter& xmlWriter) const override;
+  virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
 
 private:
   void deserialize(QDataStream &ds) override;
   void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
-
-
 };
 
 #endif // PROPERTYTYPE_CONTEXTID_H

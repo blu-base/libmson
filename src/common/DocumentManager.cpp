@@ -30,7 +30,7 @@ QUuid MSONcommon::DocumentManager::parseDocument(QDataStream &ds) {
 
     docs.insert(guid, newDoc);
   } else {
-      qWarning() << "ERROR: Stream not readable" << '\n';
+    qWarning() << "ERROR: Stream not readable" << '\n';
   }
 
   return guid;

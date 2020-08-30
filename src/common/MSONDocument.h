@@ -34,8 +34,7 @@ private:
 
   std::vector<FreeChunkListFragment *> m_freeChunkList;
   std::vector<TransactionLogFragment *> m_transactionLog;
-  std::vector<FileNodeListFragment *> m_hashedChunkList;
-
+  std::vector<FileNodeListFragment> m_hashedChunkList;
 
   RootFileNodeList *m_rootFileNodeList;
 
@@ -43,10 +42,9 @@ private:
 
   QMap<quint32, QUuid> globalIdenficationTable;
 
-
   // tika copies
   std::vector<ExtendedGUID> revisionListOrder;
-//  QMap<ExtendedGUID, Revision> revisionMap;
+  //  QMap<ExtendedGUID, Revision> revisionMap;
   QMap<ExtendedGUID, FileNodeChunkReference> revisionManifestLists;
   QMap<ExtendedGUID, FileNodeChunkReference> guidToRef;
 
@@ -82,16 +80,13 @@ public:
   std::vector<TransactionLogFragment *> &getTransactionLog();
   void setTransactionLog(
       const std::vector<TransactionLogFragment *> &transactionLog);
-  std::vector<FileNodeListFragment *> &getHashedChunkList();
-  void setHashedChunkList(
-      const std::vector<FileNodeListFragment *> &hashedChunkList);
+  std::vector<FileNodeListFragment> &getHashedChunkList();
+  void
+  setHashedChunkList(const std::vector<FileNodeListFragment> &hashedChunkList);
   RootFileNodeList *getRootFileNodeList() const;
   void setRootFileNodeList(const RootFileNodeList &rootFileNodeList);
   std::vector<FileNodeListFragment *> &getFileNodeList();
   void setFileNodeList(const std::vector<FileNodeListFragment *> &fileNodeList);
-
-
-
 };
 } // namespace MSONcommon
 #endif // MSONDOCUMENT_H

@@ -13,8 +13,6 @@ private:
 
   quint32 TransactionEntrySwitch;
 
-
-
 public:
   TransactionEntry();
 
@@ -30,7 +28,7 @@ public:
 
   friend QDebug operator<<(QDebug dbg, const TransactionEntry &obj);
 
-    void generateXml(QXmlStreamWriter &xmlWriter) const;
+  void generateXml(QXmlStreamWriter &xmlWriter) const;
 
 private:
   void serialize(QDataStream &ds) const;

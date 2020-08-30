@@ -1,22 +1,19 @@
 #ifndef GLOBALIDTABLESTART2FND_H
 #define GLOBALIDTABLESTART2FND_H
 
-#include <QtCore/qglobal.h>
 #include "IFileNodeType.h"
-class GlobalIdTableStart2FND : public IFileNodeType
-{
+#include <QtCore/qglobal.h>
+
+class GlobalIdTableStart2FND : public IFileNodeType {
 public:
   GlobalIdTableStart2FND();
 
-  // IFileNodeType interface
-private:
-  void deserialize(QDataStream& ds) override;
-  void serialize(QDataStream& ds) const override;
-  void toDebugString(QDebug dbg) const override;
+  virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
 
-  // IFileNodeType interface
-public:
-  virtual void generateXml(QXmlStreamWriter& xmlWriter) const override;
+private:
+  void deserialize(QDataStream &ds) override;
+  void serialize(QDataStream &ds) const override;
+  void toDebugString(QDebug dbg) const override;
 };
 
 #endif // GLOBALIDTABLESTART2FND_H

@@ -24,6 +24,7 @@ public:
 
   FileNodeChunkReference ref() const;
   void setRef(const FileNodeChunkReference &ref);
+
   ObjectDeclaration2LargeRefCountFND getBase() const;
   void setBase(const ObjectDeclaration2LargeRefCountFND &value);
 
@@ -34,14 +35,12 @@ public:
 
   FNCR_CB_FORMAT getCbFormat() const;
 
+  virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
+
 private:
   void deserialize(QDataStream &ds) override;
   void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
-
-  // IFileNodeType interface
-public:
-  virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
 };
 
 #endif // READONLYOBJECTDECLARATION2LARGEREFCOUNTFND_H

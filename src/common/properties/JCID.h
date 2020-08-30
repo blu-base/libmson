@@ -28,7 +28,6 @@ static constexpr const quint32 JCID_imaskIsGraphNode = 0x001BFFFF;
 static constexpr const quint32 JCID_imaskIsFileData = 0x0017FFFF;
 static constexpr const quint32 JCID_imaskIsReadOnly = 0x000FFFFF;
 
-
 class JCID {
 private:
   quint32 m_value;
@@ -64,14 +63,10 @@ public:
   JCIDs type() const;
   QString typeToString() const;
 
-
 private:
   void deserialize(QDataStream &ds);
   void serialize(QDataStream &ds) const;
   void toDebugString(QDebug dbg) const;
-
-
-
 };
 
 #endif // JCID_H

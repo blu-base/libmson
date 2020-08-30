@@ -21,23 +21,20 @@ std::vector<CompactID> IObjectSpaceOpbjectStream::body() const {
 }
 
 void IObjectSpaceOpbjectStream::setBody(const std::vector<CompactID> &body) {
-    m_body = body;
+  m_body = body;
 }
 
-void IObjectSpaceOpbjectStream::generateXml(QXmlStreamWriter& xmlWriter) const
-{
-//    xmlWriter.writeStartElement("IObjectSpaceOpbjectStream");
-    m_header.generateXml(xmlWriter);
+void IObjectSpaceOpbjectStream::generateXml(QXmlStreamWriter &xmlWriter) const {
+  //    xmlWriter.writeStartElement("IObjectSpaceOpbjectStream");
+  m_header.generateXml(xmlWriter);
 
-    xmlWriter.writeStartElement("CompactIDs");
-    for (const auto& entry : m_body) {
-        entry.generateXml(xmlWriter);
-    }
-    xmlWriter.writeEndElement();
-//    xmlWriter.writeEndElement();
+  xmlWriter.writeStartElement("CompactIDs");
+  for (const auto &entry : m_body) {
+    entry.generateXml(xmlWriter);
+  }
+  xmlWriter.writeEndElement();
+  //    xmlWriter.writeEndElement();
 }
-
-
 
 bool IObjectSpaceOpbjectStream::pushbackToBody(const CompactID &entry) {
   if (m_header.count() < 0xFFFFFF) {
@@ -113,7 +110,7 @@ IObjectSpaceOpbjectStream::~IObjectSpaceOpbjectStream() {}
 void IObjectSpaceOpbjectStream::deserialize(QDataStream &ds) {
   ds >> m_header;
 
-  std::vector<CompactID> ids {};
+  std::vector<CompactID> ids{};
   ids.reserve(m_header.count());
 
   for (quint32 i{0}; i < m_header.count(); i++) {
@@ -134,12 +131,12 @@ void IObjectSpaceOpbjectStream::serialize(QDataStream &ds) const {
 
 void IObjectSpaceOpbjectStream::toDebugString(QDebug dbg) const {
 
-    dbg << "ObjectSpaceOpbjectStream:\n";
-    dbg << m_header;
+  dbg << "ObjectSpaceOpbjectStream:\n";
+  dbg << m_header;
 
-    for (quint32 i (0); i < m_body.size(); i++) {
-        dbg << m_body[i];
-    }
+  for (quint32 i(0); i < m_body.size(); i++) {
+    dbg << m_body[i];
+  }
 }
 
 QDataStream &operator<<(QDataStream &ds, const IObjectSpaceOpbjectStream &obj) {

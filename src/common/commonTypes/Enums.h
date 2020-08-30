@@ -202,14 +202,21 @@ enum class PropertyIDs : quint32 {
   WzHyperlinkUrl = 0x1C001E20,
   TaskTagDueDate = 0x1400346B,
 
-  // undocumented ids
+  // undocumented ids, this is mostly guessed
 
-  AuthorInitials =  0x1c001df8,
+  undoc_AuthorInitials =  0x1c001df8,
 
   //some windows live stuff, eg:
   // &lt;resolutionId provider=&quot;Windows Live&quot; hash=&quot;abcdefg==&quot;&gt;
   // &lt;localId cid=&quot;abcdefg&quot;/&gt;&lt;/resolutionId&gt;
-   ResolutionID = 0x1c001e30,
+  undoc_ResolutionID = 0x1c001e30,
+
+
+  //
+  undoc_StrokesBlob = 0x1c00340b,
+
+  // squential number likely indicating the input order
+  undoc_IndexOfStrokes = 0x14003419,
 
 };
 
@@ -242,7 +249,11 @@ jcidRevisionMetaData = 0x00020044,
 jcidVersionHistoryMetaData = 0x00020046,
 jcidParagraphStyleObject = 0x0012004D,
 jcidParagraphStyleObjectForText = 0x0012004D,
-none = 0x00000000
+none = 0x00000000,
+
+
+undoc_drawing = 0x00020047,
+undoc_shape = 0x00060014,
 };
 
 #endif // ENUMS_H

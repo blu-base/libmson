@@ -1,23 +1,19 @@
 #ifndef OBJECTGROUPENDFND_H
 #define OBJECTGROUPENDFND_H
 
-#include <QtCore/qglobal.h>
 #include "IFileNodeType.h"
+#include <QtCore/qglobal.h>
 
-class ObjectGroupEndFND : public IFileNodeType
-{
+class ObjectGroupEndFND : public IFileNodeType {
 public:
   ObjectGroupEndFND();
 
-  // IFileNodeType interface
-private:
-  void deserialize(QDataStream& ds) override;
-  void serialize(QDataStream& ds) const override;
-  void toDebugString(QDebug dbg) const override;
+  virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
 
-  // IFileNodeType interface
-public:
-  virtual void generateXml(QXmlStreamWriter& xmlWriter) const override;
+private:
+  void deserialize(QDataStream &ds) override;
+  void serialize(QDataStream &ds) const override;
+  void toDebugString(QDebug dbg) const override;
 };
 
 #endif // OBJECTGROUPENDFND_H

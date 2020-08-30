@@ -50,10 +50,7 @@ void ReadOnlyObjectDeclaration2LargeRefCountFND::deserialize(QDataStream &ds) {
   m_base = ObjectDeclaration2LargeRefCountFND(m_stpFormat, m_cbFormat);
   ds >> m_base;
 
-  char *md5hashRaw {};
-  ds.readRawData(md5hashRaw, 16);
-
-  m_md5hash = QByteArray(md5hashRaw,16);
+  m_md5hash = ds.device()->read(16);
 }
 
 void ReadOnlyObjectDeclaration2LargeRefCountFND::serialize(
@@ -74,13 +71,13 @@ void ReadOnlyObjectDeclaration2LargeRefCountFND::toDebugString(
 void ReadOnlyObjectDeclaration2LargeRefCountFND::generateXml(
     QXmlStreamWriter &xmlWriter) const {
 
-    xmlWriter.writeStartElement("ReadOnlyObjectDeclaration2LargeRefCountFND");
+  xmlWriter.writeStartElement("ReadOnlyObjectDeclaration2LargeRefCountFND");
 
-    m_base.generateXml(xmlWriter);
+  m_base.generateXml(xmlWriter);
 
-    xmlWriter.writeStartElement("md5hash");
-    xmlWriter.writeCharacters(m_md5hash.toHex());
-    xmlWriter.writeEndElement();
+  xmlWriter.writeStartElement("md5hash");
+  xmlWriter.writeCharacters(m_md5hash.toHex());
+  xmlWriter.writeEndElement();
 
-    xmlWriter.writeEndElement();
+  xmlWriter.writeEndElement();
 }

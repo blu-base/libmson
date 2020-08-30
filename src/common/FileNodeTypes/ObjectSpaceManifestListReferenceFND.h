@@ -20,21 +20,22 @@
  */
 class ObjectSpaceManifestListReferenceFND : public IFileNodeType {
 private:
-    /**
-     * @brief specifies the location and size of the first FileNodeListFragment
-     * @var ref
-     */
-    FileNodeChunkReference m_ref;
+  /**
+   * @brief specifies the location and size of the first FileNodeListFragment
+   * @var ref
+   */
+  FileNodeChunkReference m_ref;
 
-    /**
-     * @brief specifies the identity of the ObjectSpaceManifestList
-     * @var gosid
-     * specified by the object space manifest list.
-     * MUST NOT be {{00000000-0000-0000-0000-000000000000},0}
-     * and MUST be unique relative to the other
-     * ObjectSpaceManifestListReferenceFND.gosid fields in this file.
-     */
-    ExtendedGUID m_gosid;
+  /**
+   * @brief specifies the identity of the ObjectSpaceManifestList
+   * @var gosid
+   * specified by the object space manifest list.
+   * MUST NOT be {{00000000-0000-0000-0000-000000000000},0}
+   * and MUST be unique relative to the other
+   * ObjectSpaceManifestListReferenceFND.gosid fields in this file.
+   */
+  ExtendedGUID m_gosid;
+
 public:
   ObjectSpaceManifestListReferenceFND(FNCR_STP_FORMAT stpFormat,
                                       FNCR_CB_FORMAT cbFormat);
@@ -42,22 +43,18 @@ public:
 
   ~ObjectSpaceManifestListReferenceFND();
 
-
   FileNodeChunkReference getRef() const;
   void setRef(const FileNodeChunkReference &value);
 
   ExtendedGUID getGosid() const;
   void setGosid(const ExtendedGUID &value);
 
-  // IFileNodeType interface
+  virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
+
 private:
   void deserialize(QDataStream &ds);
   void serialize(QDataStream &ds) const;
   void toDebugString(QDebug dbg) const;
-
-  // IFileNodeType interface
-public:
-  virtual void generateXml(QXmlStreamWriter& xmlWriter) const override;
 };
 
 #endif // OBJECTSPACEMANIFESTLISTREFERENCEFND_H

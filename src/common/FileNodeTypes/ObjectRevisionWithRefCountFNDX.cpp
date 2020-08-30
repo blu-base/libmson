@@ -48,16 +48,14 @@ void ObjectRevisionWithRefCountFNDX::setRef(
   m_ref = value;
 }
 
-
 ObjectSpaceObjectPropSet ObjectRevisionWithRefCountFNDX::getPropSet() const {
   return m_blob;
 }
 
 void ObjectRevisionWithRefCountFNDX::setPropSet(
     const ObjectSpaceObjectPropSet &value) {
-    m_blob = value;
+  m_blob = value;
 }
-
 
 void ObjectRevisionWithRefCountFNDX::deserialize(QDataStream &ds) {
 
@@ -77,7 +75,6 @@ void ObjectRevisionWithRefCountFNDX::deserialize(QDataStream &ds) {
   ds.device()->seek(destLocation);
   ds >> m_blob;
   ds.device()->seek(curLocation);
-
 }
 
 void ObjectRevisionWithRefCountFNDX::serialize(QDataStream &ds) const {
@@ -115,7 +112,7 @@ void ObjectRevisionWithRefCountFNDX::generateXml(
 
   m_oid.generateXml(xmlWriter);
 
-      m_blob.generateXml(xmlWriter);
+  m_blob.generateXml(xmlWriter);
 
   xmlWriter.writeEndElement();
 }

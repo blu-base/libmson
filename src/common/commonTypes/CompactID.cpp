@@ -106,7 +106,6 @@ void CompactID::serialize(QDataStream &ds) const {
   ds << temp;
 }
 
-
 bool operator==(const CompactID &lhs, const CompactID &rhs) noexcept {
   return lhs.getN() == rhs.getN() && lhs.getGuidIndex() == rhs.getGuidIndex();
 }

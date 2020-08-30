@@ -77,24 +77,22 @@ void ObjectDeclarationFileData3LargeRefCountFND::toDebugString(
       << '\n';
 }
 
+void ObjectDeclarationFileData3LargeRefCountFND::generateXml(
+    QXmlStreamWriter &xmlWriter) const {
+  xmlWriter.writeStartElement("ObjectDeclarationFileData3LargeRefCountFND");
 
-void ObjectDeclarationFileData3LargeRefCountFND::generateXml(QXmlStreamWriter& xmlWriter) const
-{
-    xmlWriter.writeStartElement("ObjectDeclarationFileData3LargeRefCountFND");
+  xmlWriter.writeAttribute("cRef", qStringHex(m_cRef, 8));
 
-    xmlWriter.writeAttribute("cRef", qStringHex(m_cRef,8));
+  xmlWriter.writeStartElement("oid");
+  m_oid.generateXml(xmlWriter);
+  xmlWriter.writeEndElement();
 
-    xmlWriter.writeStartElement("oid");
-    m_oid.generateXml(xmlWriter);
-    xmlWriter.writeEndElement();
+  xmlWriter.writeStartElement("jcid");
+  m_jcid.generateXml(xmlWriter);
+  xmlWriter.writeEndElement();
 
-    xmlWriter.writeStartElement("jcid");
-    m_jcid.generateXml(xmlWriter);
-    xmlWriter.writeEndElement();
+  m_FileDataReference.generateXml(xmlWriter);
+  m_Extension.generateXml(xmlWriter);
 
-    m_FileDataReference.generateXml(xmlWriter);
-    m_Extension.generateXml(xmlWriter);
-
-
-    xmlWriter.writeEndElement();
+  xmlWriter.writeEndElement();
 }

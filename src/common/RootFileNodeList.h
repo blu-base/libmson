@@ -1,9 +1,9 @@
 #ifndef ROOTFILENODELIST_H
 #define ROOTFILENODELIST_H
 
+#include <QXmlStreamWriter>
 #include <QtCore/qglobal.h>
 #include <vector>
-#include <QXmlStreamWriter>
 
 #include "FileNode.h"
 #include "FileNodeListFragment.h"
@@ -12,7 +12,8 @@
 namespace MSONcommon {
 class RootFileNodeList {
 private:
-    /** raw, fragmented FileNode list, can be ignored after defragmenting into m_fileNodeSequence */
+  /** raw, fragmented FileNode list, can be ignored after defragmenting into
+   * m_fileNodeSequence */
   std::vector<FileNodeListFragment> m_fileNodeListFragments;
 
   FileNode m_objectSpaceManifestRoot;
@@ -40,10 +41,9 @@ public:
 
   //
   std::vector<FileNodeListFragment> getFileNodeListFragments() const;
-  void
-  setFileNodeListFragments(const std::vector<FileNodeListFragment> &value);
+  void setFileNodeListFragments(const std::vector<FileNodeListFragment> &value);
 
-  FileNode getObjectSpaceManifestRoot() ;
+  FileNode getObjectSpaceManifestRoot();
   void setObjectSpaceManifestRoot(const FileNode &value);
 
   std::vector<FileNode> getFileNodeSequence() const;

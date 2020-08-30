@@ -36,15 +36,12 @@ public:
   ExtendedGUID getGosidRoot() const;
   void setGosidRoot(const ExtendedGUID &value);
 
-  // IFileNodeType interface
+  virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
+
 private:
   void deserialize(QDataStream &ds);
   void serialize(QDataStream &ds) const;
   void toDebugString(QDebug dbg) const;
-
-  // IFileNodeType interface
-public:
-  virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
 };
 
 #endif // OBJECTSPACEMANIFESTROOTFND_H

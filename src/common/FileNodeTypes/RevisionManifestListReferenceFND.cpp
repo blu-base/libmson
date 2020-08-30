@@ -29,10 +29,9 @@ void RevisionManifestListReferenceFND::toDebugString(QDebug dbg) const {
       << " ref: " << m_ref << '\n';
 }
 
-
-void RevisionManifestListReferenceFND::generateXml(QXmlStreamWriter& xmlWriter) const
-{
-    xmlWriter.writeStartElement("RevisionManifestListReferenceFND");
-    m_ref.generateXml(xmlWriter);
-    xmlWriter.writeEndElement();
+void RevisionManifestListReferenceFND::generateXml(
+    QXmlStreamWriter &xmlWriter) const {
+  xmlWriter.writeStartElement("RevisionManifestListReferenceFND");
+  m_ref.generateXml(xmlWriter);
+  xmlWriter.writeEndElement();
 }

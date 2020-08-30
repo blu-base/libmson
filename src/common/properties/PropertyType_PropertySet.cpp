@@ -6,12 +6,11 @@
 PropertySet PropertyType_PropertySet::data() const { return m_data; }
 
 void PropertyType_PropertySet::setData(const PropertySet &data) {
-    m_data = data;
+  m_data = data;
 }
 
-void PropertyType_PropertySet::generateXml(QXmlStreamWriter& xmlWriter) const
-{
-    m_data.generateXml(xmlWriter);
+void PropertyType_PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
+  m_data.generateXml(xmlWriter);
 }
 
 PropertyType_PropertySet::PropertyType_PropertySet() {}
