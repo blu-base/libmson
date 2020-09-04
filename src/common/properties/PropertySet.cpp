@@ -1,5 +1,6 @@
 #include "PropertySet.h"
 #include <QDebug>
+#include <algorithm>
 
 #include "PropertyType_ArrayNumber.h"
 #include "PropertyType_ArrayOfPropertyValues.h"
@@ -13,7 +14,9 @@
 
 #include "../helper/Helper.h"
 
+#include "../simpleTypes/BodyTextAlignment.h"
 #include "../simpleTypes/LayoutAlignment.h"
+#include "../simpleTypes/Time32.h"
 
 quint16 PropertySet::cProperties() const { return m_cProperties; }
 
@@ -151,8 +154,9 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
       break;
     case PropertyIDs::PageWidth: {
       xmlWriter.writeStartElement("PageWidth");
-      auto body = static_cast<PropertyType_FourBytesOfData *>(m_rgData[i]);
-      QDataStream bytes(body->data());
+      const auto body =
+          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+      QDataStream bytes(body);
       bytes.setByteOrder(QDataStream::LittleEndian);
       bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
       float pagewidth;
@@ -167,8 +171,9 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
     }
     case PropertyIDs::PageHeight: {
       xmlWriter.writeStartElement("PageHeight");
-      auto body = static_cast<PropertyType_FourBytesOfData *>(m_rgData[i]);
-      QDataStream bytes(body->data());
+      const auto body =
+          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+      QDataStream bytes(body);
       bytes.setByteOrder(QDataStream::LittleEndian);
       bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
       float pageheight;
@@ -185,8 +190,9 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
     }
     case PropertyIDs::OutlineElementChildLevel: {
       xmlWriter.writeStartElement("IndentationLevel");
-      auto *body = static_cast<PropertyType_OneByteOfData *>(m_rgData[i]);
-      QDataStream bytes(body->data());
+      const auto body =
+          static_cast<PropertyType_OneByteOfData *>(m_rgData[i])->data();
+      QDataStream bytes(body);
 
       uint8_t val;
       bytes >> val;
@@ -207,8 +213,9 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
       xmlWriter.writeStartElement("Font");
       if (m_rgPrids[i].type() ==
           PropertyIDType::FourBytesOfLengthFollowedByData) {
-        auto body = static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
-            m_rgData[i]);
+        const auto body =
+            static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
+                m_rgData[i]);
         QString string =
             QString::fromUtf8(body->data().constData(), body->cb());
         xmlWriter.writeCharacters(string);
@@ -218,47 +225,50 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
     }
     case PropertyIDs::FontSize: {
       xmlWriter.writeStartElement("FontSize");
-      auto body = static_cast<PropertyType_FourBytesOfData *>(m_rgData[i]);
-      QDataStream bytes(body->data());
+      const auto body =
+          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+      QDataStream bytes(body);
       bytes.setByteOrder(QDataStream::LittleEndian);
-      bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
       uint16_t val;
       bytes >> val;
       // validity given by MS-ONE sec 2.3.16
       if (val < 12 || val > 288) {
         xmlWriter.writeAttribute("valid", "false");
       }
-      xmlWriter.writeCharacters(QString::number(val, 'f', 5));
+      xmlWriter.writeCharacters(QString::number(val));
       xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::FontColor: {
       xmlWriter.writeStartElement("COLORREF");
-      auto body = static_cast<PropertyType_FourBytesOfData *>(m_rgData[i]);
-      QString string = body->data().toHex();
+      const auto body =
+          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+      const QString string = body.toHex();
       xmlWriter.writeCharacters("0x" + string);
       xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::Highlight: {
       xmlWriter.writeStartElement("COLORREF");
-      auto body = static_cast<PropertyType_FourBytesOfData *>(m_rgData[i]);
-      QString string = body->data().toHex();
+      const auto body =
+          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+      const QString string = body.toHex();
       xmlWriter.writeCharacters("0x" + string);
       xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::RgOutlineIndentDistance: {
       xmlWriter.writeStartElement("RgOutlineIndentDistance");
-      auto body = static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
-          m_rgData[i]);
-      QDataStream bytes(body->data());
+      const auto body =
+          static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
+              m_rgData[i])
+              ->data();
+      QDataStream bytes(body);
       bytes.setByteOrder(QDataStream::LittleEndian);
-      bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
       uint8_t count;
       bytes >> count;
       xmlWriter.writeAttribute("count", QString::number(count));
-      QByteArray unused = bytes.device()->read(3);
+      const QByteArray unused = bytes.device()->read(3);
       xmlWriter.writeAttribute("unused-bytes", unused.toHex());
 
       for (size_t j = 0; j < count; j++) {
@@ -271,12 +281,20 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
       xmlWriter.writeEndElement();
       break;
     }
-      //          case PropertyIDs::BodyTextAlignment:
-      //            break;
+    case PropertyIDs::BodyTextAlignment: {
+      const auto body =
+          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+      BodyTextAlignment bta;
+      QDataStream bytes (body);
+      bytes >> bta;
+      bta.generateXml(xmlWriter);
+      break;
+    }
     case PropertyIDs::OffsetFromParentHoriz: {
       xmlWriter.writeStartElement("OffsetFromParentHoriz");
-      auto body = static_cast<PropertyType_FourBytesOfData *>(m_rgData[i]);
-      QDataStream bytes(body->data());
+      const auto body =
+          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+      QDataStream bytes(body);
       bytes.setByteOrder(QDataStream::LittleEndian);
       bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
       float val;
@@ -287,8 +305,9 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
     }
     case PropertyIDs::OffsetFromParentVert: {
       xmlWriter.writeStartElement("OffsetFromParentVert");
-      auto body = static_cast<PropertyType_FourBytesOfData *>(m_rgData[i]);
-      QDataStream bytes(body->data());
+      const auto body =
+          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+      QDataStream bytes(body);
       bytes.setByteOrder(QDataStream::LittleEndian);
       bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
       float val;
@@ -297,13 +316,14 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
       xmlWriter.writeEndElement();
       break;
     }
-      //    case PropertyIDs:::
+      //    case PropertyIDs::NumberListFormat:
       //      m_id_string = "NumberListFormat";
       //      break;
     case PropertyIDs::LayoutMaxWidth: {
       xmlWriter.writeStartElement("LayoutMaxWidth");
-      auto body = static_cast<PropertyType_FourBytesOfData *>(m_rgData[i]);
-      QDataStream bytes(body->data());
+      const auto body =
+          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+      QDataStream bytes(body);
       bytes.setByteOrder(QDataStream::LittleEndian);
       bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
       float val;
@@ -314,8 +334,9 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
     }
     case PropertyIDs::LayoutMaxHeight: {
       xmlWriter.writeStartElement("LayoutMaxHeight");
-      auto body = static_cast<PropertyType_FourBytesOfData *>(m_rgData[i]);
-      QDataStream bytes(body->data());
+      const auto body =
+          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+      QDataStream bytes(body);
       bytes.setByteOrder(QDataStream::LittleEndian);
       bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
       float val;
@@ -335,10 +356,12 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
       //      break;
     case PropertyIDs::RichEditTextUnicode: {
       xmlWriter.writeStartElement("RichEditTextUnicode");
-      auto body = static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
-          m_rgData[i]);
+      const auto body =
+          static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
+              m_rgData[i])
+              ->data();
       QString string = QString::fromUtf16(
-          reinterpret_cast<const ushort *>(body->data().constData()));
+          reinterpret_cast<const ushort *>(body.constData()));
 
       xmlWriter.writeCharacters(string);
       xmlWriter.writeEndElement();
@@ -349,11 +372,12 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
       //      break;
     case PropertyIDs::NotebookManagementEntityGuid: {
       xmlWriter.writeStartElement("NotebookManagementEntityGuid");
-      auto body = static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
-          m_rgData[i]);
-      QDataStream bytes(body->data());
+      const auto body =
+          static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
+              m_rgData[i])
+              ->data();
+      QDataStream bytes(body);
       bytes.setByteOrder(QDataStream::LittleEndian);
-      bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
       QUuid val;
       bytes >> val;
       xmlWriter.writeCharacters(val.toString());
@@ -366,10 +390,9 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
       //      m_id_string = "LanguageID";
       //      break;
     case PropertyIDs::LayoutAlignmentInParent: {
-      auto body = static_cast<PropertyType_FourBytesOfData *>(m_rgData[i]);
-      QDataStream bytes(body->data());
-      bytes.setByteOrder(QDataStream::LittleEndian);
-      bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
+      const auto body =
+          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+      QDataStream bytes(body);
       LayoutAlignment val;
       bytes >> val;
       val.generateXml(xmlWriter);
@@ -439,12 +462,30 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
       xmlWriter.writeEndElement();
       break;
     }
-      //    case PropertyIDs::TopologyCreationTimeStamp:
-      //      m_id_string = "TopologyCreationTimeStamp";
-      //      break;
-      //    case PropertyIDs::LayoutAlignmentSelf:
-      //      m_id_string = "LayoutAlignmentSelf";
-      //      break;
+    case PropertyIDs::TopologyCreationTimeStamp: /*{
+      xmlWriter.writeStartElement("TopologyCreationTimeStamp");
+      auto body =
+          static_cast<PropertyType_EightBytesOfData *>(m_rgData[i])->data();
+
+      QDataStream bytes(body);
+      bytes.setByteOrder(QDataStream::LittleEndian);
+      /// \todo must have a FILETIME object
+      Time32 time;
+      bytes >> time;
+      xmlWriter.writeCharacters(time.getTime().toString());
+      xmlWriter.writeEndElement();
+      break;
+    }*/
+    case PropertyIDs::LayoutAlignmentSelf: {
+      auto body = static_cast<PropertyType_FourBytesOfData *>(m_rgData[i]);
+      QDataStream bytes(body->data());
+      bytes.setByteOrder(QDataStream::LittleEndian);
+      bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
+      LayoutAlignment val;
+      bytes >> val;
+      val.generateXml(xmlWriter);
+      break;
+    }
     case PropertyIDs::IsTitleTime:
     case PropertyIDs::IsBoilerText:
       break;
@@ -476,9 +517,18 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
       //      break;
     case PropertyIDs::IsReadOnly:
       break;
-      //    case PropertyIDs::LayoutMinimumOutlineWidth:
-      //      m_id_string = "LayoutMinimumOutlineWidth";
-      //      break;
+    case PropertyIDs::LayoutMinimumOutlineWidth: {
+      xmlWriter.writeStartElement("LayoutMinimumOutlineWidth");
+      auto body = static_cast<PropertyType_FourBytesOfData *>(m_rgData[i]);
+      QDataStream bytes(body->data());
+      bytes.setByteOrder(QDataStream::LittleEndian);
+      bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
+      float val;
+      bytes >> val;
+      xmlWriter.writeCharacters(QString::number(val, 'f', 5));
+      xmlWriter.writeEndElement();
+      break;
+    }
       //    case PropertyIDs::LayoutCollisionPriority:
       //      m_id_string = "LayoutCollisionPriority";
       //      break;
@@ -491,21 +541,94 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
       xmlWriter.writeEndElement();
       break;
     }
-      //    case PropertyIDs::DescendantsCannotBeMoved:
-      //      m_id_string = "DescendantsCannotBeMoved";
-      //      break;
+    case PropertyIDs::DescendantsCannotBeMoved:
+      break;
       //    case PropertyIDs::RichEditTextLangID:
       //      m_id_string = "RichEditTextLangID";
       //      break;
-      //    case PropertyIDs::LayoutTightAlignment:
-      //      m_id_string = "LayoutTightAlignment";
-      //      break;
-      //    case PropertyIDs::Charset:
-      //      m_id_string = "Charset";
-      //      break;
-      //    case PropertyIDs::CreationTimeStamp:
-      //      m_id_string = "CreationTimeStamp";
-      //      break;
+    case PropertyIDs::LayoutTightAlignment:
+      break;
+    case PropertyIDs::Charset: {
+      xmlWriter.writeStartElement("Charset");
+      auto body =
+          static_cast<PropertyType_OneByteOfData *>(m_rgData[i])->data();
+      QString string;
+      switch (static_cast<Charset>(body.toUInt())) {
+      case Charset::ANSI_CHARSET:
+        string = "ANSI_CHARSET";
+        break;
+      case Charset::DEFAULT_CHARSET:
+        string = "DEFAULT_CHARSET";
+        break;
+      case Charset::SYMBOL_CHARSET:
+        string = "SYMBOL_CHARSET";
+        break;
+      case Charset::MAC_CHARSET:
+        string = "MAC_CHARSET";
+        break;
+      case Charset::SHIFTJIS_CHARSET:
+        string = "SHIFTJIS_CHARSET";
+        break;
+      case Charset::HANGUL_CHARSET:
+        string = "HANGUL_CHARSET";
+        break;
+      case Charset::JOHAB_CHARSET:
+        string = "JOHAB_CHARSET";
+        break;
+      case Charset::GB2312_CHARSET:
+        string = "GB2312_CHARSET";
+        break;
+      case Charset::CHINESEBIG5_CHARSET:
+        string = "CHINESEBIG5_CHARSET";
+        break;
+      case Charset::GREEK_CHARSET:
+        string = "GREEK_CHARSET";
+        break;
+      case Charset::TURKISH_CHARSET:
+        string = "TURKISH_CHARSET";
+        break;
+      case Charset::VIETNAMESE_CHARSET:
+        string = "VIETNAMESE_CHARSET";
+        break;
+      case Charset::HEBREW_CHARSET:
+        string = "HEBREW_CHARSET";
+        break;
+      case Charset::ARABIC_CHARSET:
+        string = "ARABIC_CHARSET";
+        break;
+      case Charset::BALTIC_CHARSET:
+        string = "BALTIC_CHARSET";
+        break;
+      case Charset::RUSSIAN_CHARSET:
+        string = "RUSSIAN_CHARSET";
+        break;
+      case Charset::THAI_CHARSET:
+        string = "THAI_CHARSET";
+        break;
+      case Charset::EASTEUROPE_CHARSET:
+        string = "EASTEUROPE_CHARSET";
+        break;
+      case Charset::OEM_CHARSET:
+        string = "OEM_CHARSET";
+        break;
+      }
+      xmlWriter.writeCharacters(string);
+      xmlWriter.writeEndElement();
+      break;
+    }
+    case PropertyIDs::CreationTimeStamp: {
+      xmlWriter.writeStartElement("CreationTimeStamp");
+      auto body =
+          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+
+      QDataStream bytes(body);
+      bytes.setByteOrder(QDataStream::LittleEndian);
+      Time32 time;
+      bytes >> time;
+      xmlWriter.writeCharacters(time.getTime().toString());
+      xmlWriter.writeEndElement();
+      break;
+    }
     case PropertyIDs::Deletable:
       break;
       //    case PropertyIDs::ListMSAAIndex:
@@ -556,27 +679,57 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
       break;
     }
 
-      //    case PropertyIDs::LastModifiedTimeStamp:
-      //      m_id_string = "LastModifiedTimeStamp";
-      //      break;
+    case PropertyIDs::LastModifiedTimeStamp: /*{
+      xmlWriter.writeStartElement("LastModifiedTimeStamp");
+      auto body =
+          static_cast<PropertyType_EightBytesOfData *>(m_rgData[i])->data();
+
+      QDataStream bytes(body);
+      bytes.setByteOrder(QDataStream::LittleEndian);
+      Time32 time;
+      bytes >> time;
+      xmlWriter.writeCharacters(time.getTime().toString());
+      xmlWriter.writeEndElement();
+      break;
+    }*/
       //    case PropertyIDs::AuthorOriginal:
       //      m_id_string = "AuthorOriginal";
       //      break;
       //    case PropertyIDs::AuthorMostRecent:
       //      m_id_string = "AuthorMostRecent";
       //      break;
-      //    case PropertyIDs::LastModifiedTime:
-      //      m_id_string = "LastModifiedTime";
-      //      break;
+    case PropertyIDs::LastModifiedTime: {
+      xmlWriter.writeStartElement("LastModifiedTime");
+      auto body =
+          static_cast<PropertyType_EightBytesOfData *>(m_rgData[i])->data();
+
+      QDataStream bytes(body);
+      bytes.setByteOrder(QDataStream::LittleEndian);
+      Time32 time;
+      bytes >> time;
+      xmlWriter.writeCharacters(time.getTime().toString());
+      xmlWriter.writeEndElement();
+      break;
+    }
       //    case PropertyIDs::IsConflictPage:
       //      m_id_string = "IsConflictPage";
       //      break;
       //    case PropertyIDs::TableColumnsLocked:
       //      m_id_string = "TableColumnsLocked";
       //      break;
-      //    case PropertyIDs::SchemaRevisionInOrderToRead:
-      //      m_id_string = "SchemaRevisionInOrderToRead";
-      //      break;
+    case PropertyIDs::SchemaRevisionInOrderToRead: {
+      xmlWriter.writeStartElement("SchemaRevisionInOrderToRead");
+      auto body =
+          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+      QDataStream bytes(body);
+      bytes.setByteOrder(QDataStream::LittleEndian);
+      bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
+      quint32 val;
+      bytes >> val;
+      xmlWriter.writeCharacters(qStringHex(val, 8));
+      xmlWriter.writeEndElement();
+      break;
+    }
       //    case PropertyIDs::IsConflictObjectForRender:
       //      m_id_string = "IsConflictObjectForRender";
       //      break;
@@ -622,9 +775,19 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
       //    case PropertyIDs::IsConflictObjectForSelection:
       //      m_id_string = "IsConflictObjectForSelection";
       //      break;
-      //    case PropertyIDs::PageLevel:
-      //      m_id_string = "PageLevel";
-      //      break;
+    case PropertyIDs::PageLevel: {
+      xmlWriter.writeStartElement("PageLevel");
+      auto body =
+          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+      QDataStream bytes(body);
+      bytes.setByteOrder(QDataStream::LittleEndian);
+      bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
+      qint32 val;
+      bytes >> val;
+      xmlWriter.writeCharacters(QString::number(val));
+      xmlWriter.writeEndElement();
+      break;
+    }
       //    case PropertyIDs::TextRunIndex:
       //      m_id_string = "TextRunIndex";
       //      break;
@@ -650,15 +813,45 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
       //    case PropertyIDs::ParagraphStyle: {
       //      break;
       //    }
-      //    case PropertyIDs::ParagraphSpaceBefore:
-      //      m_id_string = "ParagraphSpaceBefore";
-      //      break;
-      //    case PropertyIDs::ParagraphSpaceAfter:
-      //      m_id_string = "ParagraphSpaceAfter";
-      //      break;
-      //    case PropertyIDs::ParagraphLineSpacingExact:
-      //      m_id_string = "ParagraphLineSpacingExact";
-      //      break;
+    case PropertyIDs::ParagraphSpaceBefore: {
+      xmlWriter.writeStartElement("ParagraphSpaceBefore");
+      auto body =
+          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+      QDataStream bytes(body);
+      bytes.setByteOrder(QDataStream::LittleEndian);
+      bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
+      float val;
+      bytes >> val;
+      xmlWriter.writeCharacters(QString::number(val, 'f', 5));
+      xmlWriter.writeEndElement();
+      break;
+    }
+    case PropertyIDs::ParagraphSpaceAfter: {
+      xmlWriter.writeStartElement("ParagraphSpaceBefore");
+      auto body =
+          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+      QDataStream bytes(body);
+      bytes.setByteOrder(QDataStream::LittleEndian);
+      bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
+      float val;
+      bytes >> val;
+      xmlWriter.writeCharacters(QString::number(val, 'f', 5));
+      xmlWriter.writeEndElement();
+      break;
+    }
+    case PropertyIDs::ParagraphLineSpacingExact: {
+      xmlWriter.writeStartElement("ParagraphLineSpacingExact");
+      auto body =
+          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+      QDataStream bytes(body);
+      bytes.setByteOrder(QDataStream::LittleEndian);
+      bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
+      float val;
+      bytes >> val;
+      xmlWriter.writeCharacters(QString::number(val, 'f', 5));
+      xmlWriter.writeEndElement();
+      break;
+    }
       //    case PropertyIDs::MetaDataObjectsAboveGraphSpace:
       //      m_id_string = "MetaDataObjectsAboveGraphSpace";
       //      break;
@@ -699,15 +892,43 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
       //    case PropertyIDs::NoteTagPropertyStatus:
       //      m_id_string = "NoteTagPropertyStatus";
       //      break;
-      //    case PropertyIDs::NoteTagLabel:
-      //      m_id_string = "NoteTagLabel";
-      //      break;
-      //    case PropertyIDs::NoteTagCreated:
-      //      m_id_string = "NoteTagCreated";
-      //      break;
-      //    case PropertyIDs::NoteTagCompleted:
-      //      m_id_string = "NoteTagCompleted";
-      //      break;
+
+    /// \todo not sure whether this is the correct string format (utf8/utf16)
+    case PropertyIDs::NoteTagLabel: {
+      xmlWriter.writeStartElement("wz");
+      auto body = static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
+          m_rgData[i]);
+      QString string = QString::fromUtf8(body->data().constData(), body->cb());
+      xmlWriter.writeCharacters(string);
+      xmlWriter.writeEndElement();
+      break;
+    }
+    case PropertyIDs::NoteTagCreated: {
+      xmlWriter.writeStartElement("NoteTagCreated");
+      auto body =
+          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+
+      QDataStream bytes(body);
+      bytes.setByteOrder(QDataStream::LittleEndian);
+      Time32 time;
+      bytes >> time;
+      xmlWriter.writeCharacters(time.getTime().toString());
+      xmlWriter.writeEndElement();
+      break;
+    }
+    case PropertyIDs::NoteTagCompleted: {
+      xmlWriter.writeStartElement("NoteTagCompleted");
+      auto body =
+          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+
+      QDataStream bytes(body);
+      bytes.setByteOrder(QDataStream::LittleEndian);
+      Time32 time;
+      bytes >> time;
+      xmlWriter.writeCharacters(time.getTime().toString());
+      xmlWriter.writeEndElement();
+      break;
+    }
       //    case PropertyIDs::NoteTagDefinitionOid:
       //      m_id_string = "NoteTagDefinitionOid";
       //      break;
@@ -786,9 +1007,19 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
       //    case PropertyIDs::WzHyperlinkUrl:
       //      m_id_string = "WzHyperlinkUrl";
       //      break;
-      //    case PropertyIDs::TaskTagDueDate:
-      //      m_id_string = "TaskTagDueDate";
-      //      break;
+    case PropertyIDs::TaskTagDueDate: {
+      xmlWriter.writeStartElement("TaskTagDueDate");
+      auto body =
+          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+
+      QDataStream bytes(body);
+      bytes.setByteOrder(QDataStream::LittleEndian);
+      Time32 time;
+      bytes >> time;
+      xmlWriter.writeCharacters(time.getTime().toString());
+      xmlWriter.writeEndElement();
+      break;
+    }
     case PropertyIDs::undoc_AuthorInitials: {
       xmlWriter.writeStartElement("undoc_AuthorInitials");
       if (m_rgPrids[i].type() ==

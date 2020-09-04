@@ -28,7 +28,7 @@ void ObjectInfoDependencyOverrideData::generateXml(
   }
   xmlWriter.writeEndElement();
 
-  xmlWriter.writeStartElement("m_Overrides2");
+  xmlWriter.writeStartElement("Overrides2");
   for (auto entry : m_Overrides1) {
     entry.generateXml(xmlWriter);
   }

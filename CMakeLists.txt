@@ -37,6 +37,27 @@ add_subdirectory(docs)
 
 
 
+########### MSONParser libraries wrapper ######################
+set (MSONParser_SRCS
+    src/Main.cpp
+    )
+add_executable(
+    one2xml
+    ${MSONParser_SRCS}
+    )
+
+target_link_libraries(
+    one2xml
+    MSONcommon
+    MSONParser_import
+    MSONParser_export
+    Qt5::Core #?
+    Qt5::Xml #?
+    )
+
+
+
+install(TARGETS one2xml DESTINATION ${PLUGIN_INSTALL_DIR}/)
 
 
 

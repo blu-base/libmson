@@ -4,7 +4,10 @@
 #include <QDebug>
 
 void PropertyType_ObjectSpaceID::generateXml(
-    QXmlStreamWriter &xmlWriter) const {}
+    QXmlStreamWriter &xmlWriter) const {
+    xmlWriter.writeStartElement("ObjectSpaceID");
+    xmlWriter.writeEndElement();
+}
 
 PropertyType_ObjectSpaceID::PropertyType_ObjectSpaceID() {}
 
