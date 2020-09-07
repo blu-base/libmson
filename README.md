@@ -29,12 +29,12 @@ In the build directory, you can find the tool `one2xml`.
 
 By calling the following command structure, you can convert `.one` and `.onetoc2` files to an xml format
 ```
-one2xml -f \[filename\] 
+one2xml -f \[filename\]
 ```
 
 Run `one2xml --help` for more information.
 
-Right now, the xml format represents the revision store file's structure. Currently, this is hardly useful. 
+Right now, the xml format represents the revision store file's structure. Currently, this is hardly useful.
 
 
 ## Contributing
@@ -43,5 +43,4 @@ Any comments and contributions are welcome!
 
 ## Disclaimer
 
-This project is neither related nor endorsed by Microsoft in any way. The author does not have any affiliation with Microsoft. Use at your own risk.
-
+This project is neither related nor endorsed by Microsoft in any way. The author does not have any affiliation with Microsoft.

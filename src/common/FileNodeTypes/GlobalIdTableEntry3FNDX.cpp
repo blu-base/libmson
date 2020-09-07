@@ -54,4 +54,5 @@ void GlobalIdTableEntry3FNDX::generateXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeAttribute("cEntriesToCopy", QString::number(m_cEntriesToCopy));
   xmlWriter.writeAttribute("iIndexCopyToStart",
                            QString::number(m_iIndexCopyToStart));
+  xmlWriter.writeEndElement();
 }

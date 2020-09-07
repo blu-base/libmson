@@ -1,14 +1,15 @@
 #ifndef TIME32_H
 #define TIME32_H
 
-#include <QDateTime>
+
 #include <QtCore/qglobal.h>
 
+#include <QDateTime>
 #include <QDataStream>
 #include <QDebug>
 #include <QXmlStreamWriter>
 
-class Time32 : public QDateTime {
+class Time32 {
 private:
   QDateTime m_time;
 

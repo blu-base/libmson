@@ -430,6 +430,29 @@ QString PropertyID::idToString(const PropertyIDs &val) {
   case PropertyIDs::undoc_StrokesBlob:
     m_id_string = "undoc_StrokesBlob";
     break;
+  case PropertyIDs::undoc_tocSectionName:
+    m_id_string = "undoc_tocSectionName";
+    break;
+  case PropertyIDs::undoc_tocSectionIndex:
+    m_id_string = "undoc_tocSectionIndex";
+    break;
+  case PropertyIDs::undoc_tocSectionGUID:
+    m_id_string = "undoc_tocSectionGUID";
+    break;
+  case PropertyIDs::undoc_tocSectionColor:
+    m_id_string = "undoc_tocSectionColor";
+    break;
+case PropertyIDs::unodc_StrokeLanguage:
+      m_id_string = "unodc_StrokeLanguage";
+      break;
+  case PropertyIDs::undoc_StrokesColor:
+    m_id_string = "undoc_StrokesColor";
+    break;
+
+  case PropertyIDs::undoc_SchemaRevisionInOrderToRead:
+    m_id_string = "undoc_SchemaRevisionInOrderToRead";
+    break;
+
   case PropertyIDs::None:
     m_id_string = "None";
     break;

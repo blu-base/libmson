@@ -137,6 +137,9 @@ set (MSONcommon_PART_SRCS
     common/simpleTypes/LayoutAlignment.cpp
     common/simpleTypes/BodyTextAlignment.cpp
     common/simpleTypes/Time32.cpp
+    common/simpleTypes/FileTime.cpp
+    common/simpleTypes/LCID.cpp
+    common/simpleTypes/ColorRef.cpp
 
 
     common/helper/Helper.cpp

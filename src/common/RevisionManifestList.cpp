@@ -133,7 +133,7 @@ void RevisionManifestList::deserialize(QDataStream &ds) {
                        FileNodeTypeID::RevisionManifestListStartFND)) {
       if (fn.getFileNodeID() ==
           static_cast<quint16>(FileNodeTypeID::ObjectDataEncryptionKeyV2FNDX)) {
-
+/// \todo capture encrypted section in Document object
         //        MSONcommon::DocumentSingleton::getDoc()->setIsEncrypted(true);
       }
 

@@ -10,7 +10,9 @@
 
 #include "IPropertyType.h"
 #include "PropertyID.h"
-    class PropertySet {
+
+
+class PropertySet {
 private:
   /**
    * @brief number of PropertyIDs in this Set

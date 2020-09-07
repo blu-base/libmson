@@ -345,13 +345,7 @@ QDataStream &operator>>(QDataStream &ds, MSONDocument &obj) {
 
   } while (!transLogRef.is_fcrNil() && !transLogRef.is_fcrZero());
 
-  // Parsing HashedChunkList
-  FileChunkReference64x32 hashChunkRef =
-      obj.getHeader()->getFcrHashedChunkList();
 
-  if (!hashChunkRef.is_fcrNil() && !hashChunkRef.is_fcrZero()) {
-    obj.m_hashedChunkList = parseFileNodeListFragments(ds, hashChunkRef);
-  }
 
   // Parsing RootFileNodeList
   if (!obj.getHeader()->getFcrFileNodeListRoot().is_fcrNil() &&
@@ -360,6 +354,14 @@ QDataStream &operator>>(QDataStream &ds, MSONDocument &obj) {
     obj.m_rootFileNodeList =
         new RootFileNodeList(obj.getHeader()->getFcrFileNodeListRoot());
     ds >> *obj.m_rootFileNodeList;
+  }
+
+  // Parsing HashedChunkList
+  FileChunkReference64x32 hashChunkRef =
+      obj.getHeader()->getFcrHashedChunkList();
+
+  if (!hashChunkRef.is_fcrNil() && !hashChunkRef.is_fcrZero()) {
+    obj.m_hashedChunkList = parseFileNodeListFragments(ds, hashChunkRef);
   }
 
   // Filling the GlobalIdentificationTable

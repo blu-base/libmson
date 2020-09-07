@@ -139,14 +139,24 @@ int main(int argc, char *argv[]) {
     QFileInfo file(entry);
 
     QString outputPath;
-    QString baseFileName = file.fileName().left(file.fileName().lastIndexOf('.'));
+    QString baseFileName =
+        file.fileName().left(file.fileName().lastIndexOf('.'));
+
+
+    QUuid guid = manager.parseDocument(entry);
+
     if (outputSet) {
       outputPath = parser.value(output);
     } else {
-      outputPath = entry.left(entry.lastIndexOf("/"));
+
+      if (entry.contains("/")) {
+        outputPath = entry.left( entry.lastIndexOf("/"));
+      } else {
+          outputPath = ".";
+      }
     }
 
-    QUuid guid = manager.parseDocument(entry);
+
 
     manager.generateXml(guid, outputPath + "/" + baseFileName + ".xml");
     manager.removeDocument(guid);
