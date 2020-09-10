@@ -5,6 +5,8 @@
 
 #include "../commonTypes/CompactID.h"
 
+namespace MSONcommon {
+
 class ObjectDeclarationWithRefCountBody {
 private:
   /**
@@ -98,5 +100,7 @@ private:
    */
   void toDebugString(QDebug dbg) const;
 };
+
+} // namespace MSONcommon
 
 #endif // OBJECTDECLARATIONWITHREFCOUNTBODY_H

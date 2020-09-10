@@ -4,6 +4,8 @@
 #include "IFileNodeType.h"
 #include <QtCore/qglobal.h>
 
+namespace MSONcommon {
+
 class RevisionManifestEndFND : public IFileNodeType {
 public:
   RevisionManifestEndFND();
@@ -15,5 +17,7 @@ private:
   void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
 };
+
+} // namespace MSONcommon
 
 #endif // REVISIONMANIFESTENDFND_H

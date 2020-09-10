@@ -1,5 +1,7 @@
 #include "DataSignatureGroupDefinitionFND.h"
 
+namespace MSONcommon {
+
 DataSignatureGroupDefinitionFND::DataSignatureGroupDefinitionFND()
     : m_dataSignatureGroup(ExtendedGUID()) {}
 
@@ -33,3 +35,5 @@ void DataSignatureGroupDefinitionFND::generateXml(
                            m_dataSignatureGroup.toString());
   xmlWriter.writeEndElement();
 }
+
+} // namespace MSONcommon

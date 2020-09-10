@@ -6,6 +6,7 @@
 #include "../commonTypes/FileNodeChunkReference.h"
 #include "IFileNodeType.h"
 
+namespace MSONcommon {
 /**
  * @brief specifies the reference to a revision manifest list for the current
  * object space
@@ -40,5 +41,7 @@ private:
   void serialize(QDataStream &ds) const;
   void toDebugString(QDebug dbg) const;
 };
+
+} // namespace MSONcommon
 
 #endif // REVISIONMANIFESTLISTREFERENCEFND_H

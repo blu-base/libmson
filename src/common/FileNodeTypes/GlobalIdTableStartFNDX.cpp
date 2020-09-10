@@ -1,5 +1,6 @@
 #include "GlobalIdTableStartFNDX.h"
 
+namespace MSONcommon {
 GlobalIdTableStartFNDX::GlobalIdTableStartFNDX() : m_reserved{0} {}
 
 quint8 GlobalIdTableStartFNDX::getReserved() const { return m_reserved; }
@@ -23,3 +24,4 @@ void GlobalIdTableStartFNDX::generateXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeAttribute("reserved", QString::number(m_reserved));
   xmlWriter.writeEndElement();
 }
+} // namespace MSONcommon

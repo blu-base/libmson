@@ -6,6 +6,8 @@
 #include <QDataStream>
 #include <QDebug>
 
+namespace MSONcommon {
+
 PropertyIDs PropertyID::id() const { return m_id; }
 
 void PropertyID::setId(const PropertyIDs &id) { m_id = id; }
@@ -424,12 +426,59 @@ QString PropertyID::idToString(const PropertyIDs &val) {
   case PropertyIDs::undoc_AuthorInitials:
     m_id_string = "undoc_AuthorInitials";
     break;
-  case PropertyIDs::undoc_IndexOfStrokes:
-    m_id_string = "undoc_IndexOfStrokes";
+
+  case PropertyIDs::undoc_StrokesIndex:
+    m_id_string = "undoc_StrokesIndex";
     break;
   case PropertyIDs::undoc_StrokesBlob:
     m_id_string = "undoc_StrokesBlob";
     break;
+  case PropertyIDs::undoc_StrokesColor:
+    m_id_string = "undoc_StrokesColor";
+    break;
+  case PropertyIDs::undoc_StrokesCreationTime:
+    m_id_string = "undoc_StrokesCreationTime";
+    break;
+  case PropertyIDs::undoc_SchemaRevisionInOrderToRead:
+    m_id_string = "undoc_SchemaRevisionInOrderToRead";
+    break;
+  case PropertyIDs::unodc_StrokeLanguage:
+    m_id_string = "unodc_StrokeLanguage";
+    break;
+  case PropertyIDs::undoc_StrokesToolSizeHeight:
+    m_id_string = "undoc_StrokesToolSizeHeight";
+    break;
+  case PropertyIDs::undoc_StrokesToolSizeWidth:
+    m_id_string = "undoc_StrokesToolSizeWidth";
+    break;
+  case PropertyIDs::undoc_StrokesRecognizedText:
+    m_id_string = "undoc_StrokesRecognizedText";
+    break;
+  case PropertyIDs::undoc_StrokesOffsetsVertHoriz:
+    m_id_string = "undoc_StrokesOffsetsVertHoriz";
+    break;
+  case PropertyIDs::undoc_StrokesModus:
+    m_id_string = "undoc_StrokesModus";
+    break;
+  case PropertyIDs::undoc_StrokesGUID:
+    m_id_string = "undoc_StrokesGUID";
+    break;
+
+  case PropertyIDs::undoc_RecognizedText:
+    m_id_string = "undoc_RecognizedText";
+    break;
+
+
+
+
+
+
+  case PropertyIDs::undoc_Undetermined64byteBlock:
+    m_id_string = "undoc_Undetermined64byteBlock";
+    break;
+
+
+
   case PropertyIDs::undoc_tocSectionName:
     m_id_string = "undoc_tocSectionName";
     break;
@@ -442,15 +491,9 @@ QString PropertyID::idToString(const PropertyIDs &val) {
   case PropertyIDs::undoc_tocSectionColor:
     m_id_string = "undoc_tocSectionColor";
     break;
-case PropertyIDs::unodc_StrokeLanguage:
-      m_id_string = "unodc_StrokeLanguage";
-      break;
-  case PropertyIDs::undoc_StrokesColor:
-    m_id_string = "undoc_StrokesColor";
-    break;
 
-  case PropertyIDs::undoc_SchemaRevisionInOrderToRead:
-    m_id_string = "undoc_SchemaRevisionInOrderToRead";
+  case PropertyIDs::undoc_PageBackgroundColor:
+    m_id_string = "undoc_PageBackgroundColor";
     break;
 
   case PropertyIDs::None:
@@ -596,3 +639,5 @@ void PropertyID::serialize(QDataStream &ds) const {
 }
 
 void PropertyID::toDebugString(QDebug dbg) const {}
+
+} // namespace MSONcommon

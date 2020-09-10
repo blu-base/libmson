@@ -3,6 +3,8 @@
 #include <QDataStream>
 #include <QDebug>
 
+namespace MSONcommon {
+
 ObjectInfoDependencyOverride8::ObjectInfoDependencyOverride8() : m_cRef() {}
 
 void ObjectInfoDependencyOverride8::generateXml(
@@ -57,3 +59,5 @@ void ObjectInfoDependencyOverride8::toDebugString(QDebug dbg) const {
       << "oid:  " << m_oid << '\n'
       << "cRef: " << m_cRef << '\n';
 }
+
+} // namespace MSONcommon

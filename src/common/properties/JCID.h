@@ -7,6 +7,8 @@
 
 #include <QXmlStreamWriter>
 
+namespace MSONcommon {
+
 static constexpr const quint32 JCID_relmaskValue = 0xFFFF;
 static constexpr const quint32 JCID_relmaskIsBinary = 0x1;
 static constexpr const quint32 JCID_relmaskIsPropertySet = 0x1;
@@ -68,5 +70,7 @@ private:
   void serialize(QDataStream &ds) const;
   void toDebugString(QDebug dbg) const;
 };
+
+} // namespace MSONcommon
 
 #endif // JCID_H

@@ -7,6 +7,8 @@
 
 #include "IFileNodeType.h"
 
+namespace MSONcommon {
+
 class GlobalIdTableEntryFNDX : public IFileNodeType {
 private:
   quint32 m_index;
@@ -29,5 +31,7 @@ private:
   void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
 };
+
+} // namespace MSONcommon
 
 #endif // GLOBALIDTABLEENTRYFNDX_H

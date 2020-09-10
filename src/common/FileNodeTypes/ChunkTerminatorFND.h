@@ -3,6 +3,9 @@
 
 #include "IFileNodeType.h"
 #include <QtCore/qglobal.h>
+
+namespace MSONcommon {
+
 class ChunkTerminatorFND : public IFileNodeType {
 public:
   ChunkTerminatorFND();
@@ -14,5 +17,7 @@ private:
   void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
 };
+
+} // namespace MSONcommon
 
 #endif // CHUNKTERMINATORFND_H

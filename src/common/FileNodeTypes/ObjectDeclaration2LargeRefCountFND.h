@@ -7,6 +7,7 @@
 #include "IFileNodeType.h"
 #include <QtCore/qglobal.h>
 
+namespace MSONcommon {
 class ObjectDeclaration2LargeRefCountFND : public IFileNodeType {
 private:
   FileNodeChunkReference m_BlobRef;
@@ -41,5 +42,7 @@ private:
   void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
 };
+
+} // namespace MSONcommon
 
 #endif // OBJECTDECLARATION2LARGEREFCOUNTFND_H

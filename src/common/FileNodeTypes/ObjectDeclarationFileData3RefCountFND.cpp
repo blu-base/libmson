@@ -1,6 +1,8 @@
 #include "ObjectDeclarationFileData3RefCountFND.h"
 #include "../helper/Helper.h"
 
+namespace MSONcommon {
+
 CompactID ObjectDeclarationFileData3RefCountFND::oid() const { return m_oid; }
 
 void ObjectDeclarationFileData3RefCountFND::setOid(const CompactID &oid) {
@@ -89,3 +91,5 @@ void ObjectDeclarationFileData3RefCountFND::generateXml(
 
   xmlWriter.writeEndElement();
 }
+
+} // namespace MSONcommon

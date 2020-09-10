@@ -6,6 +6,8 @@
 #include <QByteArray>
 #include <QtCore/qglobal.h>
 
+namespace MSONcommon {
+
 class PropertyType_ContextID : public IPropertyType {
 private:
   CompactID m_data;
@@ -24,5 +26,7 @@ private:
   void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
 };
+
+} // namespace MSONcommon
 
 #endif // PROPERTYTYPE_CONTEXTID_H

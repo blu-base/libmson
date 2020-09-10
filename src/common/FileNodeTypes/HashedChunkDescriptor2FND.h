@@ -6,6 +6,7 @@
 #include "IFileNodeType.h"
 #include <QtCore/qglobal.h>
 
+namespace MSONcommon {
 class HashedChunkDescriptor2FND : public IFileNodeType {
 private:
   FileNodeChunkReference m_BlobRef;
@@ -36,4 +37,5 @@ private:
   void toDebugString(QDebug dbg) const override;
 };
 
+} // namespace MSONcommon
 #endif // HASHEDCHUNKDESCRIPTOR2FND_H

@@ -5,6 +5,8 @@
 #include "ObjectDeclaration2RefCountFND.h"
 #include <QtCore/qglobal.h>
 
+namespace MSONcommon {
+
 class ReadOnlyObjectDeclaration2RefCountFND : public IFileNodeType {
 private:
   FNCR_STP_FORMAT m_stpFormat;
@@ -39,5 +41,7 @@ private:
   void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
 };
+
+} // namespace MSONcommon
 
 #endif // READONLYOBJECTDECLARATION2REFCOUNTFND_H

@@ -7,6 +7,8 @@
 #include "../commonTypes/Enums.h"
 #include <QXmlStreamWriter>
 
+namespace MSONcommon {
+
 enum class PropertyIDs : quint32 {
   None = 0x00000000,
   LayoutTightLayout = 0x08001C00,
@@ -143,7 +145,8 @@ enum class PropertyIDs : quint32 {
   WzHyperlinkUrl = 0x1C001E20,
   TaskTagDueDate = 0x1400346B,
 
-  // undocumented ids, this is mostly guessed
+  // undocumented ids, this is mostly guessed, do no trust whether they are
+  // deducted correctly
 
   undoc_AuthorInitials = 0x1c001df8,
 
@@ -153,19 +156,130 @@ enum class PropertyIDs : quint32 {
   // cid=&quot;abcdefg&quot;/&gt;&lt;/resolutionId&gt;
   undoc_ResolutionID = 0x1c001e30,
 
-  //
+  // indicates to jcid 0x00120048
+  // which contains:
+  // * undoc_Undetermined64byteBlock/ 0x1c00340a
+  // * undoc_StrokesColor
+  // * undoc_StrokesToolSizeHeight
+  // * undoc_StrokesToolSizeWidth
+  // maybe this is a container for the tool settings
+  // ObjectID   0x20003409
+
+  // When ever there are strokes or a shape, there is this 64bytes object which
+  // always have the same content:
+  // 0x8f6a8a59c052a04b93afaf357411a56100000080ffffff7f0200000000007a44759f3fb5e0049844a7eec30dbb5a901100000080ffffff7f0200000000007a44
+  // FourBytesOfLengthFollowedByData
+  undoc_Undetermined64byteBlock = 0x1c00340a,
+
+  // Likely contains serialized strokes
+  // FourBytesOfLengthFollowedByData
   undoc_StrokesBlob = 0x1c00340b,
 
+  // both values describe the tool size. float32 where 1 unit represents 0.01mm
+  // FourBytesOfData
+  undoc_StrokesToolSizeHeight = 0x1400340c,
+  undoc_StrokesToolSizeWidth = 0x1400340d,
+
   // maybe is color of the used tool/stroke
+  // FourBytesOfData
   undoc_StrokesColor = 0x1400340f,
 
-  // likely the language setting, maybe is used for ocr
-  unodc_StrokeLanguage = 0x1000341b,
+  // indicates to jcid 0x0002003b
+  // which contains:
+  // * unodc_StrokeLanguage
+  // * 0x8800341f
+  // * 0x1c003418
+  // * undoc_StrokesRecognizedText
+  // ArrayOfObjectIDs
+
+  // also indicates to jcid 0x00020047
+  //  which contains:
+  // * undoc_StrokesBlob
+  // * 0x20003409
+  // 0x24003416
+
+  // 16 byte structure, not a guid
+  // FourBytesOfLengthFollowedByData
+  // 0x1c003418
 
   // squential number likely indicating the input order
-  undoc_IndexOfStrokes = 0x14003419,
+  // FourBytesOfData
+  undoc_StrokesIndex = 0x14003419,
+  // likely the language setting, maybe is used for ocr
+  // TwoBytesOfData
 
-  // Maybe stores a file name of a section file, but also found FileSyncandWOPI and OneNote_RecycleBin
+  // 16 bytes structure
+  // values seem to be quite random, except a GUID' constant bits (56-59, and
+  // likely 64-65).
+  // FourBytesOfLengthFollowedByData
+  undoc_StrokesGUID = 0x1c00341a,
+
+  // likely to be the language id from an LCID.
+  // TwoBytesOfData
+  unodc_StrokeLanguage = 0x1000341b,
+
+  // observed only values 0x00, 0x01, 0x02.
+  // 0x00 seems to be the default value, 'handwriting and drawing'
+  // 0x01 seems to only occur when drawing is set to 'handwriting only'
+  // 0x02 only occurs when modus is 'drawning only'
+  // OneByteOfData
+  undoc_StrokesModus = 0x0c00341c,
+
+  // high 4 bytes does not seem to change, FileTime returns a plausible result
+  // FourBytesOfLengthFollowedByData
+  undoc_StrokesCreationTime = 0x1c00341d,
+
+  // \0-seperated list of recognized text
+  // FourBytesOfLengthFollowedByData
+  undoc_StrokesRecognizedText = 0x1c00341e,
+
+  /// seems to be only present when handwriting modus or dual modus is active
+  /// bool
+  /// 0x8800341f
+
+  /// might not be writtng when modus is only drawing
+  /// in other handwriting modus and dual modus the value seems somewhat
+  /// sequential spanning multiple sections FourBytesOfData  0x14003420
+
+  /// maybe two floats marking the position of the strokes blob; unit unknown,
+  /// maybe half inches. offset origin undetermined.
+  /// FourBytesOfLengthFollowedByData
+  undoc_StrokesOffsetsVertHoriz = 0x1c00345b,
+
+  /// does not to be written in all cases
+  /// maybe a cache or alternative text
+  /// appears in jcidRichTextOENode
+  /// FourBytesOfLengthFollowedByData
+  undoc_RecognizedText = 0x1c001cc4,
+
+  /// seems to be only present when "undoc_RecognizedText = 0x1c001cc4" is set
+  /// maybe two allow highlighting when search handwritten stuff
+  ///
+  /// seems to contain alot of zero bytes
+  /// seems to contain similar content across different sections,
+  ///
+  /// appears in jcidRichTextOENode
+  /// FourBytesOfLengthFollowedByData
+  ///   0x1c00345d
+  ///
+
+    /// the following values always appear in a group
+    /// 0x1400349e
+    /// 0x1400349f
+    /// 0x140034a0
+    /// 0x140034a1
+    /// 0x140034a2
+    /// 0x140034a3
+    /// 0x140034a4
+    /// 0x140034a5
+
+
+  /// seems to be always 32 byte wide
+  ///
+  /// 0x1c001d4d
+
+  // Maybe stores a file name of a section file, but also found FileSyncandWOPI
+  // and OneNote_RecycleBin
   undoc_tocSectionName = 0x1c001d6b,
   // usually 16 bytes, likely a guid?
   undoc_tocSectionGUID = 0x1c001d94,
@@ -173,14 +287,18 @@ enum class PropertyIDs : quint32 {
   // maybe the index within the sequence of sections
   undoc_tocSectionIndex = 0x14001cb9,
 
-  // seems to be a color code. 0xFFFFFFFF might be the default (no setting) which differs from COLORREF spec
+  // seems to be a color code. 0xFFFFFFFF might be the default (no setting)
+  // which differs from COLORREF spec maybe RGBA, big endian uint32, possibly
+  // last byte also switches between default color and selected color
   undoc_tocSectionColor = 0x14001cbe,
 
   // seems to always have the same value as SchemaRevisionInOrderToRead
   undoc_SchemaRevisionInOrderToRead = 0x1400348b,
 
-};
+  // mono color background
+  undoc_PageBackgroundColor = 0x14001d2a,
 
+};
 
 class PropertyID : public IProperty {
 private:
@@ -220,5 +338,7 @@ private:
   void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
 };
+
+} // namespace MSONcommon
 
 #endif // PROPERTYID_H

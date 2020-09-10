@@ -7,6 +7,7 @@
 
 #include "../commonTypes/ExtendedGUID.h"
 
+namespace MSONcommon {
 /**
  * @brief specifies the root object space
  * @class ObjectSpaceManifestRootFND
@@ -43,5 +44,7 @@ private:
   void serialize(QDataStream &ds) const;
   void toDebugString(QDebug dbg) const;
 };
+
+} // namespace MSONcommon
 
 #endif // OBJECTSPACEMANIFESTROOTFND_H

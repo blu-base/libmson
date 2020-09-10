@@ -10,6 +10,8 @@
 
 #include <QDebug>
 
+namespace MSONcommon {
+
 class PropertyType_FourBytesOfLengthFollowedByData : public IPropertyType {
 private:
   quint32 m_cb;
@@ -31,5 +33,7 @@ private:
   void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
 };
+
+} // namespace MSONcommon
 
 #endif // PROPERTYTYPE_FOURBYTESOFLENGTHFOLLOWEDBYDATA_H

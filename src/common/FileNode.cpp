@@ -47,7 +47,9 @@
 #include "FileNodeTypes/RootObjectReference3FND.h"
 
 #include "helper/Helper.h"
+
 namespace MSONcommon {
+
 IFileNodeType *FileNode::getFnt() const { return fnt; }
 
 FileNode::FileNode()
@@ -284,4 +286,5 @@ quint8 FileNode::getBaseType() const { return baseType; }
 void FileNode::setBaseType(const quint8 &value) { baseType = value; }
 
 quint64 FileNode::getStp() const { return stp; }
+
 } // namespace MSONcommon

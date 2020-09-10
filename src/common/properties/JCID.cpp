@@ -5,6 +5,8 @@
 #include <QDebug>
 #include <QString>
 
+namespace MSONcommon {
+
 quint16 JCID::index() const {
   return (m_value >> JCID_shiftValue) & JCID_relmaskValue;
 }
@@ -231,3 +233,5 @@ QDebug operator<<(QDebug dbg, const JCID &obj) {
   obj.toDebugString(dbg);
   return dbg;
 }
+
+} // namespace MSONcommon

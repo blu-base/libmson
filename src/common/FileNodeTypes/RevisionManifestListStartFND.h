@@ -7,6 +7,7 @@
 
 #include "../commonTypes/ExtendedGUID.h"
 
+namespace MSONcommon {
 /**
  * @brief specifies the beginning of a revision manifest list
  * @class RevisionManifestListStartFND
@@ -46,5 +47,7 @@ private:
   void serialize(QDataStream &ds) const;
   void toDebugString(QDebug dbg) const;
 };
+
+} // namespace MSONcommon
 
 #endif // REVISIONMANIFESTLISTSTARTFND_H

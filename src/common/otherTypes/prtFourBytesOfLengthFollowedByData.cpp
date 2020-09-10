@@ -1,5 +1,7 @@
 #include "prtFourBytesOfLengthFollowedByData.h"
 
+namespace MSONcommon {
+
 quint32 prtFourBytesOfLengthFollowedByData::cb() const { return m_cb; }
 
 void prtFourBytesOfLengthFollowedByData::setCb(const quint32 &cb) { m_cb = cb; }
@@ -43,3 +45,5 @@ QDebug operator<<(QDebug dbg, const prtFourBytesOfLengthFollowedByData &obj) {
   obj.toDebugString(dbg);
   return dbg;
 }
+
+} // namespace MSONcommon

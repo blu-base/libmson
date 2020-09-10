@@ -4,6 +4,7 @@
 #include "IFileNodeType.h"
 #include <QtCore/qglobal.h>
 
+namespace MSONcommon {
 class GlobalIdTableEndFNDX : public IFileNodeType {
 public:
   GlobalIdTableEndFNDX();
@@ -16,4 +17,5 @@ private:
   void toDebugString(QDebug dbg) const override;
 };
 
+} // namespace MSONcommon
 #endif // GLOBALIDTABLEENDFNDX_H

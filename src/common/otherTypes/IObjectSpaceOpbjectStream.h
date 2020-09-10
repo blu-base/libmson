@@ -6,6 +6,8 @@
 #include "../commonTypes/CompactID.h"
 #include "ObjectSpaceObjectStreamHeader.h"
 
+namespace MSONcommon {
+
 class IObjectSpaceOpbjectStream {
 protected:
   ObjectSpaceObjectStreamHeader m_header;
@@ -92,5 +94,7 @@ protected:
    */
   void toDebugString(QDebug dbg) const;
 };
+
+} // namespace MSONcommon
 
 #endif // IOBJECTSPACEOPBJECTSTREAM_H

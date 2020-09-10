@@ -9,6 +9,8 @@
 
 #include "IFileNodeType.h"
 
+namespace MSONcommon {
+
 class ObjectDeclarationWithRefCountFNDX : public IFileNodeType {
 private:
   FileNodeChunkReference m_objectRef;
@@ -42,5 +44,7 @@ private:
   void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
 };
+
+} // namespace MSONcommon
 
 #endif // OBJECTDECLARATIONWITHREFCOUNTFNDX_H

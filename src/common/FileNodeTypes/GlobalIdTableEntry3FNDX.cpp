@@ -1,5 +1,6 @@
 #include "GlobalIdTableEntry3FNDX.h"
 
+namespace MSONcommon {
 GlobalIdTableEntry3FNDX::GlobalIdTableEntry3FNDX()
     : m_iIndexCopyFromStart{0}, m_cEntriesToCopy{0}, m_iIndexCopyToStart{0} {}
 
@@ -56,3 +57,5 @@ void GlobalIdTableEntry3FNDX::generateXml(QXmlStreamWriter &xmlWriter) const {
                            QString::number(m_iIndexCopyToStart));
   xmlWriter.writeEndElement();
 }
+
+} // namespace MSONcommon

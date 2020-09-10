@@ -5,6 +5,8 @@
 #include <QByteArray>
 #include <QtCore/qglobal.h>
 
+namespace MSONcommon {
+
 class PropertyType_TwoBytesOfData : public IPropertyType {
 private:
   QByteArray m_data;
@@ -22,5 +24,7 @@ private:
   void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
 };
+
+} // namespace MSONcommon
 
 #endif // PROPERTYTYPE_TWOBYTESOFDATA_H

@@ -3,6 +3,8 @@
 #include <QDataStream>
 #include <QDebug>
 
+namespace MSONcommon {
+
 std::vector<CompactID> PropertyType_ArrayOfContextIDs::data() const {
   return m_data;
 }
@@ -53,3 +55,5 @@ void PropertyType_ArrayOfContextIDs::generateXml(QXmlStreamWriter& xmlWriter) co
     xmlWriter.writeEndElement();
 
 }
+
+} // namespace MSONcommon

@@ -5,6 +5,8 @@
 
 #include "IFileChunkReference.h"
 
+namespace MSONcommon {
+
 class FileChunkReference32 : public IFileChunkReference<quint32, quint32> {
 public:
   FileChunkReference32();
@@ -28,5 +30,7 @@ private:
   void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
 };
+
+} // namespace MSONcommon
 
 #endif // FILECHUNKREFERENCE32_H

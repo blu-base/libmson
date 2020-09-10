@@ -5,6 +5,8 @@
 #include "IObjectSpaceOpbjectStream.h"
 #include "ObjectSpaceObjectStreamHeader.h"
 
+namespace MSONcommon {
+
 class ObjectSpaceObjectStreamOfContextIDs : public IObjectSpaceOpbjectStream {
 public:
   ObjectSpaceObjectStreamOfContextIDs();
@@ -15,5 +17,7 @@ public:
           &extendedStreamPresence);
   ~ObjectSpaceObjectStreamOfContextIDs();
 };
+
+} // namespace MSONcommon
 
 #endif // OBJECTSPACEOBJECTSTREAMOFCONTEXTIDS_H

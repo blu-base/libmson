@@ -7,6 +7,8 @@
 #include <QtCore/qglobal.h>
 #include <vector>
 
+namespace MSONcommon {
+
 /// \todo data structure not clear yet, does it only contain CompactIDs?
 class PropertyType_ArrayNumber : public IPropertyType {
 private:
@@ -25,5 +27,7 @@ private:
   void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
 };
+
+} // namespace MSONcommon
 
 #endif // PROPERTYTYPE_ARRAYOFCONTEXTIDS_H

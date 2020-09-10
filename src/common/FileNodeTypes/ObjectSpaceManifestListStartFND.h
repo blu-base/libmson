@@ -6,6 +6,7 @@
 #include "../commonTypes/ExtendedGUID.h"
 #include "IFileNodeType.h"
 
+namespace MSONcommon {
 /**
  * @brief specifies the beginning of an object space manifest list
  * @class ObjectSpaceManifestListStartFND
@@ -42,5 +43,7 @@ private:
   void serialize(QDataStream &ds) const;
   void toDebugString(QDebug dbg) const;
 };
+
+} // namespace MSONcommon
 
 #endif // OBJECTSPACEMANIFESTLISTSTARTFND_H

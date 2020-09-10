@@ -1,5 +1,7 @@
 #include "RevisionManifestEndFND.h"
 
+namespace MSONcommon {
+
 RevisionManifestEndFND::RevisionManifestEndFND() {}
 
 void RevisionManifestEndFND::deserialize(QDataStream &ds) {}
@@ -16,3 +18,5 @@ void RevisionManifestEndFND::generateXml(QXmlStreamWriter& xmlWriter) const
     xmlWriter.writeStartElement("RevisionManifestEndFND");
     xmlWriter.writeEndElement();
 }
+
+} // namespace MSONcommon

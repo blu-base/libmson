@@ -5,6 +5,8 @@
 
 #include "../helper/Helper.h"
 
+namespace MSONcommon {
+
 FileDataStoreObject::FileDataStoreObject()
     : m_cbLength(), m_unused(), m_reserved(), m_padding() {}
 
@@ -106,3 +108,5 @@ void FileDataStoreObject::toDebugString(QDebug dbg) const {
       << "guidHeader: " << m_guidHeader << '\n'
       << "guidFooter: " << m_guidFooter << '\n';
 }
+
+} // namespace MSONcommon

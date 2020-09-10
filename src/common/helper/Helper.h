@@ -7,6 +7,8 @@
 #include "../FileNodeListFragment.h"
 #include <vector>
 
+namespace MSONcommon {
+
 template <class _InIt, class _OutIt, class _Pr>
 inline void copy_closed(_InIt _First, _InIt _Last, _OutIt _Dest, _Pr _Pred);
 
@@ -30,8 +32,9 @@ QString qStringHex(const T val, const quint8 width)
  */
 quint64 roundUpMultiple(const quint64 numToRound, const quint64 multiple);
 
-std::vector <MSONcommon::FileNodeListFragment> parseFileNodeListFragments(QDataStream &ds, FileChunkReference64x32 &ref);
-std::vector <MSONcommon::FileNodeListFragment> parseFileNodeListFragments(QDataStream &ds, FileNodeChunkReference &ref);
+std::vector <MSONcommon::FileNodeListFragment> parseFileNodeListFragments(QDataStream &ds, const MSONcommon::FileChunkReference64x32 &ref );
+std::vector <MSONcommon::FileNodeListFragment> parseFileNodeListFragments(QDataStream &ds, const MSONcommon::FileNodeChunkReference &ref );
 
+} // namespace MSONcommon
 
 #endif // HELPER_H

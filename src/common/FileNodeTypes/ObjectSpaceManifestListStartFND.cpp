@@ -1,5 +1,7 @@
 #include "ObjectSpaceManifestListStartFND.h"
 
+namespace MSONcommon {
+
 ObjectSpaceManifestListStartFND::ObjectSpaceManifestListStartFND() {}
 
 ExtendedGUID ObjectSpaceManifestListStartFND::getGosid() const {
@@ -28,3 +30,5 @@ void ObjectSpaceManifestListStartFND::generateXml(
   m_gosid.generateXml(xmlWriter);
   xmlWriter.writeEndElement();
 }
+
+} // namespace MSONcommon

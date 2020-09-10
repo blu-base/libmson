@@ -7,6 +7,8 @@
 #include <QDebug>
 #include <QXmlStreamWriter>
 
+namespace MSONcommon {
+
 static constexpr const quint32 LayoutAlignment_maskLha = 0x00000003;
 static constexpr const quint32 LayoutAlignment_maskFHorizMargin = 0x00000004;
 static constexpr const quint32 LayoutAlignment_maskLva = 0x00010000;
@@ -72,5 +74,7 @@ private:
   void serialize(QDataStream &ds) const;
   void toDebugString(QDebug dbg) const;
 };
+
+} // namespace MSONcommon
 
 #endif // LAYOUTALIGNMENT_H

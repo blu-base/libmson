@@ -6,6 +6,8 @@
 #include "ObjectDeclaration2LargeRefCountFND.h"
 #include <QtCore/qglobal.h>
 
+namespace MSONcommon {
+
 class ReadOnlyObjectDeclaration2LargeRefCountFND : public IFileNodeType {
 private:
   FNCR_STP_FORMAT m_stpFormat;
@@ -42,5 +44,7 @@ private:
   void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
 };
+
+} // namespace MSONcommon
 
 #endif // READONLYOBJECTDECLARATION2LARGEREFCOUNTFND_H

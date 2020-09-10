@@ -8,6 +8,7 @@
 
 #include "IFileNodeType.h"
 
+namespace MSONcommon {
 class FileDataStoreListReferenceFND : public IFileNodeType {
 private:
   FileNodeChunkReference m_ref;
@@ -31,4 +32,5 @@ private:
   void toDebugString(QDebug dbg) const override;
 };
 
+} // namespace MSONcommon
 #endif // FILEDATASTORELISTREFERENCEFND_H

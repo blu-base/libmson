@@ -7,6 +7,8 @@
 #include <QDataStream>
 #include <QDebug>
 
+namespace MSONcommon {
+
 class prtFourBytesOfLengthFollowedByData {
 private:
   quint32 m_cb;
@@ -34,5 +36,7 @@ private:
   void serialize(QDataStream &ds) const;
   void toDebugString(QDebug dbg) const;
 };
+
+} // namespace MSONcommon
 
 #endif // PRTFOURBYTESOFLENGTHFOLLOWEDBYDATA_H

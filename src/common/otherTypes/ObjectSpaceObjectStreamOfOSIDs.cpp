@@ -2,6 +2,8 @@
 
 #include "ObjectSpaceObjectStreamHeader.h"
 
+namespace MSONcommon {
+
 ObjectSpaceObjectStreamOfOSIDs::ObjectSpaceObjectStreamOfOSIDs()
     : IObjectSpaceOpbjectStream() {}
 
@@ -12,3 +14,5 @@ ObjectSpaceObjectStreamOfOSIDs::ObjectSpaceObjectStreamOfOSIDs(
     : IObjectSpaceOpbjectStream(osidStreamPresence, extendedStreamPresence) {}
 
 ObjectSpaceObjectStreamOfOSIDs::~ObjectSpaceObjectStreamOfOSIDs() {}
+
+} // namespace MSONcommon

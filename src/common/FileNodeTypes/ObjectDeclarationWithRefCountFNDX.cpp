@@ -2,6 +2,8 @@
 
 #include "../helper/Helper.h"
 
+namespace MSONcommon {
+
 ObjectDeclarationWithRefCountFNDX::ObjectDeclarationWithRefCountFNDX(
     FNCR_STP_FORMAT stpFormat, FNCR_CB_FORMAT cbFormat)
     : m_objectRef(stpFormat, cbFormat), m_cRef{} {}
@@ -88,3 +90,5 @@ void ObjectDeclarationWithRefCountFNDX::generateXml(QXmlStreamWriter& xmlWriter)
 
     xmlWriter.writeEndElement();
 }
+
+} // namespace MSONcommon

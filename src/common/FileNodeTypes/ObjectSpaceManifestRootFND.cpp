@@ -1,5 +1,7 @@
 #include "ObjectSpaceManifestRootFND.h"
 
+namespace MSONcommon {
+
 ObjectSpaceManifestRootFND::ObjectSpaceManifestRootFND() {}
 
 ExtendedGUID ObjectSpaceManifestRootFND::getGosidRoot() const {
@@ -32,3 +34,5 @@ void ObjectSpaceManifestRootFND::generateXml(QXmlStreamWriter& xmlWriter) const
 
     xmlWriter.writeEndElement();
 }
+
+} // namespace MSONcommon

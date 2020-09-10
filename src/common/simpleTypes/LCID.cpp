@@ -1,5 +1,7 @@
 #include "LCID.h"
 
+namespace MSONcommon {
+
 LCID::LCID() : lid(LanguageID::invalid) {}
 
 QString LCID::toString() const {
@@ -953,3 +955,5 @@ void LCID::serialize(QDataStream &ds) const {
 }
 
 void LCID::toDebugString(QDebug dbg) const { dbg << "LCID:\n"; }
+
+} // namespace MSONcommon

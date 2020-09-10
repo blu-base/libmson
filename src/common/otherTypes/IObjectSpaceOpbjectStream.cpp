@@ -7,6 +7,8 @@
 #include <QDataStream>
 #include <QDebug>
 
+namespace MSONcommon {
+
 ObjectSpaceObjectStreamHeader IObjectSpaceOpbjectStream::header() const {
   return m_header;
 }
@@ -153,3 +155,5 @@ QDebug operator<<(QDebug dbg, const IObjectSpaceOpbjectStream &obj) {
   obj.toDebugString(dbg);
   return dbg;
 }
+
+} // namespace MSONcommon

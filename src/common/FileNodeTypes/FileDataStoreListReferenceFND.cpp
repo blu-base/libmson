@@ -1,5 +1,6 @@
 #include "FileDataStoreListReferenceFND.h"
 
+namespace MSONcommon {
 FileDataStoreListReferenceFND::FileDataStoreListReferenceFND(
     FNCR_STP_FORMAT stpFormat, FNCR_CB_FORMAT cbFormat)
     : m_ref(stpFormat, cbFormat), m_StoreList() {}
@@ -43,3 +44,4 @@ void FileDataStoreListReferenceFND::generateXml(
   m_StoreList.generateXml(xmlWriter);
   xmlWriter.writeEndElement();
 }
+} // namespace MSONcommon

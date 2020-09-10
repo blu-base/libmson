@@ -7,6 +7,8 @@
 #include <QtCore/qglobal.h>
 #include <vector>
 
+namespace MSONcommon {
+
 class PropertyType_ArrayOfObjectIDs : public IPropertyType {
 private:
   quint32 m_cCIDs;
@@ -29,5 +31,7 @@ private:
   void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
 };
+
+} // namespace MSONcommon
 
 #endif // PROPERTYTYPE_ARRAYOFOBJECTIDS_H

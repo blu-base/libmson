@@ -354,6 +354,9 @@ QDataStream &operator>>(QDataStream &ds, MSONDocument &obj) {
     obj.m_rootFileNodeList =
         new RootFileNodeList(obj.getHeader()->getFcrFileNodeListRoot());
     ds >> *obj.m_rootFileNodeList;
+
+
+
   }
 
   // Parsing HashedChunkList

@@ -1,5 +1,7 @@
 #include "BodyTextAlignment.h"
 
+namespace MSONcommon {
+
 BodyTextAlignment::BodyTextAlignment() : m_value() {}
 
 void BodyTextAlignment::generateXml(QXmlStreamWriter &xmlWriter) const {
@@ -34,3 +36,5 @@ void BodyTextAlignment::serialize(QDataStream &ds) const { ds << m_value; }
 void BodyTextAlignment::toDebugString(QDebug dbg) const {
   dbg << "BodyTextAlignment: " << QString::number(m_value) << '\n';
 }
+
+} // namespace MSONcommon

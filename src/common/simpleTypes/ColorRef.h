@@ -6,6 +6,8 @@
 #include <QXmlStreamWriter>
 #include <QtCore/qglobal.h>
 
+namespace MSONcommon {
+
 class ColorRef {
 private:
   quint32 m_colorVal;
@@ -30,5 +32,7 @@ private:
   void serialize(QDataStream &ds) const;
   void toDebugString(QDebug dbg) const;
 };
+
+} // namespace MSONcommon
 
 #endif // COLORREF_H

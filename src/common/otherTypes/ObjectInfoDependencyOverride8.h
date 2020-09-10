@@ -4,6 +4,8 @@
 #include "../commonTypes/CompactID.h"
 #include <QtCore/qglobal.h>
 
+namespace MSONcommon {
+
 class ObjectInfoDependencyOverride8 {
 private:
   /**
@@ -60,5 +62,7 @@ private:
    */
   void toDebugString(QDebug dbg) const;
 };
+
+} // namespace MSONcommon
 
 #endif // OBJECTINFODEPENDENCYOVERRIDE8_H

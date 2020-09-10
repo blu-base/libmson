@@ -7,6 +7,7 @@
 #include "../commonTypes/FileNodeChunkReference.h"
 #include "IFileNodeType.h"
 
+namespace MSONcommon {
 /**
  * @brief specifies the reference to an object space manifest list
  * @class ObjectSpaceManifestListReferenceFND
@@ -56,5 +57,7 @@ private:
   void serialize(QDataStream &ds) const;
   void toDebugString(QDebug dbg) const;
 };
+
+} // namespace MSONcommon
 
 #endif // OBJECTSPACEMANIFESTLISTREFERENCEFND_H

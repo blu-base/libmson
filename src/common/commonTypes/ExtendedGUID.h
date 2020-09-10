@@ -8,8 +8,9 @@
 #include <QUuid>
 #include <QXmlStreamWriter>
 
-class ExtendedGUID {
+namespace MSONcommon {
 
+class ExtendedGUID {
 private:
   QUuid m_guid;
   quint32 data_n;
@@ -59,5 +60,7 @@ private:
 
   void toDebugString(QDebug dbg) const;
 };
+
+} // namespace MSONcommon
 
 #endif // EXTENDEDGUID_H

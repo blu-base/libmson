@@ -7,6 +7,8 @@
 #include <QDebug>
 #include <QXmlStreamWriter>
 
+namespace MSONcommon {
+
 class BodyTextAlignment {
 private:
   quint32 m_value;
@@ -29,5 +31,7 @@ private:
   void serialize(QDataStream &ds) const;
   void toDebugString(QDebug dbg) const;
 };
+
+} // namespace MSONcommon
 
 #endif // BODYTEXTALIGNMENT_H

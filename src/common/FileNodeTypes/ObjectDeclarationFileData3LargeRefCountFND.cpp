@@ -1,6 +1,7 @@
 #include "ObjectDeclarationFileData3LargeRefCountFND.h"
 #include "../helper/Helper.h"
 
+namespace MSONcommon {
 CompactID ObjectDeclarationFileData3LargeRefCountFND::oid() const {
   return m_oid;
 }
@@ -96,3 +97,4 @@ void ObjectDeclarationFileData3LargeRefCountFND::generateXml(
 
   xmlWriter.writeEndElement();
 }
+} // namespace MSONcommon

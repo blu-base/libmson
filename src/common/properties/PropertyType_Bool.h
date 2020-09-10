@@ -5,6 +5,8 @@
 
 #include "IPropertyType.h"
 
+namespace MSONcommon {
+
 class PropertyType_Bool : public IPropertyType {
 public:
   PropertyType_Bool();
@@ -16,5 +18,7 @@ private:
   void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
 };
+
+} // namespace MSONcommon
 
 #endif // PROPERTYTYPE_BOOL_H

@@ -7,6 +7,8 @@
 #include <QDebug>
 #include <QXmlStreamWriter>
 
+namespace MSONcommon {
+
 enum class LanguageID : quint16 {
   ar = 0x0001,
   bg = 0x0002,
@@ -490,5 +492,7 @@ private:
   void serialize(QDataStream &ds) const;
   void toDebugString(QDebug dbg) const;
 };
+
+} // namespace MSONcommon
 
 #endif // LCID_H

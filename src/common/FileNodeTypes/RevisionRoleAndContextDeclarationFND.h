@@ -7,6 +7,8 @@
 #include "IFileNodeType.h"
 #include "RevisionRoleDeclarationFND.h"
 
+namespace MSONcommon {
+
 class RevisionRoleAndContextDeclarationFND : public IFileNodeType {
 private:
   RevisionRoleDeclarationFND m_base;
@@ -28,5 +30,7 @@ private:
   void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
 };
+
+} // namespace MSONcommon
 
 #endif // REVISIONROLEANDCONTEXTDECLARATIONFND_H

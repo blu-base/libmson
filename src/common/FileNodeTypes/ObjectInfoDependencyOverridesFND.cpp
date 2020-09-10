@@ -1,5 +1,7 @@
 #include "ObjectInfoDependencyOverridesFND.h"
 
+namespace MSONcommon {
+
 ObjectInfoDependencyOverridesFND::ObjectInfoDependencyOverridesFND(
     FNCR_STP_FORMAT stpFormat, FNCR_CB_FORMAT cbFormat)
     : m_ref(stpFormat, cbFormat) {}
@@ -82,3 +84,5 @@ void ObjectInfoDependencyOverridesFND::generateXml(
 
   xmlWriter.writeEndElement();
 }
+
+} // namespace MSONcommon

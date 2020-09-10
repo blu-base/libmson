@@ -3,6 +3,8 @@
 #include <QDataStream>
 #include <QDebug>
 
+namespace MSONcommon {
+
 ObjectInfoDependencyOverride32::ObjectInfoDependencyOverride32() {}
 
 QDataStream &operator<<(QDataStream &ds,
@@ -57,3 +59,5 @@ void ObjectInfoDependencyOverride32::toDebugString(QDebug dbg) const {
       << "oid:  " << m_oid << '\n'
       << "cRef: " << m_cRef << '\n';
 }
+
+} // namespace MSONcommon

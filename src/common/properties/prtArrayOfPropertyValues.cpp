@@ -5,6 +5,7 @@
 
 #include "PropertyType_PropertySet.h"
 
+namespace MSONcommon {
 
 prtArrayOfPropertyValues::prtArrayOfPropertyValues() {}
 
@@ -76,3 +77,5 @@ void prtArrayOfPropertyValues::generateXml(QXmlStreamWriter& xmlWriter) const
     xmlWriter.writeEndElement();
     xmlWriter.writeEndElement();
 }
+
+} // namespace MSONcommon

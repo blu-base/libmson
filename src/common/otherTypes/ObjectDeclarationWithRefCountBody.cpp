@@ -6,6 +6,8 @@
 #include "../helper/Helper.h"
 #include "../properties/JCID.h"
 
+namespace MSONcommon {
+
 ObjectDeclarationWithRefCountBody::ObjectDeclarationWithRefCountBody()
     : m_jci(), m_odcs(), m_fReserved1(), m_fReserved2(),
       m_fHasOidReferences(false), m_fHasOsidReferences(false) {}
@@ -113,3 +115,5 @@ CompactID ObjectDeclarationWithRefCountBody::getOid() const { return m_oid; }
 void ObjectDeclarationWithRefCountBody::setOid(const CompactID &value) {
   m_oid = value;
 }
+
+} // namespace MSONcommon

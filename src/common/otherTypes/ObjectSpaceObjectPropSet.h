@@ -14,6 +14,8 @@
 
 #include "../commonTypes/FileNodeChunkReference.h"
 
+namespace MSONcommon {
+
 /// \todo counting inside the streamheaders
 class ObjectSpaceObjectPropSet {
 private:
@@ -75,5 +77,7 @@ private:
    */
   void toDebugString(QDebug dbg) const;
 };
+
+} // namespace MSONcommon
 
 #endif // OBJECTSPACEOBJECTPROPSET_H

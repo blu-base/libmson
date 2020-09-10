@@ -1,6 +1,8 @@
 #include "FileNodeChunkReference.h"
 #include "../helper/Helper.h"
 
+namespace MSONcommon {
+
 FileNodeChunkReference::FileNodeChunkReference(FNCR_STP_FORMAT stpFormat,
                                                FNCR_CB_FORMAT cbFormat)
     : IFileChunkReference<quint64, quint64>() {
@@ -277,3 +279,5 @@ void FileNodeChunkReference::toDebugString(QDebug dbg) const {
   dbg << ", stp/cb format: " << static_cast<quint8>(m_stpFormat) << "/"
       << static_cast<quint8>(m_cbFormat) << ")";
 }
+
+} // namespace MSONcommon

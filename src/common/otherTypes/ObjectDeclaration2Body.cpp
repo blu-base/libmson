@@ -1,5 +1,7 @@
 #include "ObjectDeclaration2Body.h"
 
+namespace MSONcommon {
+
 ObjectDeclaration2Body::ObjectDeclaration2Body() {}
 
 quint8 ObjectDeclaration2Body::getFReserved2() const { return m_fReserved2; }
@@ -87,3 +89,5 @@ void ObjectDeclaration2Body::setJcid(const JCID &value) { m_jcid = value; }
 CompactID ObjectDeclaration2Body::getOid() const { return m_oid; }
 
 void ObjectDeclaration2Body::setOid(const CompactID &value) { m_oid = value; }
+
+} // namespace MSONcommon

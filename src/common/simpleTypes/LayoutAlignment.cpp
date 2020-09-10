@@ -1,5 +1,7 @@
 #include "LayoutAlignment.h"
 
+namespace MSONcommon {
+
 LayoutAlignment::LayoutAlignment() {}
 
 QDataStream &operator<<(QDataStream &ds, const LayoutAlignment &obj) {
@@ -119,3 +121,5 @@ QString vAlignmentToString(const VAlignment &val) {
   }
   return "";
 }
+
+} // namespace MSONcommon

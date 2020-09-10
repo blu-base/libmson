@@ -9,6 +9,7 @@
 
 #include <QtCore/qglobal.h>
 
+namespace MSONcommon {
 class ObjectDeclarationFileData3LargeRefCountFND : public IFileNodeType {
 private:
   CompactID m_oid;
@@ -42,5 +43,7 @@ private:
   void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
 };
+
+} // namespace MSONcommon
 
 #endif // OBJECTDECLARATIONFILEDATA3LARGEREFCOUNTFND_H

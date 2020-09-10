@@ -8,6 +8,8 @@
 #include "ObjectInfoDependencyOverride32.h"
 #include "ObjectInfoDependencyOverride8.h"
 
+namespace MSONcommon {
+
 class ObjectInfoDependencyOverrideData {
 private:
   /**
@@ -90,5 +92,7 @@ private:
    */
   void toDebugString(QDebug dbg) const;
 };
+
+} // namespace MSONcommon
 
 #endif // OBJECTINFODEPENDENCYOVERRIDEDATA_H

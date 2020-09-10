@@ -8,6 +8,8 @@
 #include "IFileNodeType.h"
 #include <QtCore/qglobal.h>
 
+namespace MSONcommon {
+
 class ObjectDeclarationFileData3RefCountFND : public IFileNodeType {
 private:
   CompactID m_oid;
@@ -41,5 +43,7 @@ private:
   void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
 };
+
+} // namespace MSONcommon
 
 #endif // OBJECTDECLARATIONFILEDATA3REFCOUNTFND_H

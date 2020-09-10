@@ -2,6 +2,9 @@
 #include "commonTypes/Enums.h"
 #include "helper/Helper.h"
 
+#include "DocumentManager.h"
+#include "MSONDocument.h"
+
 namespace MSONcommon {
 
 FileChunkReference64 FileNodeListFragment::ref() const { return m_ref; }
@@ -86,8 +89,8 @@ void FileNodeListFragment::generateXml(QXmlStreamWriter &xmlWriter) const {
 }
 
 void FileNodeListFragment::deserialize(QDataStream &ds) {
-  qInfo() << "FileNodeListFragment pos" << qStringHex(ds.device()->pos(), 16)
-          << " size: " << qStringHex(m_ref.cb(), 16);
+//  qInfo() << "FileNodeListFragment pos" << qStringHex(ds.device()->pos(), 16)
+//          << " size: " << qStringHex(m_ref.cb(), 16);
   quint64 origLocation = ds.device()->pos();
 
   ds.device()->seek(m_ref.stp());
@@ -96,15 +99,15 @@ void FileNodeListFragment::deserialize(QDataStream &ds) {
 
   quint32 fileNodeCount = UINT32_MAX;
 
-  //  if (DocumentSingleton::getDoc()->getFileNodeCountMapping().contains(
-  //          m_fnlheader.getFileNodeListID())) {
-  //   fileNodeCount =
-  //        DocumentSingleton::getDoc()
-  //            ->getFileNodeCountMapping()[m_fnlheader.getFileNodeListID()];
-  //   qWarning() << "FileNodeListID " << m_fnlheader.getFileNodeListID() << "
-  //   found in FileNodeCountMapping. count:" << fileNodeCount;
+  // Get Document pointer to check whether fileNodeCount has been preset.
+  DocumentManager docMan;
+  QUuid docID = docMan.getDocumentID(ds);
+  std::shared_ptr<MSONDocument> doc = docMan.getDocumentsMap().value(docID);
 
-  //  }
+  if ( doc->getFileNodeCountMapping().contains(m_fnlheader.getFileNodeListID())) {
+      fileNodeCount = doc->getFileNodeCountMapping()[m_fnlheader.getFileNodeListID()];
+  }
+
   /// \todo this calculation is incorrect, not absolute
   quint64 listSize = 0;
   quint64 remainingBytes = 0;
@@ -129,6 +132,10 @@ void FileNodeListFragment::deserialize(QDataStream &ds) {
 
     remainingBytes = m_ref.stp() + m_ref.cb() - ds.device()->pos();
   } while ((remainingBytes - 20 > 4) && (fileNodeCount > 0));
+
+  if ( doc->getFileNodeCountMapping().contains(m_fnlheader.getFileNodeListID())) {
+      doc->getFileNodeCountMapping()[m_fnlheader.getFileNodeListID()] = fileNodeCount;
+  }
 
   //  if (MSONcommon::DocumentSingleton::getDoc()
   //          ->getFileNodeCountMapping()

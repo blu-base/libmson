@@ -3,6 +3,8 @@
 #include <QDataStream>
 #include <QDebug>
 
+namespace MSONcommon {
+
 QByteArray PropertyType_OneByteOfData::data() const { return m_data; }
 
 void PropertyType_OneByteOfData::setData(const QByteArray &data) {
@@ -27,3 +29,5 @@ void PropertyType_OneByteOfData::serialize(QDataStream &ds) const {
 }
 
 void PropertyType_OneByteOfData::toDebugString(QDebug dbg) const {}
+
+} // namespace MSONcommon

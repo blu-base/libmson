@@ -3,6 +3,8 @@
 #include <QDataStream>
 #include <QDebug>
 
+namespace MSONcommon {
+
 ExtendedGUID::ExtendedGUID() : m_guid(QUuid()), data_n{0} {}
 
 ExtendedGUID::ExtendedGUID(const QUuid &guid, const quint32 &n)
@@ -97,3 +99,5 @@ void ExtendedGUID::serialize(QDataStream &ds) const {
 void ExtendedGUID::toDebugString(QDebug dbg) const {
   dbg.noquote() << "{" << m_guid.toString() << "," << data_n << "}";
 }
+
+} // namespace MSONcommon

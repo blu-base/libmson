@@ -8,6 +8,7 @@
 #include "../otherTypes/ObjectSpaceObjectPropSet.h"
 #include "IFileNodeType.h"
 
+namespace MSONcommon {
 class ObjectDeclaration2RefCountFND : public IFileNodeType {
 private:
   FileNodeChunkReference m_blobRef;
@@ -41,5 +42,7 @@ private:
   void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
 };
+
+} // namespace MSONcommon
 
 #endif // OBJECTDECLARATION2REFCOUNTFND_H

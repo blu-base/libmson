@@ -1,5 +1,7 @@
 #include "RevisionRoleAndContextDeclarationFND.h"
 
+namespace MSONcommon {
+
 RevisionRoleAndContextDeclarationFND::RevisionRoleAndContextDeclarationFND() {}
 
 ExtendedGUID RevisionRoleAndContextDeclarationFND::getGctxid() const {
@@ -47,3 +49,5 @@ void RevisionRoleAndContextDeclarationFND::generateXml(
 
   xmlWriter.writeEndElement();
 }
+
+} // namespace MSONcommon

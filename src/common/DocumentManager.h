@@ -16,11 +16,11 @@ namespace MSONcommon {
 
 class DocumentManager {
 private:
-  QMap<QUuid, MSONDocument *> docs;
+  static QMap<QUuid, std::shared_ptr<MSONDocument>> docs;
 
 public:
-  DocumentManager();
-  ~DocumentManager();
+  DocumentManager() = default;
+  ~DocumentManager() = default;
 
   /** Returns true if the document exists in this Manager.
    * Will reparse the document header at the respective location of guidFile. */
@@ -33,18 +33,18 @@ public:
   QUuid parseDocument(QDataStream &ds);
 
   /** Parse MSONDocument from specified File. */
-  QUuid parseDocument(QString fileName);
+  QUuid parseDocument(const QString& fileName);
 
   /** Adds Document to this Manager*/
-  void addDocument(MSONDocument *doc);
+  void addDocument(std::shared_ptr<MSONDocument> doc );
 
   /** Creates new, empty Document */
   QUuid createDocument();
 
-  /** Parse OneNote Files in specified directory and return their individual
-   * guidFile. @param parse_subdirs toggles if subdirectories are also parsed
-   * recursively.*/
-  QList<QUuid> parseDirectory(const QDir dir, const bool parse_subdirs = false);
+//  /** Parse OneNote Files in specified directory and return their individual
+//   * guidFile. @param parse_subdirs toggles if subdirectories are also parsed
+//   * recursively.*/
+//  QList<QUuid> parseDirectory(const QDir dir, const bool parse_subdirs = false);
 
   /** Will remove the document of ds from this Manager,
    * however, the document will not be saved. */
@@ -55,19 +55,19 @@ public:
 
   /** Get pointer to MSON Document. Returns nullptr if guidFile is not in this
    * Manager */
-  MSONDocument *getDocument(const QUuid &guidFile);
+  static std::shared_ptr<MSONDocument> getDocument(const QUuid &guidFile);
 
   /** Utility function to reparse guid from the stream head. */
-  QUuid getDocumentID(QDataStream &ds);
+  static QUuid getDocumentID(QDataStream &ds);
 
   /** Returns all Documents governed by this Manager */
-  QList<MSONDocument *> getDocuments();
+  static QList<std::shared_ptr<MSONDocument>> getDocuments();
 
   /** Returns all Documents' IDs governed by this Manager */
   QList<QUuid> getDocumentIDs();
 
   /** Return the complete storage of this Manager */
-  QMap<QUuid, MSONDocument *> getDocumentsMap();
+  QMap<QUuid, std::shared_ptr<MSONDocument>> getDocumentsMap();
 
   void generateXml(const QUuid &guidFile, const QString &outputfile);
 };

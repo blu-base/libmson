@@ -6,6 +6,8 @@
 #include "../commonTypes/ExtendedGUID.h"
 #include "IFileNodeType.h"
 
+namespace MSONcommon {
+
 class DataSignatureGroupDefinitionFND : public IFileNodeType {
 private:
   ExtendedGUID m_dataSignatureGroup;
@@ -23,5 +25,7 @@ private:
   void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
 };
+
+} // namespace MSONcommon
 
 #endif // DATASIGNATUREGROUPDEFINITIONFND_H

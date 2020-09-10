@@ -3,6 +3,8 @@
 #include <QDataStream>
 #include <QDebug>
 
+namespace MSONcommon {
+
 quint32 ObjectSpaceObjectStreamHeader::count() const { return m_count; }
 
 void ObjectSpaceObjectStreamHeader::setCount(const quint32 &count) {
@@ -120,3 +122,5 @@ ObjectSpaceObjectStreamHeader::ObjectSpaceObjectStreamHeader(
       m_ExtendedStreamsPresent(static_cast<bool>(extendedStreamPresence)) {
   this->setCount(count);
 }
+
+} // namespace MSONcommon

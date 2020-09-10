@@ -1,6 +1,7 @@
 #include "ObjectDeclaration2LargeRefCountFND.h"
 #include "../helper/Helper.h"
 
+namespace MSONcommon {
 ObjectDeclaration2LargeRefCountFND::ObjectDeclaration2LargeRefCountFND(
     FNCR_STP_FORMAT stpFormat, FNCR_CB_FORMAT cbFormat)
     : m_BlobRef(stpFormat, cbFormat), m_cRef() {}
@@ -78,3 +79,5 @@ void ObjectDeclaration2LargeRefCountFND::generateXml(
 
   xmlWriter.writeEndElement();
 }
+
+} // namespace MSONcommon

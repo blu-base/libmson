@@ -5,6 +5,8 @@
 
 #include "ExtendedGUID.h"
 
+namespace MSONcommon {
+
 class CompactID {
 private:
   quint8 m_n;
@@ -52,5 +54,7 @@ private:
   void serialize(QDataStream &ds) const;
   void toDebugString(QDebug dbg) const;
 };
+
+} // namespace MSONcommon
 
 #endif // COMPACTID_H

@@ -7,6 +7,8 @@
 
 #include "IFileChunkReference.h"
 
+namespace MSONcommon {
+
 enum class FNCR_STP_FORMAT {
   UNCOMPRESED_8BYTE = 0,
   UNCOMPRESED_4BYTE = 1,
@@ -50,5 +52,7 @@ private:
   FNCR_STP_FORMAT m_stpFormat;
   FNCR_CB_FORMAT m_cbFormat;
 };
+
+} // namespace MSONcommon
 
 #endif // FILENODECHUNKREFERENCE_H

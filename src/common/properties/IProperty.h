@@ -5,6 +5,8 @@
 
 #include <QXmlStreamWriter>
 
+namespace MSONcommon {
+
 class IProperty {
 protected:
   IProperty();
@@ -36,5 +38,7 @@ private:
    */
   virtual void toDebugString(QDebug dbg) const = 0;
 };
+
+} // namespace MSONcommon
 
 #endif // IPROPERTY_H

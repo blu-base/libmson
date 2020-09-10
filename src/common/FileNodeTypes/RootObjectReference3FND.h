@@ -6,6 +6,8 @@
 #include "../commonTypes/ExtendedGUID.h"
 #include "IFileNodeType.h"
 
+namespace MSONcommon {
+
 class RootObjectReference3FND : public IFileNodeType {
 private:
   ExtendedGUID m_oidRoot;
@@ -28,5 +30,7 @@ private:
   void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
 };
+
+} // namespace MSONcommon
 
 #endif // ROOTOBJECTREFERENCE3FND_H

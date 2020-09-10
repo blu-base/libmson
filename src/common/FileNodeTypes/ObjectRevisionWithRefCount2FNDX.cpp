@@ -2,6 +2,8 @@
 
 #include "../helper/Helper.h"
 
+namespace MSONcommon {
+
 ObjectRevisionWithRefCount2FNDX::ObjectRevisionWithRefCount2FNDX(
     FNCR_STP_FORMAT stpFormat, FNCR_CB_FORMAT cbFormat)
     : m_ref{FileNodeChunkReference(stpFormat, cbFormat)},
@@ -118,3 +120,5 @@ void ObjectRevisionWithRefCount2FNDX::generateXml(
 
   xmlWriter.writeEndElement();
 }
+
+} // namespace MSONcommon

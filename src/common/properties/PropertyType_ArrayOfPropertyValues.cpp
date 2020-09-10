@@ -3,6 +3,8 @@
 #include <QDataStream>
 #include <QDebug>
 
+namespace MSONcommon {
+
 PropertyType_ArrayOfPropertyValues::PropertyType_ArrayOfPropertyValues()
     : m_cProperties(0) {}
 
@@ -79,3 +81,5 @@ void PropertyType_ArrayOfPropertyValues::generateXml(
 
   xmlWriter.writeEndElement();
 }
+
+} // namespace MSONcommon

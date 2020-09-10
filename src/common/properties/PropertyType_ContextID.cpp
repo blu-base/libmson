@@ -3,6 +3,8 @@
 #include <QDataStream>
 #include <QDebug>
 
+namespace MSONcommon {
+
 CompactID PropertyType_ContextID::data() const { return m_data; }
 
 void PropertyType_ContextID::setData(const CompactID &data) { m_data = data; }
@@ -22,3 +24,5 @@ void PropertyType_ContextID::generateXml(QXmlStreamWriter& xmlWriter) const
     m_data.generateXml(xmlWriter);
     xmlWriter.writeEndElement();
 }
+
+} // namespace MSONcommon

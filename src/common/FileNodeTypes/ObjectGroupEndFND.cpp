@@ -1,5 +1,7 @@
 #include "ObjectGroupEndFND.h"
 
+namespace MSONcommon {
+
 ObjectGroupEndFND::ObjectGroupEndFND() {}
 
 void ObjectGroupEndFND::deserialize(QDataStream &ds) {}
@@ -14,3 +16,5 @@ void ObjectGroupEndFND::generateXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("ObjectGroupEndFND");
   xmlWriter.writeEndElement();
 }
+
+} // namespace MSONcommon

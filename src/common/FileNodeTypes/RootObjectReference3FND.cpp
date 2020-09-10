@@ -1,5 +1,7 @@
 #include "RootObjectReference3FND.h"
 
+namespace MSONcommon {
+
 RootObjectReference3FND::RootObjectReference3FND() : m_RootRole(0) {}
 
 quint32 RootObjectReference3FND::getRootRole() const { return m_RootRole; }
@@ -38,3 +40,5 @@ void RootObjectReference3FND::generateXml(QXmlStreamWriter &xmlWriter) const {
 
   xmlWriter.writeEndElement();
 }
+
+} // namespace MSONcommon

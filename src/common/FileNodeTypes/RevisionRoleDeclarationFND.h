@@ -6,6 +6,8 @@
 #include "../commonTypes/ExtendedGUID.h"
 #include "IFileNodeType.h"
 
+namespace MSONcommon {
+
 class RevisionRoleDeclarationFND : public IFileNodeType {
 private:
   ExtendedGUID m_rid;
@@ -27,5 +29,7 @@ private:
   void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
 };
+
+} // namespace MSONcommon
 
 #endif // REVISIONROLEDECLARATIONFND_H

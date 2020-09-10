@@ -3,6 +3,8 @@
 
 #include <QtCore/qglobal.h>
 
+namespace MSONcommon {
+
 enum class FileNodeTypeID : quint16 {
   ObjectSpaceManifestRootFND = 0x004,
   ObjectSpaceManifestListReferenceFND = 0x008,
@@ -126,5 +128,7 @@ THAI_CHARSET = 222,
 EASTEUROPE_CHARSET = 238,
 OEM_CHARSET = 255,
 };
+
+} // namespace MSONcommon
 
 #endif // ENUMS_H

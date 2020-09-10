@@ -3,6 +3,8 @@
 #include <QDate>
 #include <QTime>
 
+namespace MSONcommon {
+
 FileTime::FileTime() : m_time() {}
 
 FileTime::FileTime(const QDateTime time) : m_time(time.date(), time.time()) {}
@@ -51,3 +53,5 @@ void FileTime::serialize(QDataStream &ds) const {
 void FileTime::toDebugString(QDebug dbg) const {
   dbg << "FileTime:\n" << m_time;
 }
+
+} // namespace MSONcommon

@@ -1,5 +1,7 @@
 #include "ChunkTerminatorFND.h"
 
+namespace MSONcommon {
+
 ChunkTerminatorFND::ChunkTerminatorFND() {}
 
 void ChunkTerminatorFND::deserialize(QDataStream &ds) {}
@@ -14,3 +16,6 @@ void ChunkTerminatorFND::generateXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("ChunkTerminatorFND");
   xmlWriter.writeEndElement();
 }
+
+} // namespace MSONcommon
+

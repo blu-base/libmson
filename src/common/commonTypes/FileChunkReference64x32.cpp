@@ -2,6 +2,8 @@
 
 #include "../helper/Helper.h"
 
+namespace MSONcommon {
+
 FileChunkReference64x32::FileChunkReference64x32()
     : IFileChunkReference<quint64, quint32>() {}
 
@@ -91,3 +93,5 @@ void FileChunkReference64x32::toDebugString(QDebug dbg) const {
   };
   dbg << ")";
 }
+
+} // namespace MSONcommon

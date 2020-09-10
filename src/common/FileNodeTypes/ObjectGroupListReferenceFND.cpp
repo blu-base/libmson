@@ -1,5 +1,7 @@
 #include "ObjectGroupListReferenceFND.h"
 
+namespace MSONcommon {
+
 ObjectGroupListReferenceFND::ObjectGroupListReferenceFND(
     FNCR_STP_FORMAT stpFormat, FNCR_CB_FORMAT cbFormat)
     : m_ref(stpFormat, cbFormat) {}
@@ -51,3 +53,5 @@ void ObjectGroupListReferenceFND::generateXml(
 
   xmlWriter.writeEndElement();
 }
+
+} // namespace MSONcommon

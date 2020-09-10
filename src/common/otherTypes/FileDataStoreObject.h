@@ -7,6 +7,8 @@
 #include <QUuid>
 #include <QXmlStreamWriter>
 
+namespace MSONcommon {
+
 class FileDataStoreObject {
 private:
   /**
@@ -95,5 +97,7 @@ private:
    */
   void toDebugString(QDebug dbg) const;
 };
+
+} // namespace MSONcommon
 
 #endif // FILEDATASTOREOBJECT_H

@@ -1,5 +1,7 @@
 #include "RevisionRoleDeclarationFND.h"
 
+namespace MSONcommon {
+
 RevisionRoleDeclarationFND::RevisionRoleDeclarationFND() {}
 
 quint32 RevisionRoleDeclarationFND::getRevisionRole() const {
@@ -39,3 +41,5 @@ void RevisionRoleDeclarationFND::generateXml(
   m_rid.generateXml(xmlWriter);
   xmlWriter.writeEndElement();
 }
+
+} // namespace MSONcommon

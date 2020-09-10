@@ -7,6 +7,7 @@
 #include <QDebug>
 #include <QXmlStreamWriter>
 
+namespace MSONcommon {
 /**
  * @class IFileNodeType
  * @brief The abstract class for the Data contained in FileNodes
@@ -48,5 +49,7 @@ private:
    */
   virtual void toDebugString(QDebug dbg) const = 0;
 };
+
+} // namespace MSONcommon
 
 #endif // IFILENODETYPE_H

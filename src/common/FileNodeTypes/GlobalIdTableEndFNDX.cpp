@@ -1,5 +1,6 @@
 #include "GlobalIdTableEndFNDX.h"
 
+namespace MSONcommon {
 GlobalIdTableEndFNDX::GlobalIdTableEndFNDX()
 {
 
@@ -24,3 +25,4 @@ void GlobalIdTableEndFNDX::generateXml(QXmlStreamWriter& xmlWriter) const
     xmlWriter.writeStartElement("GlobalIdTableEndFNDX");
     xmlWriter.writeEndElement();
 }
+} // namespace MSONcommon

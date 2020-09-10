@@ -8,6 +8,8 @@
 
 #include <QXmlStreamWriter>
 
+namespace MSONcommon {
+
 enum FCR_INITTYPE {
   FCRZERO,
   FCRNIL,
@@ -68,5 +70,7 @@ private:
     return dbg;
   };
 };
+
+} // namespace MSONcommon
 
 #endif // IFILECHUNKREFERENCE_H

@@ -6,6 +6,7 @@
 #include "../commonTypes/ExtendedGUID.h"
 #include "IFileNodeType.h"
 
+namespace MSONcommon {
 /**
  * @brief specifies the beginning of a revision manifest for the default context
  * of an object space.
@@ -85,5 +86,7 @@ private:
   void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
 };
+
+} // namespace MSONcommon
 
 #endif // REVISIONMANIFESTSTART6FND_H

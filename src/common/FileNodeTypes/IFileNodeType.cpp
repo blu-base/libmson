@@ -1,5 +1,6 @@
 #include "IFileNodeType.h"
 
+namespace MSONcommon {
 IFileNodeType::IFileNodeType() {}
 
 QDataStream &operator<<(QDataStream &ds, const IFileNodeType &obj) {
@@ -19,3 +20,4 @@ QDebug operator<<(QDebug dbg, const IFileNodeType &obj) {
   obj.toDebugString(dbg);
   return dbg;
 }
+} // namespace MSONcommon

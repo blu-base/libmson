@@ -29,10 +29,11 @@ QStringList fileDirs(QDir &dir, const bool recursively) {
       files << dir.filePath(entry);
     }
     if (recursively) {
-      dir.setNameFilters(QStringList() << "*");
-      dir.setFilter(QDir::Dirs);
-      for (const auto &entry : dir.entryList()) {
-        QDir sdir(entry);
+//      dir.setNameFilters(QStringList() << "*");
+      dir.setFilter(QDir::AllDirs|QDir::NoDotAndDotDot);
+      for (const auto &entry : dir.entryInfoList()) {
+        QDir sdir(entry.filePath());
+        sdir.setFilter(QDir::NoDotAndDotDot);
         QStringList subdir = fileDirs(sdir, recursively);
         files.append(subdir);
       }
@@ -89,6 +90,7 @@ int main(int argc, char *argv[]) {
 
   bool inputFileSet = parser.isSet(fileinput);
   bool inputDirSet = parser.isSet(direcotryinput);
+  bool recursiveSet = parser.isSet(recursive);
   bool outputSet = parser.isSet(output);
   bool verbositySet = parser.isSet(verbosity);
   bool debugStrSet = parser.isSet(debugStr);
@@ -121,7 +123,7 @@ int main(int argc, char *argv[]) {
     QStringList rawnames = parser.values(direcotryinput);
     for (const auto &entry : rawnames) {
       QDir dir(entry);
-      QStringList dirFiles = fileDirs(dir, parser.isSet(recursive));
+      QStringList dirFiles = fileDirs(dir, recursiveSet);
       files.append(dirFiles);
     }
   }

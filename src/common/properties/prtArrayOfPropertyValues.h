@@ -10,6 +10,8 @@
 #include "IPropertyType.h"
 #include "PropertySet.h"
 
+namespace MSONcommon {
+
 class prtArrayOfPropertyValues : public IPropertyType {
 private:
   /**
@@ -52,5 +54,7 @@ private:
   void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
 };
+
+} // namespace MSONcommon
 
 #endif // PRTARRAYOFPROPERTYVALUES_H

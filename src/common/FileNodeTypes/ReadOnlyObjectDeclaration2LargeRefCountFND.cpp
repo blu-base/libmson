@@ -1,6 +1,7 @@
 #include "ReadOnlyObjectDeclaration2LargeRefCountFND.h"
 #include "../commonTypes/FileNodeChunkReference.h"
 
+namespace MSONcommon {
 FNCR_STP_FORMAT
 ReadOnlyObjectDeclaration2LargeRefCountFND::getStpFormat() const {
   return m_stpFormat;
@@ -81,3 +82,5 @@ void ReadOnlyObjectDeclaration2LargeRefCountFND::generateXml(
 
   xmlWriter.writeEndElement();
 }
+
+} // namespace MSONcommon

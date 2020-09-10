@@ -21,6 +21,8 @@
 #include "../simpleTypes/LayoutAlignment.h"
 #include "../simpleTypes/Time32.h"
 
+namespace MSONcommon {
+
 quint16 PropertySet::cProperties() const { return m_cProperties; }
 
 void PropertySet::setCProperties(const quint16 &cProperties) {
@@ -136,6 +138,7 @@ void PropertySet::toDebugString(QDebug dbg) const {}
 
 PropertySet::PropertySet() : m_cProperties{} {}
 
+/// \todo utf16 and utf8 might end prematurely because \0 terminator found
 void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("PropertySet");
   xmlWriter.writeAttribute("cProperties", QString::number(m_cProperties));
@@ -304,9 +307,9 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
     }
     case PropertyIDs::OffsetFromParentHoriz: {
       xmlWriter.writeStartElement("OffsetFromParentHoriz");
-      const auto body =
+      const auto data =
           static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
-      QDataStream bytes(body);
+      QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
       bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
       float val;
@@ -1097,8 +1100,8 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
       xmlWriter.writeEndElement();
       break;
     }
-    case PropertyIDs::undoc_IndexOfStrokes: {
-      xmlWriter.writeStartElement("undoc_IndexOfStrokes");
+    case PropertyIDs::undoc_StrokesIndex: {
+      xmlWriter.writeStartElement("undoc_StrokesIndex");
       if (m_rgPrids[i].type() == PropertyIDType::FourBytesOfData) {
         auto body =
             static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
@@ -1129,10 +1132,146 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
       xmlWriter.writeStartElement("undoc_StrokesColor");
       const auto data =
           static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
-      QDataStream bytes(data);
-      ColorRef val;
+
+      xmlWriter.writeCharacters("#" + data.toHex());
+      xmlWriter.writeEndElement();
+      break;
+    }
+
+    case PropertyIDs::undoc_StrokesToolSizeHeight: {
+      xmlWriter.writeStartElement("undoc_StrokesToolSizeHeight");
+      auto body = static_cast<PropertyType_FourBytesOfData *>(m_rgData[i]);
+      QDataStream bytes(body->data());
+      bytes.setByteOrder(QDataStream::LittleEndian);
+      bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
+      float val;
       bytes >> val;
-      val.generateXml(xmlWriter);
+      xmlWriter.writeCharacters(QString::number(val, 'f', 5));
+      xmlWriter.writeEndElement();
+      break;
+    }
+    case PropertyIDs::undoc_StrokesToolSizeWidth: {
+      xmlWriter.writeStartElement("undoc_StrokesToolSizeWidth");
+      auto body = static_cast<PropertyType_FourBytesOfData *>(m_rgData[i]);
+      QDataStream bytes(body->data());
+      bytes.setByteOrder(QDataStream::LittleEndian);
+      bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
+      float val;
+      bytes >> val;
+      xmlWriter.writeCharacters(QString::number(val, 'f', 5));
+      xmlWriter.writeEndElement();
+      break;
+    }
+
+    case PropertyIDs::undoc_StrokesCreationTime: {
+      xmlWriter.writeStartElement("undoc_StrokesCreationTime");
+      auto body = static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
+                      m_rgData[i])
+                      ->data();
+
+      QDataStream bytes(body);
+      bytes.setByteOrder(QDataStream::LittleEndian);
+      FileTime time;
+      bytes >> time;
+      xmlWriter.writeCharacters(
+          time.getTime().toString("dd/MM/yyyy hh:mm:ss AP"));
+      xmlWriter.writeEndElement();
+      break;
+    }
+
+    case PropertyIDs::undoc_StrokesRecognizedText: {
+      xmlWriter.writeStartElement("undoc_StrokesRecognizedText");
+      auto body = static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
+          m_rgData[i]);
+
+      QString string = QString::fromUtf16(
+          reinterpret_cast<const ushort *>(body->data().constData()),body->cb()/2);
+      QStringList strings = string.split('\0');
+            for (const auto& str : strings) {
+                if (str.size() > 0) {
+                xmlWriter.writeStartElement("match");
+                xmlWriter.writeCharacters(str);
+                xmlWriter.writeEndElement();
+                }
+            }
+      xmlWriter.writeEndElement();
+      break;
+    }
+
+
+
+
+
+    case PropertyIDs::undoc_StrokesOffsetsVertHoriz: {
+      xmlWriter.writeStartElement("undoc_StrokesOffsetsVertHoriz");
+      const auto data =
+          static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(m_rgData[i])->data();
+      QDataStream bytes(data);
+      bytes.setByteOrder(QDataStream::LittleEndian);
+      bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
+      float vert,horiz;
+      bytes >> vert;
+      bytes >> horiz;
+
+      xmlWriter.writeStartElement("Vert");
+      xmlWriter.writeCharacters(QString::number(vert,'f',5));
+      xmlWriter.writeEndElement();
+      xmlWriter.writeStartElement("Horiz");
+      xmlWriter.writeCharacters(QString::number(horiz,'f',5));
+      xmlWriter.writeEndElement();
+
+      xmlWriter.writeEndElement();
+      break;
+    }
+
+    case PropertyIDs::undoc_StrokesModus: {
+      xmlWriter.writeStartElement("undoc_StrokesModus");
+      const auto data =
+          static_cast<PropertyType_OneByteOfData *>(m_rgData[i])->data();
+      switch(data.toInt()) {
+      case 0:
+          xmlWriter.writeCharacters("HandwrittingAndDrawing");
+          break;
+      case 1:
+          xmlWriter.writeCharacters("DrawingOnly");
+          break;
+      case 2:
+          xmlWriter.writeCharacters("HandwritingOnly");
+      }
+
+      xmlWriter.writeEndElement();
+      break;
+    }
+
+    case PropertyIDs::undoc_StrokesGUID: {
+      xmlWriter.writeStartElement("undoc_StrokesGUID");
+      const auto data =
+          static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(m_rgData[i])->data();
+      QDataStream bytes(data);
+      QUuid guid;
+      bytes >> guid;
+
+      xmlWriter.writeCharacters(guid.toString());
+      xmlWriter.writeEndElement();
+      break;
+    }
+
+
+    case PropertyIDs::undoc_RecognizedText: {
+      xmlWriter.writeStartElement("undoc_RecognizedText");
+      auto body = static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
+          m_rgData[i]);
+
+      QString string = QString::fromUtf16(
+          reinterpret_cast<const ushort *>(body->data().constData()),body->cb()/2);
+      QStringList strings = string.split('\0');
+            for (const auto& str : strings) {
+                if (str.size() > 0) {
+                xmlWriter.writeStartElement("match");
+                xmlWriter.writeCharacters(str);
+                xmlWriter.writeEndElement();
+                }
+            }
       xmlWriter.writeEndElement();
       break;
     }
@@ -1142,9 +1281,9 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
       const auto body =
           static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
               m_rgData[i])
-              ->data();
+              ;
       QString string = QString::fromUtf16(
-          reinterpret_cast<const ushort *>(body.constData()));
+          reinterpret_cast<const ushort *>(body->data().constData()),body->cb()/2);
 
       xmlWriter.writeCharacters(string);
       xmlWriter.writeEndElement();
@@ -1204,6 +1343,16 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
       break;
     }
 
+    case PropertyIDs::undoc_PageBackgroundColor: {
+      xmlWriter.writeStartElement("undoc_PageBackgroundColor");
+      const auto data =
+          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+
+      xmlWriter.writeCharacters("#" + data.toHex());
+      xmlWriter.writeEndElement();
+      break;
+    }
+
     case PropertyIDs::None:
     default:
       m_rgData[i]->generateXml(xmlWriter);
@@ -1231,3 +1380,5 @@ QDebug operator<<(QDebug dbg, const PropertySet &obj) {
   obj.toDebugString(dbg);
   return dbg;
 }
+
+} // namespace MSONcommon

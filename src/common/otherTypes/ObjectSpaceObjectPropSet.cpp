@@ -1,5 +1,7 @@
 #include "ObjectSpaceObjectPropSet.h"
 
+namespace MSONcommon {
+
 ObjectSpaceObjectPropSet::ObjectSpaceObjectPropSet() {}
 
 ObjectSpaceObjectPropSet::ObjectSpaceObjectPropSet(
@@ -135,3 +137,5 @@ void ObjectSpaceObjectPropSet::toDebugString(QDebug dbg) const {
     }
   }
 }
+
+} // namespace MSONcommon

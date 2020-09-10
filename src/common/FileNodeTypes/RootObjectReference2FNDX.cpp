@@ -1,5 +1,7 @@
 #include "RootObjectReference2FNDX.h"
 
+namespace MSONcommon {
+
 RootObjectReference2FNDX::RootObjectReference2FNDX() :
 m_RootRole(0) {}
 
@@ -41,3 +43,5 @@ void RootObjectReference2FNDX::generateXml(QXmlStreamWriter& xmlWriter) const
 
     xmlWriter.writeEndElement();
 }
+
+} // namespace MSONcommon

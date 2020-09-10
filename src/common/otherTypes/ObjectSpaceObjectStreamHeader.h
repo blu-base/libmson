@@ -4,6 +4,8 @@
 #include <QXmlStreamWriter>
 #include <QtCore/qglobal.h>
 
+namespace MSONcommon {
+
 class ObjectSpaceObjectStreamHeader {
 private:
   quint32 m_count;
@@ -76,5 +78,7 @@ private:
    */
   void toDebugString(QDebug dbg) const;
 };
+
+} // namespace MSONcommon
 
 #endif // OBJECTSPACEOBJECTSTREAMHEADER_H

@@ -1,5 +1,6 @@
 #include "GlobalIdTableEntry2FNDX.h"
 
+namespace MSONcommon {
 GlobalIdTableEntry2FNDX::GlobalIdTableEntry2FNDX()
     : m_iIndexMapFrom{0}, m_iIndexMapTo{0} {}
 
@@ -41,3 +42,4 @@ void GlobalIdTableEntry2FNDX::generateXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeAttribute("iIndexMapTo", QString::number(m_iIndexMapTo));
   xmlWriter.writeEndElement();
 }
+} // namespace MSONcommon

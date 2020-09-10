@@ -1,5 +1,7 @@
 #include "RevisionManifestListStartFND.h"
 
+namespace MSONcommon {
+
 RevisionManifestListStartFND::RevisionManifestListStartFND() {}
 
 ExtendedGUID RevisionManifestListStartFND::getGosid() const { return m_gosid; }
@@ -39,3 +41,5 @@ void RevisionManifestListStartFND::generateXml(
 
   xmlWriter.writeEndElement();
 }
+
+} // namespace MSONcommon

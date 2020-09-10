@@ -10,6 +10,8 @@
 
 #include "../helper/Helper.h"
 
+namespace MSONcommon {
+
 quint8 CompactID::getN() const { return m_n; }
 
 void CompactID::setN(const quint8 &value) { m_n = value; }
@@ -135,3 +137,5 @@ CompactID::CompactID(const QByteArray &bytes) : m_n{0}, guidIndex{0} {
 }
 
 CompactID::~CompactID() { delete[] eguid; }
+
+} // namespace MSONcommon

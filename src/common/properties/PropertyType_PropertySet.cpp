@@ -3,6 +3,8 @@
 #include <QDataStream>
 #include <QDebug>
 
+namespace MSONcommon {
+
 PropertySet PropertyType_PropertySet::data() const { return m_data; }
 
 void PropertyType_PropertySet::setData(const PropertySet &data) {
@@ -22,3 +24,5 @@ void PropertyType_PropertySet::serialize(QDataStream &ds) const {
 }
 
 void PropertyType_PropertySet::toDebugString(QDebug dbg) const {}
+
+} // namespace MSONcommon

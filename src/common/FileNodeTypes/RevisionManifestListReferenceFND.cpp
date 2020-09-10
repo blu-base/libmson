@@ -1,5 +1,7 @@
 #include "RevisionManifestListReferenceFND.h"
 
+namespace MSONcommon {
+
 RevisionManifestListReferenceFND::RevisionManifestListReferenceFND(
     FNCR_STP_FORMAT stpFormat, FNCR_CB_FORMAT cbFormat)
     : m_ref{FileNodeChunkReference(stpFormat, cbFormat)} {}
@@ -35,3 +37,5 @@ void RevisionManifestListReferenceFND::generateXml(
   m_ref.generateXml(xmlWriter);
   xmlWriter.writeEndElement();
 }
+
+} // namespace MSONcommon

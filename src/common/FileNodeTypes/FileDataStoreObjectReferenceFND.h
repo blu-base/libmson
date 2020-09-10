@@ -9,6 +9,7 @@
 #include <QUuid>
 #include <QtCore/qglobal.h>
 
+namespace MSONcommon {
 class FileDataStoreObjectReferenceFND : public IFileNodeType {
 private:
   FileNodeChunkReference m_ref;
@@ -38,5 +39,7 @@ private:
   void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
 };
+
+} // namespace MSONcommon
 
 #endif // FILEDATASTOREOBJECTREFERENCEFND_H

@@ -7,6 +7,8 @@
 #include <QXmlStreamWriter>
 #include <QtCore/qglobal.h>
 
+namespace MSONcommon {
+
 class StringInStorageBuffer {
 private:
   quint32 m_cch;
@@ -49,5 +51,7 @@ private:
    */
   void toDebugString(QDebug dbg) const;
 };
+
+} // namespace MSONcommon
 
 #endif // STRINGINSTORAGEBUFFER_H

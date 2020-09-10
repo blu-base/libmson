@@ -9,6 +9,8 @@
 #include <QDebug>
 #include <QXmlStreamWriter>
 
+namespace MSONcommon {
+
 class Time32 {
 private:
   QDateTime m_time;
@@ -34,5 +36,7 @@ private:
 
   static const quint64 utcoffset = 315576000;
 };
+
+} // namespace MSONcommon
 
 #endif // TIME32_H

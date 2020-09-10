@@ -1,5 +1,7 @@
 #include "RevisionManifestStart6FND.h"
 
+namespace MSONcommon {
+
 RevisionManifestStart6FND::RevisionManifestStart6FND() {}
 
 ExtendedGUID RevisionManifestStart6FND::getRid() const { return m_rid; }
@@ -65,3 +67,5 @@ void RevisionManifestStart6FND::generateXml(QXmlStreamWriter &xmlWriter) const {
 
   xmlWriter.writeEndElement();
 }
+
+} // namespace MSONcommon

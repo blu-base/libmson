@@ -7,6 +7,8 @@
 #include "../commonTypes/CompactID.h"
 #include "../properties/JCID.h"
 
+namespace MSONcommon {
+
 class ObjectDeclaration2Body {
 private:
   CompactID m_oid;
@@ -58,5 +60,7 @@ private:
    */
   void toDebugString(QDebug dbg) const;
 };
+
+} // namespace MSONcommon
 
 #endif // OBJECTDECLARATION2BODY_H

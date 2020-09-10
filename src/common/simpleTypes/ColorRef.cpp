@@ -2,6 +2,8 @@
 
 #include "../helper/Helper.h"
 
+namespace MSONcommon {
+
 ColorRef::ColorRef() : m_colorVal() {}
 
 ColorRef::ColorRef(const quint32 colorVal) : m_colorVal(colorVal) {}
@@ -52,3 +54,5 @@ void ColorRef::serialize(QDataStream &ds) const {
 void ColorRef::toDebugString(QDebug dbg) const {
   dbg << "ColorRef:\n" << qStringHex(m_colorVal,8);
 }
+
+} // namespace MSONcommon

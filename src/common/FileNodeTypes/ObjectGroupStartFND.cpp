@@ -1,5 +1,7 @@
 #include "ObjectGroupStartFND.h"
 
+namespace MSONcommon {
+
 ObjectGroupStartFND::ObjectGroupStartFND() : m_oid(ExtendedGUID()) {}
 
 ExtendedGUID ObjectGroupStartFND::oid() const { return m_oid; }
@@ -24,3 +26,5 @@ void ObjectGroupStartFND::generateXml(QXmlStreamWriter &xmlWriter) const {
 
   xmlWriter.writeEndElement();
 }
+
+} // namespace MSONcommon

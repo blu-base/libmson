@@ -6,6 +6,8 @@
 #include "../commonTypes/CompactID.h"
 #include "IFileNodeType.h"
 
+namespace MSONcommon {
+
 class RootObjectReference2FNDX : public IFileNodeType {
 private:
   CompactID m_oidRoot;
@@ -27,5 +29,7 @@ private:
   void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
 };
+
+} // namespace MSONcommon
 
 #endif // ROOTOBJECTREFERENCE2FNDX_H

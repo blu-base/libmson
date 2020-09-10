@@ -2,6 +2,7 @@
 
 #include "../helper/Helper.h"
 
+namespace MSONcommon {
 ObjectDataEncryptionKeyV2FNDX::ObjectDataEncryptionKeyV2FNDX(
     FNCR_STP_FORMAT stpFormat, FNCR_CB_FORMAT cbFormat)
     : m_ref(stpFormat, cbFormat), m_header(), m_footer() {}
@@ -89,3 +90,4 @@ void ObjectDataEncryptionKeyV2FNDX::generateXml(
 
   xmlWriter.writeEndElement();
 }
+} // namespace MSONcommon

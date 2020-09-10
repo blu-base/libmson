@@ -6,6 +6,7 @@
 #include "../commonTypes/FileNodeChunkReference.h"
 #include "IFileNodeType.h"
 
+namespace MSONcommon {
 class ObjectDataEncryptionKeyV2FNDX : public IFileNodeType {
 private:
   FileNodeChunkReference m_ref;
@@ -38,4 +39,5 @@ private:
   void toDebugString(QDebug dbg) const override;
 };
 
+} // namespace MSONcommon
 #endif // OBJECTDATAENCRYPTIONKEYV2FNDX_H

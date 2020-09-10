@@ -1,15 +1,7 @@
 #include "DocumentManager.h"
+namespace MSONcommon {
 
-MSONcommon::DocumentManager::DocumentManager() {}
-
-MSONcommon::DocumentManager::~DocumentManager() {
-
-  for (MSONDocument *doc : docs.values()) {
-    delete doc;
-  }
-
-  docs.clear();
-}
+QMap<QUuid, std::shared_ptr<MSONDocument>> DocumentManager::docs;
 
 bool MSONcommon::DocumentManager::containsDocument(QDataStream &ds) {
   return docs.contains(getDocumentID(ds));
@@ -22,13 +14,19 @@ bool MSONcommon::DocumentManager::containsDocument(const QUuid &guidFile) {
 QUuid MSONcommon::DocumentManager::parseDocument(QDataStream &ds) {
   QUuid guid;
   if (ds.device()->isReadable()) {
-    MSONDocument *newDoc = new MSONDocument();
+
+    MSONHeader newDocHead;
+    ds >> newDocHead;
+    guid = newDocHead.getGuidFile();
+
+    // go back to the start and add pointer
+    ds.device()->seek(0);
+    std::shared_ptr<MSONDocument> newDoc = std::make_shared<MSONDocument>();
+    docs.insert(guid, newDoc);
 
     ds >> *newDoc;
 
-    guid = newDoc->getHeader()->getGuidFile();
 
-    docs.insert(guid, newDoc);
   } else {
     qWarning() << "ERROR: Stream not readable" << '\n';
   }
@@ -36,7 +34,7 @@ QUuid MSONcommon::DocumentManager::parseDocument(QDataStream &ds) {
   return guid;
 }
 
-QUuid MSONcommon::DocumentManager::parseDocument(QString fileName) {
+QUuid MSONcommon::DocumentManager::parseDocument(const QString& fileName) {
   QFile file(fileName);
 
   bool couldopen = file.open(QIODevice::ReadOnly);
@@ -54,14 +52,14 @@ QUuid MSONcommon::DocumentManager::parseDocument(QString fileName) {
   return newDocId;
 }
 
-void MSONcommon::DocumentManager::addDocument(MSONcommon::MSONDocument *doc) {
+void MSONcommon::DocumentManager::addDocument(std::shared_ptr<MSONDocument> doc) {
 
   docs.insert(doc->getHeader()->getGuidFile(), doc);
 }
 
 QUuid MSONcommon::DocumentManager::createDocument() {
 
-  MSONDocument *newDoc = new MSONDocument();
+  std::shared_ptr<MSONDocument> newDoc = std::make_shared<MSONDocument>();
 
   QUuid newDocId = newDoc->getHeader()->getGuidFile();
 
@@ -70,42 +68,42 @@ QUuid MSONcommon::DocumentManager::createDocument() {
   return newDocId;
 }
 
-QList<QUuid>
-MSONcommon::DocumentManager::parseDirectory(QDir dir,
-                                            const bool parse_subdirs) {
-  QList<QUuid> newDocs{};
+//QList<QUuid>
+//MSONcommon::DocumentManager::parseDirectory(QDir dir,
+//                                            const bool parse_subdirs) {
+//  QList<QUuid> newDocs{};
 
-  if (!dir.exists()) {
-    qWarning("The directory does not exist");
-    return newDocs;
-  }
+//  if (!dir.exists()) {
+//    qWarning("The directory does not exist");
+//    return newDocs;
+//  }
 
-  QStringList msonFileExtensions;
-  msonFileExtensions << "*.one"
-                     << "*.one2toc";
-  for (QString fileName : dir.entryList(msonFileExtensions, QDir::Files)) {
-    QFile file(fileName);
-    file.open(QIODevice::ReadOnly);
-    QDataStream in(&file);
+//  QStringList msonFileExtensions;
+//  msonFileExtensions << "*.one"
+//                     << "*.one2toc";
+//  for (QString fileName : dir.entryList(msonFileExtensions, QDir::Files)) {
+//    QFile file(fileName);
+//    file.open(QIODevice::ReadOnly);
+//    QDataStream in(&file);
 
-    QUuid newDocId = parseDocument(in);
-    file.close();
-    newDocs.append(newDocId);
-  }
+//    QUuid newDocId = parseDocument(in);
+//    file.close();
+//    newDocs.append(newDocId);
+//  }
 
-  // recurse parseDirectory for subdirs
-  if (parse_subdirs) {
+//  // recurse parseDirectory for subdirs
+//  if (parse_subdirs) {
 
-    QStringList subdirectories = dir.entryList(QDir::Dirs);
-    for (QString dirName : subdirectories) {
+//    QStringList subdirectories = dir.entryList(QDir::Dirs);
+//    for (QString dirName : subdirectories) {
 
-      QDir subdir(dirName);
-      newDocs.append(parseDirectory(subdir, true));
-    }
-  }
+//      QDir subdir(dirName);
+//      newDocs.append(parseDirectory(subdir, true));
+//    }
+//  }
 
-  return newDocs;
-}
+//  return newDocs;
+//}
 
 bool MSONcommon::DocumentManager::removeDocument(const QUuid &guidFile) {
 
@@ -114,8 +112,9 @@ bool MSONcommon::DocumentManager::removeDocument(const QUuid &guidFile) {
 
 void MSONcommon::DocumentManager::removeDocuments() { docs.clear(); }
 
-MSONcommon::MSONDocument *
+std::shared_ptr<MSONDocument>
 MSONcommon::DocumentManager::getDocument(const QUuid &guidFile) {
+
   return docs.value(guidFile);
 }
 
@@ -126,7 +125,7 @@ QUuid MSONcommon::DocumentManager::getDocumentID(QDataStream &ds) {
 
   QUuid id = nullptr;
   if (ds.device()->bytesAvailable() > 16) {
-    ds.skipRawData(8);
+    ds.skipRawData(16);
     ds >> id;
   }
 
@@ -135,7 +134,7 @@ QUuid MSONcommon::DocumentManager::getDocumentID(QDataStream &ds) {
   return id;
 }
 
-QList<MSONcommon::MSONDocument *> MSONcommon::DocumentManager::getDocuments() {
+QList<std::shared_ptr<MSONDocument>> MSONcommon::DocumentManager::getDocuments() {
   return docs.values();
 }
 
@@ -143,7 +142,7 @@ QList<QUuid> MSONcommon::DocumentManager::getDocumentIDs() {
   return docs.keys();
 }
 
-QMap<QUuid, MSONcommon::MSONDocument *>
+QMap<QUuid, std::shared_ptr<MSONDocument>>
 MSONcommon::DocumentManager::getDocumentsMap() {
   return docs;
 }
@@ -165,3 +164,5 @@ void MSONcommon::DocumentManager::generateXml(const QUuid &guidFile,
     }
   }
 }
+
+} // namespace MSONcommon

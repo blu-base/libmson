@@ -3,6 +3,9 @@
 #include <QDebug>
 
 #include "../helper/Helper.h"
+
+namespace MSONcommon {
+
 ObjectInfoDependencyOverrideData::ObjectInfoDependencyOverrideData()
     : m_c8BitOverrides(), m_c32BitOverrides(), m_crc() {}
 
@@ -131,3 +134,5 @@ void ObjectInfoDependencyOverrideData::serialize(QDataStream &ds) const {
 }
 
 void ObjectInfoDependencyOverrideData::toDebugString(QDebug dbg) const {}
+
+} // namespace MSONcommon

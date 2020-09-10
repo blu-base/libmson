@@ -3,6 +3,8 @@
 #include <QDataStream>
 #include <QDebug>
 
+namespace MSONcommon {
+
 quint32 PropertyType_ArrayNumber::cCIDs() const { return m_cCIDs; }
 
 void PropertyType_ArrayNumber::setCCIDs(const quint32 &cCIDs) {
@@ -26,3 +28,5 @@ void PropertyType_ArrayNumber::generateXml(QXmlStreamWriter &xmlWriter) const {
 
   xmlWriter.writeEndElement();
 }
+
+} // namespace MSONcommon

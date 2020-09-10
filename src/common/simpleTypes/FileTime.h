@@ -8,6 +8,7 @@
 #include <QDebug>
 #include <QXmlStreamWriter>
 
+namespace MSONcommon {
 /// Representing MS-DTYP section 2.3.3
 class FileTime {
 private:
@@ -37,5 +38,7 @@ private:
     return QDateTime(QDate(1601, 1, 1), QTime(0, 0, 0, 0), Qt::UTC);
   }
 };
+
+} // namespace MSONcommon
 
 #endif // FILETIME_H

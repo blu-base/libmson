@@ -4,6 +4,7 @@
 #include "IFileNodeType.h"
 #include <QtCore/qglobal.h>
 
+namespace MSONcommon {
 class GlobalIdTableEntry3FNDX : public IFileNodeType {
 private:
   quint32 m_iIndexCopyFromStart;
@@ -29,5 +30,7 @@ private:
   void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
 };
+
+} // namespace MSONcommon
 
 #endif // GLOBALIDTABLEENTRY3FNDX_H

@@ -2,6 +2,8 @@
 
 #include "../commonTypes/FileNodeChunkReference.h"
 
+namespace MSONcommon {
+
 FNCR_CB_FORMAT ReadOnlyObjectDeclaration2RefCountFND::getCbFormat() const {
   return m_cbFormat;
 }
@@ -79,3 +81,5 @@ void ReadOnlyObjectDeclaration2RefCountFND::generateXml(
 
   xmlWriter.writeEndElement();
 }
+
+} // namespace MSONcommon

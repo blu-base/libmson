@@ -3,6 +3,8 @@
 #include <QDataStream>
 #include <QDebug>
 
+namespace MSONcommon {
+
 IPropertyType::IPropertyType() {}
 
 QDataStream &operator<<(QDataStream &ds, const IPropertyType &obj) {
@@ -19,3 +21,5 @@ QDebug operator<<(QDebug dbg, const IPropertyType &obj) {
   obj.toDebugString(dbg);
   return dbg;
 }
+
+} // namespace MSONcommon

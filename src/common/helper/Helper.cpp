@@ -1,5 +1,7 @@
 #include "Helper.h"
 
+namespace MSONcommon {
+
 template <class _InIt, class _OutIt, class _Pr>
 inline void copy_closed(_InIt _First, _InIt _Last, _OutIt _Dest, _Pr _Pred) {
   _InIt _posTerm = std::find_if(_First, _Last, _Pred);
@@ -29,7 +31,7 @@ quint64 roundUpMultiple(const quint64 numToRound, const quint64 multiple) {
 
 // Parse all fragments and add them to m_fileNodeSequence
 std::vector<MSONcommon::FileNodeListFragment>
-parseFileNodeListFragments(QDataStream &ds, FileChunkReference64x32 &ref) {
+parseFileNodeListFragments(QDataStream &ds, const MSONcommon::FileChunkReference64x32 &ref ) {
   quint64 preLocation = ds.device()->pos();
   std::vector<MSONcommon::FileNodeListFragment> fragments{};
 
@@ -41,7 +43,7 @@ parseFileNodeListFragments(QDataStream &ds, FileChunkReference64x32 &ref) {
   ds >> fragment;
   fragments.push_back(fragment);
 
-  FileChunkReference64x32 nextFragmentRef = fragment.nextFragment();
+  MSONcommon::FileChunkReference64x32 nextFragmentRef = fragment.nextFragment();
 
   while (!nextFragmentRef.is_fcrNil() && !nextFragmentRef.is_fcrZero()) {
     MSONcommon::FileNodeListFragment nextFragment(nextFragmentRef);
@@ -57,8 +59,10 @@ parseFileNodeListFragments(QDataStream &ds, FileChunkReference64x32 &ref) {
 }
 
 std::vector<MSONcommon::FileNodeListFragment>
-parseFileNodeListFragments(QDataStream &ds, FileNodeChunkReference &ref) {
-  FileChunkReference64x32 tref(ref.stp(), static_cast<quint32>(ref.cb()));
+parseFileNodeListFragments(QDataStream &ds, const MSONcommon::FileNodeChunkReference &ref ) {
+  MSONcommon::FileChunkReference64x32 tref(ref.stp(), static_cast<quint32>(ref.cb()));
 
   return parseFileNodeListFragments(ds, tref);
 }
+
+} // namespace MSONcommon

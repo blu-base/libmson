@@ -3,6 +3,8 @@
 #include <QDate>
 #include <QTime>
 
+namespace MSONcommon {
+
 Time32::Time32() : m_time() {}
 
 Time32::Time32(const QDateTime time) : m_time(time.date(), time.time()) {}
@@ -41,3 +43,5 @@ void Time32::serialize(QDataStream &ds) const {
 }
 
 void Time32::toDebugString(QDebug dbg) const { dbg << "Time32:\n" << m_time; }
+
+} // namespace MSONcommon

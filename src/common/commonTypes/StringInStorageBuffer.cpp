@@ -1,5 +1,7 @@
 #include "StringInStorageBuffer.h"
 
+namespace MSONcommon {
+
 StringInStorageBuffer::StringInStorageBuffer() : m_cch(0) {}
 
 void StringInStorageBuffer::generateXml(QXmlStreamWriter &xmlWriter) const {
@@ -55,3 +57,6 @@ void StringInStorageBuffer::toDebugString(QDebug dbg) const {
 quint32 StringInStorageBuffer::getCch() const { return m_cch; }
 
 void StringInStorageBuffer::setCch(const quint32 &value) { m_cch = value; }
+
+} // namespace MSONcommon
+

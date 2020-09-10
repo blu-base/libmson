@@ -1,5 +1,6 @@
 #include "HashedChunkDescriptor2FND.h"
 
+namespace MSONcommon {
 HashedChunkDescriptor2FND::HashedChunkDescriptor2FND(FNCR_STP_FORMAT stpFormat,
                                                      FNCR_CB_FORMAT cbFormat)
     : m_BlobRef(stpFormat, cbFormat) {}
@@ -72,3 +73,4 @@ void HashedChunkDescriptor2FND::generateXml(QXmlStreamWriter &xmlWriter) const {
 
   xmlWriter.writeEndElement();
 }
+} // namespace MSONcommon

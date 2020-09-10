@@ -1,5 +1,7 @@
 #include "RevisionManifestStart7FND.h"
 
+namespace MSONcommon {
+
 RevisionManifestStart7FND::RevisionManifestStart7FND() {}
 
 ExtendedGUID RevisionManifestStart7FND::getGctxid() const { return m_gctxid; }
@@ -41,3 +43,5 @@ void RevisionManifestStart7FND::generateXml(QXmlStreamWriter &xmlWriter) const {
 
   xmlWriter.writeEndElement();
 }
+
+} // namespace MSONcommon
