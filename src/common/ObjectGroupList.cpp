@@ -1,6 +1,8 @@
 #include "ObjectGroupList.h"
 #include "commonTypes/Enums.h"
 
+#include "helper/Helper.h"
+
 namespace MSONcommon {
 ObjectGroupList::ObjectGroupList(FileNodeChunkReference ref) : m_ref{ref} {}
 
@@ -61,46 +63,19 @@ QDebug operator<<(QDebug dbg, const ObjectGroupList &obj) {
 
 void ObjectGroupList::deserialize(QDataStream &ds) {
 
-  FileNodeListFragment fragment(m_ref);
 
-  ds.device()->seek(m_ref.stp());
-  ds >> fragment;
+    m_fileNodeListFragments =
+        parseFileNodeListFragments(ds, m_ref);
 
-  m_fileNodeListFragments.push_back(fragment);
-
-  for (const auto &entry : fragment.rgFileNodes()) {
-    if (entry.getFileNodeID() !=
-            static_cast<quint16>(FileNodeTypeID::ChunkTerminatorFND) &&
-        entry.getFileNodeID() != 0) {
-      m_fileNodeSequence.push_back(entry);
+    for (const auto &fragment : m_fileNodeListFragments) {
+      const auto &rgFileNodes = fragment.rgFileNodes();
+      copy_if(rgFileNodes.begin(), rgFileNodes.end(),
+              back_inserter(m_fileNodeSequence), [](const FileNode &entry) {
+                return entry.getFileNodeTypeID() !=
+                       FileNodeTypeID::ChunkTerminatorFND;
+              });
     }
-  }
-  //  std::copy_if(fragment->rgFileNodes().begin(),
-  //  fragment->rgFileNodes().end(),
-  //               back_inserter(m_fileNodeSequence), [](FileNode *entry) {
-  //                 return entry->getFileNodeID() !=
-  //                        static_cast<quint16>(
-  //                            FileNodeTypeID::ChunkTerminatorFND);
-  //               });
 
-  FileChunkReference64x32 nextFragmentRef = fragment.nextFragment();
-
-  while (!nextFragmentRef.is_fcrNil() && !nextFragmentRef.is_fcrZero()) {
-    FileNodeListFragment nextFragment(nextFragmentRef);
-
-    ds.device()->seek(nextFragmentRef.stp());
-    ds >> nextFragment;
-
-    nextFragmentRef = nextFragment.nextFragment();
-    m_fileNodeListFragments.push_back(nextFragment);
-
-    auto RgFileNodes = nextFragment.rgFileNodes();
-    copy_if(RgFileNodes.begin(), RgFileNodes.end(),
-            back_inserter(m_fileNodeSequence), [](FileNode entry) {
-              return entry.getFileNodeID() !=
-                     static_cast<quint16>(FileNodeTypeID::ChunkTerminatorFND);
-            });
-  }
 }
 
 void ObjectGroupList::toDebugString(QDebug dbg) const {}
