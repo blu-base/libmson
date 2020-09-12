@@ -1,8 +1,8 @@
 # LibMsON
 
-This library is supposed to parse and create OneNote&trade; revision store files according to the [[MS-ONESTORE]](https://docs.microsoft.com/en-us/openspecs/office_file_formats/ms-onestore/ae670cd2-4b38-4b24-82d1-87cfb2cc3725) and [[MS-ONE]](https://docs.microsoft.com/en-us/openspecs/office_file_formats/ms-one/73d22548-a613-4350-8c23-07d15576be50) specifications. 
+This library is supposed to parse and create OneNote&reg; revision store files according to the [[MS-ONESTORE]](https://docs.microsoft.com/en-us/openspecs/office_file_formats/ms-onestore/ae670cd2-4b38-4b24-82d1-87cfb2cc3725) and [[MS-ONE]](https://docs.microsoft.com/en-us/openspecs/office_file_formats/ms-one/73d22548-a613-4350-8c23-07d15576be50) specifications. 
 
-Currently, this is mainly an exercise in learning software development by doing. This means the current state does not provide alot of useful features other than parsing some elements of the OneNote&trade;  file. The current structure is messy, and the parsing functionality is not yet extracted from the document model. 
+Currently, this is mainly an exercise in learning software development by doing. This means the current state does not provide alot of useful features other than parsing some elements of the OneNote&reg;  file. The current structure is messy, and the parsing functionality is not yet extracted from the document model. 
 
 However, a goal of writing this library is to add it as filter to the [Calligra](https://invent.kde.org/office/calligra) project, [BasKet](https://invent.kde.org/utilities/basket) or something new within the KDE realm.
 It can be expected, that these projects already require Qt, and use CMake to be build. For this reason, this library will use these frameworks as well, even if they offer more functionality than required.
