@@ -2,9 +2,7 @@
 
 namespace MSONcommon {
 
-ObjectSpaceManifestListStartFND::ObjectSpaceManifestListStartFND() {}
-
-ExtendedGUID ObjectSpaceManifestListStartFND::getGosid() const {
+ExtendedGUID ObjectSpaceManifestListStartFND::gosid() const {
   return m_gosid;
 }
 

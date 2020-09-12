@@ -26,8 +26,6 @@ FileChunkReference64x32::FileChunkReference64x32(FCR_INITTYPE inittype)
   }
 }
 
-FileChunkReference64x32::~FileChunkReference64x32() {}
-
 bool FileChunkReference64x32::is_fcrNil() const {
   return m_stp == UINT64_MAX && m_cb == 0u;
 }

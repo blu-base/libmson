@@ -8,14 +8,15 @@ namespace MSONcommon {
 
 class ObjectGroupEndFND : public IFileNodeType {
 public:
-  ObjectGroupEndFND();
+  ObjectGroupEndFND() = default;
 
   virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
 
 private:
-  void deserialize(QDataStream &ds) override;
-  void serialize(QDataStream &ds) const override;
-  void toDebugString(QDebug dbg) const override;
+  virtual void deserialize(QDataStream &ds) override;
+  virtual void serialize(QDataStream &ds) const override;
+
+  virtual void toDebugString(QDebug dbg) const override;
 };
 
 } // namespace MSONcommon

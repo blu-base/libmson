@@ -55,6 +55,7 @@ void PropertySet::deserialize(QDataStream &ds) {
 
   for (const auto &propID : m_rgPrids) {
     quint64 curLocation = ds.device()->pos();
+    /// \todo fix memory leak here
     IPropertyType *prop = nullptr;
 
     switch (propID.type()) {

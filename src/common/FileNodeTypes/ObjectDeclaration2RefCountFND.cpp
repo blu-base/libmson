@@ -2,6 +2,8 @@
 
 #include "../helper/Helper.h"
 
+#include "../DocumentManager.h"
+
 namespace MSONcommon {
 ObjectDeclaration2RefCountFND::ObjectDeclaration2RefCountFND(
     FNCR_STP_FORMAT stpFormat, FNCR_CB_FORMAT cbFormat)
@@ -10,8 +12,6 @@ ObjectDeclaration2RefCountFND::ObjectDeclaration2RefCountFND(
 ObjectDeclaration2RefCountFND::ObjectDeclaration2RefCountFND(quint8 stpFormat,
                                                              quint8 cbFormat)
     : m_blobRef(stpFormat, cbFormat), m_cRef{} {}
-
-ObjectDeclaration2RefCountFND::~ObjectDeclaration2RefCountFND() {}
 
 quint8 ObjectDeclaration2RefCountFND::getCRef() const { return m_cRef; }
 
@@ -52,13 +52,18 @@ void ObjectDeclaration2RefCountFND::deserialize(QDataStream &ds) {
   ds >> m_body;
   ds >> m_cRef;
 
-  // getting remote ObjectPropSet
-  quint64 curLocation = ds.device()->pos();
-  quint64 destLocation = m_blobRef.stp();
+  std::shared_ptr<MSONDocument> doc = DocumentManager::getDocument(ds);
 
-  ds.device()->seek(destLocation);
-  ds >> m_blob;
-  ds.device()->seek(curLocation);
+  if (!doc->isEncrypted()) {
+    // getting remote ObjectPropSet
+    quint64 curLocation = ds.device()->pos();
+    quint64 destLocation = m_blobRef.stp();
+
+    ds.device()->seek(destLocation);
+    ds >> m_blob;
+    ds.device()->seek(curLocation);
+  }
+
 }
 
 void ObjectDeclaration2RefCountFND::serialize(QDataStream &ds) const {

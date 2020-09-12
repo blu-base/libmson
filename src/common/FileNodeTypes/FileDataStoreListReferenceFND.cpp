@@ -3,13 +3,12 @@
 namespace MSONcommon {
 FileDataStoreListReferenceFND::FileDataStoreListReferenceFND(
     FNCR_STP_FORMAT stpFormat, FNCR_CB_FORMAT cbFormat)
-    : m_ref(stpFormat, cbFormat), m_StoreList() {}
+    : m_ref(stpFormat, cbFormat) {}
 
 FileDataStoreListReferenceFND::FileDataStoreListReferenceFND(quint8 stpFormat,
                                                              quint8 cbFormat)
-    : m_ref(stpFormat, cbFormat), m_StoreList() {}
+    : m_ref(stpFormat, cbFormat) {}
 
-FileDataStoreListReferenceFND::~FileDataStoreListReferenceFND() {}
 
 FileNodeChunkReference FileDataStoreListReferenceFND::getRef() const {
   return m_ref;

@@ -23,8 +23,6 @@ ReadOnlyObjectDeclaration2RefCountFND::ReadOnlyObjectDeclaration2RefCountFND(
       m_cbFormat(static_cast<FNCR_CB_FORMAT>(cbFormat)),
       m_base(stpFormat, cbFormat) {}
 
-ReadOnlyObjectDeclaration2RefCountFND::
-    ~ReadOnlyObjectDeclaration2RefCountFND() {}
 
 ObjectDeclaration2RefCountFND
 ReadOnlyObjectDeclaration2RefCountFND::getBase() const {

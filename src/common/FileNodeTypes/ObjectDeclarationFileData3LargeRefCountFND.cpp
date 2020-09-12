@@ -45,7 +45,7 @@ void ObjectDeclarationFileData3LargeRefCountFND::setExtension(
 }
 
 ObjectDeclarationFileData3LargeRefCountFND::
-    ObjectDeclarationFileData3LargeRefCountFND() {}
+    ObjectDeclarationFileData3LargeRefCountFND() : m_cRef() {}
 
 void ObjectDeclarationFileData3LargeRefCountFND::deserialize(QDataStream &ds) {
   ds >> m_oid;

@@ -5,17 +5,20 @@
 #include <QtCore/qglobal.h>
 
 namespace MSONcommon {
+
 class GlobalIdTableEndFNDX : public IFileNodeType {
 public:
-  GlobalIdTableEndFNDX();
+  GlobalIdTableEndFNDX() = default;
 
   virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
 
 private:
-  void deserialize(QDataStream &ds) override;
-  void serialize(QDataStream &ds) const override;
-  void toDebugString(QDebug dbg) const override;
+  virtual void deserialize(QDataStream &ds) override;
+  virtual void serialize(QDataStream &ds) const override;
+
+  virtual void toDebugString(QDebug dbg) const override;
 };
 
 } // namespace MSONcommon
+
 #endif // GLOBALIDTABLEENDFNDX_H

@@ -9,6 +9,7 @@
 #include "IFileNodeType.h"
 
 namespace MSONcommon {
+
 class ObjectDeclaration2RefCountFND : public IFileNodeType {
 private:
   FileNodeChunkReference m_blobRef;
@@ -21,7 +22,7 @@ public:
   ObjectDeclaration2RefCountFND(FNCR_STP_FORMAT stpFormat,
                                 FNCR_CB_FORMAT cbFormat);
   ObjectDeclaration2RefCountFND(quint8 stpFormat, quint8 cbFormat);
-  ~ObjectDeclaration2RefCountFND();
+  ~ObjectDeclaration2RefCountFND() = default;
 
   FileNodeChunkReference getBlobRef() const;
   void setBlobRef(const FileNodeChunkReference &value);
@@ -38,9 +39,10 @@ public:
   virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
 
 private:
-  void deserialize(QDataStream &ds) override;
-  void serialize(QDataStream &ds) const override;
-  void toDebugString(QDebug dbg) const override;
+  virtual void deserialize(QDataStream &ds) override;
+  virtual void serialize(QDataStream &ds) const override;
+
+  virtual void toDebugString(QDebug dbg) const override;
 };
 
 } // namespace MSONcommon

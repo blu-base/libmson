@@ -50,7 +50,7 @@
 
 namespace MSONcommon {
 
-IFileNodeType *FileNode::getFnt() const { return fnt; }
+std::shared_ptr<IFileNodeType> FileNode::getFnt() const { return fnt; }
 
 FileNode::FileNode()
     : stp{}, fileNodeID{}, fileNodeSize{4}, stpFormat{}, cbFormat{}, baseType{},
@@ -75,9 +75,6 @@ void FileNode::generateXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeAttribute("cbFormat", QString::number(cbFormat));
   xmlWriter.writeAttribute("baseType", qStringHex(baseType, 2));
 
-  ///\todo IFileNodeType *fnt;
-  ///
-
   if (fnt != nullptr) {
     fnt->generateXml(xmlWriter);
   } else {
@@ -88,160 +85,164 @@ void FileNode::generateXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeEndElement();
 }
 
-QDataStream &operator>>(QDataStream &ds, FileNode &obj) {
+void MSONcommon::FileNode::serialize(QDataStream &ds) const {}
+
+void MSONcommon::FileNode::deserialize(QDataStream &ds) {
 
   //  if (!ds.byteOrder()) {
   //    ds.setByteOrder(QDataStream::LittleEndian);
   //  }
   ds.setByteOrder(QDataStream::LittleEndian);
-  obj.stp = ds.device()->pos();
-  //  qDebug() << "FileNode stp: "<< qStringHex(obj.stp, 16);
+  stp = ds.device()->pos();
+  //  qDebug() << "FileNode stp: "<< qStringHex(stp, 16);
   quint32 temp;
   ds >> temp;
 
-  obj.reserved = (temp >> FileNode_shiftReserved) & FileNode_maskReserved;
-  obj.baseType = (temp >> FileNode_shiftBaseType) & FileNode_maskBaseType;
-  obj.cbFormat = (temp >> FileNode_shiftCbFormat) & FileNode_maskCbFormat;
-  obj.stpFormat = (temp >> FileNode_shiftStpFormat) & FileNode_maskStpFormat;
-  obj.fileNodeSize =
+  reserved = (temp >> FileNode_shiftReserved) & FileNode_maskReserved;
+  baseType = (temp >> FileNode_shiftBaseType) & FileNode_maskBaseType;
+  cbFormat = (temp >> FileNode_shiftCbFormat) & FileNode_maskCbFormat;
+  stpFormat = (temp >> FileNode_shiftStpFormat) & FileNode_maskStpFormat;
+  fileNodeSize =
       (temp >> FileNode_shiftFileNodeSize) & FileNode_maskFileNodeSize;
-  obj.fileNodeID = (temp >> FileNode_shiftFileNodeID) & FileNode_maskFileNodeID;
+  fileNodeID = (temp >> FileNode_shiftFileNodeID) & FileNode_maskFileNodeID;
 
-  switch (static_cast<FileNodeTypeID>(obj.fileNodeID)) {
+  switch (static_cast<FileNodeTypeID>(fileNodeID)) {
   case FileNodeTypeID::ChunkTerminatorFND:
-    obj.fnt = new ChunkTerminatorFND();
+    fnt = std::make_shared<ChunkTerminatorFND>();
     break;
   case FileNodeTypeID::DataSignatureGroupDefinitionFND:
-    obj.fnt = new DataSignatureGroupDefinitionFND();
+    fnt = std::make_shared<DataSignatureGroupDefinitionFND>();
     break;
   case FileNodeTypeID::FileDataStoreListReferenceFND:
-    obj.fnt = new FileDataStoreListReferenceFND(obj.stpFormat, obj.cbFormat);
+    fnt = std::make_shared<FileDataStoreListReferenceFND>(stpFormat, cbFormat);
     break;
   case FileNodeTypeID::FileDataStoreObjectReferenceFND:
-    obj.fnt = new FileDataStoreObjectReferenceFND(obj.stpFormat, obj.cbFormat);
+    fnt =
+        std::make_shared<FileDataStoreObjectReferenceFND>(stpFormat, cbFormat);
     break;
   case FileNodeTypeID::GlobalIdTableEndFNDX:
-    obj.fnt = new GlobalIdTableEndFNDX();
+    fnt = std::make_shared<GlobalIdTableEndFNDX>();
     break;
   case FileNodeTypeID::GlobalIdTableEntry2FNDX:
-    obj.fnt = new GlobalIdTableEntry2FNDX();
+    fnt = std::make_shared<GlobalIdTableEntry2FNDX>();
     break;
   case FileNodeTypeID::GlobalIdTableEntry3FNDX:
-    obj.fnt = new GlobalIdTableEntry3FNDX();
+    fnt = std::make_shared<GlobalIdTableEntry3FNDX>();
     break;
   case FileNodeTypeID::GlobalIdTableEntryFNDX:
-    obj.fnt = new GlobalIdTableEntryFNDX();
+    fnt = std::make_shared<GlobalIdTableEntryFNDX>();
     break;
   case FileNodeTypeID::GlobalIdTableStart2FND:
-    obj.fnt = new GlobalIdTableStart2FND();
+    fnt = std::make_shared<GlobalIdTableStart2FND>();
     break;
   case FileNodeTypeID::GlobalIdTableStartFNDX:
-    obj.fnt = new GlobalIdTableStartFNDX();
+    fnt = std::make_shared<GlobalIdTableStartFNDX>();
     break;
   case FileNodeTypeID::HashedChunkDescriptor2FND:
-    obj.fnt = new HashedChunkDescriptor2FND(obj.stpFormat, obj.cbFormat);
+    fnt = std::make_shared<HashedChunkDescriptor2FND>(stpFormat, cbFormat);
     break;
   case FileNodeTypeID::ObjectDataEncryptionKeyV2FNDX:
-    obj.fnt = new ObjectDataEncryptionKeyV2FNDX(obj.stpFormat, obj.cbFormat);
+    fnt = std::make_shared<ObjectDataEncryptionKeyV2FNDX>(stpFormat, cbFormat);
     break;
   case FileNodeTypeID::ObjectDeclaration2LargeRefCountFND:
-    obj.fnt =
-        new ObjectDeclaration2LargeRefCountFND(obj.stpFormat, obj.cbFormat);
+    fnt = std::make_shared<ObjectDeclaration2LargeRefCountFND>(stpFormat,
+                                                               cbFormat);
     break;
   case FileNodeTypeID::ObjectDeclaration2RefCountFND:
-    obj.fnt = new ObjectDeclaration2RefCountFND(obj.stpFormat, obj.cbFormat);
+    fnt = std::make_shared<ObjectDeclaration2RefCountFND>(stpFormat, cbFormat);
     break;
   case FileNodeTypeID::ObjectDeclarationFileData3LargeRefCountFND:
-    obj.fnt = new ObjectDeclarationFileData3LargeRefCountFND();
+    fnt = std::make_shared<ObjectDeclarationFileData3LargeRefCountFND>();
     break;
   case FileNodeTypeID::ObjectDeclarationFileData3RefCountFND:
-    obj.fnt = new ObjectDeclarationFileData3RefCountFND();
+    fnt = std::make_shared<ObjectDeclarationFileData3RefCountFND>();
     break;
   case FileNodeTypeID::ObjectDeclarationWithRefCount2FNDX:
-    obj.fnt =
-        new ObjectDeclarationWithRefCount2FNDX(obj.stpFormat, obj.cbFormat);
+    fnt = std::make_shared<ObjectDeclarationWithRefCount2FNDX>(stpFormat,
+                                                               cbFormat);
     break;
   case FileNodeTypeID::ObjectDeclarationWithRefCountFNDX:
-    obj.fnt =
-        new ObjectDeclarationWithRefCountFNDX(obj.stpFormat, obj.cbFormat);
+    fnt = std::make_shared<ObjectDeclarationWithRefCountFNDX>(stpFormat,
+                                                              cbFormat);
     break;
   case FileNodeTypeID::ObjectGroupEndFND:
-    obj.fnt = new ObjectGroupEndFND();
+    fnt = std::make_shared<ObjectGroupEndFND>();
     break;
   case FileNodeTypeID::ObjectGroupListReferenceFND:
-    obj.fnt = new ObjectGroupListReferenceFND(obj.stpFormat, obj.cbFormat);
+    fnt = std::make_shared<ObjectGroupListReferenceFND>(stpFormat, cbFormat);
     break;
   case FileNodeTypeID::ObjectGroupStartFND:
-    obj.fnt = new ObjectGroupStartFND();
+    fnt = std::make_shared<ObjectGroupStartFND>();
     break;
   case FileNodeTypeID::ObjectInfoDependencyOverridesFND:
-    obj.fnt = new ObjectInfoDependencyOverridesFND(obj.stpFormat, obj.cbFormat);
+    fnt =
+        std::make_shared<ObjectInfoDependencyOverridesFND>(stpFormat, cbFormat);
     break;
   case FileNodeTypeID::ObjectRevisionWithRefCount2FNDX:
-    obj.fnt = new ObjectRevisionWithRefCount2FNDX(obj.stpFormat, obj.cbFormat);
+    fnt =
+        std::make_shared<ObjectRevisionWithRefCount2FNDX>(stpFormat, cbFormat);
     break;
   case FileNodeTypeID::ObjectRevisionWithRefCountFNDX:
-    obj.fnt = new ObjectRevisionWithRefCountFNDX(obj.stpFormat, obj.cbFormat);
+    fnt = std::make_shared<ObjectRevisionWithRefCountFNDX>(stpFormat, cbFormat);
     break;
   case FileNodeTypeID::ObjectSpaceManifestListReferenceFND:
-    obj.fnt =
-        new ObjectSpaceManifestListReferenceFND(obj.stpFormat, obj.cbFormat);
+    fnt = std::make_shared<ObjectSpaceManifestListReferenceFND>(stpFormat,
+                                                                cbFormat);
     break;
   case FileNodeTypeID::ObjectSpaceManifestListStartFND:
-    obj.fnt = new ObjectSpaceManifestListStartFND();
+    fnt = std::make_shared<ObjectSpaceManifestListStartFND>();
     break;
   case FileNodeTypeID::ObjectSpaceManifestRootFND:
-    obj.fnt = new ObjectSpaceManifestRootFND();
+    fnt = std::make_shared<ObjectSpaceManifestRootFND>();
     break;
   case FileNodeTypeID::ReadOnlyObjectDeclaration2LargeRefCountFND:
-    obj.fnt = new ReadOnlyObjectDeclaration2LargeRefCountFND(obj.stpFormat,
-                                                             obj.cbFormat);
+    fnt = std::make_shared<ReadOnlyObjectDeclaration2LargeRefCountFND>(
+        stpFormat, cbFormat);
     break;
   case FileNodeTypeID::ReadOnlyObjectDeclaration2RefCountFND:
-    obj.fnt =
-        new ReadOnlyObjectDeclaration2RefCountFND(obj.stpFormat, obj.cbFormat);
+    fnt = std::make_shared<ReadOnlyObjectDeclaration2RefCountFND>(stpFormat,
+                                                                  cbFormat);
     break;
   case FileNodeTypeID::RevisionManifestEndFND:
-    obj.fnt = new RevisionManifestEndFND();
+    fnt = std::make_shared<RevisionManifestEndFND>();
     break;
   case FileNodeTypeID::RevisionManifestListReferenceFND:
-    obj.fnt = new RevisionManifestListReferenceFND(obj.stpFormat, obj.cbFormat);
+    fnt =
+        std::make_shared<RevisionManifestListReferenceFND>(stpFormat, cbFormat);
     break;
   case FileNodeTypeID::RevisionManifestListStartFND:
-    obj.fnt = new RevisionManifestListStartFND();
+    fnt = std::make_shared<RevisionManifestListStartFND>();
     break;
   case FileNodeTypeID::RevisionManifestStart4FND:
-    obj.fnt = new RevisionManifestStart4FND();
+    fnt = std::make_shared<RevisionManifestStart4FND>();
     break;
   case FileNodeTypeID::RevisionManifestStart6FND:
-    obj.fnt = new RevisionManifestStart6FND();
+    fnt = std::make_shared<RevisionManifestStart6FND>();
     break;
   case FileNodeTypeID::RevisionManifestStart7FND:
-    obj.fnt = new RevisionManifestStart7FND();
+    fnt = std::make_shared<RevisionManifestStart7FND>();
     break;
   case FileNodeTypeID::RevisionRoleAndContextDeclarationFND:
-    obj.fnt = new RevisionRoleAndContextDeclarationFND();
+    fnt = std::make_shared<RevisionRoleAndContextDeclarationFND>();
     break;
   case FileNodeTypeID::RevisionRoleDeclarationFND:
-    obj.fnt = new RevisionRoleDeclarationFND();
+    fnt = std::make_shared<RevisionRoleDeclarationFND>();
     break;
   case FileNodeTypeID::RootObjectReference2FNDX:
-    obj.fnt = new RootObjectReference2FNDX();
+    fnt = std::make_shared<RootObjectReference2FNDX>();
     break;
   case FileNodeTypeID::RootObjectReference3FND:
-    obj.fnt = new RootObjectReference3FND();
+    fnt = std::make_shared<RootObjectReference3FND>();
     break;
 
   default:
-    obj.fnt = nullptr;
+    fnt = nullptr;
     break;
   }
 
-  if (obj.fnt != nullptr) {
-    ds >> *obj.fnt;
+  if (fnt != nullptr) {
+    ds >> *fnt;
   }
-
-  return ds;
 }
 
 QDebug operator<<(QDebug dbg, const FileNode &obj) {

@@ -2,7 +2,7 @@
 
 namespace MSONcommon {
 
-RevisionManifestListStartFND::RevisionManifestListStartFND() {}
+RevisionManifestListStartFND::RevisionManifestListStartFND() : m_nInstance() {}
 
 ExtendedGUID RevisionManifestListStartFND::getGosid() const { return m_gosid; }
 

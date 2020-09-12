@@ -30,18 +30,19 @@ private:
   ExtendedGUID m_gosid;
 
 public:
-  ObjectSpaceManifestListStartFND();
-  ~ObjectSpaceManifestListStartFND();
+  ObjectSpaceManifestListStartFND() = default;
+  virtual ~ObjectSpaceManifestListStartFND() = default;
 
-  ExtendedGUID getGosid() const;
+  ExtendedGUID gosid() const;
   void setGosid(const ExtendedGUID &value);
 
   virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
 
 private:
-  void deserialize(QDataStream &ds);
-  void serialize(QDataStream &ds) const;
-  void toDebugString(QDebug dbg) const;
+  virtual void deserialize(QDataStream &ds) override;
+  virtual void serialize(QDataStream &ds) const override;
+
+  virtual void toDebugString(QDebug dbg) const override;
 };
 
 } // namespace MSONcommon

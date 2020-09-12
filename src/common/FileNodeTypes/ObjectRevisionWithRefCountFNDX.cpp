@@ -66,8 +66,8 @@ void ObjectRevisionWithRefCountFNDX::deserialize(QDataStream &ds) {
   ds >> m_ref;
   ds >> m_oid;
   ds >> m_cRef;
-  m_fHasOidReferences = m_cRef & 0x1;
-  m_fHasOsidReferences = m_cRef & 0x2;
+  m_fHasOidReferences = ((m_cRef & 0x1) != 0u);
+  m_fHasOsidReferences = ((m_cRef & 0x2) != 0u);
   m_cRef = m_cRef >> 2;
 
   // getting remote ObjectPropSet
@@ -87,8 +87,8 @@ void ObjectRevisionWithRefCountFNDX::serialize(QDataStream &ds) const {
   ds << m_oid;
 
   quint8 temp = m_cRef >> 2;
-  temp += m_fHasOidReferences;
-  temp += m_fHasOsidReferences << 1;
+  temp += static_cast<quint32>(m_fHasOidReferences);
+  temp += static_cast<quint32>(m_fHasOsidReferences) << 1;
 
   ds << temp;
 }

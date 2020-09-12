@@ -2,10 +2,13 @@
 #define JCID_H
 
 #include <QtCore/qglobal.h>
+#include <QXmlStreamWriter>
 
 #include "../commonTypes/Enums.h"
 
-#include <QXmlStreamWriter>
+#include "../IDeserializable.h"
+#include "../ISerializable.h"
+
 
 namespace MSONcommon {
 
@@ -30,15 +33,12 @@ static constexpr const quint32 JCID_imaskIsGraphNode = 0x001BFFFF;
 static constexpr const quint32 JCID_imaskIsFileData = 0x0017FFFF;
 static constexpr const quint32 JCID_imaskIsReadOnly = 0x000FFFFF;
 
-class JCID {
+class JCID  : public ISerializable, public IDeserializable {
 private:
   quint32 m_value;
 
 public:
   JCID();
-
-  friend QDataStream &operator<<(QDataStream &ds, const JCID &obj);
-  friend QDataStream &operator>>(QDataStream &ds, JCID &obj);
 
   friend QDebug operator<<(QDebug dbg, const JCID &obj);
 
@@ -66,8 +66,9 @@ public:
   QString typeToString() const;
 
 private:
-  void deserialize(QDataStream &ds);
-  void serialize(QDataStream &ds) const;
+  virtual void deserialize(QDataStream &ds) override;
+  virtual void serialize(QDataStream &ds) const override;
+
   void toDebugString(QDebug dbg) const;
 };
 

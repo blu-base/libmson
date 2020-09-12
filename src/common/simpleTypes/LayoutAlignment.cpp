@@ -2,17 +2,7 @@
 
 namespace MSONcommon {
 
-LayoutAlignment::LayoutAlignment() {}
-
-QDataStream &operator<<(QDataStream &ds, const LayoutAlignment &obj) {
-  obj.serialize(ds);
-  return ds;
-}
-
-QDataStream &operator>>(QDataStream &ds, LayoutAlignment &obj) {
-  obj.deserialize(ds);
-  return ds;
-}
+LayoutAlignment::LayoutAlignment() : m_value() {}
 
 QDebug operator<<(QDebug dbg, const LayoutAlignment &obj) {
   obj.toDebugString(dbg);

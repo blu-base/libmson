@@ -7,9 +7,12 @@
 #include <QUuid>
 #include <QXmlStreamWriter>
 
+#include "../IDeserializable.h"
+#include "../ISerializable.h"
+
 namespace MSONcommon {
 
-class FileDataStoreObject {
+class FileDataStoreObject : public ISerializable, public IDeserializable {
 private:
   /**
    * @brief MUST be {BDE316E7-2665-4511-A4C4-8D4D0B7A9EAC}.
@@ -53,10 +56,6 @@ private:
 public:
   FileDataStoreObject();
 
-  friend QDataStream &operator<<(QDataStream &ds,
-                                 const FileDataStoreObject &obj);
-  friend QDataStream &operator>>(QDataStream &ds, FileDataStoreObject &obj);
-
   friend QDebug operator<<(QDebug dbg, const FileDataStoreObject &obj);
 
   QUuid guidHeader() const;
@@ -81,15 +80,14 @@ private:
    * Note, that only 4GB of an FileDataStoreObject can be parsed because an
    * limitation of QByteArray
    */
-  void deserialize(QDataStream &ds);
+  virtual void deserialize(QDataStream &ds) override;
   /**
    * @brief creates byte stream from IProperty object
    * @param ds <QDataStream> is the output stream to which the serialized
    * IProperty is send
    *
-
    */
-  void serialize(QDataStream &ds) const;
+  virtual void serialize(QDataStream &ds) const override;
 
   /**
    * @brief prints the IProperty to a <QDebug> object

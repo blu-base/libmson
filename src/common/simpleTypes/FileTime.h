@@ -8,18 +8,18 @@
 #include <QDebug>
 #include <QXmlStreamWriter>
 
+#include "../IDeserializable.h"
+#include "../ISerializable.h"
+
 namespace MSONcommon {
 /// Representing MS-DTYP section 2.3.3
-class FileTime {
+class FileTime : public ISerializable, public IDeserializable {
 private:
   QDateTime m_time;
 
 public:
   FileTime();
   FileTime(const QDateTime time);
-
-  friend QDataStream &operator<<(QDataStream &ds, const FileTime &obj);
-  friend QDataStream &operator>>(QDataStream &ds, FileTime &obj);
 
   friend QDebug operator<<(QDebug dbg, const FileTime &obj);
 
@@ -29,8 +29,8 @@ public:
   void setTime(const QDateTime time);
 
 private:
-  void deserialize(QDataStream &ds);
-  void serialize(QDataStream &ds) const;
+  virtual void deserialize(QDataStream &ds) override;
+  virtual void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const;
 
   /// \todo figure out a way to make this a const value

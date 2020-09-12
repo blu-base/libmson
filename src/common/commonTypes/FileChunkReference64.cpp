@@ -4,11 +4,7 @@
 
 namespace MSONcommon {
 
-FileChunkReference64::FileChunkReference64()
-    : IFileChunkReference<quint64, quint64>() {}
-
-FileChunkReference64::FileChunkReference64(FCR_INITTYPE inittype)
-    : IFileChunkReference<quint64, quint64>() {
+FileChunkReference64::FileChunkReference64(FCR_INITTYPE inittype) {
   switch (inittype) {
   case FCR_INITTYPE::FCRNIL:
     this->set_fcrNil();
@@ -18,8 +14,6 @@ FileChunkReference64::FileChunkReference64(FCR_INITTYPE inittype)
     break;
   }
 }
-
-FileChunkReference64::~FileChunkReference64() {}
 
 bool FileChunkReference64::is_fcrNil() const {
   return m_stp == UINT64_MAX && m_cb == 0;

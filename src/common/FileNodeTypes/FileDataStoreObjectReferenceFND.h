@@ -10,6 +10,7 @@
 #include <QtCore/qglobal.h>
 
 namespace MSONcommon {
+
 class FileDataStoreObjectReferenceFND : public IFileNodeType {
 private:
   FileNodeChunkReference m_ref;
@@ -21,7 +22,7 @@ public:
   FileDataStoreObjectReferenceFND(FNCR_STP_FORMAT stpFormat,
                                   FNCR_CB_FORMAT cbFormat);
   FileDataStoreObjectReferenceFND(quint8 stpFormat, quint8 cbFormat);
-  ~FileDataStoreObjectReferenceFND();
+  virtual ~FileDataStoreObjectReferenceFND() = default;
 
   FileNodeChunkReference getRef() const;
   void setRef(const FileNodeChunkReference &value);
@@ -35,9 +36,10 @@ public:
   virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
 
 private:
-  void deserialize(QDataStream &ds) override;
-  void serialize(QDataStream &ds) const override;
-  void toDebugString(QDebug dbg) const override;
+  virtual void deserialize(QDataStream &ds) override;
+  virtual void serialize(QDataStream &ds) const override;
+
+  virtual void toDebugString(QDebug dbg) const override;
 };
 
 } // namespace MSONcommon

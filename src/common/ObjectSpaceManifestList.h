@@ -1,46 +1,55 @@
 #ifndef OBJECTSPACEMANIFESTLIST_H
 #define OBJECTSPACEMANIFESTLIST_H
 
+#include <QXmlStreamWriter>
 #include <QtCore/qglobal.h>
 #include <vector>
+
+#include "IDeserializable.h"
+#include "ISerializable.h"
 
 #include "FileNode.h"
 #include "FileNodeListFragment.h"
 #include "commonTypes/FileNodeChunkReference.h"
 
 #include "RevisionManifestList.h"
+
 namespace MSONcommon {
-class ObjectSpaceManifestList {
+
+class ObjectSpaceManifestList : public IDeserializable {
 private:
   FileNodeChunkReference m_ref;
 
-  std::vector<FileNodeListFragment> m_fileNodeListFragments;
+  std::vector<std::shared_ptr<FileNodeListFragment>> m_fileNodeListFragments;
 
-  FileNode m_objectSpaceManifestListStart;
+  std::shared_ptr<FileNode> m_objectSpaceManifestListStart;
 
-  std::vector<RevisionManifestList *> m_revisionManifestLists;
+  std::vector<std::shared_ptr<RevisionManifestList>> m_revisionManifestLists;
 
-  std::vector<FileNode> m_fileNodeSequence;
+  std::vector<std::shared_ptr<FileNode>> m_fileNodeSequence;
 
 public:
-  ObjectSpaceManifestList(FileNodeChunkReference &ref);
-  ~ObjectSpaceManifestList();
+  ObjectSpaceManifestList(const FileNodeChunkReference &ref);
+  ~ObjectSpaceManifestList() = default;
 
-  std::vector<FileNodeListFragment> getFileNodeListFragments() const;
-  void setFileNodeListFragments(const std::vector<FileNodeListFragment> &value);
-  FileNode getObjectSpaceManifestListStart() const;
-  void setObjectSpaceManifestListStart(const FileNode &value);
-  std::vector<RevisionManifestList *> getRevisionManifestLists();
-  void
-  setRevisionManifestLists(const std::vector<RevisionManifestList *> &value);
-  std::vector<FileNode> getFileNodeSequence() const;
-  void setFileNodeSequence(const std::vector<FileNode> &value);
+  std::vector<std::shared_ptr<FileNodeListFragment>>
+  getFileNodeListFragments() const;
+  void setFileNodeListFragments(
+      const std::vector<std::shared_ptr<FileNodeListFragment>> &value);
+
+  std::shared_ptr<FileNode> getObjectSpaceManifestListStart() const;
+  void setObjectSpaceManifestListStart(const std::shared_ptr<FileNode> &value);
+
+  std::vector<std::shared_ptr<RevisionManifestList>> getRevisionManifestLists();
+  void setRevisionManifestLists(
+      const std::vector<std::shared_ptr<RevisionManifestList>> &value);
+
+  std::vector<std::shared_ptr<FileNode>> getFileNodeSequence() const;
+  void setFileNodeSequence(const std::vector<std::shared_ptr<FileNode>> &value);
+
   FileNodeChunkReference getRef() const;
   void setRef(const FileNodeChunkReference &ref);
 
-  //  friend QDataStream &operator<<(QDataStream &ds, const
-  //  ObjectSpaceManifestList &obj);
-  friend QDataStream &operator>>(QDataStream &ds, ObjectSpaceManifestList &obj);
   friend QDebug operator<<(QDebug dbg, const ObjectSpaceManifestList &obj);
 
   void generateXml(QXmlStreamWriter &xmlWriter) const;
@@ -51,7 +60,7 @@ private:
    * @param ds <QDataStream> containing the deserializable
    * ObjectSpaceManifestList
    */
-  void deserialize(QDataStream &ds);
+  virtual void deserialize(QDataStream &ds) override;
   //  /**
   //   * @brief creates byte stream from ObjectSpaceManifestList object
   //   * @param ds <QDataStream> is the output stream to which the serialized
@@ -65,5 +74,7 @@ private:
    */
   void toDebugString(QDebug dbg) const;
 };
+
 } // namespace MSONcommon
+
 #endif // OBJECTSPACEMANIFESTLIST_H

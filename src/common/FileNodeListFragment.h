@@ -3,6 +3,9 @@
 
 #include <QtCore/qglobal.h>
 
+#include "IDeserializable.h"
+#include "ISerializable.h"
+
 #include "FileNode.h"
 #include "FileNodeListHeader.h"
 #include "commonTypes/FileChunkReference32.h"
@@ -14,14 +17,14 @@
 
 namespace MSONcommon {
 
-class FileNodeListFragment {
+class FileNodeListFragment : public ISerializable, public IDeserializable {
 
 private:
   FileChunkReference64 m_ref;
 
   FileNodeListHeader m_fnlheader;
 
-  std::vector<FileNode> m_rgFileNodes;
+  std::vector<std::shared_ptr<FileNode>> m_rgFileNodes;
 
   quint64 m_paddingLength;
 
@@ -41,24 +44,25 @@ public:
   FileNodeListFragment(const FileNodeChunkReference ref);
   ~FileNodeListFragment();
 
-  FileChunkReference64 ref() const;
-  void setRef(const FileChunkReference64 &size);
-  void setRef(const FileChunkReference64x32 &size);
-  void setRef(const FileChunkReference32 &size);
-  void setRef(const FileNodeChunkReference &size);
+  FileChunkReference64 getRef() const;
+  void setRef(const FileChunkReference64 &ref);
+  void setRef(const FileChunkReference64x32 &ref);
+  void setRef(const FileChunkReference32 &ref);
+  void setRef(const FileNodeChunkReference &ref);
 
-  FileNodeListHeader fnlheader() const;
+  FileNodeListHeader getFnlheader() const;
   void setFnlheader(const FileNodeListHeader &fnlheader);
-  std::vector<FileNode> rgFileNodes() const;
-  void setRgFileNodes(const std::vector<FileNode> &rgFileNodes);
+
+  std::vector<std::shared_ptr<FileNode>> rgFileNodes() const;
+  void setRgFileNodes(const std::vector<std::shared_ptr<FileNode>> &rgFileNodes);
+
   quint64 paddingLength() const;
   void setPaddingLength(const quint64 &paddingLength);
-  FileChunkReference64x32 nextFragment() const;
+
+  FileChunkReference64x32 getNextFragment() const;
   void setNextFragment(const FileChunkReference64x32 &next);
 
-  friend QDataStream &operator<<(QDataStream &ds,
-                                 const FileNodeListFragment &obj);
-  friend QDataStream &operator>>(QDataStream &ds, FileNodeListFragment &obj);
+
   friend QDebug operator<<(QDebug dbg, const FileNodeListFragment &obj);
 
   void generateXml(QXmlStreamWriter &xmlWriter) const;
@@ -69,13 +73,13 @@ private:
    * @param ds <QDataStream> containing the deserializable
    * FileNodeListFragment
    */
-  void deserialize(QDataStream &ds);
+  virtual void deserialize(QDataStream &ds) override;
   /**
    * @brief creates byte stream from FileNodeListFragment object
    * @param ds <QDataStream> is the output stream to which the serialized
    * FileNodeListFragment is send
    */
-  void serialize(QDataStream &ds) const;
+  virtual void serialize(QDataStream &ds) const override;
 
   /**
    * @brief prints the FileNodeListFragment to a <QDebug> object

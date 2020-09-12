@@ -1,18 +1,17 @@
 #include "ObjectDeclarationWithRefCount2FNDX.h"
 
+#include "../DocumentManager.h"
 #include "../helper/Helper.h"
 
 namespace MSONcommon {
 
 ObjectDeclarationWithRefCount2FNDX::ObjectDeclarationWithRefCount2FNDX(
     FNCR_STP_FORMAT stpFormat, FNCR_CB_FORMAT cbFormat)
-    : m_objectRef(stpFormat, cbFormat) {}
+    : m_objectRef(stpFormat, cbFormat), m_cRef() {}
 
 ObjectDeclarationWithRefCount2FNDX::ObjectDeclarationWithRefCount2FNDX(
     quint8 stpFormat, quint8 cbFormat)
-    : m_objectRef(stpFormat, cbFormat) {}
-
-ObjectDeclarationWithRefCount2FNDX::~ObjectDeclarationWithRefCount2FNDX() {}
+    : m_objectRef(stpFormat, cbFormat), m_cRef() {}
 
 FileNodeChunkReference
 ObjectDeclarationWithRefCount2FNDX::getObjectRef() const {
@@ -55,13 +54,17 @@ void ObjectDeclarationWithRefCount2FNDX::deserialize(QDataStream &ds) {
   ds >> m_body;
   ds >> m_cRef;
 
-  // getting remote ObjectPropSet
-  quint64 curLocation = ds.device()->pos();
-  quint64 destLocation = m_objectRef.stp();
+  std::shared_ptr<MSONDocument> doc = DocumentManager::getDocument(ds);
 
-  ds.device()->seek(destLocation);
-  ds >> m_blob;
-  ds.device()->seek(curLocation);
+  if (!doc->isEncrypted()) {
+    // getting remote ObjectPropSet
+    quint64 curLocation = ds.device()->pos();
+    quint64 destLocation = m_objectRef.stp();
+
+    ds.device()->seek(destLocation);
+    ds >> m_blob;
+    ds.device()->seek(curLocation);
+  }
 }
 
 void ObjectDeclarationWithRefCount2FNDX::serialize(QDataStream &ds) const {

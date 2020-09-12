@@ -7,20 +7,20 @@
 #include <QXmlStreamWriter>
 #include <QtCore/qglobal.h>
 
+#include "../IDeserializable.h"
+#include "../ISerializable.h"
+
 namespace MSONcommon {
 
-class StringInStorageBuffer {
+class StringInStorageBuffer : public ISerializable, public IDeserializable{
 private:
   quint32 m_cch;
 
-  QString m_StringData;
+  QByteArray m_rawstring;
 
 public:
   StringInStorageBuffer();
 
-  friend QDataStream &operator<<(QDataStream &ds,
-                                 const StringInStorageBuffer &obj);
-  friend QDataStream &operator>>(QDataStream &ds, StringInStorageBuffer &obj);
   friend QDebug operator<<(QDebug dbg, const StringInStorageBuffer &obj);
 
   quint32 getCch() const;
@@ -37,13 +37,13 @@ private:
    * @param ds <QDataStream> containing the deserializable
    * StringInStorageBuffer
    */
-  void deserialize(QDataStream &ds);
+  virtual void deserialize(QDataStream &ds) override;
   /**
    * @brief creates byte stream from StringInStorageBuffer object
    * @param ds <QDataStream> is the output stream to which the serialized
    * StringInStorageBuffer is send
    */
-  void serialize(QDataStream &ds) const;
+  virtual void serialize(QDataStream &ds) const override;
 
   /**
    * @brief prints the StringInStorageBuffer to a <QDebug> object

@@ -334,8 +334,8 @@ public:
   void generateXml(QXmlStreamWriter &xmlWriter) const;
 
 private:
-  void deserialize(QDataStream &ds) override;
-  void serialize(QDataStream &ds) const override;
+  virtual void deserialize(QDataStream &ds) override;
+  virtual void serialize(QDataStream &ds) const override;
   void toDebugString(QDebug dbg) const override;
 };
 

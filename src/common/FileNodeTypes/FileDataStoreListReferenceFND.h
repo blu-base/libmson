@@ -9,6 +9,7 @@
 #include "IFileNodeType.h"
 
 namespace MSONcommon {
+
 class FileDataStoreListReferenceFND : public IFileNodeType {
 private:
   FileNodeChunkReference m_ref;
@@ -19,7 +20,7 @@ public:
   FileDataStoreListReferenceFND(FNCR_STP_FORMAT stpFormat,
                                 FNCR_CB_FORMAT cbFormat);
   FileDataStoreListReferenceFND(quint8 stpFormat, quint8 cbFormat);
-  ~FileDataStoreListReferenceFND();
+  virtual ~FileDataStoreListReferenceFND() = default;
 
   FileNodeChunkReference getRef() const;
   void setRef(const FileNodeChunkReference &value);
@@ -27,10 +28,12 @@ public:
   virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
 
 private:
-  void deserialize(QDataStream &ds) override;
-  void serialize(QDataStream &ds) const override;
-  void toDebugString(QDebug dbg) const override;
+  virtual void deserialize(QDataStream &ds) override;
+  virtual void serialize(QDataStream &ds) const override;
+
+  virtual void toDebugString(QDebug dbg) const override;
 };
 
 } // namespace MSONcommon
+
 #endif // FILEDATASTORELISTREFERENCEFND_H

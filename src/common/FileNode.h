@@ -10,7 +10,11 @@
 #include "FileNodeTypes/IFileNodeType.h"
 
 #include "commonTypes/Enums.h"
-namespace MSONcommon {
+
+#include "IDeserializable.h"
+#include "ISerializable.h"
+
+namespace MSONcommon{
 
 static constexpr const quint32 FileNode_maskReserved = 0x1;
 static constexpr const quint32 FileNode_maskBaseType = 0xF;
@@ -26,7 +30,7 @@ static constexpr const quint32 FileNode_shiftStpFormat = 23;
 static constexpr const quint32 FileNode_shiftFileNodeSize = 10;
 static constexpr const quint32 FileNode_shiftFileNodeID = 0;
 
-class FileNode {
+class FileNode : public ISerializable, public IDeserializable {
 protected:
   // nonessential. position in byte stream. for debug purposes.
   quint64 stp;
@@ -41,9 +45,7 @@ protected:
 
   quint8 reserved;
 
-  //  FileNodeType *fileNodeType;
-
-  IFileNodeType *fnt;
+  std::shared_ptr<IFileNodeType> fnt;
 
   /**
    * @brief maskReserved
@@ -57,36 +59,38 @@ public:
 
   ~FileNode();
 
-  //  FileNode(const FileNode& source); // copy constructor
-  //  FileNode(FileNode&& source);      // move constructor
-
-  //  FileNode& operator=(const FileNode& rhs); // copy assignment
-  //  FileNode& operator=(FileNode&& rhs);      // move assignment
-
-  friend QDataStream &operator<<(QDataStream &ds, const FileNode &obj);
-  friend QDataStream &operator>>(QDataStream &ds, FileNode &obj);
-
   friend QDebug operator<<(QDebug dbg, const FileNode &obj);
 
   void generateXml(QXmlStreamWriter &xmlWriter) const;
 
   bool isValid();
+
   quint16 getFileNodeID() const;
   void setFileNodeID(const quint16 &value);
   FileNodeTypeID getFileNodeTypeID() const;
+
   quint16 getFileNodeSize() const;
   void setFileNodeSize(const quint16 &value);
+
   quint8 getStpFormat() const;
   void setStpFormat(const quint8 &value);
+
   quint8 getCbFormat() const;
   void setCbFormat(const quint8 &value);
+
   quint8 getBaseType() const;
   void setBaseType(const quint8 &value);
 
   quint64 getStp() const;
 
-  void setFileNodeType(const IFileNodeType &value);
-  IFileNodeType *getFnt() const;
+  void setFileNodeType(const std::shared_ptr<IFileNodeType> &value);
+  std::shared_ptr<IFileNodeType> getFnt() const;
+
+private:
+  virtual void deserialize(QDataStream& ds) override;
+  virtual void serialize(QDataStream& ds) const override;
 };
+
 } // namespace MSONcommon
+
 #endif // FILENODE_H

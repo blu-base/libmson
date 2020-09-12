@@ -9,10 +9,10 @@ namespace MSONcommon {
 
 class FileChunkReference32 : public IFileChunkReference<quint32, quint32> {
 public:
-  FileChunkReference32();
+  FileChunkReference32() = default;
   FileChunkReference32(FCR_INITTYPE inittype);
 
-  virtual ~FileChunkReference32();
+  virtual ~FileChunkReference32() = default;
 
   bool is_fcrNil() const override;
   bool is_fcrZero() const override;
@@ -23,12 +23,13 @@ public:
   quint32 cb() const override;
   void setCb(const quint32 &cb) override;
 
-  void generateXml(QXmlStreamWriter &xmlWriter) const override;
+  virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
 
 private:
-  void deserialize(QDataStream &ds) override;
-  void serialize(QDataStream &ds) const override;
-  void toDebugString(QDebug dbg) const override;
+  virtual void deserialize(QDataStream &ds) override;
+  virtual void serialize(QDataStream &ds) const override;
+
+  virtual void toDebugString(QDebug dbg) const override;
 };
 
 } // namespace MSONcommon

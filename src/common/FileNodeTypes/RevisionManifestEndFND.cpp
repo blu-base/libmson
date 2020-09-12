@@ -2,8 +2,6 @@
 
 namespace MSONcommon {
 
-RevisionManifestEndFND::RevisionManifestEndFND() {}
-
 void RevisionManifestEndFND::deserialize(QDataStream &ds) {}
 
 void RevisionManifestEndFND::serialize(QDataStream &ds) const {}

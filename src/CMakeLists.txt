@@ -18,6 +18,9 @@ set (MSONcommon_PART_SRCS
 
     common/MSONDocument.cpp
 
+    common/ISerializable.cpp
+    common/IDeserializable.cpp
+
 #    common/DocumentSingleton.cpp
     common/DocumentManager.cpp
 
@@ -36,7 +39,7 @@ set (MSONcommon_PART_SRCS
     common/TransactionLogFragment.cpp
 
 
-    common/commonTypes/Enums.cpp
+    common/commonTypes/Enums.h
     common/commonTypes/CompactID.cpp
     common/commonTypes/ExtendedGUID.cpp
     common/commonTypes/IFileChunkReference.cpp

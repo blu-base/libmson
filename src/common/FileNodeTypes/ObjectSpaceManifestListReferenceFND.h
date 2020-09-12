@@ -42,7 +42,7 @@ public:
                                       FNCR_CB_FORMAT cbFormat);
   ObjectSpaceManifestListReferenceFND(quint8 stpFormat, quint8 cbFormat);
 
-  ~ObjectSpaceManifestListReferenceFND();
+  virtual ~ObjectSpaceManifestListReferenceFND() = default;
 
   FileNodeChunkReference getRef() const;
   void setRef(const FileNodeChunkReference &value);
@@ -53,9 +53,10 @@ public:
   virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
 
 private:
-  void deserialize(QDataStream &ds);
-  void serialize(QDataStream &ds) const;
-  void toDebugString(QDebug dbg) const;
+  virtual void deserialize(QDataStream &ds) override;
+  virtual void serialize(QDataStream &ds) const override;
+
+  virtual void toDebugString(QDebug dbg) const override;
 };
 
 } // namespace MSONcommon

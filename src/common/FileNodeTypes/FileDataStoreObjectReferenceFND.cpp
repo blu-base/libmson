@@ -9,8 +9,6 @@ FileDataStoreObjectReferenceFND::FileDataStoreObjectReferenceFND(
     quint8 stpFormat, quint8 cbFormat)
     : m_ref(stpFormat, cbFormat) {}
 
-FileDataStoreObjectReferenceFND::~FileDataStoreObjectReferenceFND() {}
-
 FileNodeChunkReference FileDataStoreObjectReferenceFND::getRef() const {
   return m_ref;
 }

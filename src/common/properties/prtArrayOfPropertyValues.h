@@ -29,12 +29,8 @@ private:
   std::vector<PropertySet> m_dataVector;
 
 public:
-  prtArrayOfPropertyValues();
-
-  friend QDataStream &operator<<(QDataStream &ds,
-                                 const prtArrayOfPropertyValues &obj);
-  friend QDataStream &operator>>(QDataStream &ds,
-                                 prtArrayOfPropertyValues &obj);
+  prtArrayOfPropertyValues() = default;
+  virtual ~prtArrayOfPropertyValues() = default;
 
   friend QDebug operator<<(QDebug dbg, const prtArrayOfPropertyValues &obj);
 
@@ -50,8 +46,9 @@ public:
   virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
 
 private:
-  void deserialize(QDataStream &ds) override;
-  void serialize(QDataStream &ds) const override;
+  virtual void deserialize(QDataStream &ds) override;
+  virtual void serialize(QDataStream &ds) const override;
+
   void toDebugString(QDebug dbg) const override;
 };
 

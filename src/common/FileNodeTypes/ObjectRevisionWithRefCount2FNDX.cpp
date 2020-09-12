@@ -63,11 +63,11 @@ void ObjectRevisionWithRefCount2FNDX::deserialize(QDataStream &ds) {
   ds >> m_ref;
   ds >> m_oid;
 
-  quint32 temp;
+  quint32 temp = 0;
   ds >> temp;
 
-  m_fHasOidReferences = temp & 0x1;
-  m_fHasOsidReferences = (temp & 0x2) >> 1;
+  m_fHasOidReferences = static_cast<bool>(temp & 0x1);
+  m_fHasOsidReferences = static_cast<bool>((temp & 0x2) >> 1) ;
 
   ds >> m_cRef;
 
@@ -86,8 +86,8 @@ void ObjectRevisionWithRefCount2FNDX::serialize(QDataStream &ds) const {
 
   quint32 temp{0};
 
-  temp += m_fHasOidReferences;
-  temp += m_fHasOsidReferences << 1;
+  temp += static_cast<quint32>(m_fHasOidReferences);
+  temp += static_cast<quint32>(m_fHasOsidReferences << 1);
 
   ds << temp;
 

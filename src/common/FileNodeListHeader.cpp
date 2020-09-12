@@ -9,22 +9,7 @@ namespace MSONcommon {
  * @brief FileNodeListHeader::FileNodeListHeader
  */
 FileNodeListHeader::FileNodeListHeader()
-    : m_fileNodeListID{0x10}, m_nFragmentSequence{0}, m_parent{nullptr} {}
-
-FileNodeListHeader::FileNodeListHeader(const FileNodeListHeader &fnl)
-    : m_fileNodeListID{fnl.m_fileNodeListID},
-      m_nFragmentSequence{fnl.m_nFragmentSequence}, m_parent{fnl.m_parent} {}
-
-FileNodeListHeader::FileNodeListHeader(FileNodeListHeader &&fnl)
-    : m_fileNodeListID{fnl.m_fileNodeListID},
-      m_nFragmentSequence{fnl.m_nFragmentSequence}, m_parent{nullptr} {
-  delete m_parent;
-  m_parent = fnl.m_parent;
-  fnl.m_parent = nullptr;
-}
-
-FileNodeListHeader::FileNodeListHeader(FileNodeList *parent)
-    : m_fileNodeListID{0x10}, m_nFragmentSequence{0}, m_parent{parent} {}
+    : m_fileNodeListID{0x10}, m_nFragmentSequence{0} {}
 
 bool FileNodeListHeader::isValid() {
   return isFileNodeListIDValid() && isNFragmentSequenceValid();
@@ -44,36 +29,6 @@ void FileNodeListHeader::generateXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeEndElement();
 }
 
-/**
- * @brief FileNodeListHeader::getNFragmentSequence
- * @return
- */
-
-QDataStream &operator<<(QDataStream &ds, const FileNodeListHeader &obj) {
-  // if byte order is big endian, change to little endian
-  if (!ds.byteOrder()) {
-    ds.setByteOrder(QDataStream::LittleEndian);
-  }
-
-  ds << obj.uintMagic;
-  ds << obj.m_fileNodeListID;
-  ds << obj.m_nFragmentSequence;
-
-  return ds;
-};
-
-QDataStream &operator>>(QDataStream &ds, FileNodeListHeader &obj) {
-  // if byte order is big endian, change to little endian
-  if (!ds.byteOrder()) {
-    ds.setByteOrder(QDataStream::LittleEndian);
-  }
-
-  // skipping uintMagic
-  ds.skipRawData(8);
-  ds >> obj.m_fileNodeListID;
-  ds >> obj.m_nFragmentSequence;
-  return ds;
-};
 
 QDebug operator<<(QDebug dbg, const FileNodeListHeader &obj) {
   QDebugStateSaver saver(dbg);
@@ -89,35 +44,6 @@ QDebug operator<<(QDebug dbg, const FileNodeListHeader &obj) {
 
   return dbg;
 };
-
-FileNodeListHeader &
-FileNodeListHeader::operator=(const FileNodeListHeader &rhs) {
-  if (this == &rhs) {
-    return *this;
-  }
-  delete[] m_parent;
-  m_parent = rhs.m_parent;
-
-  m_fileNodeListID = rhs.m_fileNodeListID;
-  m_nFragmentSequence = rhs.m_nFragmentSequence;
-
-  return *this;
-}
-
-FileNodeListHeader &FileNodeListHeader::operator=(FileNodeListHeader &&rhs) {
-  if (this == &rhs) {
-    return *this;
-  }
-
-  delete m_parent;
-  m_parent = rhs.m_parent;
-  rhs.m_parent = nullptr;
-
-  m_fileNodeListID = rhs.m_fileNodeListID;
-  m_nFragmentSequence = rhs.m_nFragmentSequence;
-
-  return *this;
-}
 
 quint32 FileNodeListHeader::getNFragmentSequence() const {
   return m_nFragmentSequence;
@@ -158,3 +84,29 @@ bool FileNodeListHeader::isFileNodeListIDValid() const {
   return m_fileNodeListID >= 0x10;
 }
 } // namespace MSONcommon
+
+
+void MSONcommon::FileNodeListHeader::deserialize(QDataStream& ds)
+{
+  // if byte order is big endian, change to little endian
+  if (!ds.byteOrder()) {
+    ds.setByteOrder(QDataStream::LittleEndian);
+  }
+
+  // skipping uintMagic
+  ds.skipRawData(8);
+  ds >> m_fileNodeListID;
+  ds >> m_nFragmentSequence;
+}
+
+void MSONcommon::FileNodeListHeader::serialize(QDataStream& ds) const
+{
+  // if byte order is big endian, change to little endian
+  if (!ds.byteOrder()) {
+    ds.setByteOrder(QDataStream::LittleEndian);
+  }
+
+  ds << uintMagic;
+  ds << m_fileNodeListID;
+  ds << m_nFragmentSequence;
+}

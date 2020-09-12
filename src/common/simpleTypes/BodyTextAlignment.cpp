@@ -1,5 +1,7 @@
 #include "BodyTextAlignment.h"
 
+#include <QDataStream>
+
 namespace MSONcommon {
 
 BodyTextAlignment::BodyTextAlignment() : m_value() {}
@@ -14,15 +16,6 @@ quint32 BodyTextAlignment::value() const { return m_value; }
 
 void BodyTextAlignment::setValue(const quint32 val) { m_value = val; }
 
-QDataStream &operator<<(QDataStream &ds, const BodyTextAlignment &obj) {
-  obj.serialize(ds);
-  return ds;
-}
-
-QDataStream &operator>>(QDataStream &ds, BodyTextAlignment &obj) {
-  obj.deserialize(ds);
-  return ds;
-}
 
 QDebug operator<<(QDebug dbg, const BodyTextAlignment &obj) {
   obj.toDebugString(dbg);

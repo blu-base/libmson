@@ -10,19 +10,6 @@ namespace MSONcommon {
 FileDataStoreObject::FileDataStoreObject()
     : m_cbLength(), m_unused(), m_reserved(), m_padding() {}
 
-QDataStream &operator<<(QDataStream &ds, const FileDataStoreObject &obj) {
-  obj.serialize(ds);
-  return ds;
-}
-
-QDataStream &operator>>(QDataStream &ds, FileDataStoreObject &obj) {
-
-  ds.setByteOrder(QDataStream::LittleEndian);
-
-  obj.deserialize(ds);
-  return ds;
-}
-
 QDebug operator<<(QDebug dbg, const FileDataStoreObject &obj) {
   obj.toDebugString(dbg);
   return dbg;
@@ -79,7 +66,7 @@ void FileDataStoreObject::deserialize(QDataStream &ds) {
   ds >> m_reserved;
 
   /// \todo reading a large File to memory might be manipulated here
-  uint len = roundUpMultiple(m_cbLength, 8);
+  uint len = ceilToMultiple(m_cbLength, 8);
 
   m_FileData = ds.device()->read(len);
 

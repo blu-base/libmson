@@ -7,10 +7,12 @@
 #include <QtCore/qglobal.h>
 
 namespace MSONcommon {
+
 class HashedChunkDescriptor2FND : public IFileNodeType {
 private:
   FileNodeChunkReference m_BlobRef;
 
+  static const quint8 guidHashWidth = 16;
   QByteArray m_guidHash;
 
   ObjectSpaceObjectPropSet m_blob;
@@ -18,7 +20,7 @@ private:
 public:
   HashedChunkDescriptor2FND(FNCR_STP_FORMAT stpFormat, FNCR_CB_FORMAT cbFormat);
   HashedChunkDescriptor2FND(quint8 stpFormat, quint8 cbFormat);
-  ~HashedChunkDescriptor2FND();
+  virtual ~HashedChunkDescriptor2FND() = default;
 
   FileNodeChunkReference BlobRef() const;
   void setBlobRef(const FileNodeChunkReference &BlobRef);
@@ -32,10 +34,12 @@ public:
   virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
 
 private:
-  void deserialize(QDataStream &ds) override;
-  void serialize(QDataStream &ds) const override;
-  void toDebugString(QDebug dbg) const override;
+  virtual void deserialize(QDataStream &ds) override;
+  virtual void serialize(QDataStream &ds) const override;
+
+  virtual void toDebugString(QDebug dbg) const override;
 };
 
 } // namespace MSONcommon
+
 #endif // HASHEDCHUNKDESCRIPTOR2FND_H

@@ -8,9 +8,12 @@
 #include <QUuid>
 #include <QXmlStreamWriter>
 
+#include "../IDeserializable.h"
+#include "../ISerializable.h"
+
 namespace MSONcommon {
 
-class ExtendedGUID {
+class ExtendedGUID : public ISerializable, public IDeserializable {
 private:
   QUuid m_guid;
   quint32 data_n;
@@ -34,9 +37,6 @@ public:
 
   //  bool equals(const ExtendedGUID &extGuid) const;
 
-  friend QDataStream &operator<<(QDataStream &ds, const ExtendedGUID &obj);
-  ;
-  friend QDataStream &operator>>(QDataStream &ds, ExtendedGUID &obj);
   friend QDebug operator<<(QDebug dbg, const ExtendedGUID &obj);
   ;
 
@@ -54,9 +54,8 @@ public:
   void generateXml(QXmlStreamWriter &xmlWriter) const;
 
 private:
-  void deserialize(QDataStream &ds);
-
-  void serialize(QDataStream &ds) const;
+  virtual void deserialize(QDataStream &ds) override;
+  virtual void serialize(QDataStream &ds) const override;
 
   void toDebugString(QDebug dbg) const;
 };

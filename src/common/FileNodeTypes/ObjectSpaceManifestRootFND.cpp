@@ -2,8 +2,6 @@
 
 namespace MSONcommon {
 
-ObjectSpaceManifestRootFND::ObjectSpaceManifestRootFND() {}
-
 ExtendedGUID ObjectSpaceManifestRootFND::getGosidRoot() const {
   return m_gosidRoot;
 }

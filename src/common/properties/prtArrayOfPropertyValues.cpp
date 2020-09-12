@@ -7,18 +7,6 @@
 
 namespace MSONcommon {
 
-prtArrayOfPropertyValues::prtArrayOfPropertyValues() {}
-
-QDataStream &operator<<(QDataStream &ds, const prtArrayOfPropertyValues &obj) {
-  obj.serialize(ds);
-  return ds;
-}
-
-QDataStream &operator>>(QDataStream &ds, prtArrayOfPropertyValues &obj) {
-  obj.deserialize(ds);
-  return ds;
-}
-
 QDebug operator<<(QDebug dbg, const prtArrayOfPropertyValues &obj) {
   obj.toDebugString(dbg);
   return dbg;

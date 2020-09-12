@@ -20,7 +20,7 @@ public:
   ObjectInfoDependencyOverridesFND(FNCR_STP_FORMAT stpFormat,
                                    FNCR_CB_FORMAT cbFormat);
   ObjectInfoDependencyOverridesFND(quint8 stpFormat, quint8 cbFormat);
-  ~ObjectInfoDependencyOverridesFND();
+  virtual ~ObjectInfoDependencyOverridesFND() = default;
 
   /**
    * @brief container
@@ -38,9 +38,10 @@ public:
   virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
 
 private:
-  void deserialize(QDataStream &ds) override;
-  void serialize(QDataStream &ds) const override;
-  void toDebugString(QDebug dbg) const override;
+  virtual void deserialize(QDataStream &ds) override;
+  virtual void serialize(QDataStream &ds) const override;
+
+  virtual void toDebugString(QDebug dbg) const override;
 };
 
 } // namespace MSONcommon

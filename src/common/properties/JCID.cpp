@@ -219,16 +219,6 @@ void JCID::generateXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeEndElement();
 }
 
-QDataStream &operator<<(QDataStream &ds, const JCID &obj) {
-  obj.serialize(ds);
-  return ds;
-}
-
-QDataStream &operator>>(QDataStream &ds, JCID &obj) {
-  obj.deserialize(ds);
-  return ds;
-}
-
 QDebug operator<<(QDebug dbg, const JCID &obj) {
   obj.toDebugString(dbg);
   return dbg;

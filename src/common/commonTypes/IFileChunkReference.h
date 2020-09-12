@@ -8,6 +8,10 @@
 
 #include <QXmlStreamWriter>
 
+#include "../IDeserializable.h"
+#include "../ISerializable.h"
+
+
 namespace MSONcommon {
 
 enum FCR_INITTYPE {
@@ -15,7 +19,7 @@ enum FCR_INITTYPE {
   FCRNIL,
 };
 
-template <typename S, typename C> class IFileChunkReference {
+template <typename S, typename C> class IFileChunkReference : public ISerializable, public IDeserializable {
 protected:
   S m_stp;
   C m_cb;
@@ -39,32 +43,11 @@ public:
 
 private:
   /**
-   * @brief creates IFileChunkReference from QDataStream
-   * @param ds <QDataStream> containing the deserializable IFileChunkReference
-   */
-  virtual void deserialize(QDataStream &ds) = 0;
-  /**
-   * @brief creates byte stream from IFileChunkReference object
-   * @param ds <QDataStream> is the output stream to which the serialized
-   * IFileChunkReference is send
-   */
-  virtual void serialize(QDataStream &ds) const = 0;
-
-  /**
    * @brief prints the IFileChunkReference to a <QDebug> object
    * @param dbg <QDebug> string builder for the debug information
    */
   virtual void toDebugString(QDebug dbg) const = 0;
 
-  friend QDataStream &operator<<(QDataStream &ds,
-                                 const IFileChunkReference &obj) {
-    obj.serialize(ds);
-    return ds;
-  };
-  friend QDataStream &operator>>(QDataStream &ds, IFileChunkReference &obj) {
-    obj.deserialize(ds);
-    return ds;
-  }
   friend QDebug operator<<(QDebug dbg, const IFileChunkReference &obj) {
     obj.toDebugString(dbg);
     return dbg;

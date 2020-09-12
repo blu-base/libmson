@@ -7,6 +7,9 @@
 #include <QDebug>
 #include <QXmlStreamWriter>
 
+#include "../IDeserializable.h"
+#include "../ISerializable.h"
+
 namespace MSONcommon {
 
 static constexpr const quint32 LayoutAlignment_maskLha = 0x00000003;
@@ -40,15 +43,12 @@ enum class VAlignment : quint32 {
 QString hAlignmentToString(const HAlignment &val);
 QString vAlignmentToString(const VAlignment &val);
 
-class LayoutAlignment {
+class LayoutAlignment : public ISerializable, public IDeserializable {
 private:
   quint32 m_value;
 
 public:
   LayoutAlignment();
-
-  friend QDataStream &operator<<(QDataStream &ds, const LayoutAlignment &obj);
-  friend QDataStream &operator>>(QDataStream &ds, LayoutAlignment &obj);
 
   friend QDebug operator<<(QDebug dbg, const LayoutAlignment &obj);
 
@@ -70,8 +70,9 @@ public:
   void setLaNil(const bool val);
 
 private:
-  void deserialize(QDataStream &ds);
-  void serialize(QDataStream &ds) const;
+  virtual void deserialize(QDataStream &ds) override;
+  virtual void serialize(QDataStream &ds) const override;
+
   void toDebugString(QDebug dbg) const;
 };
 

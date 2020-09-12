@@ -29,18 +29,6 @@ void prtFourBytesOfLengthFollowedByData::toDebugString(QDebug dbg) const {
 
 prtFourBytesOfLengthFollowedByData::prtFourBytesOfLengthFollowedByData() {}
 
-QDataStream &operator<<(QDataStream &ds,
-                        const prtFourBytesOfLengthFollowedByData &obj) {
-  obj.serialize(ds);
-  return ds;
-}
-
-QDataStream &operator>>(QDataStream &ds,
-                        prtFourBytesOfLengthFollowedByData &obj) {
-  obj.deserialize(ds);
-  return ds;
-}
-
 QDebug operator<<(QDebug dbg, const prtFourBytesOfLengthFollowedByData &obj) {
   obj.toDebugString(dbg);
   return dbg;

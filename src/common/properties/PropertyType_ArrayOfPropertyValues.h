@@ -31,11 +31,6 @@ private:
 public:
   PropertyType_ArrayOfPropertyValues();
 
-  friend QDataStream &operator<<(QDataStream &ds,
-                                 const PropertyType_ArrayOfPropertyValues &obj);
-  friend QDataStream &operator>>(QDataStream &ds,
-                                 PropertyType_ArrayOfPropertyValues &obj);
-
   friend QDebug operator<<(QDebug dbg,
                            const PropertyType_ArrayOfPropertyValues &obj);
 
@@ -51,8 +46,9 @@ public:
   void setData(const std::vector<PropertySet> &data);
 
 private:
-  void deserialize(QDataStream &ds) override;
-  void serialize(QDataStream &ds) const override;
+  virtual void deserialize(QDataStream &ds) override;
+  virtual void serialize(QDataStream &ds) const override;
+
   void toDebugString(QDebug dbg) const override;
 };
 

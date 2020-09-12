@@ -10,14 +10,15 @@
 #include "ObjectSpaceObjectStreamOfOIDs.h"
 #include "ObjectSpaceObjectStreamOfOSIDs.h"
 
-#include "../properties/PropertySet.h"
-
+#include "../IDeserializable.h"
+#include "../ISerializable.h"
 #include "../commonTypes/FileNodeChunkReference.h"
+#include "../properties/PropertySet.h"
 
 namespace MSONcommon {
 
 /// \todo counting inside the streamheaders
-class ObjectSpaceObjectPropSet {
+class ObjectSpaceObjectPropSet : public ISerializable, public IDeserializable {
 private:
   ObjectSpaceObjectStreamOfOIDs m_OIDs;
   ObjectSpaceObjectStreamOfOSIDs m_OSIDs;
@@ -30,11 +31,6 @@ private:
 public:
   ObjectSpaceObjectPropSet();
   ObjectSpaceObjectPropSet(QDataStream &ds, const FileNodeChunkReference &ref);
-
-  friend QDataStream &operator<<(QDataStream &ds,
-                                 const ObjectSpaceObjectPropSet &obj);
-  friend QDataStream &operator>>(QDataStream &ds,
-                                 ObjectSpaceObjectPropSet &obj);
 
   friend QDebug operator<<(QDebug dbg, const ObjectSpaceObjectPropSet &obj);
 
@@ -61,15 +57,13 @@ private:
    * Note, that only 4GB of an FileDataStoreObject can be parsed because an
    * limitation of QByteArray
    */
-  void deserialize(QDataStream &ds);
+  virtual void deserialize(QDataStream &ds) override;
   /**
    * @brief creates byte stream from ObjectSpaceObjectPropSet object
    * @param ds <QDataStream> is the output stream to which the serialized
    * ObjectSpaceObjectPropSet is send
-   *
-
    */
-  void serialize(QDataStream &ds) const;
+  virtual void serialize(QDataStream &ds) const override;
 
   /**
    * @brief prints the ObjectSpaceObjectPropSet to a <QDebug> object

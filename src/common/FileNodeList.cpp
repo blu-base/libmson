@@ -3,54 +3,28 @@
 
 #include "FileNode.h"
 #include "FileNodeList.h"
+
 namespace MSONcommon {
-FileNodeList::FileNodeList() {}
 
-FileNodeList::FileNodeList(const FileNodeList &fnl) {}
+FileNodeList::FileNodeList() : m_paddingLength() {}
 
-FileNodeList::~FileNodeList() {
-  for (auto p : m_children) {
-    delete p;
-  }
-  m_children.clear();
+void MSONcommon::FileNodeList::serialize(QDataStream &ds) const {}
 
-  delete m_nextFragment;
-}
-
-QDataStream &operator<<(QDataStream &ds, const FileNodeList &obj) { return ds; }
-
-QDataStream &operator>>(QDataStream &ds, FileNodeList &obj) {
+void MSONcommon::FileNodeList::deserialize(QDataStream &ds) {
   // if byte order is big endian, change to little endian
   if (!ds.byteOrder()) {
     ds.setByteOrder(QDataStream::LittleEndian);
   }
 
-  ds >> obj.m_fileNodeListHeader;
+  ds >> m_fileNodeListHeader;
 
   for (size_t i{0}; i < 4; i++) {
-    FileNode *node = new FileNode();
+    auto node = std::make_shared<FileNode>();
 
     ds >> *node;
 
-    obj.m_children.push_back(node);
+    m_children.push_back(node);
   }
-
-  //  node = new FileNode();
-
-  //  ds >> *node;
-
-  //  obj.m_children.push_back(node);
-
-  //  do {
-
-  //  } while (node != 0x0FF)
-
-  //  I_FileNode node;
-  //  do {
-
-  //  } while ()
-
-  return ds;
 }
 
 QDebug operator<<(QDebug dbg, const FileNodeList &obj) {
@@ -66,52 +40,6 @@ QDebug operator<<(QDebug dbg, const FileNodeList &obj) {
   return dbg;
 }
 
-FileNodeList &FileNodeList::operator=(const FileNodeList &rhs) {
-  if (this == &rhs) {
-    return *this;
-  }
-
-  for (auto fn : m_children) {
-    delete fn;
-  }
-
-  for (auto fn : rhs.m_children) {
-    m_children.push_back(new FileNode(*fn));
-  }
-
-  m_fileNodeListHeader = rhs.m_fileNodeListHeader;
-  m_paddingLength = rhs.m_paddingLength;
-
-  delete m_nextFragment;
-  m_nextFragment = rhs.m_nextFragment;
-
-  return *this;
-}
-
-FileNodeList &FileNodeList::operator=(FileNodeList &&rhs) {
-  if (this == &rhs) {
-    return *this;
-  }
-
-  for (auto fn : m_children) {
-    delete fn;
-  }
-
-  for (auto fn : rhs.m_children) {
-    m_children.push_back(new FileNode(*fn));
-    fn = nullptr;
-  }
-
-  m_fileNodeListHeader = rhs.m_fileNodeListHeader;
-  m_paddingLength = rhs.m_paddingLength;
-
-  delete m_nextFragment;
-  m_nextFragment = rhs.m_nextFragment;
-  rhs.m_nextFragment = nullptr;
-
-  return *this;
-}
-
 FileNodeListHeader FileNodeList::getFileNodeListHeader() const {
   return m_fileNodeListHeader;
 }
@@ -120,9 +48,12 @@ void FileNodeList::setFileNodeListHeader(const FileNodeListHeader &value) {
   m_fileNodeListHeader = value;
 }
 
-std::vector<FileNode *> FileNodeList::getChildren() const { return m_children; }
+std::vector<std::shared_ptr<FileNode>> FileNodeList::getChildren() const {
+  return m_children;
+}
 
-void FileNodeList::setChildren(const std::vector<FileNode *> &value) {
+void FileNodeList::setChildren(
+    const std::vector<std::shared_ptr<FileNode>> &value) {
   m_children = value;
 }
 
@@ -132,11 +63,13 @@ void FileNodeList::setPaddingLength(const quint64 &value) {
   m_paddingLength = value;
 }
 
-FileChunkReference64x32 *FileNodeList::getNextFragment() const {
+FileChunkReference64x32 FileNodeList::getNextFragment() const {
   return m_nextFragment;
 }
 
-void FileNodeList::setNextFragment(FileChunkReference64x32 *nextFragment) {
+void FileNodeList::setNextFragment(
+    const FileChunkReference64x32 &nextFragment) {
   m_nextFragment = nextFragment;
 }
+
 } // namespace MSONcommon

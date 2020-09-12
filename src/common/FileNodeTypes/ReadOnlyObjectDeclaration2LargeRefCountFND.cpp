@@ -24,9 +24,6 @@ ReadOnlyObjectDeclaration2LargeRefCountFND::
       m_cbFormat(static_cast<FNCR_CB_FORMAT>(cbFormat)),
       m_base(stpFormat, cbFormat) {}
 
-ReadOnlyObjectDeclaration2LargeRefCountFND::
-    ~ReadOnlyObjectDeclaration2LargeRefCountFND() {}
-
 ObjectDeclaration2LargeRefCountFND
 ReadOnlyObjectDeclaration2LargeRefCountFND::getBase() const {
   return m_base;

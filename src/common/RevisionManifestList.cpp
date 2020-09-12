@@ -1,24 +1,20 @@
 #include "RevisionManifestList.h"
 
-#include "commonTypes/Enums.h"
 #include <algorithm>
 
-//#include "DocumentSingleton.h"
-
+#include "DocumentManager.h"
 #include "FileNodeTypes/ObjectGroupListReferenceFND.h"
+#include "commonTypes/Enums.h"
 #include "commonTypes/FileChunkReference64x32.h"
 #include "commonTypes/FileNodeChunkReference.h"
 #include "helper/Helper.h"
+
 namespace MSONcommon {
-FileNodeChunkReference RevisionManifestList::getRef() const { return m_Ref; }
+
+FileNodeChunkReference RevisionManifestList::getRef() const { return m_ref; }
 
 void RevisionManifestList::setRef(const FileNodeChunkReference &ref) {
-  m_Ref = ref;
-}
-
-QDataStream &operator>>(QDataStream &ds, RevisionManifestList &obj) {
-  obj.deserialize(ds);
-  return ds;
+  m_ref = ref;
 }
 
 QDebug operator<<(QDebug dbg, const RevisionManifestList &obj) {
@@ -28,16 +24,8 @@ QDebug operator<<(QDebug dbg, const RevisionManifestList &obj) {
 
 void RevisionManifestList::generateXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("RevisionManifestList");
-
-  xmlWriter.writeStartElement("ref");
-  m_Ref.generateXml(xmlWriter);
-  xmlWriter.writeEndElement();
-
-  //    xmlWriter.writeStartElement("FileNodeListFragments");
-  //    for (const auto& entry : m_FileNodeListFragments) {
-  //        entry.generateXml(xmlWriter);
-  //    }
-  //    xmlWriter.writeEndElement();
+  xmlWriter.writeAttribute("stp", qStringHex(m_ref.stp(), 16));
+  xmlWriter.writeAttribute("cb", qStringHex(m_ref.cb(), 16));
 
   xmlWriter.writeStartElement("RevisionManifests");
   for (const auto &entry : m_RevisionManifests) {
@@ -47,25 +35,25 @@ void RevisionManifestList::generateXml(QXmlStreamWriter &xmlWriter) const {
 
   xmlWriter.writeStartElement("RevisionRoleDeclarations");
   for (const auto &entry : m_RevisionRoleDeclarations) {
-    entry.generateXml(xmlWriter);
+    entry->generateXml(xmlWriter);
   }
   xmlWriter.writeEndElement();
 
   xmlWriter.writeStartElement("RevisionRoleAndContextDeclarations");
   for (const auto &entry : m_RevisionRoleAndContextDeclarations) {
-    entry.generateXml(xmlWriter);
+    entry->generateXml(xmlWriter);
   }
   xmlWriter.writeEndElement();
 
   xmlWriter.writeStartElement("ObjectGroupLists");
-  for (auto entry : m_ObjectGroupLists) {
+  for (const auto &entry : m_ObjectGroupLists) {
     entry->generateXml(xmlWriter);
   }
   xmlWriter.writeEndElement();
 
   xmlWriter.writeStartElement("FileNodeSequence");
   for (const auto &entry : m_FileNodeSequence) {
-    entry.generateXml(xmlWriter);
+    entry->generateXml(xmlWriter);
   }
   xmlWriter.writeEndElement();
 
@@ -74,84 +62,81 @@ void RevisionManifestList::generateXml(QXmlStreamWriter &xmlWriter) const {
 
 void RevisionManifestList::deserialize(QDataStream &ds) {
 
-  m_FileNodeListFragments = parseFileNodeListFragments(ds, m_Ref);
+  m_FileNodeListFragments = parseFileNodeListFragments(ds, m_ref);
 
   for (const auto &fragment : m_FileNodeListFragments) {
-    const auto &rgFileNodes = fragment.rgFileNodes();
+    const auto &rgFileNodes = fragment->rgFileNodes();
     copy_if(rgFileNodes.begin(), rgFileNodes.end(),
-            back_inserter(m_FileNodeSequence), [](FileNode entry) {
-              return entry.getFileNodeTypeID() !=
+            back_inserter(m_FileNodeSequence),
+            [](const std::shared_ptr<FileNode> &entry) {
+              return entry->getFileNodeTypeID() !=
                      FileNodeTypeID::ChunkTerminatorFND;
             });
   }
 
-  //  copy_if(fragment->rgFileNodes().begin(), fragment->rgFileNodes().end(),
-  //          back_inserter(mFileNodeSequence), [](FileNode *entry) {
-  //            return entry->getFileNodeID() !=
-  //                       static_cast<quint16>(
-  //                           FileNodeTypeID::ChunkTerminatorFND) &&
-  //                   entry->getFileNodeID() != 0;
-  //          });
-
-  RevisionManifest *revManifest{};
-
   std::copy_if(m_FileNodeSequence.begin(), m_FileNodeSequence.end(),
-               back_inserter(m_RevisionRoleDeclarations), [](FileNode entry) {
-                 return entry.getFileNodeID() ==
+               back_inserter(m_RevisionRoleDeclarations),
+               [](const std::shared_ptr<FileNode> &entry) {
+                 return entry->getFileNodeID() ==
                         static_cast<quint16>(
                             FileNodeTypeID::RevisionRoleDeclarationFND);
                });
 
   std::copy_if(
       m_FileNodeSequence.begin(), m_FileNodeSequence.end(),
-      back_inserter(m_RevisionRoleAndContextDeclarations), [](FileNode entry) {
-        return entry.getFileNodeID() ==
+      back_inserter(m_RevisionRoleAndContextDeclarations),
+      [](const std::shared_ptr<FileNode> &entry) {
+        return entry->getFileNodeID() ==
                static_cast<quint16>(
                    FileNodeTypeID::RevisionRoleAndContextDeclarationFND);
       });
 
-  for (const FileNode &fn : m_FileNodeSequence) {
-    if (fn.getFileNodeID() ==
-            static_cast<quint16>(FileNodeTypeID::RevisionManifestStart6FND) ||
-        fn.getFileNodeID() ==
-            static_cast<quint16>(FileNodeTypeID::RevisionManifestStart7FND) ||
-        fn.getFileNodeID() ==
-            static_cast<quint16>(FileNodeTypeID::RevisionManifestStart4FND)) {
+  std::shared_ptr<RevisionManifest> revManifest =
+      std::make_shared<RevisionManifest>();
+  for (auto fn : m_FileNodeSequence) {
 
-      revManifest = new RevisionManifest();
-      revManifest->getFileNodeSquence().push_back(fn);
+    switch (static_cast<FileNodeTypeID>(fn->getFileNodeID())) {
+    case FileNodeTypeID::RevisionManifestStart6FND:
+    case FileNodeTypeID::RevisionManifestStart7FND:
+    case FileNodeTypeID::RevisionManifestStart4FND: {
+      revManifest = std::make_shared<RevisionManifest>();
 
-    } else if (fn.getFileNodeID() ==
-               static_cast<quint16>(FileNodeTypeID::RevisionManifestEndFND)) {
+      revManifest->fileNodeSquence().push_back(fn);
+      break;
+    }
+
+    case FileNodeTypeID::RevisionManifestEndFND: {
       revManifest->getFileNodeSquence().push_back(fn);
       m_RevisionManifests.push_back(revManifest);
-      revManifest = new RevisionManifest();
-    } else if (fn.getFileNodeID() !=
-                   static_cast<quint16>(FileNodeTypeID::ChunkTerminatorFND) &&
-               fn.getFileNodeID() !=
-                   static_cast<quint16>(
-                       FileNodeTypeID::RevisionManifestListStartFND)) {
-      if (fn.getFileNodeID() ==
-          static_cast<quint16>(FileNodeTypeID::ObjectDataEncryptionKeyV2FNDX)) {
-/// \todo capture encrypted section in Document object
-        //        MSONcommon::DocumentSingleton::getDoc()->setIsEncrypted(true);
-      }
-
-      revManifest->getFileNodeSquence().push_back(fn);
-      if (fn.getFileNodeID() ==
+      revManifest = std::make_shared<RevisionManifest>();
+      break;
+    }
+    case FileNodeTypeID::ChunkTerminatorFND:
+    case FileNodeTypeID::RevisionManifestListStartFND:
+      break;
+    case FileNodeTypeID::ObjectDataEncryptionKeyV2FNDX:
+      DocumentManager::getDocument(ds)->setIsEncrypted(true);
+      revManifest->fileNodeSquence().push_back(fn);
+      break;
+    default: {
+      revManifest->fileNodeSquence().push_back(fn);
+      if (fn->getFileNodeID() ==
           static_cast<quint16>(FileNodeTypeID::ObjectGroupListReferenceFND)) {
 
-        auto *objectGroupListRef =
-            dynamic_cast<ObjectGroupListReferenceFND *>(fn.getFnt());
+        const auto objectGroupListRef =
+            std::dynamic_pointer_cast<ObjectGroupListReferenceFND>(fn->getFnt())
+                ->ref();
 
-        ObjectGroupList *objectGroupList =
-            new ObjectGroupList(objectGroupListRef->ref());
+        std::shared_ptr<ObjectGroupList> objectGroupList =
+            std::make_shared<ObjectGroupList>(objectGroupListRef);
 
-        ds.device()->seek(objectGroupListRef->ref().stp());
+        ds.device()->seek(objectGroupListRef.stp());
         ds >> *objectGroupList;
 
         m_ObjectGroupLists.push_back(objectGroupList);
       }
+      break;
+    }
     }
   }
 }
@@ -159,7 +144,7 @@ void RevisionManifestList::deserialize(QDataStream &ds) {
 void RevisionManifestList::toDebugString(QDebug dbg) const {
 
   dbg << "RevisionManifestList:\n";
-  dbg << "ref: " << m_Ref << '\n';
+  dbg << "ref: " << m_ref << '\n';
   dbg << "FileNodeListFragments count:              "
       << m_FileNodeListFragments.size() << '\n';
   dbg << "RevisionManifests count:                  "
@@ -175,7 +160,7 @@ void RevisionManifestList::toDebugString(QDebug dbg) const {
 
   dbg << "\nRevisionManifestList FileNodeListFragments....\n";
   for (size_t i{0}; i < m_FileNodeListFragments.size(); i++) {
-    dbg << m_FileNodeListFragments[i];
+    dbg << *m_FileNodeListFragments[i];
   }
 
   dbg << "\nRevisionManifestList RevisionManifests....\n";
@@ -184,92 +169,83 @@ void RevisionManifestList::toDebugString(QDebug dbg) const {
   }
   dbg << "\nRevisionManifestList RevisionRoleDeclarations....\n";
   for (size_t i{0}; i < m_RevisionRoleDeclarations.size(); i++) {
-    dbg << m_RevisionRoleDeclarations[i];
+    dbg << *m_RevisionRoleDeclarations[i];
   }
   dbg << "\nRevisionManifestList RevisionRoleAndContextDeclarations....\n";
   for (size_t i{0}; i < m_RevisionRoleAndContextDeclarations.size(); i++) {
-    dbg << m_RevisionRoleAndContextDeclarations[i];
+    dbg << *m_RevisionRoleAndContextDeclarations[i];
   }
   dbg << "\nRevisionManifestList ObjectGroupLists....\n";
   for (size_t i{0}; i < m_ObjectGroupLists.size(); i++) {
-    dbg << m_ObjectGroupLists[i];
+    dbg << *m_ObjectGroupLists[i];
   }
   dbg << "\nRevisionManifestList FileNodeSequence....\n";
   for (size_t i{0}; i < m_FileNodeSequence.size(); i++) {
-    dbg << m_FileNodeSequence[i];
+    dbg << *m_FileNodeSequence[i];
   }
 }
 
-RevisionManifestList::RevisionManifestList(FileNodeChunkReference ref)
-    : m_Ref{ref}, m_FileNodeSequence{} {}
+RevisionManifestList::RevisionManifestList(const FileNodeChunkReference &ref)
+    : m_ref{ref} {}
 
-RevisionManifestList::~RevisionManifestList() {
-
-  for (auto *entry : m_RevisionManifests) {
-    delete entry;
-  }
-
-  for (auto *entry : m_ObjectGroupLists) {
-    delete entry;
-  }
-}
-
-std::vector<FileNode> RevisionManifestList::getFileNodeSequence() const {
+std::vector<std::shared_ptr<FileNode>>
+RevisionManifestList::getFileNodeSequence() const {
   return m_FileNodeSequence;
 }
 
 void RevisionManifestList::setFileNodeSequence(
-    const std::vector<FileNode> &value) {
+    const std::vector<std::shared_ptr<FileNode>> &value) {
   m_FileNodeSequence = value;
 }
 
-std::vector<ObjectGroupList *>
+std::vector<std::shared_ptr<ObjectGroupList>>
 RevisionManifestList::getObjectGroupLists() const {
   return m_ObjectGroupLists;
 }
 
 void RevisionManifestList::setObjectGroupLists(
-    const std::vector<ObjectGroupList *> &value) {
+    const std::vector<std::shared_ptr<ObjectGroupList>> &value) {
   m_ObjectGroupLists = value;
 }
 
-std::vector<FileNode>
+std::vector<std::shared_ptr<FileNode>>
 RevisionManifestList::getRevisionRoleAndContextDeclarations() const {
   return m_RevisionRoleAndContextDeclarations;
 }
 
 void RevisionManifestList::setRevisionRoleAndContextDeclarations(
-    const std::vector<FileNode> &value) {
+    const std::vector<std::shared_ptr<FileNode>> &value) {
   m_RevisionRoleAndContextDeclarations = value;
 }
 
-std::vector<FileNode>
+std::vector<std::shared_ptr<FileNode>>
 RevisionManifestList::getRevisionRoleDeclarations() const {
   return m_RevisionRoleDeclarations;
 }
 
 void RevisionManifestList::setRevisionRoleDeclarations(
-    const std::vector<FileNode> &value) {
+    const std::vector<std::shared_ptr<FileNode>> &value) {
   m_RevisionRoleDeclarations = value;
 }
 
-std::vector<RevisionManifest *>
+std::vector<std::shared_ptr<RevisionManifest>>
 RevisionManifestList::getRevisionManifests() const {
   return m_RevisionManifests;
 }
 
 void RevisionManifestList::setRevisionManifests(
-    const std::vector<RevisionManifest *> &value) {
+    const std::vector<std::shared_ptr<RevisionManifest>> &value) {
   m_RevisionManifests = value;
 }
 
-std::vector<FileNodeListFragment>
+std::vector<std::shared_ptr<FileNodeListFragment>>
 RevisionManifestList::getFileNodeListFragments() const {
   return m_FileNodeListFragments;
 }
 
 void RevisionManifestList::setFileNodeListFragments(
-    const std::vector<FileNodeListFragment> &value) {
+    const std::vector<std::shared_ptr<FileNodeListFragment>> &value) {
   m_FileNodeListFragments = value;
 }
+
 } // namespace MSONcommon

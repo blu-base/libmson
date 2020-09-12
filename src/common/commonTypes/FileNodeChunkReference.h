@@ -28,7 +28,7 @@ public:
   FileNodeChunkReference(FNCR_STP_FORMAT stpFormat, FNCR_CB_FORMAT cbFormat);
   FileNodeChunkReference(quint8 stpFormat, quint8 cbFormat);
 
-  virtual ~FileNodeChunkReference();
+  virtual ~FileNodeChunkReference() = default;
 
   bool is_fcrNil() const override;
   bool is_fcrZero() const override;
@@ -42,12 +42,13 @@ public:
   bool isSTPcompressed();
   bool isCBcompressed();
 
-  void generateXml(QXmlStreamWriter &xmlWriter) const override;
+  virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
 
 private:
-  void deserialize(QDataStream &ds) override;
-  void serialize(QDataStream &ds) const override;
-  void toDebugString(QDebug dbg) const override;
+  virtual void deserialize(QDataStream &ds) override;
+  virtual void serialize(QDataStream &ds) const override;
+
+  virtual void toDebugString(QDebug dbg) const override;
 
   FNCR_STP_FORMAT m_stpFormat;
   FNCR_CB_FORMAT m_cbFormat;

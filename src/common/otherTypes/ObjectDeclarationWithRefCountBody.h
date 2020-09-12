@@ -4,10 +4,12 @@
 #include <QtCore/qglobal.h>
 
 #include "../commonTypes/CompactID.h"
+#include "../IDeserializable.h"
+#include "../ISerializable.h"
 
 namespace MSONcommon {
 
-class ObjectDeclarationWithRefCountBody {
+class ObjectDeclarationWithRefCountBody : public ISerializable, public IDeserializable {
 private:
   /**
    * @brief specifies the identity of this object
@@ -56,10 +58,6 @@ private:
 public:
   ObjectDeclarationWithRefCountBody();
 
-  friend QDataStream &operator<<(QDataStream &ds,
-                                 const ObjectDeclarationWithRefCountBody &obj);
-  friend QDataStream &operator>>(QDataStream &ds,
-                                 ObjectDeclarationWithRefCountBody &obj);
   friend QDebug operator<<(QDebug dbg,
                            const ObjectDeclarationWithRefCountBody &obj);
 
@@ -86,13 +84,13 @@ private:
    * @param ds <QDataStream> containing the deserializable
    * ObjectDeclarationWithRefCountBody
    */
-  void deserialize(QDataStream &ds);
+  virtual void deserialize(QDataStream &ds) override;
   /**
    * @brief creates byte stream from ObjectDeclarationWithRefCountBody object
    * @param ds <QDataStream> is the output stream to which the serialized
    * ObjectDeclarationWithRefCountBody is send
    */
-  void serialize(QDataStream &ds) const;
+  virtual void serialize(QDataStream &ds) const override;
 
   /**
    * @brief prints the ObjectDeclarationWithRefCountBody to a <QDebug> object

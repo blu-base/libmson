@@ -17,40 +17,42 @@ inline void copy_until(_InIt _First, _InIt _Last, _OutIt _Dest, _Pr _Pred) {
   std::copy(_First, _posTerm, _Dest);
 }
 
-quint64 roundUpMultiple(const quint64 numToRound, const quint64 multiple) {
-  if (multiple == 0)
-    return numToRound;
-
-  quint64 remainder = numToRound % multiple;
-  if (remainder == 0) {
-    return numToRound;
-  } else {
-    return numToRound + multiple - remainder;
+quint64 ceilToMultiple(const quint64 num, const quint64 multiple) {
+  if (multiple == 0) {
+    return num;
   }
+
+  quint64 remainder = num % multiple;
+  if (remainder == 0) {
+    return num;
+  }
+  return num + multiple - remainder;
 }
 
 // Parse all fragments and add them to m_fileNodeSequence
-std::vector<MSONcommon::FileNodeListFragment>
-parseFileNodeListFragments(QDataStream &ds, const MSONcommon::FileChunkReference64x32 &ref ) {
+std::vector<std::shared_ptr<FileNodeListFragment>>
+parseFileNodeListFragments(QDataStream &ds,
+                           const FileChunkReference64x32 &ref) {
   quint64 preLocation = ds.device()->pos();
-  std::vector<MSONcommon::FileNodeListFragment> fragments{};
+  std::vector<std::shared_ptr<FileNodeListFragment>> fragments{};
 
   ds.device()->seek(ref.stp());
 
+  std::shared_ptr<FileNodeListFragment> fragment =
+      std::make_shared<FileNodeListFragment>(ref);
 
-  MSONcommon::FileNodeListFragment fragment(ref);
-
-  ds >> fragment;
+  ds >> *fragment;
   fragments.push_back(fragment);
 
-  MSONcommon::FileChunkReference64x32 nextFragmentRef = fragment.nextFragment();
+  auto nextFragmentRef = fragment->getNextFragment();
 
   while (!nextFragmentRef.is_fcrNil() && !nextFragmentRef.is_fcrZero()) {
-    MSONcommon::FileNodeListFragment nextFragment(nextFragmentRef);
+    std::shared_ptr<FileNodeListFragment> nextFragment =
+        std::make_shared<FileNodeListFragment>(nextFragmentRef);
     ds.device()->seek(nextFragmentRef.stp());
-    ds >> nextFragment;
+    ds >> *nextFragment;
 
-    nextFragmentRef = nextFragment.nextFragment();
+    nextFragmentRef = nextFragment->getNextFragment();
     fragments.push_back(nextFragment);
   }
 
@@ -58,9 +60,9 @@ parseFileNodeListFragments(QDataStream &ds, const MSONcommon::FileChunkReference
   return fragments;
 }
 
-std::vector<MSONcommon::FileNodeListFragment>
-parseFileNodeListFragments(QDataStream &ds, const MSONcommon::FileNodeChunkReference &ref ) {
-  MSONcommon::FileChunkReference64x32 tref(ref.stp(), static_cast<quint32>(ref.cb()));
+std::vector<std::shared_ptr<FileNodeListFragment>>
+parseFileNodeListFragments(QDataStream &ds, const FileNodeChunkReference &ref) {
+  FileChunkReference64x32 tref(ref.stp(), static_cast<quint32>(ref.cb()));
 
   return parseFileNodeListFragments(ds, tref);
 }

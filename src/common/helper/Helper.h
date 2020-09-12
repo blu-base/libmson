@@ -23,17 +23,17 @@ QString qStringHex(const T val, const quint8 width)
 }
 
 /**
- * @brief round numToRound up to the nearest multiple
- * @param numToRound
+ * @brief round num up to the next full multiple
+ * @param num
  * @param multiple
  * @return round up value
  *
- * It's used to calculate the padding of m_FileData
+ * It's used to calculate the padding of m_FileData, e.g. (10,8) will be round up to 16.
  */
-quint64 roundUpMultiple(const quint64 numToRound, const quint64 multiple);
+quint64 ceilToMultiple(const quint64 num, const quint64 multiple);
 
-std::vector <MSONcommon::FileNodeListFragment> parseFileNodeListFragments(QDataStream &ds, const MSONcommon::FileChunkReference64x32 &ref );
-std::vector <MSONcommon::FileNodeListFragment> parseFileNodeListFragments(QDataStream &ds, const MSONcommon::FileNodeChunkReference &ref );
+std::vector<std::shared_ptr<FileNodeListFragment>> parseFileNodeListFragments(QDataStream &ds, const FileChunkReference64x32 &ref );
+std::vector<std::shared_ptr<FileNodeListFragment>> parseFileNodeListFragments(QDataStream &ds, const FileNodeChunkReference &ref );
 
 } // namespace MSONcommon
 

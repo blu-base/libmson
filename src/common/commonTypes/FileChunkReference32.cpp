@@ -4,22 +4,18 @@
 
 namespace MSONcommon {
 
-FileChunkReference32::FileChunkReference32()
-    : IFileChunkReference<quint32, quint32>() {}
-
-FileChunkReference32::FileChunkReference32(FCR_INITTYPE inittype)
-    : IFileChunkReference<quint32, quint32>() {
+FileChunkReference32::FileChunkReference32(FCR_INITTYPE inittype) {
   switch (inittype) {
   case FCR_INITTYPE::FCRNIL:
-    this->set_fcrNil();
+    m_stp = UINT32_MAX;
+    m_cb = 0;
     break;
   case FCR_INITTYPE::FCRZERO:
-    this->set_fcrZero();
+    m_stp = 0;
+    m_cb = 0;
     break;
   }
 }
-
-FileChunkReference32::~FileChunkReference32() {}
 
 bool FileChunkReference32::is_fcrNil() const {
   return m_stp == UINT32_MAX && m_cb == 0;

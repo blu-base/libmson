@@ -13,6 +13,10 @@
 #include "commonTypes/FileChunkReference64x32.h"
 #include "commonTypes/IFileChunkReference.h"
 
+#include "IDeserializable.h"
+#include "ISerializable.h"
+
+
 namespace MSONcommon {
 
 /**
@@ -22,7 +26,7 @@ namespace MSONcommon {
  *
  * MSON Header class which (de)serialzies an input stream
  */
-class MSONHeader {
+class MSONHeader : public ISerializable, public IDeserializable {
 private:
   QUuid guidFileType;
   QUuid guidFile;
@@ -66,52 +70,55 @@ private:
 public:
   MSONHeader();
 
-  friend QDataStream &operator<<(QDataStream &ds, const MSONHeader &obj);
-  friend QDataStream &operator>>(QDataStream &ds, MSONHeader &obj);
-
   friend QDebug operator<<(QDebug dbg, const MSONHeader &obj);
 
   void generateXml(QXmlStreamWriter &xmlWriter) const;
 
+private:
+  virtual void deserialize(QDataStream &ds) override;
+  virtual void serialize(QDataStream &ds) const override;
+
+public:
+
   QUuid getGuidFileType() const;
   void setGuidFileType(const QUuid &value);
   bool isGuidFileTypeValid() const;
-  bool isGuidFileTypeIgnored() const;
+  static bool isGuidFileTypeIgnored();
 
   QUuid getGuidFile() const;
   void setGuidFile(const QUuid &value);
   bool isGuidFileValid() const;
-  bool isGuidFileIgnored() const;
+  static bool isGuidFileIgnored();
 
   QUuid getGuidLegacyFileVersion() const;
   void setGuidLegacyFileVersion(const QUuid &value);
   bool isGuidLegacyFileVersionValid() const;
-  bool isGuidLegacyFileVersionIgnored() const;
+  static bool isGuidLegacyFileVersionIgnored();
 
   QUuid getGuidFileFormat() const;
   void setGuidFileFormat(const QUuid &value);
   bool isGuidFileFormatValid() const;
-  bool isGuidFileFormatIgnored() const;
+  static bool isGuidFileFormatIgnored();
 
   quint32 getFfvLastWriterVersion() const;
   void setFfvLastWriterVersion(quint32 value);
   bool isFfvLastWriterVersionValid() const;
-  bool isFfvLastWriterVersionIgnored() const;
+  static bool isFfvLastWriterVersionIgnored();
 
   quint32 getFfvNewestWriterVersion() const;
   void setFfvNewestWriterVersion(quint32 value);
   bool isFfvNewestWriterVersionValid() const;
-  bool isFfvNewestWriterVersionIgnored() const;
+  static bool isFfvNewestWriterVersionIgnored();
 
   quint32 getFfvOldestWriterVersion() const;
   void setFfvOldestWriterVersion(quint32 value);
   bool isFfvOldestWriterVersionValid() const;
-  bool isFfvOldestWriterVersionIgnored() const;
+  static bool isFfvOldestWriterVersionIgnored();
 
   quint32 getFfvOldestReader() const;
   void setFfvOldestReader(quint32 value);
   bool isFfvOldestReaderValid() const;
-  bool isFfvOldestReaderIgnored() const;
+  static bool isFfvOldestReaderIgnored();
 
   FileChunkReference32 getFcrLegacyFreeChunkList() const;
   void setFcrLegacyFreeChunkList(const FileChunkReference32 &value);

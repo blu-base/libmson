@@ -2,8 +2,6 @@
 
 namespace MSONcommon {
 
-RevisionRoleAndContextDeclarationFND::RevisionRoleAndContextDeclarationFND() {}
-
 ExtendedGUID RevisionRoleAndContextDeclarationFND::getGctxid() const {
   return m_gctxid;
 }

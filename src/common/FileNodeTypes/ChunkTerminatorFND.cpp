@@ -2,7 +2,6 @@
 
 namespace MSONcommon {
 
-ChunkTerminatorFND::ChunkTerminatorFND() {}
 
 void ChunkTerminatorFND::deserialize(QDataStream &ds) {}
 

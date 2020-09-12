@@ -8,9 +8,12 @@
 #include "ObjectInfoDependencyOverride32.h"
 #include "ObjectInfoDependencyOverride8.h"
 
+#include "../IDeserializable.h"
+#include "../ISerializable.h"
+
 namespace MSONcommon {
 
-class ObjectInfoDependencyOverrideData {
+class ObjectInfoDependencyOverrideData : public ISerializable, public IDeserializable {
 private:
   /**
    * @brief number of elements in m_Overrides1.
@@ -39,11 +42,6 @@ private:
 
 public:
   ObjectInfoDependencyOverrideData();
-
-  friend QDataStream &operator<<(QDataStream &ds,
-                                 const ObjectInfoDependencyOverrideData &obj);
-  friend QDataStream &operator>>(QDataStream &ds,
-                                 ObjectInfoDependencyOverrideData &obj);
 
   friend QDebug operator<<(QDebug dbg,
                            const ObjectInfoDependencyOverrideData &obj);
@@ -76,7 +74,7 @@ private:
    * Note, that only 4GB of an ObjectInfoDependencyOverrideData can be parsed
    * because an limitation of QByteArray
    */
-  void deserialize(QDataStream &ds);
+  virtual void deserialize(QDataStream &ds) override;
   /**
    * @brief creates byte stream from ObjectInfoDependencyOverrideData object
    * @param ds <QDataStream> is the output stream to which the serialized
@@ -84,7 +82,7 @@ private:
    *
 
    */
-  void serialize(QDataStream &ds) const;
+  virtual void serialize(QDataStream &ds) const override;
 
   /**
    * @brief prints the ObjectInfoDependencyOverrideData to a <QDebug> object

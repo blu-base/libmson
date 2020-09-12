@@ -57,6 +57,9 @@ public:
    * Manager */
   static std::shared_ptr<MSONDocument> getDocument(const QUuid &guidFile);
 
+  static std::shared_ptr<MSONDocument> getDocument(QDataStream &ds);
+
+
   /** Utility function to reparse guid from the stream head. */
   static QUuid getDocumentID(QDataStream &ds);
 
@@ -64,10 +67,10 @@ public:
   static QList<std::shared_ptr<MSONDocument>> getDocuments();
 
   /** Returns all Documents' IDs governed by this Manager */
-  QList<QUuid> getDocumentIDs();
+  static QList<QUuid> getDocumentIDs();
 
   /** Return the complete storage of this Manager */
-  QMap<QUuid, std::shared_ptr<MSONDocument>> getDocumentsMap();
+  static QMap<QUuid, std::shared_ptr<MSONDocument>> getDocumentsMap();
 
   void generateXml(const QUuid &guidFile, const QString &outputfile);
 };

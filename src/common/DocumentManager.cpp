@@ -118,6 +118,12 @@ MSONcommon::DocumentManager::getDocument(const QUuid &guidFile) {
   return docs.value(guidFile);
 }
 
+std::shared_ptr<MSONDocument>
+MSONcommon::DocumentManager::getDocument(QDataStream &ds) {
+
+  return docs.value(getDocumentID(ds));
+}
+
 QUuid MSONcommon::DocumentManager::getDocumentID(QDataStream &ds) {
   quint64 currentPos = ds.device()->pos();
 

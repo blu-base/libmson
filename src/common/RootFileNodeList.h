@@ -9,21 +9,26 @@
 #include "FileNodeListFragment.h"
 #include "ObjectSpaceManifestList.h"
 #include "commonTypes/FileChunkReference64x32.h"
+
+#include "IDeserializable.h"
+#include "ISerializable.h"
+
 namespace MSONcommon {
-class RootFileNodeList {
+
+class RootFileNodeList: public IDeserializable {
 private:
   /** raw, fragmented FileNode list, can be ignored after defragmenting into
    * m_fileNodeSequence */
-  std::vector<FileNodeListFragment> m_fileNodeListFragments;
+  std::vector<std::shared_ptr<FileNodeListFragment>> m_fileNodeListFragments;
 
-  FileNode m_objectSpaceManifestRoot;
+  std::shared_ptr<FileNode> m_objectSpaceManifestRoot;
 
   /** Unfragmented FileNode list */
-  std::vector<FileNode> m_fileNodeSequence;
+  std::vector<std::shared_ptr<FileNode>> m_fileNodeSequence;
 
-  std::vector<ObjectSpaceManifestList *> m_objectSpaceManifestList;
+  std::vector<std::shared_ptr<ObjectSpaceManifestList>> m_objectSpaceManifestList;
 
-  std::vector<FileNode> m_fileDataStoreListReference;
+  std::vector<std::shared_ptr<FileNode>> m_fileDataStoreListReference;
 
   FileChunkReference64x32 m_fcrFileNodeListRoot;
 
@@ -37,31 +42,28 @@ public:
   //  assignment RootFileNodeList &operator=(RootFileNodeList &&rhs);      //
   //  move assignment
 
-  ~RootFileNodeList();
+  ~RootFileNodeList() = default;
 
   //
-  std::vector<FileNodeListFragment> getFileNodeListFragments() const;
-  void setFileNodeListFragments(const std::vector<FileNodeListFragment> &value);
+  std::vector<std::shared_ptr<FileNodeListFragment>> getFileNodeListFragments() const;
+  void setFileNodeListFragments(const std::vector<std::shared_ptr<FileNodeListFragment>> &value);
 
-  FileNode getObjectSpaceManifestRoot();
-  void setObjectSpaceManifestRoot(const FileNode &value);
+  std::shared_ptr<FileNode> getObjectSpaceManifestRoot();
+  void setObjectSpaceManifestRoot(const std::shared_ptr<FileNode> &value);
 
-  std::vector<FileNode> getFileNodeSequence() const;
-  void setFileNodeSequence(const std::vector<FileNode> &value);
+  std::vector<std::shared_ptr<FileNode>> getFileNodeSequence() const;
+  void setFileNodeSequence(const std::vector<std::shared_ptr<FileNode>> &value);
 
-  std::vector<ObjectSpaceManifestList *> getObjectSpaceManifestLists() const;
+  std::vector<std::shared_ptr<ObjectSpaceManifestList>> getObjectSpaceManifestLists() const;
   void setObjectSpaceManifestLists(
-      const std::vector<ObjectSpaceManifestList *> &value);
+      const std::vector<std::shared_ptr<ObjectSpaceManifestList>> &value);
 
-  std::vector<FileNode> getFileDataStoreListReference() const;
-  void setFileDataStoreListReference(const std::vector<FileNode> &value);
+  std::vector<std::shared_ptr<FileNode>> getFileDataStoreListReference() const;
+  void setFileDataStoreListReference(const std::vector<std::shared_ptr<FileNode>> &value);
   FileChunkReference64x32 getFcrFileNodeListRoot() const;
   void
   setFcrFileNodeListRoot(const FileChunkReference64x32 &fcrFileNodeListRoot);
 
-  //  friend QDataStream &operator<<(QDataStream &ds,
-  //                                 const RootFileNodeList &obj);
-  friend QDataStream &operator>>(QDataStream &ds, RootFileNodeList &obj);
   friend QDebug operator<<(QDebug dbg, const RootFileNodeList &obj);
 
   void generateXml(QXmlStreamWriter &xmlWriter) const;
@@ -71,7 +73,7 @@ private:
    * @brief creates RootFileNodeList from QDataStream
    * @param ds <QDataStream> containing the deserializable RootFileNodeList
    */
-  void deserialize(QDataStream &ds);
+  virtual void deserialize(QDataStream &ds) override;
   //  /**
   //   * @brief creates byte stream from RootFileNodeList object
   //   * @param ds <QDataStream> is the output stream to which the serialized
@@ -85,5 +87,7 @@ private:
    */
   void toDebugString(QDebug dbg) const;
 };
+
 } // namespace MSONcommon
+
 #endif // ROOTFILENODELIST_H

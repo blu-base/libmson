@@ -3,21 +3,22 @@
 
 #include <QtCore/qglobal.h>
 
-#include <QDataStream>
+
 #include <QDebug>
 #include <QXmlStreamWriter>
 
+#include "../IDeserializable.h"
+#include "../ISerializable.h"
+
 namespace MSONcommon {
 
-class BodyTextAlignment {
+class BodyTextAlignment : public ISerializable, public IDeserializable {
 private:
   quint32 m_value;
 
 public:
   BodyTextAlignment();
 
-  friend QDataStream &operator<<(QDataStream &ds, const BodyTextAlignment &obj);
-  friend QDataStream &operator>>(QDataStream &ds, BodyTextAlignment &obj);
 
   friend QDebug operator<<(QDebug dbg, const BodyTextAlignment &obj);
 
@@ -27,8 +28,9 @@ public:
   void setValue(const quint32 val);
 
 private:
-  void deserialize(QDataStream &ds);
-  void serialize(QDataStream &ds) const;
+  virtual void deserialize(QDataStream &ds) override;
+  virtual void serialize(QDataStream &ds) const override;
+
   void toDebugString(QDebug dbg) const;
 };
 

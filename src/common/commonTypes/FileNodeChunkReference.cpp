@@ -16,8 +16,6 @@ FileNodeChunkReference::FileNodeChunkReference(quint8 stpFormat,
     : FileNodeChunkReference(static_cast<FNCR_STP_FORMAT>(stpFormat),
                              static_cast<FNCR_CB_FORMAT>(cbFormat)) {}
 
-FileNodeChunkReference::~FileNodeChunkReference() {}
-
 bool FileNodeChunkReference::is_fcrZero() const {
   return m_stp == 0 && m_cb == 0;
 }

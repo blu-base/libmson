@@ -4,9 +4,13 @@
 #include "../commonTypes/CompactID.h"
 #include <QtCore/qglobal.h>
 
+#include "../IDeserializable.h"
+#include "../ISerializable.h"
+
 namespace MSONcommon {
 
-class ObjectInfoDependencyOverride32 {
+class ObjectInfoDependencyOverride32 : public ISerializable,
+                                       public IDeserializable {
 private:
   /**
    * @brief the identity of the object with the updated reference count.
@@ -20,12 +24,7 @@ private:
   quint32 m_cRef;
 
 public:
-  ObjectInfoDependencyOverride32();
-
-  friend QDataStream &operator<<(QDataStream &ds,
-                                 const ObjectInfoDependencyOverride32 &obj);
-  friend QDataStream &operator>>(QDataStream &ds,
-                                 ObjectInfoDependencyOverride32 &obj);
+  ObjectInfoDependencyOverride32() = default;
 
   friend QDebug operator<<(QDebug dbg,
                            const ObjectInfoDependencyOverride32 &obj);
@@ -47,15 +46,14 @@ private:
    * Note, that only 4GB of an ObjectInfoDependencyOverride32 can be parsed
    * because an limitation of QByteArray
    */
-  void deserialize(QDataStream &ds);
+  virtual void deserialize(QDataStream &ds) override;
   /**
    * @brief creates byte stream from ObjectInfoDependencyOverride32 object
    * @param ds <QDataStream> is the output stream to which the serialized
    * ObjectInfoDependencyOverride32 is send
    *
-
    */
-  void serialize(QDataStream &ds) const;
+  virtual void serialize(QDataStream &ds) const override;
 
   /**
    * @brief prints the ObjectInfoDependencyOverride32 to a <QDebug> object

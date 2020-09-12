@@ -1,7 +1,7 @@
 #include "GlobalIdTableEntryFNDX.h"
 
 namespace MSONcommon {
-GlobalIdTableEntryFNDX::GlobalIdTableEntryFNDX() : m_index{0}, m_guid() {}
+GlobalIdTableEntryFNDX::GlobalIdTableEntryFNDX() : m_index{0} {}
 
 QUuid GlobalIdTableEntryFNDX::getGuid() const { return m_guid; }
 

@@ -7,6 +7,7 @@
 #include "IFileNodeType.h"
 
 namespace MSONcommon {
+
 class ObjectDataEncryptionKeyV2FNDX : public IFileNodeType {
 private:
   FileNodeChunkReference m_ref;
@@ -34,10 +35,12 @@ public:
   virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
 
 private:
-  void deserialize(QDataStream &ds) override;
-  void serialize(QDataStream &ds) const override;
-  void toDebugString(QDebug dbg) const override;
+  virtual void deserialize(QDataStream &ds) override;
+  virtual void serialize(QDataStream &ds) const override;
+
+  virtual void toDebugString(QDebug dbg) const override;
 };
 
 } // namespace MSONcommon
+
 #endif // OBJECTDATAENCRYPTIONKEYV2FNDX_H

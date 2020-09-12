@@ -10,8 +10,6 @@ ObjectInfoDependencyOverridesFND::ObjectInfoDependencyOverridesFND(
     quint8 stpFormat, quint8 cbFormat)
     : m_ref(stpFormat, cbFormat) {}
 
-ObjectInfoDependencyOverridesFND::~ObjectInfoDependencyOverridesFND() {}
-
 ObjectInfoDependencyOverrideData
 ObjectInfoDependencyOverridesFND::getData() const {
   return m_data;

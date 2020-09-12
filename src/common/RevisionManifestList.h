@@ -9,64 +9,65 @@
 #include "RevisionManifest.h"
 #include "commonTypes/FileNodeChunkReference.h"
 
+#include "IDeserializable.h"
+#include "ISerializable.h"
+
 #include <QDataStream>
 #include <QDebug>
 #include <vector>
 namespace MSONcommon {
-class RevisionManifestList {
+class RevisionManifestList : public IDeserializable {
 private:
-  FileNodeChunkReference m_Ref;
+  FileNodeChunkReference m_ref;
 
-  std::vector<FileNodeListFragment> m_FileNodeListFragments;
-  std::vector<RevisionManifest *> m_RevisionManifests;
-  std::vector<FileNode> m_RevisionRoleDeclarations;
+  std::vector<std::shared_ptr<FileNodeListFragment>> m_FileNodeListFragments;
+  std::vector<std::shared_ptr<RevisionManifest>> m_RevisionManifests;
+  std::vector<std::shared_ptr<FileNode>> m_RevisionRoleDeclarations;
 
-  std::vector<FileNode> m_RevisionRoleAndContextDeclarations;
+  std::vector<std::shared_ptr<FileNode>> m_RevisionRoleAndContextDeclarations;
 
-  std::vector<ObjectGroupList *> m_ObjectGroupLists;
+  std::vector<std::shared_ptr<ObjectGroupList>> m_ObjectGroupLists;
 
-  std::vector<FileNode> m_FileNodeSequence;
+  std::vector<std::shared_ptr<FileNode>> m_FileNodeSequence;
 
 public:
-  RevisionManifestList(FileNodeChunkReference ref);
-  ~RevisionManifestList();
+  RevisionManifestList(const FileNodeChunkReference &ref);
+  ~RevisionManifestList() = default;
 
-  std::vector<FileNodeListFragment> getFileNodeListFragments() const;
-  void setFileNodeListFragments(const std::vector<FileNodeListFragment> &value);
-  std::vector<RevisionManifest *> getRevisionManifests() const;
-  void setRevisionManifests(const std::vector<RevisionManifest *> &value);
-  std::vector<FileNode> getRevisionRoleDeclarations() const;
-  void setRevisionRoleDeclarations(const std::vector<FileNode> &value);
-  std::vector<FileNode> getRevisionRoleAndContextDeclarations() const;
-  void
-  setRevisionRoleAndContextDeclarations(const std::vector<FileNode> &value);
-  std::vector<ObjectGroupList *> getObjectGroupLists() const;
-  void setObjectGroupLists(const std::vector<ObjectGroupList *> &value);
-  std::vector<FileNode> getFileNodeSequence() const;
-  void setFileNodeSequence(const std::vector<FileNode> &value);
+  std::vector<std::shared_ptr<FileNodeListFragment>>
+  getFileNodeListFragments() const;
+  void setFileNodeListFragments(
+      const std::vector<std::shared_ptr<FileNodeListFragment>> &value);
+
+  std::vector<std::shared_ptr<RevisionManifest>> getRevisionManifests() const;
+  void setRevisionManifests(
+      const std::vector<std::shared_ptr<RevisionManifest>> &value);
+
+  std::vector<std::shared_ptr<FileNode>> getRevisionRoleDeclarations() const;
+  void setRevisionRoleDeclarations(
+      const std::vector<std::shared_ptr<FileNode>> &value);
+
+  std::vector<std::shared_ptr<FileNode>>
+  getRevisionRoleAndContextDeclarations() const;
+  void setRevisionRoleAndContextDeclarations(
+      const std::vector<std::shared_ptr<FileNode>> &value);
+
+  std::vector<std::shared_ptr<ObjectGroupList>> getObjectGroupLists() const;
+  void setObjectGroupLists(
+      const std::vector<std::shared_ptr<ObjectGroupList>> &value);
+
+  std::vector<std::shared_ptr<FileNode>> getFileNodeSequence() const;
+  void setFileNodeSequence(const std::vector<std::shared_ptr<FileNode>> &value);
+
   FileNodeChunkReference getRef() const;
   void setRef(const FileNodeChunkReference &ref);
 
-  //  friend QDataStream &operator<<(QDataStream &ds, const RevisionManifestList
-  //  &obj);
-  friend QDataStream &operator>>(QDataStream &ds, RevisionManifestList &obj);
   friend QDebug operator<<(QDebug dbg, const RevisionManifestList &obj);
 
   void generateXml(QXmlStreamWriter &xmlWriter) const;
 
 private:
-  /**
-   * @brief creates RevisionManifestList from QDataStream
-   * @param ds <QDataStream> containing the deserializable
-   * RevisionManifestList
-   */
-  void deserialize(QDataStream &ds);
-  //  /**
-  //   * @brief creates byte stream from RevisionManifestList object
-  //   * @param ds <QDataStream> is the output stream to which the serialized
-  //   * RevisionManifestList is send
-  //   */
-  //  void serialize(QDataStream &ds) const;
+  virtual void deserialize(QDataStream &ds) override;
 
   /**
    * @brief prints the RevisionManifestList to a <QDebug> object

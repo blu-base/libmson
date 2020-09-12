@@ -2,8 +2,6 @@
 
 namespace MSONcommon {
 
-RevisionManifestStart7FND::RevisionManifestStart7FND() {}
-
 ExtendedGUID RevisionManifestStart7FND::getGctxid() const { return m_gctxid; }
 
 void RevisionManifestStart7FND::setGctxid(const ExtendedGUID &value) {

@@ -11,7 +11,11 @@
 
 namespace MSONcommon {
 
-QMap<quint32, quint32> &MSONDocument::getFileNodeCountMapping() {
+QMap<quint32, quint32> &MSONDocument::fileNodeCountMapping() {
+  return FileNodeCountMapping;
+}
+
+QMap<quint32, quint32> MSONDocument::getFileNodeCountMapping() const{
   return FileNodeCountMapping;
 }
 
@@ -20,324 +24,116 @@ void MSONDocument::setFileNodeCountMapping(
   FileNodeCountMapping = value;
 }
 
-bool MSONDocument::getIsEncrypted() const { return m_isEncrypted; }
+bool MSONDocument::isEncrypted() const { return m_isEncrypted; }
 
-void MSONDocument::setIsEncrypted(bool isEncrypted) {
+void MSONDocument::setIsEncrypted(const bool isEncrypted) {
   m_isEncrypted = isEncrypted;
 }
 
-MSONHeader *MSONDocument::getHeader() const { return m_header; }
+std::shared_ptr<MSONHeader> MSONDocument::getHeader() const { return m_header; }
 
-void MSONDocument::setHeader(MSONHeader *header) { m_header = header; }
+void MSONDocument::setHeader(std::shared_ptr<MSONHeader> header) { m_header = header; }
 
-std::vector<FreeChunkListFragment *> &MSONDocument::getFreeChunkList() {
+std::vector<std::shared_ptr<FreeChunkListFragment>> &MSONDocument::freeChunkList() {
+  return m_freeChunkList;
+}
+std::vector<std::shared_ptr<FreeChunkListFragment>> MSONDocument::getFreeChunkList() const {
   return m_freeChunkList;
 }
 
 void MSONDocument::setFreeChunkList(
-    const std::vector<FreeChunkListFragment *> &freeChunkList) {
+    const std::vector<std::shared_ptr<FreeChunkListFragment>> &freeChunkList) {
   m_freeChunkList = freeChunkList;
 }
 
-std::vector<TransactionLogFragment *> &MSONDocument::getTransactionLog() {
+std::vector<std::shared_ptr<TransactionLogFragment>> MSONDocument::getTransactionLog() {
   return m_transactionLog;
 }
 
 void MSONDocument::setTransactionLog(
-    const std::vector<TransactionLogFragment *> &transactionLog) {
+    const std::vector<std::shared_ptr<TransactionLogFragment>> &transactionLog) {
   m_transactionLog = transactionLog;
 }
 
-std::vector<FileNodeListFragment> &MSONDocument::getHashedChunkList() {
+std::vector<std::shared_ptr<FileNodeListFragment>> MSONDocument::getHashedChunkList() {
   return m_hashedChunkList;
 }
 
 void MSONDocument::setHashedChunkList(
-    const std::vector<FileNodeListFragment> &hashedChunkList) {
+    const std::vector<std::shared_ptr<FileNodeListFragment>> &hashedChunkList) {
   m_hashedChunkList = hashedChunkList;
 }
 
-RootFileNodeList *MSONDocument::getRootFileNodeList() const {
+std::shared_ptr<RootFileNodeList> MSONDocument::getRootFileNodeList() const {
   return m_rootFileNodeList;
 }
 
 void MSONDocument::setRootFileNodeList(
-    const RootFileNodeList &rootFileNodeList) {
-  m_rootFileNodeList = new RootFileNodeList(rootFileNodeList);
+    const std::shared_ptr<RootFileNodeList> &rootFileNodeList) {
+  m_rootFileNodeList = rootFileNodeList;
 }
 
-std::vector<FileNodeListFragment *> &MSONDocument::getFileNodeList() {
+std::vector<std::shared_ptr<FileNodeListFragment>> MSONDocument::getFileNodeList() {
   return m_fileNodeList;
 }
 
 void MSONDocument::setFileNodeList(
-    const std::vector<FileNodeListFragment *> &fileNodeList) {
+    const std::vector<std::shared_ptr<FileNodeListFragment>> &fileNodeList) {
   m_fileNodeList = fileNodeList;
 }
 
 MSONDocument::MSONDocument()
-    : m_isEncrypted{false}, m_header{new MSONHeader()}, m_freeChunkList{},
-      m_transactionLog{}, m_hashedChunkList{}, m_rootFileNodeList{},
-      m_fileNodeList{} {
-  m_header = new MSONHeader();
+    : m_isEncrypted{false} {
 }
 
-MSONDocument::~MSONDocument() {
-
-  for (auto *fcl : m_freeChunkList) {
-    delete fcl;
-  }
-  for (auto *tl : m_transactionLog) {
-    delete tl;
-  }
-
-  for (auto *fnl : m_fileNodeList) {
-    delete fnl;
-  }
-
-  delete m_rootFileNodeList;
+void MSONDocument::serialize(QDataStream& ds) const {
+  ds << *m_header;
 }
 
-///**
-// * @brief MSONDocument copy constructor
-// * @param source
-// */
-// MSONDocument::MSONDocument(const MSONDocument &source)
-//    : m_isEncrypted{source.m_isEncrypted}, m_header{nullptr},
-//    m_freeChunkList{},
-//      m_transactionLog{}, m_hashedChunkList{}, m_rootFileNodeList{nullptr},
-//      m_fileNodeList{} {
-
-//  m_header = new MSONHeader(*source.m_header);
-
-//  // deep copy source.m_freeChunkList
-//  m_freeChunkList.resize(source.m_freeChunkList.size());
-//  std::transform(source.m_freeChunkList.begin(), source.m_freeChunkList.end(),
-//                 m_freeChunkList.begin(), [](FreeChunkListFragment *s) {
-//                   return new FreeChunkListFragment(*s);
-//                 });
-
-//  // deep copy source.m_transactionLog
-//  m_transactionLog.resize(source.m_transactionLog.size());
-//  std::transform(source.m_transactionLog.begin(),
-//  source.m_transactionLog.end(),
-//                 m_transactionLog.begin(), [](TransactionLogFragment *s) {
-//                   return new TransactionLogFragment(*s);
-//                 });
-
-//  // deep copy source.m_hashedChunkList
-//  m_hashedChunkList.resize(source.m_hashedChunkList.size());
-//  std::transform(
-//      source.m_hashedChunkList.begin(), source.m_hashedChunkList.end(),
-//      m_hashedChunkList.begin(),
-//      [](FileNodeListFragment *s) { return new FileNodeListFragment(*s); });
-
-//  m_rootFileNodeList = new RootFileNodeList(*source.m_rootFileNodeList);
-
-//  // deep copy source.m_fileNodeList
-//  m_fileNodeList.resize(source.m_fileNodeList.size());
-//  std::transform(source.m_fileNodeList.begin(), source.m_fileNodeList.end(),
-//                 m_fileNodeList.begin(), [](FileNodeListFragment *s) {
-//                   return new FileNodeListFragment(*s);
-//                 });
-//}
-
-///**
-// * @brief MSONDocument move constructor
-// * @param source
-// */
-// MSONDocument::MSONDocument(MSONDocument &&source)
-//    : m_isEncrypted{source.m_isEncrypted}, m_header{nullptr},
-//    m_freeChunkList{},
-//      m_transactionLog{}, m_hashedChunkList{}, m_rootFileNodeList{nullptr},
-//      m_fileNodeList{} {
-
-//  m_header = source.m_header;
-//  source.m_header = nullptr;
-
-//  // move source.m_freeChunkList
-//  m_freeChunkList.resize(source.m_freeChunkList.size());
-//  std::transform(source.m_freeChunkList.begin(), source.m_freeChunkList.end(),
-//                 m_freeChunkList.begin(),
-//                 [](FreeChunkListFragment *s) { return s; });
-//  std::transform(source.m_freeChunkList.begin(), source.m_freeChunkList.end(),
-//                 source.m_freeChunkList.begin(), []() { return nullptr; });
-
-//  // move source.m_transactionLog
-//  m_transactionLog.resize(source.m_transactionLog.size());
-//  std::transform(source.m_transactionLog.begin(),
-//  source.m_transactionLog.end(),
-//                 m_transactionLog.begin(),
-//                 [](TransactionLogFragment *s) { return s; });
-//  std::transform(source.m_transactionLog.begin(),
-//  source.m_transactionLog.end(),
-//                 source.m_transactionLog.begin(), []() { return nullptr; });
-
-//  // move source.m_hashedChunkList
-//  m_hashedChunkList.resize(source.m_hashedChunkList.size());
-//  std::transform(source.m_hashedChunkList.begin(),
-//                 source.m_hashedChunkList.end(), m_hashedChunkList.begin(),
-//                 [](FileNodeListFragment *s) { return s; });
-//  std::transform(source.m_hashedChunkList.begin(),
-//                 source.m_hashedChunkList.end(),
-//                 source.m_hashedChunkList.begin(), []() { return nullptr; });
-
-//  m_rootFileNodeList = new RootFileNodeList(*source.m_rootFileNodeList);
-//  source.m_header = nullptr;
-
-//  // movesource.m_fileNodeList
-//  m_fileNodeList.resize(source.m_fileNodeList.size());
-//  std::transform(source.m_fileNodeList.begin(), source.m_fileNodeList.end(),
-//                 m_fileNodeList.begin(),
-//                 [](FileNodeListFragment *s) { return s; });
-//  std::transform(source.m_fileNodeList.begin(), source.m_fileNodeList.end(),
-//                 source.m_fileNodeList.begin(), []() { return nullptr; });
-//}
-
-//// copy assignment
-// MSONDocument &MSONDocument::operator=(const MSONDocument &rhs) {
-//  if (this == &rhs) {
-//    return *this;
-//  }
-
-//  m_isEncrypted = rhs.m_isEncrypted;
-
-//  m_header = new MSONHeader(*rhs.getHeader());
-
-//  // deep copy rhs.m_freeChunkList
-//  m_freeChunkList.resize(rhs.m_freeChunkList.size());
-//  std::transform(rhs.m_freeChunkList.begin(), rhs.m_freeChunkList.end(),
-//                 m_freeChunkList.begin(), [](FreeChunkListFragment *s) {
-//                   return new FreeChunkListFragment(*s);
-//                 });
-
-//  // deep copy rhs.m_transactionLog
-//  m_transactionLog.resize(rhs.m_transactionLog.size());
-//  std::transform(rhs.m_transactionLog.begin(), rhs.m_transactionLog.end(),
-//                 m_transactionLog.begin(), [](TransactionLogFragment *s) {
-//                   return new TransactionLogFragment(*s);
-//                 });
-
-//  // deep copy rhs.m_hashedChunkList
-//  m_hashedChunkList.resize(rhs.m_hashedChunkList.size());
-//  std::transform(rhs.m_hashedChunkList.begin(), rhs.m_hashedChunkList.end(),
-//                 m_hashedChunkList.begin(), [](FileNodeListFragment *s) {
-//                   return new FileNodeListFragment(*s);
-//                 });
-
-//  m_rootFileNodeList = new RootFileNodeList(*rhs.m_rootFileNodeList);
-
-//  // deep copy rhs.m_fileNodeList
-//  m_fileNodeList.resize(rhs.m_fileNodeList.size());
-//  std::transform(rhs.m_fileNodeList.begin(), rhs.m_fileNodeList.end(),
-//                 m_fileNodeList.begin(), [](FileNodeListFragment *s) {
-//                   return new FileNodeListFragment(*s);
-//                 });
-
-//  return *this;
-//}
-//// move assignment
-// MSONDocument &MSONDocument::operator=(MSONDocument &&rhs) {
-
-//  if (this == &rhs) {
-//    return *this;
-//  }
-
-//  m_isEncrypted = rhs.m_isEncrypted;
-
-//  m_header = rhs.m_header;
-//  rhs.m_header = nullptr;
-
-//  // move rhs.m_freeChunkList
-//  m_freeChunkList.resize(rhs.m_freeChunkList.size());
-//  std::transform(rhs.m_freeChunkList.begin(), rhs.m_freeChunkList.end(),
-//                 m_freeChunkList.begin(),
-//                 [](FreeChunkListFragment *s) { return s; });
-//  std::transform(rhs.m_freeChunkList.begin(), rhs.m_freeChunkList.end(),
-//                 rhs.m_freeChunkList.begin(), []() { return nullptr; });
-
-//  // move rhs.m_transactionLog
-//  m_transactionLog.resize(rhs.m_transactionLog.size());
-//  std::transform(rhs.m_transactionLog.begin(), rhs.m_transactionLog.end(),
-//                 m_transactionLog.begin(),
-//                 [](TransactionLogFragment *s) { return s; });
-//  std::transform(rhs.m_transactionLog.begin(), rhs.m_transactionLog.end(),
-//                 rhs.m_transactionLog.begin(), []() { return nullptr; });
-
-//  // move rhs.m_hashedChunkList
-//  m_hashedChunkList.resize(rhs.m_hashedChunkList.size());
-//  std::transform(rhs.m_hashedChunkList.begin(), rhs.m_hashedChunkList.end(),
-//                 m_hashedChunkList.begin(),
-//                 [](FileNodeListFragment *s) { return s; });
-//  std::transform(rhs.m_hashedChunkList.begin(), rhs.m_hashedChunkList.end(),
-//                 rhs.m_hashedChunkList.begin(), []() { return nullptr; });
-
-//  m_rootFileNodeList = rhs.m_rootFileNodeList;
-//  rhs.m_rootFileNodeList = nullptr;
-
-//  // move rhs.m_fileNodeList
-//  m_fileNodeList.resize(rhs.m_fileNodeList.size());
-//  std::transform(rhs.m_fileNodeList.begin(), rhs.m_fileNodeList.end(),
-//                 m_fileNodeList.begin(),
-//                 [](FileNodeListFragment *s) { return s; });
-//  std::transform(rhs.m_fileNodeList.begin(), rhs.m_fileNodeList.end(),
-//                 rhs.m_fileNodeList.begin(), []() { return nullptr; });
-
-//  return *this;
-//}
-
-QDataStream &operator<<(QDataStream &ds, const MSONDocument &obj) {
-  ds << *obj.m_header;
-
-  return ds;
-}
-
-QDataStream &operator>>(QDataStream &ds, MSONDocument &obj) {
-
+void MSONDocument::deserialize(QDataStream& ds) {
   if (!ds.byteOrder()) {
     ds.setByteOrder(QDataStream::LittleEndian);
   }
 
-  obj.m_header = new MSONHeader();
-  ds >> *obj.m_header;
+  m_header = std::make_shared<MSONHeader>();
+  ds >> *m_header;
 
   // Parsing FreeChunkList
-  FileChunkReference64x32 freeChunkRef = obj.m_header->getFcrFreeChunkList();
+  FileChunkReference64x32 freeChunkRef = m_header->getFcrFreeChunkList();
   if (!freeChunkRef.is_fcrNil() && !freeChunkRef.is_fcrZero()) {
     do {
-      FreeChunkListFragment *fclf =
-          new FreeChunkListFragment(freeChunkRef.cb());
+      std::shared_ptr<FreeChunkListFragment>fclf = std::make_shared<FreeChunkListFragment>(freeChunkRef.cb());
       ds.device()->seek(freeChunkRef.stp());
       ds >> *fclf;
 
-      obj.m_freeChunkList.push_back(fclf);
+      m_freeChunkList.push_back(fclf);
 
       freeChunkRef = fclf->getFcrNextChunk();
     } while (!freeChunkRef.is_fcrNil() && !freeChunkRef.is_fcrZero());
   }
 
   // Parsing TransactionLog
-  FileChunkReference64x32 transLogRef = obj.getHeader()->getFcrTransactionLog();
+  FileChunkReference64x32 transLogRef = getHeader()->getFcrTransactionLog();
   do {
-    TransactionLogFragment *tlf = new TransactionLogFragment(transLogRef.cb());
+    std::shared_ptr<TransactionLogFragment> tlf = std::make_shared<TransactionLogFragment>(transLogRef.cb());
     ds.device()->seek(transLogRef.stp());
     ds >> *tlf;
 
-    obj.getTransactionLog().push_back(tlf);
+    getTransactionLog().push_back(tlf);
     transLogRef = tlf->getNextFragment();
 
-    for (auto entry : tlf->getSizeTable()) {
+    for (const auto &entry : tlf->getSizeTable()) {
       if (entry->getSrcID() != 0x00000001) {
 
-        if (obj.FileNodeCountMapping.contains(entry->getSrcID())) {
-          if (obj.FileNodeCountMapping[entry->getSrcID()] <
+        if (FileNodeCountMapping.contains(entry->getSrcID())) {
+          if (FileNodeCountMapping[entry->getSrcID()] <
               entry->getTransactionEntrySwitch()) {
-            obj.FileNodeCountMapping[entry->getSrcID()] =
+            FileNodeCountMapping[entry->getSrcID()] =
                 entry->getTransactionEntrySwitch();
           }
 
         } else {
-          obj.FileNodeCountMapping.insert(entry->getSrcID(),
+          FileNodeCountMapping.insert(entry->getSrcID(),
                                           entry->getTransactionEntrySwitch());
         }
       }
@@ -348,12 +144,11 @@ QDataStream &operator>>(QDataStream &ds, MSONDocument &obj) {
 
 
   // Parsing RootFileNodeList
-  if (!obj.getHeader()->getFcrFileNodeListRoot().is_fcrNil() &&
-      !obj.getHeader()->getFcrFileNodeListRoot().is_fcrZero()) {
+  if (!getHeader()->getFcrFileNodeListRoot().is_fcrNil() &&
+      !getHeader()->getFcrFileNodeListRoot().is_fcrZero()) {
 
-    obj.m_rootFileNodeList =
-        new RootFileNodeList(obj.getHeader()->getFcrFileNodeListRoot());
-    ds >> *obj.m_rootFileNodeList;
+    m_rootFileNodeList = std::make_shared<RootFileNodeList>(getHeader()->getFcrFileNodeListRoot());
+    ds >> *m_rootFileNodeList;
 
 
 
@@ -361,15 +156,14 @@ QDataStream &operator>>(QDataStream &ds, MSONDocument &obj) {
 
   // Parsing HashedChunkList
   FileChunkReference64x32 hashChunkRef =
-      obj.getHeader()->getFcrHashedChunkList();
+      getHeader()->getFcrHashedChunkList();
 
   if (!hashChunkRef.is_fcrNil() && !hashChunkRef.is_fcrZero()) {
-    obj.m_hashedChunkList = parseFileNodeListFragments(ds, hashChunkRef);
+    m_hashedChunkList = parseFileNodeListFragments(ds, hashChunkRef);
   }
 
   // Filling the GlobalIdentificationTable
 
-  return ds;
 }
 
 void MSONDocument::generateXml(QXmlStreamWriter &xmlWriter) const {
@@ -381,33 +175,33 @@ void MSONDocument::generateXml(QXmlStreamWriter &xmlWriter) const {
   m_header->generateXml(xmlWriter);
 
   xmlWriter.writeStartElement("freeChunkList");
-  for (auto entry : m_freeChunkList) {
+  for (const auto& entry : m_freeChunkList) {
     entry->generateXml(xmlWriter);
   }
   xmlWriter.writeEndElement();
 
   xmlWriter.writeStartElement("transactionLog");
-  for (auto entry : m_transactionLog) {
+  for (const auto& entry : m_transactionLog) {
     entry->generateXml(xmlWriter);
   }
   xmlWriter.writeEndElement();
 
   xmlWriter.writeStartElement("hashedChunkList");
-  for (auto entry : m_hashedChunkList) {
-    entry.generateXml(xmlWriter);
+  for (const auto& entry : m_hashedChunkList) {
+    entry->generateXml(xmlWriter);
   }
   xmlWriter.writeEndElement();
 
   m_rootFileNodeList->generateXml(xmlWriter);
 
   xmlWriter.writeStartElement("fileNodeList");
-  for (auto entry : m_fileNodeList) {
+  for (const auto& entry : m_fileNodeList) {
     entry->generateXml(xmlWriter);
   }
   xmlWriter.writeEndElement();
 
   xmlWriter.writeStartElement("FileNodeCountMapping");
-  for (auto entry : FileNodeCountMapping.keys()) {
+  for (const auto& entry : FileNodeCountMapping.keys()) {
     xmlWriter.writeStartElement("FileNodeCountMap");
     xmlWriter.writeAttribute("key", qStringHex(entry, 8));
     xmlWriter.writeAttribute("value",
@@ -424,15 +218,15 @@ QDebug operator<<(QDebug dbg, const MSONDocument &obj) {
   QDebugStateSaver saver(dbg);
   dbg.setAutoInsertSpaces(false);
 
-  dbg << "MSON Document\n";
-  dbg << *obj.m_header;
+  dbg << "MSON Document\n"
+      << *obj.m_header;
 
   dbg << "FileNodeCountMapping: ";
   if (obj.FileNodeCountMapping.empty()) {
     dbg << "none mapped\n";
   } else {
     dbg << '\n';
-    for (auto key : obj.FileNodeCountMapping) {
+    for (const auto& key : obj.FileNodeCountMapping) {
       dbg << qStringHex(key, 8) << ", " << obj.FileNodeCountMapping[key]
           << '\n';
     }
@@ -443,8 +237,8 @@ QDebug operator<<(QDebug dbg, const MSONDocument &obj) {
     dbg << "no free chunks\n";
   } else {
     dbg << '\n';
-    for (auto key : obj.m_freeChunkList) {
-      dbg << key << '\n';
+    for (const auto& key : obj.m_freeChunkList) {
+      dbg << *key << '\n';
     }
   }
 
@@ -453,7 +247,7 @@ QDebug operator<<(QDebug dbg, const MSONDocument &obj) {
     dbg << "no transactions\n";
   } else {
     dbg << '\n';
-    for (auto entry : obj.m_transactionLog) {
+    for (const auto& entry : obj.m_transactionLog) {
       dbg << *entry << '\n';
     }
   }
@@ -463,8 +257,8 @@ QDebug operator<<(QDebug dbg, const MSONDocument &obj) {
     dbg << "no hashed chunks\n";
   } else {
     dbg << '\n';
-    for (auto entry : obj.m_hashedChunkList) {
-      dbg << entry << '\n';
+    for (const auto& entry : obj.m_hashedChunkList) {
+      dbg << *entry << '\n';
     }
   }
 
@@ -475,7 +269,7 @@ QDebug operator<<(QDebug dbg, const MSONDocument &obj) {
     dbg << "no file nodes\n";
   } else {
     dbg << '\n';
-    for (auto entry : obj.m_fileNodeList) {
+    for (const auto& entry : obj.m_fileNodeList) {
       dbg << *entry << '\n';
     }
   }

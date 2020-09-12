@@ -11,8 +11,8 @@ void FreeChunkListFragment::deserialize(QDataStream &ds) {
   quint64 chunksToRead = m_size / 16 - 1;
 
   for (size_t i{0}; i < chunksToRead; i++) {
-    FileChunkReference64 temp;
-    ds >> temp;
+    std::shared_ptr<FileChunkReference64> temp = std::make_shared<FileChunkReference64>();
+    ds >> *temp;
     fcrFreeChunk.push_back(temp);
   }
 
@@ -25,7 +25,7 @@ void FreeChunkListFragment::serialize(QDataStream &ds) const {
   ds << fcrNextChunk;
 
   for (size_t i{0}; i < fcrFreeChunk.size(); i++) {
-    ds << fcrFreeChunk.at(i);
+    ds << *fcrFreeChunk.at(i);
   }
 }
 
@@ -35,22 +35,12 @@ void FreeChunkListFragment::toDebugString(QDebug dbg) const {
                 << " fcrNextChunk: " << fcrNextChunk << '\n';
 
   for (size_t i{0}; i < fcrFreeChunk.size(); i++) {
-    dbg.noquote() << fcrFreeChunk.at(i) << '\n';
+    dbg.noquote() << *fcrFreeChunk.at(i) << '\n';
   }
 }
 
 FreeChunkListFragment::FreeChunkListFragment(quint64 size)
     : m_size{size}, crc{} {}
-
-QDataStream &operator<<(QDataStream &ds, const FreeChunkListFragment &obj) {
-  obj.serialize(ds);
-  return ds;
-}
-
-QDataStream &operator>>(QDataStream &ds, FreeChunkListFragment &obj) {
-  obj.deserialize(ds);
-  return ds;
-}
 
 QDebug operator<<(QDebug dbg, const FreeChunkListFragment &obj) {
   obj.toDebugString(dbg);
@@ -74,8 +64,8 @@ void FreeChunkListFragment::generateXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeEndElement();
 
   xmlWriter.writeStartElement("fcrFreeChunks");
-  for (auto entry : fcrFreeChunk) {
-    entry.generateXml(xmlWriter);
+  for (const auto &entry : fcrFreeChunk) {
+    entry->generateXml(xmlWriter);
   }
   xmlWriter.writeEndElement();
 
@@ -91,13 +81,13 @@ void FreeChunkListFragment::setFcrNextChunk(
   fcrNextChunk = value;
 }
 
-std::vector<FileChunkReference64>
+std::vector<std::shared_ptr<FileChunkReference64>>
 FreeChunkListFragment::getFcrFreeChunk() const {
   return fcrFreeChunk;
 }
 
 void FreeChunkListFragment::setFcrFreeChunk(
-    const std::vector<FileChunkReference64> &value) {
+    const std::vector<std::shared_ptr<FileChunkReference64>>  &value) {
   fcrFreeChunk = value;
 }
 

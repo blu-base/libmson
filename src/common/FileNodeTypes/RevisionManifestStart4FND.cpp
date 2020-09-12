@@ -2,7 +2,7 @@
 
 namespace MSONcommon {
 
-RevisionManifestStart4FND::RevisionManifestStart4FND() {}
+RevisionManifestStart4FND::RevisionManifestStart4FND() :m_timeCreation(), m_revisionRole(), m_odcsDefault() {}
 
 ExtendedGUID RevisionManifestStart4FND::getRid() const { return m_rid; }
 

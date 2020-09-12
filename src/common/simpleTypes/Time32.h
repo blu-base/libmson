@@ -9,18 +9,18 @@
 #include <QDebug>
 #include <QXmlStreamWriter>
 
+#include "../IDeserializable.h"
+#include "../ISerializable.h"
+
 namespace MSONcommon {
 
-class Time32 {
+class Time32: public ISerializable, public IDeserializable {
 private:
   QDateTime m_time;
 
 public:
   Time32();
   Time32(const QDateTime time);
-
-  friend QDataStream &operator<<(QDataStream &ds, const Time32 &obj);
-  friend QDataStream &operator>>(QDataStream &ds, Time32 &obj);
 
   friend QDebug operator<<(QDebug dbg, const Time32 &obj);
 
@@ -30,8 +30,9 @@ public:
   void setTime(const QDateTime time);
 
 private:
-  void deserialize(QDataStream &ds);
-  void serialize(QDataStream &ds) const;
+  virtual void deserialize(QDataStream &ds) override;
+  virtual void serialize(QDataStream &ds) const override;
+
   void toDebugString(QDebug dbg) const;
 
   static const quint64 utcoffset = 315576000;

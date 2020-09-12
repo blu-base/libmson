@@ -12,7 +12,7 @@ public:
   FileChunkReference64x32(const quint64 &stp, const quint32 &cb);
   FileChunkReference64x32(FCR_INITTYPE inittype);
 
-  virtual ~FileChunkReference64x32();
+  virtual ~FileChunkReference64x32() = default;
 
   bool is_fcrNil() const override;
   bool is_fcrZero() const override;
@@ -23,12 +23,13 @@ public:
   quint32 cb() const override;
   void setCb(const quint32 &cb) override;
 
-  void generateXml(QXmlStreamWriter &xmlWriter) const override;
+  virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
 
 private:
-  void deserialize(QDataStream &ds) override;
-  void serialize(QDataStream &ds) const override;
-  void toDebugString(QDebug dbg) const override;
+  virtual void deserialize(QDataStream &ds) override;
+  virtual void serialize(QDataStream &ds) const override;
+
+  virtual void toDebugString(QDebug dbg) const override;
 };
 
 } // namespace MSONcommon

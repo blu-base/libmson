@@ -5,19 +5,6 @@
 
 namespace MSONcommon {
 
-ObjectInfoDependencyOverride32::ObjectInfoDependencyOverride32() {}
-
-QDataStream &operator<<(QDataStream &ds,
-                        const ObjectInfoDependencyOverride32 &obj) {
-  obj.serialize(ds);
-  return ds;
-}
-
-QDataStream &operator>>(QDataStream &ds, ObjectInfoDependencyOverride32 &obj) {
-  obj.deserialize(ds);
-  return ds;
-}
-
 QDebug operator<<(QDebug dbg, const ObjectInfoDependencyOverride32 &obj) {
   obj.toDebugString(dbg);
   return dbg;

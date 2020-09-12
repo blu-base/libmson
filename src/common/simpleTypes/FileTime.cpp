@@ -13,16 +13,6 @@ QDateTime FileTime::getTime() const { return m_time; }
 
 void FileTime::setTime(const QDateTime time) { m_time = time; }
 
-QDataStream &operator<<(QDataStream &ds, const FileTime &obj) {
-  obj.serialize(ds);
-  return ds;
-}
-
-QDataStream &operator>>(QDataStream &ds, FileTime &obj) {
-  obj.deserialize(ds);
-  return ds;
-}
-
 QDebug operator<<(QDebug dbg, const FileTime &obj) {
   obj.toDebugString(dbg);
   return dbg;

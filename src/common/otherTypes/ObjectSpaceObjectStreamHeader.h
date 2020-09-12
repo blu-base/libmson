@@ -4,9 +4,12 @@
 #include <QXmlStreamWriter>
 #include <QtCore/qglobal.h>
 
+#include "../IDeserializable.h"
+#include "../ISerializable.h"
+
 namespace MSONcommon {
 
-class ObjectSpaceObjectStreamHeader {
+class ObjectSpaceObjectStreamHeader : public ISerializable, public IDeserializable {
 private:
   quint32 m_count;
   bool m_OsidStreamNotPresent;
@@ -45,11 +48,6 @@ public:
 
   void generateXml(QXmlStreamWriter &xmlWriter) const;
 
-  friend QDataStream &operator<<(QDataStream &ds,
-                                 const ObjectSpaceObjectStreamHeader &obj);
-  friend QDataStream &operator>>(QDataStream &ds,
-                                 ObjectSpaceObjectStreamHeader &obj);
-
   friend QDebug operator<<(QDebug dbg,
                            const ObjectSpaceObjectStreamHeader &obj);
 
@@ -62,15 +60,13 @@ private:
    * Note, that only 4GB of an FileDataStoreObject can be parsed because an
    * limitation of QByteArray
    */
-  void deserialize(QDataStream &ds);
+  virtual void deserialize(QDataStream &ds) override;
   /**
    * @brief creates byte stream from ObjectSpaceObjectStreamHeader object
    * @param ds <QDataStream> is the output stream to which the serialized
    * ObjectSpaceObjectStreamHeader is send
-   *
-
    */
-  void serialize(QDataStream &ds) const;
+  virtual void serialize(QDataStream &ds) const override;
 
   /**
    * @brief prints the ObjectSpaceObjectStreamHeader to a <QDebug> object

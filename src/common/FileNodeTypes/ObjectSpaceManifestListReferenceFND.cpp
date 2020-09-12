@@ -13,8 +13,6 @@ ObjectSpaceManifestListReferenceFND::ObjectSpaceManifestListReferenceFND(
     quint8 stpFormat, quint8 cbFormat)
     : m_ref{FileNodeChunkReference(stpFormat, cbFormat)} {}
 
-ObjectSpaceManifestListReferenceFND::~ObjectSpaceManifestListReferenceFND() {}
-
 ExtendedGUID ObjectSpaceManifestListReferenceFND::getGosid() const {
   return m_gosid;
 }

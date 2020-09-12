@@ -40,18 +40,6 @@ void ObjectInfoDependencyOverrideData::generateXml(
   xmlWriter.writeEndElement();
 }
 
-QDataStream &operator<<(QDataStream &ds,
-                        const ObjectInfoDependencyOverrideData &obj) {
-  obj.serialize(ds);
-  return ds;
-}
-
-QDataStream &operator>>(QDataStream &ds,
-                        ObjectInfoDependencyOverrideData &obj) {
-  obj.deserialize(ds);
-  return ds;
-}
-
 QDebug operator<<(QDebug dbg, const ObjectInfoDependencyOverrideData &obj) {
   obj.toDebugString(dbg);
   return dbg;

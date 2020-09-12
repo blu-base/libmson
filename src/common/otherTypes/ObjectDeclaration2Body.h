@@ -7,9 +7,12 @@
 #include "../commonTypes/CompactID.h"
 #include "../properties/JCID.h"
 
+#include "../IDeserializable.h"
+#include "../ISerializable.h"
+
 namespace MSONcommon {
 
-class ObjectDeclaration2Body {
+class ObjectDeclaration2Body : public ISerializable, public IDeserializable {
 private:
   CompactID m_oid;
   JCID m_jcid;
@@ -33,9 +36,6 @@ public:
   quint8 getFReserved2() const;
   void setFReserved2(const quint8 &value);
 
-  friend QDataStream &operator<<(QDataStream &ds,
-                                 const ObjectDeclaration2Body &obj);
-  friend QDataStream &operator>>(QDataStream &ds, ObjectDeclaration2Body &obj);
   friend QDebug operator<<(QDebug dbg, const ObjectDeclaration2Body &obj);
 
   void generateXml(QXmlStreamWriter &xmlWriter) const;
@@ -46,13 +46,13 @@ private:
    * @param ds <QDataStream> containing the deserializable
    * ObjectDeclaration2Body
    */
-  void deserialize(QDataStream &ds);
+  virtual void deserialize(QDataStream &ds) override;
   /**
    * @brief creates byte stream from ObjectDeclaration2Body object
    * @param ds <QDataStream> is the output stream to which the serialized
    * ObjectDeclaration2Body is send
    */
-  void serialize(QDataStream &ds) const;
+  virtual void serialize(QDataStream &ds) const override;
 
   /**
    * @brief prints the ObjectDeclaration2Body to a <QDebug> object

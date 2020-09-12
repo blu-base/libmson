@@ -63,17 +63,6 @@ void ObjectSpaceObjectStreamHeader::generateXml(
   xmlWriter.writeEndElement();
 }
 
-QDataStream &operator<<(QDataStream &ds,
-                        const ObjectSpaceObjectStreamHeader &obj) {
-  obj.serialize(ds);
-  return ds;
-}
-
-QDataStream &operator>>(QDataStream &ds, ObjectSpaceObjectStreamHeader &obj) {
-  obj.deserialize(ds);
-  return ds;
-}
-
 QDebug operator<<(QDebug dbg, const ObjectSpaceObjectStreamHeader &obj) {
   obj.toDebugString(dbg);
   return dbg;

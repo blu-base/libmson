@@ -8,18 +8,6 @@ namespace MSONcommon {
 PropertyType_ArrayOfPropertyValues::PropertyType_ArrayOfPropertyValues()
     : m_cProperties(0) {}
 
-QDataStream &operator<<(QDataStream &ds,
-                        const PropertyType_ArrayOfPropertyValues &obj) {
-  obj.serialize(ds);
-  return ds;
-}
-
-QDataStream &operator>>(QDataStream &ds,
-                        PropertyType_ArrayOfPropertyValues &obj) {
-  obj.deserialize(ds);
-  return ds;
-}
-
 QDebug operator<<(QDebug dbg, const PropertyType_ArrayOfPropertyValues &obj) {
   obj.toDebugString(dbg);
   return dbg;
@@ -63,7 +51,17 @@ void PropertyType_ArrayOfPropertyValues::deserialize(QDataStream &ds) {
   }
 }
 
-void PropertyType_ArrayOfPropertyValues::serialize(QDataStream &ds) const {}
+void PropertyType_ArrayOfPropertyValues::serialize(QDataStream &ds) const {
+  ds << m_cProperties;
+
+  if (m_cProperties != 0) {
+    ds << m_prid;
+
+    for (quint32 i{0}; i < m_cProperties; i++) {
+      ds << m_data.at(i);
+    }
+  }
+}
 
 void PropertyType_ArrayOfPropertyValues::toDebugString(QDebug dbg) const {}
 

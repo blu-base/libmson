@@ -6,8 +6,13 @@
 #include <QDataStream>
 #include <QDebug>
 #include <QXmlStreamWriter>
+
+#include "IDeserializable.h"
+#include "ISerializable.h"
+
 namespace MSONcommon {
-class TransactionEntry {
+
+class TransactionEntry : public ISerializable, public IDeserializable {
 private:
   quint32 srcID;
 
@@ -23,18 +28,17 @@ public:
 
   bool isZero() const;
 
-  friend QDataStream &operator<<(QDataStream &ds, const TransactionEntry &obj);
-  friend QDataStream &operator>>(QDataStream &ds, TransactionEntry &obj);
-
   friend QDebug operator<<(QDebug dbg, const TransactionEntry &obj);
 
   void generateXml(QXmlStreamWriter &xmlWriter) const;
 
 private:
-  void serialize(QDataStream &ds) const;
-  void deserialize(QDataStream &ds);
+  virtual void serialize(QDataStream &ds) const override;
+  virtual void deserialize(QDataStream &ds) override;
 
   void toDebugString(QDebug dbg) const;
 };
+
 } // namespace MSONcommon
+
 #endif // TRANSACTIONENTRY_H

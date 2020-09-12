@@ -3,16 +3,6 @@
 namespace MSONcommon {
 TransactionEntry::TransactionEntry() : srcID{}, TransactionEntrySwitch{} {}
 
-QDataStream &operator<<(QDataStream &ds, const TransactionEntry &obj) {
-  obj.serialize(ds);
-  return ds;
-}
-
-QDataStream &operator>>(QDataStream &ds, TransactionEntry &obj) {
-  obj.deserialize(ds);
-  return ds;
-}
-
 QDebug operator<<(QDebug dbg, const TransactionEntry &obj) {
   obj.toDebugString(dbg);
   return dbg;

@@ -4,24 +4,14 @@
 #include "helper/Helper.h"
 
 namespace MSONcommon {
-ObjectGroupList::ObjectGroupList(FileNodeChunkReference ref) : m_ref{ref} {}
+ObjectGroupList::ObjectGroupList(const FileNodeChunkReference &ref) : m_ref{ref} {}
 
-ObjectGroupList::~ObjectGroupList() {
-  //  for (auto *entry : m_fileNodeSequence) {
-  //    delete entry;
-  //  }
-
-  //  for (auto *entry : m_fileNodeListFragments) {
-  //    delete entry;
-  //  }
-}
-
-std::vector<FileNodeListFragment> ObjectGroupList::getFileNodeListFragments() {
+std::vector<std::shared_ptr<FileNodeListFragment>> ObjectGroupList::getFileNodeListFragments() {
   return m_fileNodeListFragments;
 }
 
 void ObjectGroupList::setFileNodeListFragments(
-    const std::vector<FileNodeListFragment> &value) {
+    const std::vector<std::shared_ptr<FileNodeListFragment>> &value) {
   m_fileNodeListFragments = value;
 }
 
@@ -31,14 +21,15 @@ void ObjectGroupList::setRef(const FileNodeChunkReference &ref) { m_ref = ref; }
 
 void ObjectGroupList::generateXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("ObjectGroupList");
-
-  xmlWriter.writeStartElement("ref");
-  m_ref.generateXml(xmlWriter);
-  xmlWriter.writeEndElement();
+  xmlWriter.writeAttribute("stp", qStringHex(m_ref.stp(), 16));
+  xmlWriter.writeAttribute("cb", qStringHex(m_ref.cb(), 16));
+//  xmlWriter.writeStartElement("ref");
+//  m_ref.generateXml(xmlWriter);
+//  xmlWriter.writeEndElement();
 
   xmlWriter.writeStartElement("fileNodeSequence");
   for (const auto &entry : m_fileNodeSequence) {
-    entry.generateXml(xmlWriter);
+    entry->generateXml(xmlWriter);
   }
   xmlWriter.writeEndElement();
 
@@ -49,11 +40,6 @@ void ObjectGroupList::generateXml(QXmlStreamWriter &xmlWriter) const {
   //    xmlWriter.writeEndElement();
 
   xmlWriter.writeEndElement();
-}
-
-QDataStream &operator>>(QDataStream &ds, ObjectGroupList &obj) {
-  obj.deserialize(ds);
-  return ds;
 }
 
 QDebug operator<<(QDebug dbg, const ObjectGroupList &obj) {
@@ -68,10 +54,10 @@ void ObjectGroupList::deserialize(QDataStream &ds) {
         parseFileNodeListFragments(ds, m_ref);
 
     for (const auto &fragment : m_fileNodeListFragments) {
-      const auto &rgFileNodes = fragment.rgFileNodes();
+      const auto &rgFileNodes = fragment->rgFileNodes();
       copy_if(rgFileNodes.begin(), rgFileNodes.end(),
-              back_inserter(m_fileNodeSequence), [](const FileNode &entry) {
-                return entry.getFileNodeTypeID() !=
+              back_inserter(m_fileNodeSequence), [](const std::shared_ptr<FileNode> &entry) {
+                return entry->getFileNodeTypeID() !=
                        FileNodeTypeID::ChunkTerminatorFND;
               });
     }
@@ -80,11 +66,11 @@ void ObjectGroupList::deserialize(QDataStream &ds) {
 
 void ObjectGroupList::toDebugString(QDebug dbg) const {}
 
-std::vector<FileNode> ObjectGroupList::getFileNodeSequence() const {
+std::vector<std::shared_ptr<FileNode>> ObjectGroupList::getFileNodeSequence() const {
   return m_fileNodeSequence;
 }
 
-void ObjectGroupList::setFileNodeSequence(const std::vector<FileNode> &value) {
+void ObjectGroupList::setFileNodeSequence(const std::vector<std::shared_ptr<FileNode>> &value) {
   m_fileNodeSequence = value;
 }
 } // namespace MSONcommon

@@ -1,11 +1,6 @@
 #include "GlobalIdTableEndFNDX.h"
 
 namespace MSONcommon {
-GlobalIdTableEndFNDX::GlobalIdTableEndFNDX()
-{
-
-}
-
 
 void GlobalIdTableEndFNDX::deserialize(QDataStream& ds)
 {

@@ -7,6 +7,9 @@
 #include <QDebug>
 #include <QXmlStreamWriter>
 
+#include "../IDeserializable.h"
+#include "../ISerializable.h"
+
 namespace MSONcommon {
 
 enum class LanguageID : quint16 {
@@ -469,14 +472,11 @@ enum class LanguageID : quint16 {
   invalid = 0xFFFF
 };
 
-class LCID {
+class LCID : public ISerializable, public IDeserializable  {
   LanguageID lid;
 
 public:
   LCID();
-
-  friend QDataStream &operator<<(QDataStream &ds, const LCID &obj);
-  friend QDataStream &operator>>(QDataStream &ds, LCID &obj);
 
   friend QDebug operator<<(QDebug dbg, const LCID &obj);
 
@@ -488,8 +488,9 @@ public:
   void generateXml(QXmlStreamWriter &xmlWriter) const;
 
 private:
-  void deserialize(QDataStream &ds);
-  void serialize(QDataStream &ds) const;
+  virtual void deserialize(QDataStream &ds) override;
+  virtual void serialize(QDataStream &ds) const override;
+
   void toDebugString(QDebug dbg) const;
 };
 

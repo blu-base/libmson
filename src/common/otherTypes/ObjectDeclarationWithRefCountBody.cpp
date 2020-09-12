@@ -9,8 +9,8 @@
 namespace MSONcommon {
 
 ObjectDeclarationWithRefCountBody::ObjectDeclarationWithRefCountBody()
-    : m_jci(), m_odcs(), m_fReserved1(), m_fReserved2(),
-      m_fHasOidReferences(false), m_fHasOsidReferences(false) {}
+    : m_jci(), m_odcs(), m_fReserved1(), m_fHasOidReferences(false),
+      m_fHasOsidReferences(false), m_fReserved2() {}
 
 void ObjectDeclarationWithRefCountBody::generateXml(
     QXmlStreamWriter &xmlWriter) const {
@@ -27,18 +27,6 @@ void ObjectDeclarationWithRefCountBody::generateXml(
   m_oid.generateXml(xmlWriter);
 
   xmlWriter.writeEndElement();
-}
-
-QDataStream &operator<<(QDataStream &ds,
-                        const ObjectDeclarationWithRefCountBody &obj) {
-  obj.serialize(ds);
-  return ds;
-}
-
-QDataStream &operator>>(QDataStream &ds,
-                        ObjectDeclarationWithRefCountBody &obj) {
-  obj.deserialize(ds);
-  return ds;
 }
 
 QDebug operator<<(QDebug dbg, const ObjectDeclarationWithRefCountBody &obj) {

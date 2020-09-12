@@ -1,9 +1,6 @@
 #include "ObjectGroupEndFND.h"
 
 namespace MSONcommon {
-
-ObjectGroupEndFND::ObjectGroupEndFND() {}
-
 void ObjectGroupEndFND::deserialize(QDataStream &ds) {}
 
 void ObjectGroupEndFND::serialize(QDataStream &ds) const {}

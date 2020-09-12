@@ -9,8 +9,6 @@ HashedChunkDescriptor2FND::HashedChunkDescriptor2FND(quint8 stpFormat,
                                                      quint8 cbFormat)
     : m_BlobRef(stpFormat, cbFormat) {}
 
-HashedChunkDescriptor2FND::~HashedChunkDescriptor2FND() {}
-
 FileNodeChunkReference HashedChunkDescriptor2FND::BlobRef() const {
   return m_BlobRef;
 }
@@ -38,7 +36,7 @@ void HashedChunkDescriptor2FND::setPropSet(
 void HashedChunkDescriptor2FND::deserialize(QDataStream &ds) {
   ds >> m_BlobRef;
 
-  m_guidHash = ds.device()->read(16);
+  m_guidHash = ds.device()->read(guidHashWidth);
 
   // getting remote ObjectPropSet
   quint64 curLocation = ds.device()->pos();

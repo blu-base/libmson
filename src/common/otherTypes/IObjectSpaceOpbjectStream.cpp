@@ -141,16 +141,6 @@ void IObjectSpaceOpbjectStream::toDebugString(QDebug dbg) const {
   }
 }
 
-QDataStream &operator<<(QDataStream &ds, const IObjectSpaceOpbjectStream &obj) {
-  obj.serialize(ds);
-  return ds;
-}
-
-QDataStream &operator>>(QDataStream &ds, IObjectSpaceOpbjectStream &obj) {
-  obj.deserialize(ds);
-  return ds;
-}
-
 QDebug operator<<(QDebug dbg, const IObjectSpaceOpbjectStream &obj) {
   obj.toDebugString(dbg);
   return dbg;

@@ -8,9 +8,10 @@
 #include <QtCore/qglobal.h>
 
 namespace MSONcommon {
+
 class ObjectDeclaration2LargeRefCountFND : public IFileNodeType {
 private:
-  FileNodeChunkReference m_BlobRef;
+  FileNodeChunkReference m_blobRef;
   ObjectDeclaration2Body m_body;
   quint32 m_cRef;
 
@@ -21,10 +22,10 @@ public:
                                      FNCR_CB_FORMAT cbFormat);
 
   ObjectDeclaration2LargeRefCountFND(quint8 stpFormat, quint8 cbFormat);
-  ~ObjectDeclaration2LargeRefCountFND();
+  virtual ~ObjectDeclaration2LargeRefCountFND() = default;
 
-  FileNodeChunkReference BlobRef() const;
-  void setBlobRef(const FileNodeChunkReference &BlobRef);
+  FileNodeChunkReference blobRef() const;
+  void setBlobRef(const FileNodeChunkReference &blobRef);
 
   ObjectDeclaration2Body body() const;
   void setBody(const ObjectDeclaration2Body &body);
@@ -38,9 +39,10 @@ public:
   virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
 
 private:
-  void deserialize(QDataStream &ds) override;
-  void serialize(QDataStream &ds) const override;
-  void toDebugString(QDebug dbg) const override;
+  virtual void deserialize(QDataStream &ds) override;
+  virtual void serialize(QDataStream &ds) const override;
+
+  virtual void toDebugString(QDebug dbg) const override;
 };
 
 } // namespace MSONcommon

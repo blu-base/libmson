@@ -5,33 +5,22 @@
 
 #include <QXmlStreamWriter>
 
+#include "../IDeserializable.h"
+#include "../ISerializable.h"
+
 namespace MSONcommon {
 
-class IProperty {
+class IProperty : public ISerializable, public IDeserializable {
 protected:
-  IProperty();
+  IProperty() = default;
+  virtual ~IProperty() = default;
 
 public:
-  friend QDataStream &operator<<(QDataStream &ds, const IProperty &obj);
-  friend QDataStream &operator>>(QDataStream &ds, IProperty &obj);
-
   friend QDebug operator<<(QDebug dbg, const IProperty &obj);
 
   virtual void generateXml(QXmlStreamWriter &xmlWriter) const = 0;
 
 private:
-  /**
-   * @brief creates IProperty from QDataStream
-   * @param ds <QDataStream> containing the deserializable IProperty
-   */
-  virtual void deserialize(QDataStream &ds) = 0;
-  /**
-   * @brief creates byte stream from IProperty object
-   * @param ds <QDataStream> is the output stream to which the serialized
-   * IProperty is send
-   */
-  virtual void serialize(QDataStream &ds) const = 0;
-
   /**
    * @brief prints the IProperty to a <QDebug> object
    * @param dbg <QDebug> string builder for the debug information

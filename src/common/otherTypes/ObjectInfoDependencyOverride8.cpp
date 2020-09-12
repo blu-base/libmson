@@ -5,7 +5,6 @@
 
 namespace MSONcommon {
 
-ObjectInfoDependencyOverride8::ObjectInfoDependencyOverride8() : m_cRef() {}
 
 void ObjectInfoDependencyOverride8::generateXml(
     QXmlStreamWriter &xmlWriter) const {
@@ -14,17 +13,6 @@ void ObjectInfoDependencyOverride8::generateXml(
   m_oid.generateXml(xmlWriter);
 
   xmlWriter.writeEndElement();
-}
-
-QDataStream &operator<<(QDataStream &ds,
-                        const ObjectInfoDependencyOverride8 &obj) {
-  obj.serialize(ds);
-  return ds;
-}
-
-QDataStream &operator>>(QDataStream &ds, ObjectInfoDependencyOverride8 &obj) {
-  obj.deserialize(ds);
-  return ds;
 }
 
 QDebug operator<<(QDebug dbg, const ObjectInfoDependencyOverride8 &obj) {

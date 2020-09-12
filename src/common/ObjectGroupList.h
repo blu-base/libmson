@@ -4,55 +4,46 @@
 #include <QtCore/qglobal.h>
 #include <vector>
 
-#include <QDataStream>
+
 #include <QDebug>
 
 #include "FileNode.h"
 #include "FileNodeListFragment.h"
 #include "commonTypes/FileNodeChunkReference.h"
 
+#include "IDeserializable.h"
+#include "ISerializable.h"
+
+class QDataStream;
+
 namespace MSONcommon {
-class ObjectGroupList {
+class ObjectGroupList : public IDeserializable {
 private:
   FileNodeChunkReference m_ref;
 
-  std::vector<FileNode> m_fileNodeSequence;
+  std::vector<std::shared_ptr<FileNode>> m_fileNodeSequence;
 
-  std::vector<FileNodeListFragment> m_fileNodeListFragments;
+  std::vector<std::shared_ptr<FileNodeListFragment>> m_fileNodeListFragments;
 
 public:
-  ObjectGroupList(FileNodeChunkReference ref);
-  ~ObjectGroupList();
+  ObjectGroupList(const FileNodeChunkReference &ref);
+  ~ObjectGroupList() = default;
 
-  std::vector<FileNode> getFileNodeSequence() const;
-  void setFileNodeSequence(const std::vector<FileNode> &value);
+  std::vector<std::shared_ptr<FileNode>> getFileNodeSequence() const;
+  void setFileNodeSequence(const std::vector<std::shared_ptr<FileNode>> &value);
 
-  std::vector<FileNodeListFragment> getFileNodeListFragments();
+  std::vector<std::shared_ptr<FileNodeListFragment>> getFileNodeListFragments();
 
-  void setFileNodeListFragments(const std::vector<FileNodeListFragment> &value);
+  void setFileNodeListFragments(const std::vector<std::shared_ptr<FileNodeListFragment>> &value);
   FileNodeChunkReference getRef() const;
   void setRef(const FileNodeChunkReference &ref);
 
-  //  friend QDataStream &operator<<(QDataStream &ds, const ObjectGroupList
-  //  &obj);
-  friend QDataStream &operator>>(QDataStream &ds, ObjectGroupList &obj);
   friend QDebug operator<<(QDebug dbg, const ObjectGroupList &obj);
 
   void generateXml(QXmlStreamWriter &xmlWriter) const;
 
 private:
-  /**
-   * @brief creates ObjectGroupList from QDataStream
-   * @param ds <QDataStream> containing the deserializable
-   * ObjectGroupList
-   */
-  void deserialize(QDataStream &ds);
-  //  /**
-  //   * @brief creates byte stream from ObjectGroupList object
-  //   * @param ds <QDataStream> is the output stream to which the serialized
-  //   * ObjectGroupList is send
-  //   */
-  //  void serialize(QDataStream &ds) const;
+  virtual void deserialize(QDataStream &ds) override;
 
   /**
    * @brief prints the ObjectGroupList to a <QDebug> object

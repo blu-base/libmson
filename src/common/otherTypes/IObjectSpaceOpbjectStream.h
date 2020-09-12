@@ -6,9 +6,12 @@
 #include "../commonTypes/CompactID.h"
 #include "ObjectSpaceObjectStreamHeader.h"
 
+#include "../IDeserializable.h"
+#include "../ISerializable.h"
+
 namespace MSONcommon {
 
-class IObjectSpaceOpbjectStream {
+class IObjectSpaceOpbjectStream : public ISerializable, public IDeserializable{
 protected:
   ObjectSpaceObjectStreamHeader m_header;
   std::vector<CompactID> m_body;
@@ -23,10 +26,6 @@ protected:
 public:
   virtual ~IObjectSpaceOpbjectStream();
 
-  friend QDataStream &operator<<(QDataStream &ds,
-                                 const IObjectSpaceOpbjectStream &obj);
-  friend QDataStream &operator>>(QDataStream &ds,
-                                 IObjectSpaceOpbjectStream &obj);
 
   friend QDebug operator<<(QDebug dbg, const IObjectSpaceOpbjectStream &obj);
 
@@ -78,7 +77,7 @@ protected:
    * Note, that only 4GB of an FileDataStoreObject can be parsed because an
    * limitation of QByteArray
    */
-  void deserialize(QDataStream &ds);
+  virtual void deserialize(QDataStream &ds) override;
   /**
    * @brief creates byte stream from IObjectSpaceOpbjectStream object
    * @param ds <QDataStream> is the output stream to which the serialized
@@ -86,7 +85,7 @@ protected:
    *
 
    */
-  void serialize(QDataStream &ds) const;
+  virtual void serialize(QDataStream &ds) const override;
 
   /**
    * @brief prints the IObjectSpaceOpbjectStream to a <QDebug> object

@@ -8,14 +8,16 @@ namespace MSONcommon {
 
 class ChunkTerminatorFND : public IFileNodeType {
 public:
-  ChunkTerminatorFND();
+  ChunkTerminatorFND() = default;
+  virtual ~ChunkTerminatorFND() = default;
 
-  void generateXml(QXmlStreamWriter &xmlWriter) const override;
+  virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
 
 private:
-  void deserialize(QDataStream &ds) override;
-  void serialize(QDataStream &ds) const override;
-  void toDebugString(QDebug dbg) const override;
+  virtual void deserialize(QDataStream &ds) override;
+  virtual void serialize(QDataStream &ds) const override;
+
+  virtual void toDebugString(QDebug dbg) const override;
 };
 
 } // namespace MSONcommon

@@ -6,6 +6,7 @@
 #include "IFileNodeType.h"
 
 namespace MSONcommon {
+
 class GlobalIdTableEntry2FNDX : public IFileNodeType {
 private:
   quint32 m_iIndexMapFrom;
@@ -23,9 +24,10 @@ public:
   virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
 
 private:
-  void deserialize(QDataStream &ds) override;
-  void serialize(QDataStream &ds) const override;
-  void toDebugString(QDebug dbg) const override;
+  virtual void deserialize(QDataStream &ds) override;
+  virtual void serialize(QDataStream &ds) const override;
+
+  virtual void toDebugString(QDebug dbg) const override;
 };
 
 } // namespace MSONcommon

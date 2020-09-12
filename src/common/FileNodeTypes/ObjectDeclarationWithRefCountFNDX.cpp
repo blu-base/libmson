@@ -1,5 +1,6 @@
 #include "ObjectDeclarationWithRefCountFNDX.h"
 
+#include "../DocumentManager.h"
 #include "../helper/Helper.h"
 
 namespace MSONcommon {
@@ -11,8 +12,6 @@ ObjectDeclarationWithRefCountFNDX::ObjectDeclarationWithRefCountFNDX(
 ObjectDeclarationWithRefCountFNDX::ObjectDeclarationWithRefCountFNDX(
     quint8 stpFormat, quint8 cbFormat)
     : m_objectRef(stpFormat, cbFormat), m_cRef{} {}
-
-ObjectDeclarationWithRefCountFNDX::~ObjectDeclarationWithRefCountFNDX() {}
 
 FileNodeChunkReference ObjectDeclarationWithRefCountFNDX::getObjectRef() const {
   return m_objectRef;
@@ -45,22 +44,25 @@ ObjectSpaceObjectPropSet ObjectDeclarationWithRefCountFNDX::getPropSet() const {
 
 void ObjectDeclarationWithRefCountFNDX::setPropSet(
     const ObjectSpaceObjectPropSet &value) {
-    m_blob = value;
+  m_blob = value;
 }
-
 
 void ObjectDeclarationWithRefCountFNDX::deserialize(QDataStream &ds) {
   ds >> m_objectRef;
   ds >> m_body;
   ds >> m_cRef;
 
-  // getting remote ObjectPropSet
-  quint64 curLocation = ds.device()->pos();
-  quint64 destLocation = m_objectRef.stp();
+  std::shared_ptr<MSONDocument> doc = DocumentManager::getDocument(ds);
 
-  ds.device()->seek(destLocation);
-  ds >> m_blob;
-  ds.device()->seek(curLocation);
+  if (!doc->isEncrypted()) {
+    // getting remote ObjectPropSet
+    quint64 curLocation = ds.device()->pos();
+    quint64 destLocation = m_objectRef.stp();
+
+    ds.device()->seek(destLocation);
+    ds >> m_blob;
+    ds.device()->seek(curLocation);
+  }
 }
 
 void ObjectDeclarationWithRefCountFNDX::serialize(QDataStream &ds) const {
@@ -73,22 +75,21 @@ void ObjectDeclarationWithRefCountFNDX::toDebugString(QDebug dbg) const {
   dbg << " ObjectDeclarationWithRefCountFNDX:\n"
       << " objectRef: " << m_objectRef << '\n'
       << " body: " << m_body << '\n'
-      << " cRef: " << qStringHex(m_cRef,2) << '\n';
+      << " cRef: " << qStringHex(m_cRef, 2) << '\n';
 }
 
+void ObjectDeclarationWithRefCountFNDX::generateXml(
+    QXmlStreamWriter &xmlWriter) const {
+  xmlWriter.writeStartElement("ObjectDeclarationWithRefCountFNDX");
 
-void ObjectDeclarationWithRefCountFNDX::generateXml(QXmlStreamWriter& xmlWriter) const
-{
-    xmlWriter.writeStartElement("ObjectDeclarationWithRefCountFNDX");
+  xmlWriter.writeAttribute("cRef", qStringHex(m_cRef, 2));
 
-    xmlWriter.writeAttribute("cRef", qStringHex(m_cRef,2));
+  m_objectRef.generateXml(xmlWriter);
+  m_body.generateXml(xmlWriter);
 
-    m_objectRef.generateXml(xmlWriter);
-    m_body.generateXml(xmlWriter);
+  m_blob.generateXml(xmlWriter);
 
-    m_blob.generateXml(xmlWriter);
-
-    xmlWriter.writeEndElement();
+  xmlWriter.writeEndElement();
 }
 
 } // namespace MSONcommon

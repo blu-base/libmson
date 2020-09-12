@@ -22,7 +22,7 @@ public:
                                              FNCR_CB_FORMAT cbFormat);
 
   ReadOnlyObjectDeclaration2LargeRefCountFND(quint8 stpFormat, quint8 cbFormat);
-  ~ReadOnlyObjectDeclaration2LargeRefCountFND();
+  virtual ~ReadOnlyObjectDeclaration2LargeRefCountFND() = default;
 
   FileNodeChunkReference ref() const;
   void setRef(const FileNodeChunkReference &ref);
@@ -40,9 +40,10 @@ public:
   virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
 
 private:
-  void deserialize(QDataStream &ds) override;
-  void serialize(QDataStream &ds) const override;
-  void toDebugString(QDebug dbg) const override;
+  virtual void deserialize(QDataStream &ds) override;
+  virtual void serialize(QDataStream &ds) const override;
+
+  virtual void toDebugString(QDebug dbg) const override;
 };
 
 } // namespace MSONcommon

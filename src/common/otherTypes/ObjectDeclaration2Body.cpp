@@ -2,7 +2,8 @@
 
 namespace MSONcommon {
 
-ObjectDeclaration2Body::ObjectDeclaration2Body() {}
+ObjectDeclaration2Body::ObjectDeclaration2Body()
+    : m_fHasOidReferences(false), m_fHasOsidReferences(false), m_fReserved2() {}
 
 quint8 ObjectDeclaration2Body::getFReserved2() const { return m_fReserved2; }
 
@@ -23,19 +24,9 @@ void ObjectDeclaration2Body::generateXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeEndElement();
 }
 
-QDataStream &operator<<(QDataStream &ds, const ObjectDeclaration2Body &obj) {
-  obj.serialize(ds);
-  return ds;
-}
-
 QDebug operator<<(QDebug dbg, const ObjectDeclaration2Body &obj) {
   obj.toDebugString(dbg);
   return dbg;
-}
-
-QDataStream &operator>>(QDataStream &ds, ObjectDeclaration2Body &obj) {
-  obj.deserialize(ds);
-  return ds;
 }
 
 void ObjectDeclaration2Body::deserialize(QDataStream &ds) {

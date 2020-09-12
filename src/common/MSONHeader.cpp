@@ -23,7 +23,7 @@ static constexpr const quint32 def_reservedHeaderTailLength = 728;
 
 MSONHeader::MSONHeader()
     : // guidFileType {QUuid::fromString(QString(v_guidFileType_One))},
-      guidFile{QUuid().createUuid()}, guidLegacyFileVersion{QUuid()},
+      guidFile{QUuid::createUuid()}, guidLegacyFileVersion{QUuid()},
       guidFileFormat{QUuid(v_guidFileFormat)}, ffvLastWriterVersion{0x0000002A},
       ffvOldestWriterVersion{0x0000002A}, ffvNewestWriterVersion{0x0000002A},
       ffvOldestReader{0x0000002A},
@@ -206,106 +206,98 @@ void MSONHeader::generateXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeEndElement(); // Header
 }
 
-QDataStream &operator<<(QDataStream &ds, const MSONHeader &obj) {
+void MSONHeader::serialize(QDataStream& ds) const {
   // if byte order is big endian, change to little endian
-  if (!ds.byteOrder()) {
+  if (ds.byteOrder() == QDataStream::BigEndian) {
     ds.setByteOrder(QDataStream::LittleEndian);
   }
 
-  ds << obj.guidFileType;
-  ds << obj.guidFile;
-  ds << obj.guidLegacyFileVersion;
-  ds << obj.guidFileFormat;
-  ds << obj.ffvLastWriterVersion;
-  ds << obj.ffvOldestWriterVersion;
-  ds << obj.ffvNewestWriterVersion;
-  ds << obj.ffvOldestReader;
-  ds << obj.fcrLegacyFreeChunkList;
-  ds << obj.fcrLegacyTransactionLog;
-  ds << obj.cTransactionsInLog;
-  ds << obj.cbLegacyExpectedFileLength;
-  ds << obj.rgbPlaceholder;
-  ds << obj.fcrLegacyFileNodeListRoot;
-  ds << obj.cbLegacyFreeSpaceInFreeChunkList;
-  ds << obj.fNeedsDefrag;
-  ds << obj.fRepairedFile;
-  ds << obj.fNeedsGarbageCollect;
-  ds << obj.fHasNoEmbeddedFileObjects;
-  ds << obj.guidAncestor;
-  ds << obj.crcName;
-  ds << obj.fcrHashedChunkList;
-  ds << obj.fcrTransactionLog;
-  ds << obj.fcrFileNodeListRoot;
-  ds << obj.fcrFreeChunkList;
-  ds << obj.cbExpectedFileLength;
-  ds << obj.cbFreeSpaceInFreeChunkList;
-  ds << obj.guidFileVersion;
-  ds << obj.nFileVersionGeneration;
-  ds << obj.guidDenyReadFileVersion;
-  ds << obj.grfDebugLogFlags;
-  ds << obj.fcrDebugLog;
-  ds << obj.fcrAllocVerificationFreeChunkList;
-  ds << obj.bnCreated;
-  ds << obj.bnLastWroteToThisFile;
-  ds << obj.bnOldestWritten;
-  ds << obj.bnNewestWritten;
-  ds << QByteArray(obj.reservedHeaderTailLength, '\00');
+  ds << guidFileType;
+  ds << guidFile;
+  ds << guidLegacyFileVersion;
+  ds << guidFileFormat;
+  ds << ffvLastWriterVersion;
+  ds << ffvOldestWriterVersion;
+  ds << ffvNewestWriterVersion;
+  ds << ffvOldestReader;
+  ds << fcrLegacyFreeChunkList;
+  ds << fcrLegacyTransactionLog;
+  ds << cTransactionsInLog;
+  ds << cbLegacyExpectedFileLength;
+  ds << rgbPlaceholder;
+  ds << fcrLegacyFileNodeListRoot;
+  ds << cbLegacyFreeSpaceInFreeChunkList;
+  ds << fNeedsDefrag;
+  ds << fRepairedFile;
+  ds << fNeedsGarbageCollect;
+  ds << fHasNoEmbeddedFileObjects;
+  ds << guidAncestor;
+  ds << crcName;
+  ds << fcrHashedChunkList;
+  ds << fcrTransactionLog;
+  ds << fcrFileNodeListRoot;
+  ds << fcrFreeChunkList;
+  ds << cbExpectedFileLength;
+  ds << cbFreeSpaceInFreeChunkList;
+  ds << guidFileVersion;
+  ds << nFileVersionGeneration;
+  ds << guidDenyReadFileVersion;
+  ds << grfDebugLogFlags;
+  ds << fcrDebugLog;
+  ds << fcrAllocVerificationFreeChunkList;
+  ds << bnCreated;
+  ds << bnLastWroteToThisFile;
+  ds << bnOldestWritten;
+  ds << bnNewestWritten;
+  ds << QByteArray(reservedHeaderTailLength, '\00');
 
-  return ds;
 }
 
-QDataStream &operator>>(QDataStream &ds, MSONHeader &obj) {
-
-  qDebug() << "MSONHeader:  Reading at pos in file: "
-           << qStringHex(ds.device()->pos(), 16);
+void MSONHeader::deserialize(QDataStream& ds) {
   // if byte order is big endian, change to little endian
-  if (!ds.byteOrder()) {
+  if (ds.byteOrder() == QDataStream::BigEndian) {
     ds.setByteOrder(QDataStream::LittleEndian);
   }
 
-  ds >> obj.guidFileType;
-  ds >> obj.guidFile;
-  ds >> obj.guidLegacyFileVersion;
-  ds >> obj.guidFileFormat;
-  ds >> obj.ffvLastWriterVersion;
-  ds >> obj.ffvOldestWriterVersion;
-  ds >> obj.ffvNewestWriterVersion;
-  ds >> obj.ffvOldestReader;
-  ds >> obj.fcrLegacyFreeChunkList;
-  ds >> obj.fcrLegacyTransactionLog;
-  ds >> obj.cTransactionsInLog;
-  ds >> obj.cbLegacyExpectedFileLength;
-  ds >> obj.rgbPlaceholder;
-  ds >> obj.fcrLegacyFileNodeListRoot;
-  ds >> obj.cbLegacyFreeSpaceInFreeChunkList;
-  ds >> obj.fNeedsDefrag;
-  ds >> obj.fRepairedFile;
-  ds >> obj.fNeedsGarbageCollect;
-  ds >> obj.fHasNoEmbeddedFileObjects;
-  ds >> obj.guidAncestor;
-  ds >> obj.crcName;
-  ds >> obj.fcrHashedChunkList;
-  ds >> obj.fcrTransactionLog;
-  ds >> obj.fcrFileNodeListRoot;
-  ds >> obj.fcrFreeChunkList;
-  ds >> obj.cbExpectedFileLength;
-  ds >> obj.cbFreeSpaceInFreeChunkList;
-  ds >> obj.guidFileVersion;
-  ds >> obj.nFileVersionGeneration;
-  ds >> obj.guidDenyReadFileVersion;
-  ds >> obj.grfDebugLogFlags;
-  ds >> obj.fcrDebugLog;
-  ds >> obj.fcrAllocVerificationFreeChunkList;
-  ds >> obj.bnCreated;
-  ds >> obj.bnLastWroteToThisFile;
-  ds >> obj.bnOldestWritten;
-  ds >> obj.bnNewestWritten;
-  ds.skipRawData(obj.reservedHeaderTailLength);
+  ds >> guidFileType;
+  ds >> guidFile;
+  ds >> guidLegacyFileVersion;
+  ds >> guidFileFormat;
+  ds >> ffvLastWriterVersion;
+  ds >> ffvOldestWriterVersion;
+  ds >> ffvNewestWriterVersion;
+  ds >> ffvOldestReader;
+  ds >> fcrLegacyFreeChunkList;
+  ds >> fcrLegacyTransactionLog;
+  ds >> cTransactionsInLog;
+  ds >> cbLegacyExpectedFileLength;
+  ds >> rgbPlaceholder;
+  ds >> fcrLegacyFileNodeListRoot;
+  ds >> cbLegacyFreeSpaceInFreeChunkList;
+  ds >> fNeedsDefrag;
+  ds >> fRepairedFile;
+  ds >> fNeedsGarbageCollect;
+  ds >> fHasNoEmbeddedFileObjects;
+  ds >> guidAncestor;
+  ds >> crcName;
+  ds >> fcrHashedChunkList;
+  ds >> fcrTransactionLog;
+  ds >> fcrFileNodeListRoot;
+  ds >> fcrFreeChunkList;
+  ds >> cbExpectedFileLength;
+  ds >> cbFreeSpaceInFreeChunkList;
+  ds >> guidFileVersion;
+  ds >> nFileVersionGeneration;
+  ds >> guidDenyReadFileVersion;
+  ds >> grfDebugLogFlags;
+  ds >> fcrDebugLog;
+  ds >> fcrAllocVerificationFreeChunkList;
+  ds >> bnCreated;
+  ds >> bnLastWroteToThisFile;
+  ds >> bnOldestWritten;
+  ds >> bnNewestWritten;
+  ds.skipRawData(reservedHeaderTailLength);
 
-  qDebug() << "MSONHeader: Finished at pos in file: "
-           << qStringHex(ds.device()->pos(), 16);
-
-  return ds;
 }
 
 QDebug operator<<(QDebug dbg, const MSONHeader &obj) {
@@ -468,7 +460,7 @@ bool MSONHeader::isGuidFileTypeValid() const {
          guidFileType == v_guidFileType_OneToc2;
 }
 
-bool MSONHeader::isGuidFileTypeIgnored() const { return false; }
+bool MSONHeader::isGuidFileTypeIgnored() { return false; }
 
 QUuid MSONHeader::getGuidFile() const { return guidFile; }
 
@@ -476,7 +468,7 @@ void MSONHeader::setGuidFile(const QUuid &value) { guidFile = value; }
 
 bool MSONHeader::isGuidFileValid() const { return guidFile != v_guidZero; }
 
-bool MSONHeader::isGuidFileIgnored() const { return false; }
+bool MSONHeader::isGuidFileIgnored() { return false; }
 
 QUuid MSONHeader::getGuidLegacyFileVersion() const {
   return guidLegacyFileVersion;
@@ -496,7 +488,7 @@ bool MSONHeader::isGuidLegacyFileVersionValid() const {
   return guidLegacyFileVersion == v_guidZero;
 }
 
-bool MSONHeader::isGuidLegacyFileVersionIgnored() const { return true; }
+bool MSONHeader::isGuidLegacyFileVersionIgnored() { return true; }
 
 QUuid MSONHeader::getGuidFileFormat() const { return guidFileFormat; }
 
@@ -514,7 +506,7 @@ bool MSONHeader::isGuidFileFormatValid() const {
   return guidFileFormat == v_guidFileFormat;
 }
 
-bool MSONHeader::isGuidFileFormatIgnored() const { return false; }
+bool MSONHeader::isGuidFileFormatIgnored() { return false; }
 
 quint32 MSONHeader::getFfvLastWriterVersion() const {
   return ffvLastWriterVersion;
@@ -536,7 +528,7 @@ bool MSONHeader::isFfvLastWriterVersionValid() const {
          ffvLastWriterVersion == 0x0000001B;
 }
 
-bool MSONHeader::isFfvLastWriterVersionIgnored() const { return false; }
+bool MSONHeader::isFfvLastWriterVersionIgnored() { return false; }
 
 quint32 MSONHeader::getFfvNewestWriterVersion() const {
   return ffvNewestWriterVersion;
@@ -557,7 +549,7 @@ bool MSONHeader::isFfvNewestWriterVersionValid() const {
          ffvLastWriterVersion == 0x0000001B;
 }
 
-bool MSONHeader::isFfvNewestWriterVersionIgnored() const { return false; }
+bool MSONHeader::isFfvNewestWriterVersionIgnored() { return false; }
 
 quint32 MSONHeader::getFfvOldestWriterVersion() const {
   return ffvOldestWriterVersion;
@@ -578,7 +570,7 @@ bool MSONHeader::isFfvOldestWriterVersionValid() const {
          ffvLastWriterVersion == 0x0000001B;
 }
 
-bool MSONHeader::isFfvOldestWriterVersionIgnored() const { return false; }
+bool MSONHeader::isFfvOldestWriterVersionIgnored() { return false; }
 
 quint32 MSONHeader::getFfvOldestReader() const { return ffvOldestReader; }
 
@@ -595,7 +587,7 @@ bool MSONHeader::isFfvOldestReaderValid() const {
          ffvLastWriterVersion == 0x0000001B;
 }
 
-bool MSONHeader::isFfvOldestReaderIgnored() const { return false; }
+bool MSONHeader::isFfvOldestReaderIgnored() { return false; }
 
 FileChunkReference32 MSONHeader::getFcrLegacyFreeChunkList() const {
   return fcrLegacyFreeChunkList;

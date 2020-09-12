@@ -2,7 +2,7 @@
 
 namespace MSONcommon {
 
-RevisionRoleDeclarationFND::RevisionRoleDeclarationFND() {}
+RevisionRoleDeclarationFND::RevisionRoleDeclarationFND() : m_RevisionRole() {}
 
 quint32 RevisionRoleDeclarationFND::getRevisionRole() const {
   return m_RevisionRole;

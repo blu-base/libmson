@@ -925,15 +925,6 @@ QString LCID::toString() const {
   }
 }
 
-QDataStream &operator<<(QDataStream &ds, const LCID &obj) {
-  obj.serialize(ds);
-  return ds;
-}
-
-QDataStream &operator>>(QDataStream &ds, LCID &obj) {
-  obj.deserialize(ds);
-  return ds;
-}
 
 QDebug operator<<(QDebug dbg, const LCID &obj) {
   obj.toDebugString(dbg);
