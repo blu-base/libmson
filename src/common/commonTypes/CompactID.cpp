@@ -55,13 +55,12 @@ QString CompactID::toString() const {
                                         std::to_string(m_n)));
 }
 
-void CompactID::generateXml(QXmlStreamWriter &xmlWriter) const {
+void CompactID::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("CompactID");
   xmlWriter.writeAttribute("guidIndex", qStringHex(guidIndex, 12));
   xmlWriter.writeAttribute("n", qStringHex(m_n, 2));
   xmlWriter.writeEndElement();
 }
-
 
 QDebug operator<<(QDebug dbg, const CompactID &obj) {
   obj.toDebugString(dbg);

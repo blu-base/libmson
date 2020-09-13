@@ -27,7 +27,7 @@ void FileTime::deserialize(QDataStream &ds) {
   const quint64 FileTimeMsecs =
       ((static_cast<quint64>(fileTimeHigh) << 32) + fileTimeLow) / 10000;
 
-  m_time = origin() .addMSecs(FileTimeMsecs);
+  m_time = origin().addMSecs(FileTimeMsecs);
 }
 
 void FileTime::serialize(QDataStream &ds) const {
@@ -38,6 +38,12 @@ void FileTime::serialize(QDataStream &ds) const {
   const quint32 fileTimeHigh(fileTime >> 32);
 
   ds << fileTimeLow << fileTimeHigh;
+}
+
+void FileTime::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
+  xmlWriter.writeStartElement("FileTime");
+  xmlWriter.writeCharacters(getTime().toString("dd/MM/yyyy hh:mm:ss AP"));
+  xmlWriter.writeEndElement();
 }
 
 void FileTime::toDebugString(QDebug dbg) const {

@@ -7,12 +7,11 @@
 #include <QXmlStreamWriter>
 #include <QtCore/qglobal.h>
 
-#include "../IDeserializable.h"
-#include "../ISerializable.h"
+#include "../IRevisionStoreFileObject.h"
 
 namespace MSONcommon {
 
-class StringInStorageBuffer : public ISerializable, public IDeserializable{
+class StringInStorageBuffer : public IRevisionStoreFileObject {
 private:
   quint32 m_cch;
 
@@ -29,8 +28,6 @@ public:
   QString getStringData() const;
   void setStringData(const QString &value);
 
-  void generateXml(QXmlStreamWriter &xmlWriter) const;
-
 private:
   /**
    * @brief creates StringInStorageBuffer from QDataStream
@@ -44,6 +41,8 @@ private:
    * StringInStorageBuffer is send
    */
   virtual void serialize(QDataStream &ds) const override;
+
+  virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
 
   /**
    * @brief prints the StringInStorageBuffer to a <QDebug> object

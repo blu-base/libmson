@@ -5,7 +5,7 @@
 
 namespace MSONcommon {
 
-void PropertyType_ObjectSpaceID::generateXml(
+void PropertyType_ObjectSpaceID::writeLowLevelXml(
     QXmlStreamWriter &xmlWriter) const {
     xmlWriter.writeStartElement("ObjectSpaceID");
     xmlWriter.writeEndElement();

@@ -79,17 +79,17 @@ void ObjectDeclaration2RefCountFND::toDebugString(QDebug dbg) const {
       << m_body << " cRef: " << qStringHex(m_cRef, 2) << 'n';
 }
 
-void ObjectDeclaration2RefCountFND::generateXml(
+void ObjectDeclaration2RefCountFND::writeLowLevelXml(
     QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("ObjectDeclaration2RefCountFND");
 
   xmlWriter.writeAttribute("cRef", qStringHex(m_cRef, 16));
 
-  m_blobRef.generateXml(xmlWriter);
+  xmlWriter << m_blobRef;
 
-  m_body.generateXml(xmlWriter);
+  xmlWriter << m_body;
 
-  m_blob.generateXml(xmlWriter);
+  xmlWriter << m_blob;
 
   xmlWriter.writeEndElement();
 }

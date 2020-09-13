@@ -7,8 +7,7 @@
 #include <QDebug>
 #include <QXmlStreamWriter>
 
-#include "../IDeserializable.h"
-#include "../ISerializable.h"
+#include "../IRevisionStoreFileObject.h"
 
 namespace MSONcommon {
 
@@ -43,7 +42,7 @@ enum class VAlignment : quint32 {
 QString hAlignmentToString(const HAlignment &val);
 QString vAlignmentToString(const VAlignment &val);
 
-class LayoutAlignment : public ISerializable, public IDeserializable {
+class LayoutAlignment : public IRevisionStoreFileObject {
 private:
   quint32 m_value;
 
@@ -51,8 +50,6 @@ public:
   LayoutAlignment();
 
   friend QDebug operator<<(QDebug dbg, const LayoutAlignment &obj);
-
-  void generateXml(QXmlStreamWriter &xmlWriter) const;
 
   HAlignment lha() const;
   void setLha(const HAlignment &val);
@@ -72,6 +69,8 @@ public:
 private:
   virtual void deserialize(QDataStream &ds) override;
   virtual void serialize(QDataStream &ds) const override;
+
+  virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
 
   void toDebugString(QDebug dbg) const;
 };

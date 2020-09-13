@@ -61,7 +61,7 @@ void FileNodeListFragment::setNextFragment(
   m_nextFragment = nextFragment;
 }
 
-void FileNodeListFragment::generateXml(QXmlStreamWriter &xmlWriter) const {
+void FileNodeListFragment::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("FileNodeListFragment");
   xmlWriter.writeAttribute("fileNodeListID",
                            QString::number(m_fnlheader.getFileNodeListID()));
@@ -72,14 +72,14 @@ void FileNodeListFragment::generateXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeAttribute("cb", qStringHex(m_ref.cb(), 16));
 
   //  xmlWriter.writeStartElement("ref");
-  //  m_ref.generateXml(xmlWriter);
+  //  xmlWriter << m_ref;
   //  xmlWriter.writeEndElement();
 
-  //  m_fnlheader.generateXml(xmlWriter);
+  //  xmlWriter << m_fnlheader;
 
   xmlWriter.writeStartElement("rgFileNodes");
   for (const auto &entry : m_rgFileNodes) {
-    entry->generateXml(xmlWriter);
+    xmlWriter << *entry;
   }
   xmlWriter.writeEndElement();
 
@@ -89,7 +89,7 @@ void FileNodeListFragment::generateXml(QXmlStreamWriter &xmlWriter) const {
 
   xmlWriter.writeStartElement("nextFragment");
   if (!m_nextFragment.is_fcrNil() && !m_nextFragment.is_fcrZero()) {
-    m_nextFragment.generateXml(xmlWriter);
+    xmlWriter << m_nextFragment;
   }
   xmlWriter.writeEndElement();
 

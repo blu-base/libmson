@@ -73,12 +73,12 @@ void ObjectInfoDependencyOverridesFND::toDebugString(QDebug dbg) const {
       << " ref: " << m_ref << "data: " << m_data << '\n';
 }
 
-void ObjectInfoDependencyOverridesFND::generateXml(
+void ObjectInfoDependencyOverridesFND::writeLowLevelXml(
     QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("ObjectInfoDependencyOverridesFND");
-  m_ref.generateXml(xmlWriter);
+  xmlWriter << m_ref;
 
-  m_data.generateXml(xmlWriter);
+  xmlWriter << m_data;
 
   xmlWriter.writeEndElement();
 }

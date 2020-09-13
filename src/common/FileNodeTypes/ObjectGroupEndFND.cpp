@@ -9,7 +9,7 @@ void ObjectGroupEndFND::toDebugString(QDebug dbg) const {
   dbg << "ObjectGroupEndFND.\n";
 }
 
-void ObjectGroupEndFND::generateXml(QXmlStreamWriter &xmlWriter) const {
+void ObjectGroupEndFND::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("ObjectGroupEndFND");
   xmlWriter.writeEndElement();
 }

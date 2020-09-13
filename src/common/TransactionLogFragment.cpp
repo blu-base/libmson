@@ -50,7 +50,7 @@ QDebug operator<<(QDebug dbg, const TransactionLogFragment &obj) {
   return dbg;
 }
 
-void TransactionLogFragment::generateXml(QXmlStreamWriter &xmlWriter) const {
+void TransactionLogFragment::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("TransactionLogFragment");
 
   xmlWriter.writeStartElement("size");
@@ -58,13 +58,13 @@ void TransactionLogFragment::generateXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeEndElement();
 
   xmlWriter.writeStartElement("nextFragment");
-  nextFragment.generateXml(xmlWriter);
+  xmlWriter << nextFragment;
   xmlWriter.writeEndElement();
 
   xmlWriter.writeStartElement("sizeTable");
   for (const auto &entry : sizeTable) {
     if (!entry->isZero()) {
-      entry->generateXml(xmlWriter);
+      xmlWriter << *entry;
     }
   }
   xmlWriter.writeEndElement();

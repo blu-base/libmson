@@ -52,7 +52,7 @@ quint32 FileChunkReference64x32::cb() const { return m_cb; }
 
 void FileChunkReference64x32::setCb(const quint32 &cb) { m_cb = cb; }
 
-void FileChunkReference64x32::generateXml(QXmlStreamWriter &xmlWriter) const {
+void FileChunkReference64x32::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("FileChunkReference64x32");
 
   if (this->is_fcrNil()) {

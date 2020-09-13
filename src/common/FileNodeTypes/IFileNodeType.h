@@ -7,8 +7,7 @@
 #include <QDebug>
 #include <QXmlStreamWriter>
 
-#include "../IDeserializable.h"
-#include "../ISerializable.h"
+#include "../IRevisionStoreFileObject.h"
 
 namespace MSONcommon {
 /**
@@ -16,14 +15,13 @@ namespace MSONcommon {
  * @brief The abstract class for the Data contained in FileNodes
  *
  */
-class IFileNodeType : public ISerializable, public IDeserializable {
+class IFileNodeType : public IRevisionStoreFileObject {
 protected:
   IFileNodeType() = default;
+  virtual ~IFileNodeType() = default;
 
 public:
   friend QDebug operator<<(QDebug dbg, const IFileNodeType &obj);
-
-  virtual void generateXml(QXmlStreamWriter &xmlWriter) const = 0;
 
 private:
   /**

@@ -32,6 +32,13 @@ void Time32::serialize(QDataStream &ds) const {
   ds << static_cast<quint32>(m_time.toSecsSinceEpoch() - utcoffset);
 }
 
+void Time32::writeLowLevelXml(QXmlStreamWriter& xmlWriter) const
+{
+  xmlWriter.writeStartElement("Time32");
+  xmlWriter.writeCharacters(getTime().toString("dd/MM/yyyy hh:mm:ss AP"));
+  xmlWriter.writeEndElement();
+}
+
 void Time32::toDebugString(QDebug dbg) const { dbg << "Time32:\n" << m_time; }
 
 } // namespace MSONcommon

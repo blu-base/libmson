@@ -14,7 +14,7 @@ void PropertyType_FourBytesOfLengthFollowedByData::setData(
   m_data = data;
 }
 
-void PropertyType_FourBytesOfLengthFollowedByData::generateXml(
+void PropertyType_FourBytesOfLengthFollowedByData::writeLowLevelXml(
     QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("FourBytesOfLengthFollowedByData");
   xmlWriter.writeAttribute("cb", QString::number(m_cb));

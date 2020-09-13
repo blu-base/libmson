@@ -11,8 +11,7 @@
 
 #include "commonTypes/Enums.h"
 
-#include "IDeserializable.h"
-#include "ISerializable.h"
+#include "IRevisionStoreFileObject.h"
 
 namespace MSONcommon{
 
@@ -30,7 +29,7 @@ static constexpr const quint32 FileNode_shiftStpFormat = 23;
 static constexpr const quint32 FileNode_shiftFileNodeSize = 10;
 static constexpr const quint32 FileNode_shiftFileNodeID = 0;
 
-class FileNode : public ISerializable, public IDeserializable {
+class FileNode : public IRevisionStoreFileObject {
 protected:
   // nonessential. position in byte stream. for debug purposes.
   quint64 stp;
@@ -61,8 +60,6 @@ public:
 
   friend QDebug operator<<(QDebug dbg, const FileNode &obj);
 
-  void generateXml(QXmlStreamWriter &xmlWriter) const;
-
   bool isValid();
 
   quint16 getFileNodeID() const;
@@ -89,6 +86,8 @@ public:
 private:
   virtual void deserialize(QDataStream& ds) override;
   virtual void serialize(QDataStream& ds) const override;
+
+  virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
 };
 
 } // namespace MSONcommon

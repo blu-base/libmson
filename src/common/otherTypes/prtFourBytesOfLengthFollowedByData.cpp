@@ -27,11 +27,21 @@ void prtFourBytesOfLengthFollowedByData::toDebugString(QDebug dbg) const {
   dbg << "prtFourBytesOfLengthFollowedByData: size: " << m_cb << '\n';
 }
 
-prtFourBytesOfLengthFollowedByData::prtFourBytesOfLengthFollowedByData() {}
 
 QDebug operator<<(QDebug dbg, const prtFourBytesOfLengthFollowedByData &obj) {
   obj.toDebugString(dbg);
   return dbg;
+}
+
+void prtFourBytesOfLengthFollowedByData::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
+  xmlWriter.writeStartElement("prtFourBytesOfLengthFollowedByData");
+  xmlWriter.writeAttribute("cb", QString::number(m_cb));
+
+  xmlWriter.writeStartElement("Data");
+  xmlWriter.writeCharacters(m_Data.toHex());
+  xmlWriter.writeEndElement();
+
+  xmlWriter.writeEndElement();
 }
 
 } // namespace MSONcommon

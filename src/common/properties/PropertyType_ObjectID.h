@@ -15,15 +15,14 @@ private:
 public:
   PropertyType_ObjectID();
 
-
   CompactID data() const;
   void setData(const CompactID &data);
-
-   virtual void generateXml(QXmlStreamWriter& xmlWriter) const override;
 
 private:
   virtual void deserialize(QDataStream &ds) override;
   virtual void serialize(QDataStream &ds) const override;
+
+  virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
 
   void toDebugString(QDebug dbg) const override;
 };

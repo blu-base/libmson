@@ -34,8 +34,6 @@ public:
   friend QDebug operator<<(QDebug dbg,
                            const PropertyType_ArrayOfPropertyValues &obj);
 
-  virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
-
   quint32 cProperties() const;
   void setCProperties(const quint32 &cProperties);
 
@@ -48,6 +46,8 @@ public:
 private:
   virtual void deserialize(QDataStream &ds) override;
   virtual void serialize(QDataStream &ds) const override;
+
+  virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
 
   void toDebugString(QDebug dbg) const override;
 };

@@ -22,38 +22,38 @@ QDebug operator<<(QDebug dbg, const RevisionManifestList &obj) {
   return dbg;
 }
 
-void RevisionManifestList::generateXml(QXmlStreamWriter &xmlWriter) const {
+void RevisionManifestList::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("RevisionManifestList");
   xmlWriter.writeAttribute("stp", qStringHex(m_ref.stp(), 16));
   xmlWriter.writeAttribute("cb", qStringHex(m_ref.cb(), 16));
 
   xmlWriter.writeStartElement("RevisionManifests");
   for (const auto &entry : m_RevisionManifests) {
-    entry->generateXml(xmlWriter);
+    xmlWriter << *entry;
   }
   xmlWriter.writeEndElement();
 
   xmlWriter.writeStartElement("RevisionRoleDeclarations");
   for (const auto &entry : m_RevisionRoleDeclarations) {
-    entry->generateXml(xmlWriter);
+    xmlWriter << *entry;
   }
   xmlWriter.writeEndElement();
 
   xmlWriter.writeStartElement("RevisionRoleAndContextDeclarations");
   for (const auto &entry : m_RevisionRoleAndContextDeclarations) {
-    entry->generateXml(xmlWriter);
+    xmlWriter << *entry;
   }
   xmlWriter.writeEndElement();
 
   xmlWriter.writeStartElement("ObjectGroupLists");
   for (const auto &entry : m_ObjectGroupLists) {
-    entry->generateXml(xmlWriter);
+    xmlWriter << *entry;
   }
   xmlWriter.writeEndElement();
 
   xmlWriter.writeStartElement("FileNodeSequence");
   for (const auto &entry : m_FileNodeSequence) {
-    entry->generateXml(xmlWriter);
+    xmlWriter << *entry;
   }
   xmlWriter.writeEndElement();
 
@@ -140,6 +140,8 @@ void RevisionManifestList::deserialize(QDataStream &ds) {
     }
   }
 }
+
+void MSONcommon::RevisionManifestList::serialize(QDataStream &ds) const {}
 
 void RevisionManifestList::toDebugString(QDebug dbg) const {
 

@@ -27,7 +27,7 @@ void GlobalIdTableEntryFNDX::toDebugString(QDebug dbg) const {
       << " GUID:  " << m_guid << '\n';
 }
 
-void GlobalIdTableEntryFNDX::generateXml(QXmlStreamWriter &xmlWriter) const {
+void GlobalIdTableEntryFNDX::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("GlobalIdTableEntryFNDX");
   xmlWriter.writeAttribute("index", QString::number(m_index));
 

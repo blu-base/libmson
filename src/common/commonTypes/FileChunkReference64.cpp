@@ -41,7 +41,7 @@ quint64 FileChunkReference64::cb() const { return m_cb; }
 
 void FileChunkReference64::setCb(const quint64 &cb) { m_cb = cb; }
 
-void FileChunkReference64::generateXml(QXmlStreamWriter &xmlWriter) const {
+void FileChunkReference64::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("FileChunkReference64");
 
   if (this->is_fcrNil()) {

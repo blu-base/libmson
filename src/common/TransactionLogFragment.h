@@ -8,13 +8,12 @@
 #include <QDebug>
 #include <QXmlStreamWriter>
 
-#include "IDeserializable.h"
-#include "ISerializable.h"
+#include "IRevisionStoreFileObject.h"
 #include "TransactionEntry.h"
 #include "commonTypes/FileChunkReference64x32.h"
 
 namespace MSONcommon {
-class TransactionLogFragment : public ISerializable, public IDeserializable {
+class TransactionLogFragment : public IRevisionStoreFileObject {
 private:
   quint64 m_size;
 
@@ -43,11 +42,11 @@ public:
   FileChunkReference64x32 getNextFragment() const;
   void setNextFragment(const FileChunkReference64x32 &value);
 
-  void generateXml(QXmlStreamWriter &xmlWriter) const;
-
 private:
   virtual void serialize(QDataStream &ds) const override;
   virtual void deserialize(QDataStream &ds) override;
+
+  virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
 
   void toDebugString(QDebug dbg) const;
 };

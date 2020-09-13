@@ -9,12 +9,11 @@
 #include <QDebug>
 #include <QXmlStreamWriter>
 
-#include "../IDeserializable.h"
-#include "../ISerializable.h"
+#include "../IRevisionStoreFileObject.h"
 
 namespace MSONcommon {
 
-class Time32: public ISerializable, public IDeserializable {
+class Time32: public IRevisionStoreFileObject {
 private:
   QDateTime m_time;
 
@@ -24,14 +23,14 @@ public:
 
   friend QDebug operator<<(QDebug dbg, const Time32 &obj);
 
-  void generateXml(QXmlStreamWriter &xmlWriter) const;
-
   QDateTime getTime() const;
   void setTime(const QDateTime time);
 
 private:
   virtual void deserialize(QDataStream &ds) override;
   virtual void serialize(QDataStream &ds) const override;
+
+    virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
 
   void toDebugString(QDebug dbg) const;
 

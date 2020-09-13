@@ -13,199 +13,6 @@ namespace MSONcommon {
 RootFileNodeList::RootFileNodeList(FileChunkReference64x32 &reference)
     :  m_fcrFileNodeListRoot{reference} {}
 
-// RootFileNodeList::RootFileNodeList(const RootFileNodeList &source)
-//    : m_fileNodeListFragments{},
-//      m_objectSpaceManifestRoot{source.getObjectSpaceManifestRoot()},
-//      m_fileNodeSequence{}, m_fileDataStoreListReference{},
-//      m_fcrFileNodeListRoot{source.getFcrFileNodeListRoot()} {
-
-//  // move source.m_fileNodeListFragments
-//  m_fileNodeListFragments.resize(source.m_fileNodeListFragments.size());
-//  std::transform(source.m_fileNodeListFragments.begin(),
-//                 source.m_fileNodeListFragments.end(),
-//                 m_fileNodeListFragments.begin(),
-//                 [](FileNodeListFragment *s) { return s; });
-//  std::transform(source.m_fileNodeListFragments.begin(),
-//                 source.m_fileNodeListFragments.end(),
-//                 source.m_fileNodeListFragments.begin(),
-//                 []() { return nullptr; });
-
-//  // move source.m_fileNodeSequence
-//  m_fileNodeSequence.resize(source.m_fileNodeSequence.size());
-//  std::transform(source.m_fileNodeSequence.begin(),
-//                 source.m_fileNodeSequence.end(), m_fileNodeSequence.begin(),
-//                 [](FileNode *s) { return s; });
-//  std::transform(source.m_fileNodeSequence.begin(),
-//                 source.m_fileNodeSequence.end(),
-//                 source.m_fileNodeSequence.begin(), []() { return nullptr; });
-
-//  // move source.m_objectSpaceManifestList
-//  m_objectSpaceManifestList.resize(source.m_objectSpaceManifestList.size());
-//  std::transform(source.m_objectSpaceManifestList.begin(),
-//                 source.m_objectSpaceManifestList.end(),
-//                 m_objectSpaceManifestList.begin(),
-//                 [](ObjectSpaceManifestList *s) { return s; });
-//  std::transform(source.m_objectSpaceManifestList.begin(),
-//                 source.m_objectSpaceManifestList.end(),
-//                 source.m_objectSpaceManifestList.begin(),
-//                 []() { return nullptr; });
-
-//  // move source.m_fileDataStoreListReference
-//  m_fileDataStoreListReference.resize(
-//      source.m_fileDataStoreListReference.size());
-//  std::transform(source.m_fileDataStoreListReference.begin(),
-//                 source.m_fileDataStoreListReference.end(),
-//                 m_fileDataStoreListReference.begin(),
-//                 [](FileNode *s) { return s; });
-//  std::transform(source.m_fileDataStoreListReference.begin(),
-//                 source.m_fileDataStoreListReference.end(),
-//                 source.m_fileDataStoreListReference.begin(),
-//                 []() { return nullptr; });
-//}
-
-// RootFileNodeList::RootFileNodeList(RootFileNodeList &&source)
-//    : m_fileNodeListFragments{},
-//      m_objectSpaceManifestRoot{source.getObjectSpaceManifestRoot()},
-//      m_fileNodeSequence{}, m_fileDataStoreListReference{},
-//      m_fcrFileNodeListRoot{source.getFcrFileNodeListRoot()} {
-
-//  // move source.m_fileNodeListFragments
-//  m_fileNodeListFragments.resize(source.m_fileNodeListFragments.size());
-//  std::transform(source.m_fileNodeListFragments.begin(),
-//                 source.m_fileNodeListFragments.end(),
-//                 m_fileNodeListFragments.begin(),
-//                 [](FileNodeListFragment *s) { return s; });
-//  std::transform(source.m_fileNodeListFragments.begin(),
-//                 source.m_fileNodeListFragments.end(),
-//                 source.m_fileNodeListFragments.begin(),
-//                 []() { return nullptr; });
-
-//  // move source.m_fileNodeSequence
-//  m_fileNodeSequence.resize(source.m_fileNodeSequence.size());
-//  std::transform(source.m_fileNodeSequence.begin(),
-//                 source.m_fileNodeSequence.end(), m_fileNodeSequence.begin(),
-//                 [](FileNode *s) { return s; });
-//  std::transform(source.m_fileNodeSequence.begin(),
-//                 source.m_fileNodeSequence.end(),
-//                 source.m_fileNodeSequence.begin(), []() { return nullptr; });
-
-//  // move source.m_objectSpaceManifestList
-//  m_objectSpaceManifestList.resize(source.m_objectSpaceManifestList.size());
-//  std::transform(source.m_objectSpaceManifestList.begin(),
-//                 source.m_objectSpaceManifestList.end(),
-//                 m_objectSpaceManifestList.begin(),
-//                 [](ObjectSpaceManifestList *s) { return s; });
-//  std::transform(source.m_objectSpaceManifestList.begin(),
-//                 source.m_objectSpaceManifestList.end(),
-//                 source.m_objectSpaceManifestList.begin(),
-//                 []() { return nullptr; });
-
-//  // move source.m_fileDataStoreListReference
-//  m_fileDataStoreListReference.resize(
-//      source.m_fileDataStoreListReference.size());
-//  std::transform(source.m_fileDataStoreListReference.begin(),
-//                 source.m_fileDataStoreListReference.end(),
-//                 m_fileDataStoreListReference.begin(),
-//                 [](FileNode *s) { return s; });
-//  std::transform(source.m_fileDataStoreListReference.begin(),
-//                 source.m_fileDataStoreListReference.end(),
-//                 source.m_fileDataStoreListReference.begin(),
-//                 []() { return nullptr; });
-//}
-
-// RootFileNodeList &RootFileNodeList::operator=(const RootFileNodeList &rhs) {
-//  if (this == &rhs) {
-//    return *this;
-//  }
-
-//  // deep copy rhs.m_fileNodeListFragments
-//  m_fileNodeListFragments.resize(rhs.m_fileNodeListFragments.size());
-//  std::transform(
-//      rhs.m_fileNodeListFragments.begin(), rhs.m_fileNodeListFragments.end(),
-//      m_fileNodeListFragments.begin(),
-//      [](FileNodeListFragment *s) { return new FileNodeListFragment(*s); });
-
-//  m_objectSpaceManifestRoot = rhs.m_objectSpaceManifestRoot;
-
-//  // deep copy rhs.m_fileNodeSequence
-//  m_fileNodeSequence.resize(rhs.m_fileNodeSequence.size());
-//  std::transform(rhs.m_fileNodeSequence.begin(), rhs.m_fileNodeSequence.end(),
-//                 m_fileNodeSequence.begin(),
-//                 [](FileNode *s) { return new FileNode(*s); });
-
-//  // deep copy rhs.m_objectSpaceManifestList
-//  m_objectSpaceManifestList.resize(rhs.m_objectSpaceManifestList.size());
-//  std::transform(rhs.m_objectSpaceManifestList.begin(),
-//                 rhs.m_objectSpaceManifestList.end(),
-//                 m_objectSpaceManifestList.begin(),
-//                 [](ObjectSpaceManifestList *s) {
-//                   return new ObjectSpaceManifestList(*s);
-//                 });
-
-//  // deep copy rhs.m_fileDataStoreListReference
-//  m_fileDataStoreListReference.resize(rhs.m_fileDataStoreListReference.size());
-//  std::transform(rhs.m_fileDataStoreListReference.begin(),
-//                 rhs.m_fileDataStoreListReference.end(),
-//                 m_fileDataStoreListReference.begin(),
-//                 [](FileNode *s) { return new FileNode(*s); });
-
-//  m_fcrFileNodeListRoot = rhs.m_fcrFileNodeListRoot;
-
-//  return *this;
-//}
-
-// RootFileNodeList &RootFileNodeList::operator=(RootFileNodeList &&rhs) {
-//  if (this == &rhs) {
-//    return *this;
-//  }
-
-//  // move rhs.m_fileNodeListFragments
-//  m_fileNodeListFragments.resize(rhs.m_fileNodeListFragments.size());
-//  std::transform(rhs.m_fileNodeListFragments.begin(),
-//                 rhs.m_fileNodeListFragments.end(),
-//                 m_fileNodeListFragments.begin(),
-//                 [](FileNodeListFragment *s) { return s; });
-//  std::transform(rhs.m_fileNodeListFragments.begin(),
-//                 rhs.m_fileNodeListFragments.end(),
-//                 rhs.m_fileNodeListFragments.begin(), []() { return nullptr;
-//                 });
-
-//  m_objectSpaceManifestRoot = rhs.m_objectSpaceManifestRoot;
-
-//  // move rhs.m_fileNodeSequence
-//  m_fileNodeSequence.resize(rhs.m_fileNodeSequence.size());
-//  std::transform(rhs.m_fileNodeSequence.begin(), rhs.m_fileNodeSequence.end(),
-//                 m_fileNodeSequence.begin(), [](FileNode *s) { return s; });
-//  std::transform(rhs.m_fileNodeSequence.begin(), rhs.m_fileNodeSequence.end(),
-//                 rhs.m_fileNodeSequence.begin(), []() { return nullptr; });
-
-//  // move rhs.m_objectSpaceManifestList
-//  m_objectSpaceManifestList.resize(rhs.m_objectSpaceManifestList.size());
-//  std::transform(rhs.m_objectSpaceManifestList.begin(),
-//                 rhs.m_objectSpaceManifestList.end(),
-//                 m_objectSpaceManifestList.begin(),
-//                 [](FileNode *s) { return s; });
-//  std::transform(rhs.m_objectSpaceManifestList.begin(),
-//                 rhs.m_objectSpaceManifestList.end(),
-//                 rhs.m_objectSpaceManifestList.begin(),
-//                 []() { return nullptr; });
-
-//  // move rhs.m_fileDataStoreListReference
-//  m_fileDataStoreListReference.resize(rhs.m_fileDataStoreListReference.size());
-//  std::transform(rhs.m_fileDataStoreListReference.begin(),
-//                 rhs.m_fileDataStoreListReference.end(),
-//                 m_fileDataStoreListReference.begin(),
-//                 [](FileNode *s) { return s; });
-//  std::transform(rhs.m_fileDataStoreListReference.begin(),
-//                 rhs.m_fileDataStoreListReference.end(),
-//                 rhs.m_fileDataStoreListReference.begin(),
-//                 []() { return nullptr; });
-
-//  m_fcrFileNodeListRoot = rhs.m_fcrFileNodeListRoot;
-
-//  return *this;
-//}
-
 std::vector<std::shared_ptr<FileNode>>
 RootFileNodeList::getFileDataStoreListReference() const {
   return m_fileDataStoreListReference;
@@ -275,6 +82,12 @@ void RootFileNodeList::deserialize(QDataStream &ds) {
 
   qInfo() << "Finished parsing RootFileNodeList";
 }
+
+void RootFileNodeList::serialize(QDataStream& ds) const
+{
+
+}
+
 
 // void RootFileNodeList::serialize(QDataStream& ds) const
 //{
@@ -377,12 +190,12 @@ void RootFileNodeList::setFcrFileNodeListRoot(
   m_fcrFileNodeListRoot = fcrFileNodeListRoot;
 }
 
-void RootFileNodeList::generateXml(QXmlStreamWriter &xmlWriter) const {
+void RootFileNodeList::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("RootFileNodeList");
 
   //  xmlWriter.writeStartElement("fileNodeListFragments");
   //  for (const auto& entry : m_fileNodeListFragments) {
-  //    entry.generateXml(xmlWriter);
+  //    xmlWriter << entry;
   //  }
   //  xmlWriter.writeEndElement();
 
@@ -395,24 +208,24 @@ void RootFileNodeList::generateXml(QXmlStreamWriter &xmlWriter) const {
 
   xmlWriter.writeStartElement("fileNodeSequences");
   for (const auto &entry : m_fileNodeSequence) {
-    entry->generateXml(xmlWriter);
+    xmlWriter << *entry;
   }
   xmlWriter.writeEndElement();
 
   xmlWriter.writeStartElement("objectSpaceManifestLists");
   for (const auto &entry : m_objectSpaceManifestList) {
-    entry->generateXml(xmlWriter);
+    xmlWriter << *entry;
   }
   xmlWriter.writeEndElement();
 
   xmlWriter.writeStartElement("fileDataStoreListReferences");
   for (const auto &entry : m_fileDataStoreListReference) {
-    entry->generateXml(xmlWriter);
+    xmlWriter << *entry;
   }
   xmlWriter.writeEndElement();
 
   xmlWriter.writeStartElement("fcrFileNodeListRoot");
-  m_fcrFileNodeListRoot.generateXml(xmlWriter);
+  xmlWriter << m_fcrFileNodeListRoot;
   xmlWriter.writeEndElement();
 
   xmlWriter.writeEndElement();

@@ -16,13 +16,13 @@ public:
   quint8 getReserved() const;
   void setReserved(const quint8 &value);
 
-  virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
-
 private:
-  virtual void deserialize(QDataStream &ds);
-  virtual void serialize(QDataStream &ds) const;
+  virtual void deserialize(QDataStream &ds) override;
+  virtual void serialize(QDataStream &ds) const override;
 
-  virtual void toDebugString(QDebug dbg) const;
+  virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
+
+  virtual void toDebugString(QDebug dbg) const override;
 };
 
 } // namespace MSONcommon

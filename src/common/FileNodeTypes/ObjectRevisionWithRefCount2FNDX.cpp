@@ -101,7 +101,7 @@ void ObjectRevisionWithRefCount2FNDX::toDebugString(QDebug dbg) const {
       << " fHasOsidReferences: " << m_fHasOsidReferences << "cRef: " << m_cRef;
 }
 
-void ObjectRevisionWithRefCount2FNDX::generateXml(
+void ObjectRevisionWithRefCount2FNDX::writeLowLevelXml(
     QXmlStreamWriter &xmlWriter) const {
 
   xmlWriter.writeStartElement("ObjectRevisionWithRefCount2FNDX");
@@ -112,11 +112,11 @@ void ObjectRevisionWithRefCount2FNDX::generateXml(
   xmlWriter.writeAttribute("fHasOsidReferences",
                            m_fHasOsidReferences ? "true" : "false");
 
-  m_ref.generateXml(xmlWriter);
+  xmlWriter << m_ref;
 
-  m_oid.generateXml(xmlWriter);
+  xmlWriter << m_oid;
 
-  m_blob.generateXml(xmlWriter);
+  xmlWriter << m_blob;
 
   xmlWriter.writeEndElement();
 }

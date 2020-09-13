@@ -7,18 +7,18 @@
 #include <QDataStream>
 #include <QDebug>
 
-#include "../IDeserializable.h"
-#include "../ISerializable.h"
+#include "../IRevisionStoreFileObject.h"
 
 namespace MSONcommon {
 
-class prtFourBytesOfLengthFollowedByData : public ISerializable, public IDeserializable {
+class prtFourBytesOfLengthFollowedByData : public IRevisionStoreFileObject {
 private:
   quint32 m_cb;
   QByteArray m_Data;
 
 public:
-  prtFourBytesOfLengthFollowedByData();
+  prtFourBytesOfLengthFollowedByData() = default;
+  virtual ~prtFourBytesOfLengthFollowedByData() = default;
 
   friend QDebug operator<<(QDebug dbg,
                            const prtFourBytesOfLengthFollowedByData &obj);
@@ -32,6 +32,8 @@ public:
 private:
   virtual void deserialize(QDataStream &ds) override;
   virtual void serialize(QDataStream &ds) const override;
+
+ virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
 
   void toDebugString(QDebug dbg) const;
 };

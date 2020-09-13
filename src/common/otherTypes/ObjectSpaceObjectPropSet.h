@@ -10,15 +10,14 @@
 #include "ObjectSpaceObjectStreamOfOIDs.h"
 #include "ObjectSpaceObjectStreamOfOSIDs.h"
 
-#include "../IDeserializable.h"
-#include "../ISerializable.h"
+#include "../IRevisionStoreFileObject.h"
 #include "../commonTypes/FileNodeChunkReference.h"
 #include "../properties/PropertySet.h"
 
 namespace MSONcommon {
 
 /// \todo counting inside the streamheaders
-class ObjectSpaceObjectPropSet : public ISerializable, public IDeserializable {
+class ObjectSpaceObjectPropSet : public IRevisionStoreFileObject {
 private:
   ObjectSpaceObjectStreamOfOIDs m_OIDs;
   ObjectSpaceObjectStreamOfOSIDs m_OSIDs;
@@ -46,8 +45,6 @@ public:
   PropertySet body() const;
   void setBody(const PropertySet &body);
 
-  void generateXml(QXmlStreamWriter &xmlWriter) const;
-
 private:
   /**
    * @brief creates ObjectSpaceObjectPropSet from QDataStream
@@ -64,6 +61,8 @@ private:
    * ObjectSpaceObjectPropSet is send
    */
   virtual void serialize(QDataStream &ds) const override;
+
+  virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
 
   /**
    * @brief prints the ObjectSpaceObjectPropSet to a <QDebug> object

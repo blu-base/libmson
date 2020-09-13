@@ -27,7 +27,7 @@ void DataSignatureGroupDefinitionFND::toDebugString(QDebug dbg) const {
       << " m_dataSignatureGroup:  " << m_dataSignatureGroup << '\n';
 }
 
-void DataSignatureGroupDefinitionFND::generateXml(
+void DataSignatureGroupDefinitionFND::writeLowLevelXml(
     QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("DataSignatureGroupDefinitionFND");
 

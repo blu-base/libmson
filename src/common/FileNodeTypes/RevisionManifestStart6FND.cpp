@@ -56,14 +56,14 @@ void RevisionManifestStart6FND::toDebugString(QDebug dbg) const {
       << " odcsDefault:  " << m_odcsDefault << '\n';
 }
 
-void RevisionManifestStart6FND::generateXml(QXmlStreamWriter &xmlWriter) const {
+void RevisionManifestStart6FND::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("RevisionManifestStart6FND");
 
   xmlWriter.writeAttribute("revisionRole", QString::number(m_revisionRole));
   xmlWriter.writeAttribute("odcsDefault", QString::number(m_revisionRole));
 
-  m_rid.generateXml(xmlWriter);
-  m_ridDependent.generateXml(xmlWriter);
+  xmlWriter << m_rid;
+  xmlWriter << m_ridDependent;
 
   xmlWriter.writeEndElement();
 }

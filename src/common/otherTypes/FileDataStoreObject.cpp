@@ -39,7 +39,7 @@ void FileDataStoreObject::setGuidFooter(const QUuid &guidFooter) {
   m_guidFooter = guidFooter;
 }
 
-void FileDataStoreObject::generateXml(QXmlStreamWriter &xmlWriter) const {
+void FileDataStoreObject::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("FileDataStoreObject");
   xmlWriter.writeAttribute("cb", QString::number(m_cbLength));
 

@@ -4,13 +4,11 @@
 #include "../commonTypes/CompactID.h"
 #include <QtCore/qglobal.h>
 
-#include "../IDeserializable.h"
-#include "../ISerializable.h"
+#include "../IRevisionStoreFileObject.h"
 
 namespace MSONcommon {
 
-class ObjectInfoDependencyOverride32 : public ISerializable,
-                                       public IDeserializable {
+class ObjectInfoDependencyOverride32 : public IRevisionStoreFileObject {
 private:
   /**
    * @brief the identity of the object with the updated reference count.
@@ -35,8 +33,6 @@ public:
   quint32 cRef() const;
   void setCRef(const quint32 &cRef);
 
-  void generateXml(QXmlStreamWriter &xmlWriter) const;
-
 private:
   /**
    * @brief creates ObjectInfoDependencyOverride32 from QDataStream
@@ -55,6 +51,7 @@ private:
    */
   virtual void serialize(QDataStream &ds) const override;
 
+  virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
   /**
    * @brief prints the ObjectInfoDependencyOverride32 to a <QDebug> object
    * @param dbg <QDebug> string builder for the debug information

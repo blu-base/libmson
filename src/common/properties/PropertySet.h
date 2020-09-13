@@ -10,11 +10,12 @@
 
 #include "IPropertyType.h"
 #include "PropertyID.h"
+#include "../IRevisionStoreFileObject.h"
 
 
 namespace MSONcommon {
 
-class PropertySet {
+class PropertySet : public IRevisionStoreFileObject {
 private:
   /**
    * @brief number of PropertyIDs in this Set
@@ -35,11 +36,7 @@ private:
 public:
   PropertySet();
 
-  friend QDataStream &operator<<(QDataStream &ds, const PropertySet &obj);
-  friend QDataStream &operator>>(QDataStream &ds, PropertySet &obj);
   friend QDebug operator<<(QDebug dbg, const PropertySet &obj);
-
-  void generateXml(QXmlStreamWriter &xmlWriter) const;
 
   quint16 cProperties() const;
   void setCProperties(const quint16 &cProperties);
@@ -51,8 +48,11 @@ public:
   void setRgData(const std::vector<IPropertyType *> &rgData);
 
 private:
-  void deserialize(QDataStream &ds);
-  void serialize(QDataStream &ds) const;
+  virtual void deserialize(QDataStream &ds) override;
+  virtual void serialize(QDataStream &ds) const override;
+
+  virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
+
   void toDebugString(QDebug dbg) const;
 };
 

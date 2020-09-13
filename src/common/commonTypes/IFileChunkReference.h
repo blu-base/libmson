@@ -8,9 +8,7 @@
 
 #include <QXmlStreamWriter>
 
-#include "../IDeserializable.h"
-#include "../ISerializable.h"
-
+#include "../IRevisionStoreFileObject.h"
 
 namespace MSONcommon {
 
@@ -19,7 +17,8 @@ enum FCR_INITTYPE {
   FCRNIL,
 };
 
-template <typename S, typename C> class IFileChunkReference : public ISerializable, public IDeserializable {
+template <typename S, typename C>
+class IFileChunkReference : public IRevisionStoreFileObject {
 protected:
   S m_stp;
   C m_cb;
@@ -38,8 +37,6 @@ public:
 
   virtual C cb() const = 0;
   virtual void setCb(const C &cb) = 0;
-
-  virtual void generateXml(QXmlStreamWriter &xmlWriter) const = 0;
 
 private:
   /**

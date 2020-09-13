@@ -37,13 +37,13 @@ void RevisionRoleAndContextDeclarationFND::toDebugString(QDebug dbg) const {
       << m_base << "gctxid: " << m_gctxid << '\n';
 }
 
-void RevisionRoleAndContextDeclarationFND::generateXml(
+void RevisionRoleAndContextDeclarationFND::writeLowLevelXml(
     QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("RevisionRoleAndContextDeclarationFND");
 
-  m_base.generateXml(xmlWriter);
+  xmlWriter << m_base;
 
-  m_gctxid.generateXml(xmlWriter);
+  xmlWriter << m_gctxid;
 
   xmlWriter.writeEndElement();
 }

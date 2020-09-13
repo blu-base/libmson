@@ -21,12 +21,11 @@
 #include "commonTypes/ExtendedGUID.h"
 #include "commonTypes/FileNodeChunkReference.h"
 
-#include "IDeserializable.h"
-#include "ISerializable.h"
+#include "IRevisionStoreFileObject.h"
 
 namespace MSONcommon {
 
-class MSONDocument : public ISerializable, public IDeserializable {
+class MSONDocument : public IRevisionStoreFileObject {
 
 private:
   QMap<quint32, quint32> FileNodeCountMapping;
@@ -60,8 +59,6 @@ public:
   ~MSONDocument() = default;
 
   friend QDebug operator<<(QDebug dbg, const MSONDocument &obj);
-
-  void generateXml(QXmlStreamWriter &xmlWriter) const;
 
   QMap<quint32, quint32> &fileNodeCountMapping();
   QMap<quint32, quint32> getFileNodeCountMapping() const;
@@ -99,6 +96,8 @@ public:
 private:
   virtual void deserialize(QDataStream& ds) override;
   virtual void serialize(QDataStream& ds) const override;
+
+  virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
 };
 
 } // namespace MSONcommon

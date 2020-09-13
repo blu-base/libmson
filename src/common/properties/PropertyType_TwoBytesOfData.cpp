@@ -11,7 +11,7 @@ void PropertyType_TwoBytesOfData::setData(const QByteArray &data) {
   m_data = data;
 }
 
-void PropertyType_TwoBytesOfData::generateXml(
+void PropertyType_TwoBytesOfData::writeLowLevelXml(
     QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("TwoBytesOfData");
   xmlWriter.writeCharacters(m_data.toHex());

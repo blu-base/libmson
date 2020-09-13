@@ -8,6 +8,7 @@ namespace MSONcommon {
 class IDeserializable {
 protected:
   IDeserializable() = default;
+  virtual ~IDeserializable() = default;
 
 public:
   friend QDataStream &operator>>(QDataStream &ds, IDeserializable &obj);

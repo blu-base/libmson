@@ -32,11 +32,11 @@ void RootObjectReference3FND::toDebugString(QDebug dbg) const {
       << " RootRole: " << m_RootRole << '\n';
 }
 
-void RootObjectReference3FND::generateXml(QXmlStreamWriter &xmlWriter) const {
+void RootObjectReference3FND::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("RootObjectReference3FND");
   xmlWriter.writeAttribute("rootRole", QString::number(m_RootRole));
 
-  m_oidRoot.generateXml(xmlWriter);
+  xmlWriter << m_oidRoot;
 
   xmlWriter.writeEndElement();
 }

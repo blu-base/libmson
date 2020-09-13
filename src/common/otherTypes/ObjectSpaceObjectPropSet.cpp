@@ -53,29 +53,29 @@ void ObjectSpaceObjectPropSet::setBody(const PropertySet &body) {
   m_body = body;
 }
 
-void ObjectSpaceObjectPropSet::generateXml(QXmlStreamWriter &xmlWriter) const {
+void ObjectSpaceObjectPropSet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("ObjectSpaceObjectPropSet");
   xmlWriter.writeAttribute("paddingLength", QString::number(m_paddingLength));
 
   xmlWriter.writeStartElement("ObjectSpaceObjectStreamOfOIDs");
   if (m_OIDs.header().count() > 0) {
-    m_OIDs.generateXml(xmlWriter);
+    xmlWriter << m_OIDs;
   }
   xmlWriter.writeEndElement();
 
   xmlWriter.writeStartElement("ObjectSpaceObjectStreamOfOSIDs");
   if (m_OSIDs.header().count() > 0) {
-    m_OSIDs.generateXml(xmlWriter);
+    xmlWriter << m_OSIDs;
   }
   xmlWriter.writeEndElement();
 
   xmlWriter.writeStartElement("ObjectSpaceObjectStreamOfContextIDs");
   if (m_ContextIDs.header().count() > 0) {
-    m_ContextIDs.generateXml(xmlWriter);
+    xmlWriter << m_ContextIDs;
   }
   xmlWriter.writeEndElement();
 
-  m_body.generateXml(xmlWriter);
+  xmlWriter << m_body;
 
   xmlWriter.writeEndElement();
 }

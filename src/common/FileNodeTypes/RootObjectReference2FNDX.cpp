@@ -34,11 +34,11 @@ void RootObjectReference2FNDX::toDebugString(QDebug dbg) const {
 }
 
 
-void RootObjectReference2FNDX::generateXml(QXmlStreamWriter& xmlWriter) const
+void RootObjectReference2FNDX::writeLowLevelXml(QXmlStreamWriter& xmlWriter) const
 {
     xmlWriter.writeStartElement("RootObjectReference2FNDX");
     xmlWriter.writeAttribute("rootRole", QString::number(m_RootRole));
-    m_oidRoot.generateXml(xmlWriter);
+    xmlWriter << m_oidRoot;
 
 
     xmlWriter.writeEndElement();

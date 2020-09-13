@@ -140,7 +140,7 @@ void PropertySet::toDebugString(QDebug dbg) const {}
 PropertySet::PropertySet() : m_cProperties{} {}
 
 /// \todo utf16 and utf8 might end prematurely because \0 terminator found
-void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
+void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("PropertySet");
   xmlWriter.writeAttribute("cProperties", QString::number(m_cProperties));
 
@@ -255,7 +255,7 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
       ColorRef val;
       bytes >> val;
 
-      val.generateXml(xmlWriter);
+      xmlWriter << val;
 
       xmlWriter.writeEndElement();
       break;
@@ -269,7 +269,7 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
       ColorRef val;
       bytes >> val;
 
-      val.generateXml(xmlWriter);
+      xmlWriter << val;
       xmlWriter.writeEndElement();
       break;
     }
@@ -303,7 +303,7 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
       BodyTextAlignment bta;
       QDataStream bytes(body);
       bytes >> bta;
-      bta.generateXml(xmlWriter);
+      xmlWriter << bta;
       break;
     }
     case PropertyIDs::OffsetFromParentHoriz: {
@@ -420,7 +420,7 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
       QDataStream bytes(body);
       LayoutAlignment val;
       bytes >> val;
-      val.generateXml(xmlWriter);
+      xmlWriter << val;
       break;
     }
       //    case PropertyIDs::PictureContainer:
@@ -508,7 +508,7 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
       bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
       LayoutAlignment val;
       bytes >> val;
-      val.generateXml(xmlWriter);
+      xmlWriter << val;
       break;
     }
     case PropertyIDs::IsTitleTime:
@@ -1097,7 +1097,7 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
     }
     case PropertyIDs::undoc_StrokesBlob: {
       xmlWriter.writeStartElement("undoc_StrokesBlob");
-      m_rgData[i]->generateXml(xmlWriter);
+      xmlWriter << *m_rgData[i];
       xmlWriter.writeEndElement();
       break;
     }
@@ -1326,7 +1326,7 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
       QDataStream bytes(data);
       ColorRef val;
       bytes >> val;
-      val.generateXml(xmlWriter);
+      xmlWriter << val;
       xmlWriter.writeEndElement();
       break;
     }
@@ -1356,7 +1356,7 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
 
     case PropertyIDs::None:
     default:
-      m_rgData[i]->generateXml(xmlWriter);
+      xmlWriter << *m_rgData[i];
       break;
     }
     xmlWriter.writeEndElement();
@@ -1367,15 +1367,7 @@ void PropertySet::generateXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeEndElement();
 }
 
-QDataStream &operator<<(QDataStream &ds, const PropertySet &obj) {
-  obj.serialize(ds);
-  return ds;
-}
 
-QDataStream &operator>>(QDataStream &ds, PropertySet &obj) {
-  obj.deserialize(ds);
-  return ds;
-}
 
 QDebug operator<<(QDebug dbg, const PropertySet &obj) {
   obj.toDebugString(dbg);

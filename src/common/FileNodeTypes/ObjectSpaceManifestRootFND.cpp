@@ -24,11 +24,11 @@ void ObjectSpaceManifestRootFND::toDebugString(QDebug dbg) const {
 }
 
 
-void ObjectSpaceManifestRootFND::generateXml(QXmlStreamWriter& xmlWriter) const
+void ObjectSpaceManifestRootFND::writeLowLevelXml(QXmlStreamWriter& xmlWriter) const
 {
     xmlWriter.writeStartElement("ObjectSpaceManifestRootFND");
 
-    m_gosidRoot.generateXml(xmlWriter);
+    xmlWriter << m_gosidRoot;
 
     xmlWriter.writeEndElement();
 }

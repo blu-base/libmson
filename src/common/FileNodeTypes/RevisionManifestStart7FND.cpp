@@ -32,12 +32,12 @@ void RevisionManifestStart7FND::setBase(
   m_base = value;
 }
 
-void RevisionManifestStart7FND::generateXml(QXmlStreamWriter &xmlWriter) const {
+void RevisionManifestStart7FND::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("RevisionManifestStart7FND");
 
-  m_base.generateXml(xmlWriter);
+  xmlWriter << m_base;
 
-  m_gctxid.generateXml(xmlWriter);
+  xmlWriter << m_gctxid;
 
   xmlWriter.writeEndElement();
 }

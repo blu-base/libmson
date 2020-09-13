@@ -5,8 +5,7 @@
 #include <QtCore/qglobal.h>
 #include <vector>
 
-#include "IDeserializable.h"
-#include "ISerializable.h"
+#include "IRevisionStoreFileObject.h"
 
 #include "FileNode.h"
 #include "FileNodeListFragment.h"
@@ -16,7 +15,7 @@
 
 namespace MSONcommon {
 
-class ObjectSpaceManifestList : public IDeserializable {
+class ObjectSpaceManifestList : public IRevisionStoreFileObject {
 private:
   FileNodeChunkReference m_ref;
 
@@ -52,8 +51,6 @@ public:
 
   friend QDebug operator<<(QDebug dbg, const ObjectSpaceManifestList &obj);
 
-  void generateXml(QXmlStreamWriter &xmlWriter) const;
-
 private:
   /**
    * @brief creates ObjectSpaceManifestList from QDataStream
@@ -61,12 +58,14 @@ private:
    * ObjectSpaceManifestList
    */
   virtual void deserialize(QDataStream &ds) override;
-  //  /**
-  //   * @brief creates byte stream from ObjectSpaceManifestList object
-  //   * @param ds <QDataStream> is the output stream to which the serialized
-  //   * ObjectSpaceManifestList is send
-  //   */
-  //  void serialize(QDataStream &ds) const;
+  /**
+   * @brief creates byte stream from ObjectSpaceManifestList object
+   * @param ds <QDataStream> is the output stream to which the serialized
+   * ObjectSpaceManifestList is send
+   */
+  virtual void serialize(QDataStream &ds) const override;
+
+  virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
 
   /**
    * @brief prints the ObjectSpaceManifestList to a <QDebug> object

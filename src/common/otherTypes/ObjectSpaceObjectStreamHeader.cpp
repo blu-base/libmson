@@ -52,7 +52,7 @@ void ObjectSpaceObjectStreamHeader::setOsidStreamPresence(
   m_OsidStreamNotPresent = static_cast<bool>(osidStreamPresence);
 }
 
-void ObjectSpaceObjectStreamHeader::generateXml(
+void ObjectSpaceObjectStreamHeader::writeLowLevelXml(
     QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("ObjectSpaceObjectStreamHeader");
   xmlWriter.writeAttribute("count", QString::number(m_count));

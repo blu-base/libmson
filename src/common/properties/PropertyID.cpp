@@ -584,7 +584,7 @@ void PropertyID::setBoolValue(bool boolValue) {
   }
 }
 
-void PropertyID::generateXml(QXmlStreamWriter &xmlWriter) const {
+void PropertyID::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("PropertyID");
 
   xmlWriter.writeAttribute("Value", qStringHex(m_value, 8));

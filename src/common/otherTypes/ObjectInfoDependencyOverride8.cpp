@@ -6,11 +6,11 @@
 namespace MSONcommon {
 
 
-void ObjectInfoDependencyOverride8::generateXml(
+void ObjectInfoDependencyOverride8::writeLowLevelXml(
     QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("ObjectInfoDependencyOverride8");
   xmlWriter.writeAttribute("cRef", QString::number(m_cRef));
-  m_oid.generateXml(xmlWriter);
+  xmlWriter << m_oid;
 
   xmlWriter.writeEndElement();
 }

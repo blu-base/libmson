@@ -64,7 +64,7 @@ FileNode::FileNode(const FileNode &source)
 
 FileNode::~FileNode() {}
 
-void FileNode::generateXml(QXmlStreamWriter &xmlWriter) const {
+void FileNode::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("FileNode");
 
   xmlWriter.writeAttribute("stp", qStringHex(getStp(), 16));
@@ -76,7 +76,7 @@ void FileNode::generateXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeAttribute("baseType", qStringHex(baseType, 2));
 
   if (fnt != nullptr) {
-    fnt->generateXml(xmlWriter);
+    xmlWriter << *fnt;
   } else {
     xmlWriter.writeStartElement("NoFileNodeType");
     xmlWriter.writeEndElement();

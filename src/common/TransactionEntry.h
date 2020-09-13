@@ -7,12 +7,11 @@
 #include <QDebug>
 #include <QXmlStreamWriter>
 
-#include "IDeserializable.h"
-#include "ISerializable.h"
+#include "IRevisionStoreFileObject.h"
 
 namespace MSONcommon {
 
-class TransactionEntry : public ISerializable, public IDeserializable {
+class TransactionEntry : public IRevisionStoreFileObject {
 private:
   quint32 srcID;
 
@@ -30,11 +29,11 @@ public:
 
   friend QDebug operator<<(QDebug dbg, const TransactionEntry &obj);
 
-  void generateXml(QXmlStreamWriter &xmlWriter) const;
-
 private:
   virtual void serialize(QDataStream &ds) const override;
   virtual void deserialize(QDataStream &ds) override;
+
+    virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
 
   void toDebugString(QDebug dbg) const;
 };

@@ -5,18 +5,16 @@
 
 #include "FileNode.h"
 #include "FileNodeListFragment.h"
+#include "IRevisionStoreFileObject.h"
 #include "ObjectGroupList.h"
 #include "RevisionManifest.h"
 #include "commonTypes/FileNodeChunkReference.h"
-
-#include "IDeserializable.h"
-#include "ISerializable.h"
 
 #include <QDataStream>
 #include <QDebug>
 #include <vector>
 namespace MSONcommon {
-class RevisionManifestList : public IDeserializable {
+class RevisionManifestList : public IRevisionStoreFileObject {
 private:
   FileNodeChunkReference m_ref;
 
@@ -64,10 +62,11 @@ public:
 
   friend QDebug operator<<(QDebug dbg, const RevisionManifestList &obj);
 
-  void generateXml(QXmlStreamWriter &xmlWriter) const;
-
 private:
   virtual void deserialize(QDataStream &ds) override;
+  virtual void serialize(QDataStream &ds) const override;
+
+  virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
 
   /**
    * @brief prints the RevisionManifestList to a <QDebug> object

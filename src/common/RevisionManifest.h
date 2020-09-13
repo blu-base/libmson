@@ -5,8 +5,11 @@
 #include <vector>
 
 #include "FileNode.h"
+
+#include "IRevisionStoreFileToXmlable.h"
+
 namespace MSONcommon {
-class RevisionManifest {
+class RevisionManifest : public IRevisionStoreFileToXmlable {
 private:
   std::vector<std::shared_ptr<FileNode>> m_FileNodeSquence;
 
@@ -20,9 +23,8 @@ public:
 
   friend QDebug operator<<(QDebug dbg, const RevisionManifest &obj);
 
-  void generateXml(QXmlStreamWriter &xmlWriter) const;
-
 private:
+ virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
   /**
    * @brief prints the RevisionManifest to a <QDebug> object
    * @param dbg <QDebug> string builder for the debug information

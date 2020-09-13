@@ -33,11 +33,11 @@ void RevisionManifestListStartFND::toDebugString(QDebug dbg) const {
       << " nInstance: " << m_nInstance << '\n';
 }
 
-void RevisionManifestListStartFND::generateXml(
+void RevisionManifestListStartFND::writeLowLevelXml(
     QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("RevisionManifestListStartFND");
   xmlWriter.writeAttribute("nInstance", QString::number(m_nInstance));
-  m_gosid.generateXml(xmlWriter);
+  xmlWriter << m_gosid;
 
   xmlWriter.writeEndElement();
 }

@@ -5,7 +5,7 @@ namespace MSONcommon {
 
 PropertyType_NoData::PropertyType_NoData() {}
 
-void PropertyType_NoData::generateXml(QXmlStreamWriter &xmlWriter) const {
+void PropertyType_NoData::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("NoData");
   xmlWriter.writeEndElement();
 }

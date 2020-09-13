@@ -15,7 +15,7 @@ bool FileNodeListHeader::isValid() {
   return isFileNodeListIDValid() && isNFragmentSequenceValid();
 }
 
-void FileNodeListHeader::generateXml(QXmlStreamWriter &xmlWriter) const {
+void FileNodeListHeader::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("FileNodeListHeader");
 
   xmlWriter.writeStartElement("fileNodeListID");

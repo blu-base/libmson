@@ -164,7 +164,7 @@ void MSONcommon::DocumentManager::generateXml(const QUuid &guidFile,
       xmlFile.open(QIODevice::WriteOnly);
       QXmlStreamWriter xmlWriter(&xmlFile);
 
-      docs[guidFile]->generateXml(xmlWriter);
+      xmlWriter << *docs[guidFile];
 
       xmlFile.close();
     }

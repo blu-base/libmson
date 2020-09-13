@@ -6,7 +6,7 @@ namespace MSONcommon {
 
 BodyTextAlignment::BodyTextAlignment() : m_value() {}
 
-void BodyTextAlignment::generateXml(QXmlStreamWriter &xmlWriter) const {
+void BodyTextAlignment::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("BodyTextAlignment");
   xmlWriter.writeCharacters(QString::number(m_value));
   xmlWriter.writeEndElement();

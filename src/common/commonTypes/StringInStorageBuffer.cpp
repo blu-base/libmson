@@ -4,7 +4,7 @@ namespace MSONcommon {
 
 StringInStorageBuffer::StringInStorageBuffer() : m_cch(0) {}
 
-void StringInStorageBuffer::generateXml(QXmlStreamWriter &xmlWriter) const {
+void StringInStorageBuffer::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("StringInStorageBuffer");
   xmlWriter.writeAttribute("cch", QString::number(m_cch));
 

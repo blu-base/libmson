@@ -9,7 +9,7 @@ namespace MSONcommon {
 ObjectInfoDependencyOverrideData::ObjectInfoDependencyOverrideData()
     : m_c8BitOverrides(), m_c32BitOverrides(), m_crc() {}
 
-void ObjectInfoDependencyOverrideData::generateXml(
+void ObjectInfoDependencyOverrideData::writeLowLevelXml(
     QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("ObjectInfoDependencyOverrideData");
 
@@ -27,13 +27,13 @@ void ObjectInfoDependencyOverrideData::generateXml(
 
   xmlWriter.writeStartElement("Overrides1");
   for (auto entry : m_Overrides1) {
-    entry.generateXml(xmlWriter);
+    xmlWriter << entry;
   }
   xmlWriter.writeEndElement();
 
   xmlWriter.writeStartElement("Overrides2");
   for (auto entry : m_Overrides1) {
-    entry.generateXml(xmlWriter);
+    xmlWriter << entry;
   }
   xmlWriter.writeEndElement();
 

@@ -8,7 +8,7 @@ ColorRef::ColorRef() : m_colorVal() {}
 
 ColorRef::ColorRef(const quint32 colorVal) : m_colorVal(colorVal) {}
 
-void ColorRef::generateXml(QXmlStreamWriter &xmlWriter) const {
+void ColorRef::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("COLORREF");
   xmlWriter.writeCharacters(qStringHex(m_colorVal, 8));
   xmlWriter.writeEndElement();

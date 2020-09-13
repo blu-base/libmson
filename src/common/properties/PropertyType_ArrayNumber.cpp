@@ -21,7 +21,7 @@ void PropertyType_ArrayNumber::serialize(QDataStream &ds) const {
 
 void PropertyType_ArrayNumber::toDebugString(QDebug dbg) const {}
 
-void PropertyType_ArrayNumber::generateXml(QXmlStreamWriter &xmlWriter) const {
+void PropertyType_ArrayNumber::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
 
   xmlWriter.writeStartElement("ArrayNumber");
   xmlWriter.writeAttribute("cCID", QString::number(m_cCIDs));

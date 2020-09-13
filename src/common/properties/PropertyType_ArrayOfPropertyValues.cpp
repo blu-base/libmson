@@ -65,15 +65,15 @@ void PropertyType_ArrayOfPropertyValues::serialize(QDataStream &ds) const {
 
 void PropertyType_ArrayOfPropertyValues::toDebugString(QDebug dbg) const {}
 
-void PropertyType_ArrayOfPropertyValues::generateXml(
+void PropertyType_ArrayOfPropertyValues::writeLowLevelXml(
     QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("ArrayOfPropertyValues");
   xmlWriter.writeAttribute("m_cProperties", QString::number(m_cProperties));
-  m_prid.generateXml(xmlWriter);
+  xmlWriter << m_prid;
 
   xmlWriter.writeStartElement("PropertySets");
   for (const auto &entry : m_data) {
-    entry.generateXml(xmlWriter);
+    xmlWriter << entry;
   }
   xmlWriter.writeEndElement();
 

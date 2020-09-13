@@ -22,11 +22,11 @@ void ObjectInfoDependencyOverride32::setCRef(const quint32 &cRef) {
   m_cRef = cRef;
 }
 
-void ObjectInfoDependencyOverride32::generateXml(
+void ObjectInfoDependencyOverride32::writeLowLevelXml(
     QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("ObjectInfoDependencyOverride32");
   xmlWriter.writeAttribute("cRef", QString::number(m_cRef));
-  m_oid.generateXml(xmlWriter);
+  xmlWriter << m_oid;
 
   xmlWriter.writeEndElement();
 }

@@ -48,7 +48,7 @@ MSONHeader::MSONHeader()
       bnNewestWritten{0}, reservedHeaderTailLength{
                               def_reservedHeaderTailLength} {}
 
-void MSONHeader::generateXml(QXmlStreamWriter &xmlWriter) const {
+void MSONHeader::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("Header");
 
   xmlWriter.writeStartElement("guidFileType");
@@ -84,11 +84,11 @@ void MSONHeader::generateXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeEndElement();
 
   xmlWriter.writeStartElement("fcrLegacyFreeChunkList");
-  fcrLegacyFreeChunkList.generateXml(xmlWriter);
+  xmlWriter << fcrLegacyFreeChunkList;
   xmlWriter.writeEndElement();
 
   xmlWriter.writeStartElement("fcrLegacyTransactionLog");
-  fcrLegacyTransactionLog.generateXml(xmlWriter);
+  xmlWriter << fcrLegacyTransactionLog;
   xmlWriter.writeEndElement();
 
   xmlWriter.writeStartElement("cTransactionsInLog");
@@ -104,7 +104,7 @@ void MSONHeader::generateXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeEndElement();
 
   xmlWriter.writeStartElement("fcrLegacyFileNodeListRoot");
-  fcrLegacyFileNodeListRoot.generateXml(xmlWriter);
+  xmlWriter << fcrLegacyFileNodeListRoot;
   xmlWriter.writeEndElement();
 
   xmlWriter.writeStartElement("cbLegacyFreeSpaceInFreeChunkList");
@@ -136,19 +136,19 @@ void MSONHeader::generateXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeEndElement();
 
   xmlWriter.writeStartElement("fcrHashedChunkList");
-  fcrHashedChunkList.generateXml(xmlWriter);
+  xmlWriter << fcrHashedChunkList;
   xmlWriter.writeEndElement();
 
   xmlWriter.writeStartElement("fcrTransactionLog");
-  fcrTransactionLog.generateXml(xmlWriter);
+  xmlWriter << fcrTransactionLog;
   xmlWriter.writeEndElement();
 
   xmlWriter.writeStartElement("fcrFileNodeListRoot");
-  fcrFileNodeListRoot.generateXml(xmlWriter);
+  xmlWriter << fcrFileNodeListRoot;
   xmlWriter.writeEndElement();
 
   xmlWriter.writeStartElement("fcrFreeChunkList");
-  fcrFreeChunkList.generateXml(xmlWriter);
+  xmlWriter << fcrFreeChunkList;
   xmlWriter.writeEndElement();
 
   xmlWriter.writeStartElement("cbExpectedFileLength");
@@ -176,11 +176,11 @@ void MSONHeader::generateXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeEndElement();
 
   xmlWriter.writeStartElement("fcrDebugLog");
-  fcrDebugLog.generateXml(xmlWriter);
+  xmlWriter << fcrDebugLog;
   xmlWriter.writeEndElement();
 
   xmlWriter.writeStartElement("fcrAllocVerificationFreeChunkList");
-  fcrAllocVerificationFreeChunkList.generateXml(xmlWriter);
+  xmlWriter << fcrAllocVerificationFreeChunkList;
   xmlWriter.writeEndElement();
 
   xmlWriter.writeStartElement("bnCreated");

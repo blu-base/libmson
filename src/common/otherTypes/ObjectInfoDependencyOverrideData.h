@@ -8,12 +8,11 @@
 #include "ObjectInfoDependencyOverride32.h"
 #include "ObjectInfoDependencyOverride8.h"
 
-#include "../IDeserializable.h"
-#include "../ISerializable.h"
+#include "../IRevisionStoreFileObject.h"
 
 namespace MSONcommon {
 
-class ObjectInfoDependencyOverrideData : public ISerializable, public IDeserializable {
+class ObjectInfoDependencyOverrideData : public IRevisionStoreFileObject {
 private:
   /**
    * @brief number of elements in m_Overrides1.
@@ -45,8 +44,6 @@ public:
 
   friend QDebug operator<<(QDebug dbg,
                            const ObjectInfoDependencyOverrideData &obj);
-
-  void generateXml(QXmlStreamWriter &xmlWriter) const;
 
   quint32 c8BitOverrides() const;
   void setC8BitOverrides(const quint32 &c8BitOverrides);
@@ -83,6 +80,8 @@ private:
 
    */
   virtual void serialize(QDataStream &ds) const override;
+
+  virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
 
   /**
    * @brief prints the ObjectInfoDependencyOverrideData to a <QDebug> object

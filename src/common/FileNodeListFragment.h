@@ -3,8 +3,7 @@
 
 #include <QtCore/qglobal.h>
 
-#include "IDeserializable.h"
-#include "ISerializable.h"
+#include "IRevisionStoreFileObject.h"
 
 #include "FileNode.h"
 #include "FileNodeListHeader.h"
@@ -17,7 +16,7 @@
 
 namespace MSONcommon {
 
-class FileNodeListFragment : public ISerializable, public IDeserializable {
+class FileNodeListFragment : public IRevisionStoreFileObject {
 
 private:
   FileChunkReference64 m_ref;
@@ -54,7 +53,8 @@ public:
   void setFnlheader(const FileNodeListHeader &fnlheader);
 
   std::vector<std::shared_ptr<FileNode>> rgFileNodes() const;
-  void setRgFileNodes(const std::vector<std::shared_ptr<FileNode>> &rgFileNodes);
+  void
+  setRgFileNodes(const std::vector<std::shared_ptr<FileNode>> &rgFileNodes);
 
   quint64 paddingLength() const;
   void setPaddingLength(const quint64 &paddingLength);
@@ -62,10 +62,7 @@ public:
   FileChunkReference64x32 getNextFragment() const;
   void setNextFragment(const FileChunkReference64x32 &next);
 
-
   friend QDebug operator<<(QDebug dbg, const FileNodeListFragment &obj);
-
-  void generateXml(QXmlStreamWriter &xmlWriter) const;
 
 private:
   /**
@@ -80,6 +77,8 @@ private:
    * FileNodeListFragment is send
    */
   virtual void serialize(QDataStream &ds) const override;
+
+  virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
 
   /**
    * @brief prints the FileNodeListFragment to a <QDebug> object

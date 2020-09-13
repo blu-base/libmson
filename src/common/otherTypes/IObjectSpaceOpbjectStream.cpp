@@ -26,13 +26,13 @@ void IObjectSpaceOpbjectStream::setBody(const std::vector<CompactID> &body) {
   m_body = body;
 }
 
-void IObjectSpaceOpbjectStream::generateXml(QXmlStreamWriter &xmlWriter) const {
+void IObjectSpaceOpbjectStream::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   //    xmlWriter.writeStartElement("IObjectSpaceOpbjectStream");
-  m_header.generateXml(xmlWriter);
+  xmlWriter << m_header;
 
   xmlWriter.writeStartElement("CompactIDs");
   for (const auto &entry : m_body) {
-    entry.generateXml(xmlWriter);
+    xmlWriter << entry;
   }
   xmlWriter.writeEndElement();
   //    xmlWriter.writeEndElement();

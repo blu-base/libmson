@@ -40,7 +40,7 @@ QString ExtendedGUID::toString() const {
   return QString("{" + m_guid.toString() + "," + QString::number(data_n) + "}");
 }
 
-void ExtendedGUID::generateXml(QXmlStreamWriter &xmlWriter) const {
+void ExtendedGUID::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("ExtendedGUID");
   xmlWriter.writeCharacters(toString());
   xmlWriter.writeEndElement();

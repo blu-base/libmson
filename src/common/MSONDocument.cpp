@@ -166,37 +166,37 @@ void MSONDocument::deserialize(QDataStream& ds) {
 
 }
 
-void MSONDocument::generateXml(QXmlStreamWriter &xmlWriter) const {
+void MSONDocument::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.setAutoFormatting(true);
   xmlWriter.writeStartDocument();
   xmlWriter.writeStartElement("MSONDocument");
   xmlWriter.writeAttribute("isEncrypted", m_isEncrypted ? "true" : "false");
 
-  m_header->generateXml(xmlWriter);
+  xmlWriter << *m_header;
 
   xmlWriter.writeStartElement("freeChunkList");
   for (const auto& entry : m_freeChunkList) {
-    entry->generateXml(xmlWriter);
+    xmlWriter << *entry;
   }
   xmlWriter.writeEndElement();
 
   xmlWriter.writeStartElement("transactionLog");
   for (const auto& entry : m_transactionLog) {
-    entry->generateXml(xmlWriter);
+    xmlWriter << *entry;
   }
   xmlWriter.writeEndElement();
 
   xmlWriter.writeStartElement("hashedChunkList");
   for (const auto& entry : m_hashedChunkList) {
-    entry->generateXml(xmlWriter);
+    xmlWriter << *entry;
   }
   xmlWriter.writeEndElement();
 
-  m_rootFileNodeList->generateXml(xmlWriter);
+  xmlWriter << *m_rootFileNodeList;
 
   xmlWriter.writeStartElement("fileNodeList");
   for (const auto& entry : m_fileNodeList) {
-    entry->generateXml(xmlWriter);
+    xmlWriter << *entry;
   }
   xmlWriter.writeEndElement();
 

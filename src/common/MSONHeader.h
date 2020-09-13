@@ -13,9 +13,7 @@
 #include "commonTypes/FileChunkReference64x32.h"
 #include "commonTypes/IFileChunkReference.h"
 
-#include "IDeserializable.h"
-#include "ISerializable.h"
-
+#include "IRevisionStoreFileObject.h"
 
 namespace MSONcommon {
 
@@ -26,7 +24,7 @@ namespace MSONcommon {
  *
  * MSON Header class which (de)serialzies an input stream
  */
-class MSONHeader : public ISerializable, public IDeserializable {
+class MSONHeader : public IRevisionStoreFileObject {
 private:
   QUuid guidFileType;
   QUuid guidFile;
@@ -72,14 +70,13 @@ public:
 
   friend QDebug operator<<(QDebug dbg, const MSONHeader &obj);
 
-  void generateXml(QXmlStreamWriter &xmlWriter) const;
-
 private:
   virtual void deserialize(QDataStream &ds) override;
   virtual void serialize(QDataStream &ds) const override;
 
-public:
+  virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
 
+public:
   QUuid getGuidFileType() const;
   void setGuidFileType(const QUuid &value);
   bool isGuidFileTypeValid() const;

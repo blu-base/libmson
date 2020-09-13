@@ -47,7 +47,7 @@ QDebug operator<<(QDebug dbg, const FreeChunkListFragment &obj) {
   return dbg;
 }
 
-void FreeChunkListFragment::generateXml(QXmlStreamWriter &xmlWriter) const {
+void FreeChunkListFragment::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
 
   xmlWriter.writeStartElement("FreeChunkListFragment");
 
@@ -60,12 +60,12 @@ void FreeChunkListFragment::generateXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeEndElement();
 
   xmlWriter.writeStartElement("fcrNextChunk");
-  fcrNextChunk.generateXml(xmlWriter);
+  xmlWriter << fcrNextChunk;
   xmlWriter.writeEndElement();
 
   xmlWriter.writeStartElement("fcrFreeChunks");
   for (const auto &entry : fcrFreeChunk) {
-    entry->generateXml(xmlWriter);
+    xmlWriter << *entry;
   }
   xmlWriter.writeEndElement();
 

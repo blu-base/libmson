@@ -11,15 +11,15 @@ void ObjectDeclaration2Body::setFReserved2(const quint8 &value) {
   m_fReserved2 = value;
 }
 
-void ObjectDeclaration2Body::generateXml(QXmlStreamWriter &xmlWriter) const {
+void ObjectDeclaration2Body::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("ObjectDeclaration2Body");
   xmlWriter.writeAttribute("fHasOidReferences",
                            m_fHasOidReferences ? "true" : "false");
   xmlWriter.writeAttribute("fHasOsidReferences",
                            m_fHasOsidReferences ? "true" : "false");
 
-  m_oid.generateXml(xmlWriter);
-  m_jcid.generateXml(xmlWriter);
+  xmlWriter << m_oid;
+  xmlWriter << m_jcid;
 
   xmlWriter.writeEndElement();
 }

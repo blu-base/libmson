@@ -205,7 +205,7 @@ void JCID::toDebugString(QDebug dbg) const {
 
 JCID::JCID() : m_value() {}
 
-void JCID::generateXml(QXmlStreamWriter &xmlWriter) const {
+void JCID::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("JCID");
   xmlWriter.writeAttribute("type", typeToString());
   xmlWriter.writeAttribute("value", qStringHex(m_value, 8));

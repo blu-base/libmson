@@ -60,16 +60,16 @@ void FileDataStoreObjectReferenceFND::toDebugString(QDebug dbg) const {
       << " guidReference: " << m_guidReference << '\n';
 }
 
-void FileDataStoreObjectReferenceFND::generateXml(
+void FileDataStoreObjectReferenceFND::writeLowLevelXml(
     QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("FileDataStoreObjectReferenceFND");
-  m_ref.generateXml(xmlWriter);
+  xmlWriter << m_ref;
 
   xmlWriter.writeStartElement("guidReference");
   xmlWriter.writeCharacters(m_guidReference.toString());
   xmlWriter.writeEndElement();
 
-  m_blob.generateXml(xmlWriter);
+  xmlWriter << m_blob;
 
   xmlWriter.writeEndElement();
 }

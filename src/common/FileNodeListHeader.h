@@ -6,12 +6,11 @@
 #include <QXmlStreamWriter>
 #include <QtCore/qglobal.h>
 
-#include "IDeserializable.h"
-#include "ISerializable.h"
+#include "IRevisionStoreFileObject.h"
 
 namespace MSONcommon {
 
-class FileNodeListHeader : public ISerializable, public IDeserializable {
+class FileNodeListHeader : public IRevisionStoreFileObject {
 private:
   static constexpr const quint64 uintMagic = 0xA4567AB1F5F7F4C4;
 
@@ -24,8 +23,6 @@ public:
   bool isValid();
 
   friend QDebug operator<<(QDebug dbg, const FileNodeListHeader &obj);
-
-  void generateXml(QXmlStreamWriter &xmlWriter) const;
 
   static quint64 getUintMagic();
 
@@ -40,6 +37,8 @@ public:
 private:
   virtual void deserialize(QDataStream &ds) override;
   virtual void serialize(QDataStream &ds) const override;
+
+    virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
 };
 
 } // namespace MSONcommon

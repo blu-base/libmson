@@ -128,7 +128,7 @@ void FileNodeChunkReference::setCb(const quint64 &cb) {
   }
 }
 
-void FileNodeChunkReference::generateXml(QXmlStreamWriter &xmlWriter) const {
+void FileNodeChunkReference::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("FileNodeChunkReference");
 
   switch (m_stpFormat) {

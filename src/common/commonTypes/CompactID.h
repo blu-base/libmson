@@ -5,12 +5,11 @@
 
 #include "ExtendedGUID.h"
 
-#include "../IDeserializable.h"
-#include "../ISerializable.h"
+#include "../IRevisionStoreFileObject.h"
 
 namespace MSONcommon {
 
-class CompactID : public ISerializable, public IDeserializable {
+class CompactID : public IRevisionStoreFileObject {
 private:
   quint8 m_n;
   quint32 guidIndex; // 24bits used.
@@ -39,11 +38,11 @@ public:
   friend bool operator==(const CompactID &lhs, const CompactID &rhs) noexcept;
   friend bool operator!=(const CompactID &lhs, const CompactID &rhs) noexcept;
 
-  void generateXml(QXmlStreamWriter &xmlWriter) const;
-
 private:
   virtual void deserialize(QDataStream &ds) override;
   virtual void serialize(QDataStream &ds) const override;
+
+  virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
 
   void toDebugString(QDebug dbg) const;
 };

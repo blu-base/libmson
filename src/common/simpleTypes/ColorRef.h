@@ -6,12 +6,11 @@
 #include <QXmlStreamWriter>
 #include <QtCore/qglobal.h>
 
-#include "../IDeserializable.h"
-#include "../ISerializable.h"
+#include "../IRevisionStoreFileObject.h"
 
 namespace MSONcommon {
 
-class ColorRef : public ISerializable, public IDeserializable {
+class ColorRef : public IRevisionStoreFileObject {
 private:
   quint32 m_colorVal;
 
@@ -19,10 +18,9 @@ public:
   ColorRef();
   ColorRef(const quint32 colorVal);
 
-
   friend QDebug operator<<(QDebug dbg, const ColorRef &obj);
 
-  void generateXml(QXmlStreamWriter &xmlWriter) const;
+
 
   bool isSpecifiesColor() const;
 
@@ -31,6 +29,9 @@ public:
 private:
   virtual void deserialize(QDataStream &ds) override;
   virtual void serialize(QDataStream &ds) const override;
+
+  virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
+
   void toDebugString(QDebug dbg) const;
 };
 

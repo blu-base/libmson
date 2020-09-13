@@ -6,12 +6,11 @@
 #include "../commonTypes/CompactID.h"
 #include "ObjectSpaceObjectStreamHeader.h"
 
-#include "../IDeserializable.h"
-#include "../ISerializable.h"
+#include "../IRevisionStoreFileObject.h"
 
 namespace MSONcommon {
 
-class IObjectSpaceOpbjectStream : public ISerializable, public IDeserializable{
+class IObjectSpaceOpbjectStream : public IRevisionStoreFileObject {
 protected:
   ObjectSpaceObjectStreamHeader m_header;
   std::vector<CompactID> m_body;
@@ -25,7 +24,6 @@ protected:
 
 public:
   virtual ~IObjectSpaceOpbjectStream();
-
 
   friend QDebug operator<<(QDebug dbg, const IObjectSpaceOpbjectStream &obj);
 
@@ -86,6 +84,8 @@ protected:
 
    */
   virtual void serialize(QDataStream &ds) const override;
+
+  virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
 
   /**
    * @brief prints the IObjectSpaceOpbjectStream to a <QDebug> object

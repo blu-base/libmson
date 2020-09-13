@@ -8,13 +8,14 @@ namespace MSONcommon {
 class ISerializable {
 protected:
   ISerializable() = default;
+  virtual ~ISerializable() = default;
 
 public:
   friend QDataStream &operator<<(QDataStream &ds, const ISerializable &obj);
 
   friend QByteArray &operator<<(QByteArray &ba, const ISerializable &obj);
 
-private:
+protected:
   virtual void serialize(QDataStream &ds) const = 0;
 };
 

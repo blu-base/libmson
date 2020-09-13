@@ -20,6 +20,8 @@ set (MSONcommon_PART_SRCS
 
     common/ISerializable.cpp
     common/IDeserializable.cpp
+    common/IRevisionStoreFileToXmlable.cpp
+    common/IRevisionStoreFileObject.h
 
 #    common/DocumentSingleton.cpp
     common/DocumentManager.cpp

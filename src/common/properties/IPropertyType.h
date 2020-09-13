@@ -5,19 +5,17 @@
 
 #include <QXmlStreamWriter>
 
-#include "../IDeserializable.h"
-#include "../ISerializable.h"
+#include "../IRevisionStoreFileObject.h"
 
 namespace MSONcommon {
 
-class IPropertyType : public ISerializable, public IDeserializable {
+class IPropertyType : public IRevisionStoreFileObject {
 public:
   IPropertyType() = default;
+  virtual ~IPropertyType() = default;
 
 public:
   friend QDebug operator<<(QDebug dbg, const IPropertyType &obj);
-
-  virtual void generateXml(QXmlStreamWriter &xmlWriter) const = 0;
 
 private:
   /**

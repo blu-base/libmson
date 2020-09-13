@@ -8,7 +8,7 @@ QDebug operator<<(QDebug dbg, const TransactionEntry &obj) {
   return dbg;
 }
 
-void TransactionEntry::generateXml(QXmlStreamWriter &xmlWriter) const {
+void TransactionEntry::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
 
   xmlWriter.writeStartElement("TransactionEntry");
 

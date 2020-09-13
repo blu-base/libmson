@@ -37,11 +37,11 @@ public:
   ExtendedGUID getGosidRoot() const;
   void setGosidRoot(const ExtendedGUID &value);
 
-  virtual void generateXml(QXmlStreamWriter &xmlWriter) const override;
-
 private:
   virtual void deserialize(QDataStream &ds) override;
   virtual void serialize(QDataStream &ds) const override;
+
+  virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
 
   virtual void toDebugString(QDebug dbg) const override;
 };

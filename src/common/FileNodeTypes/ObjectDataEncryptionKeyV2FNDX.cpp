@@ -75,14 +75,14 @@ void ObjectDataEncryptionKeyV2FNDX::toDebugString(QDebug dbg) const {
       << " Ref: " << m_ref << '\n';
 }
 
-void ObjectDataEncryptionKeyV2FNDX::generateXml(
+void ObjectDataEncryptionKeyV2FNDX::writeLowLevelXml(
     QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("ObjectDataEncryptionKeyV2FNDX");
 
   xmlWriter.writeAttribute("header", qStringHex(m_header, 16));
   xmlWriter.writeAttribute("footer", qStringHex(m_header, 16));
 
-  m_ref.generateXml(xmlWriter);
+  xmlWriter << m_ref;
 
   xmlWriter.writeStartElement("m_EncryptionData");
   xmlWriter.writeCDATA(m_EncryptionData);

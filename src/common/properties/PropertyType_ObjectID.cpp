@@ -9,9 +9,9 @@ CompactID PropertyType_ObjectID::data() const { return m_data; }
 
 void PropertyType_ObjectID::setData(const CompactID &data) { m_data = data; }
 
-void PropertyType_ObjectID::generateXml(QXmlStreamWriter &xmlWriter) const {
+void PropertyType_ObjectID::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("ObjectID");
-  m_data.generateXml(xmlWriter);
+  xmlWriter << m_data;
   xmlWriter.writeEndElement();
 }
 

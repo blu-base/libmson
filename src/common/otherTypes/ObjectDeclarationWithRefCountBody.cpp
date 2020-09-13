@@ -12,7 +12,7 @@ ObjectDeclarationWithRefCountBody::ObjectDeclarationWithRefCountBody()
     : m_jci(), m_odcs(), m_fReserved1(), m_fHasOidReferences(false),
       m_fHasOsidReferences(false), m_fReserved2() {}
 
-void ObjectDeclarationWithRefCountBody::generateXml(
+void ObjectDeclarationWithRefCountBody::writeLowLevelXml(
     QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("ObjectDeclarationWithRefCountBody");
   xmlWriter.writeAttribute("jci", qStringHex(m_jci, 2));
@@ -24,7 +24,7 @@ void ObjectDeclarationWithRefCountBody::generateXml(
   xmlWriter.writeAttribute("fHasOsidReferences",
                            m_fHasOsidReferences ? "true" : "false");
 
-  m_oid.generateXml(xmlWriter);
+  xmlWriter << m_oid;
 
   xmlWriter.writeEndElement();
 }

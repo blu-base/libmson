@@ -8,13 +8,12 @@
 #include "FileNodeListHeader.h"
 #include "commonTypes/FileChunkReference64x32.h"
 
-#include "IDeserializable.h"
-#include "ISerializable.h"
+#include "IRevisionStoreFileObject.h"
 
 namespace MSONcommon {
 
 /// \todo FileNodeList class seems duplicate with FileNodeListFragment
-class FileNodeList : public ISerializable, public IDeserializable {
+class FileNodeList : public IRevisionStoreFileObject {
 private:
   FileNodeListHeader m_fileNodeListHeader;
 
@@ -39,7 +38,6 @@ public:
   void removeFileNode(const quint32 &position);
   void removeFileNodeByID(const quint16 FileNodeID);
 
-
   friend QDebug operator<<(QDebug dbg, const FileNodeList &obj);
 
   FileNodeListHeader getFileNodeListHeader() const;
@@ -55,8 +53,10 @@ public:
   void setNextFragment(const FileChunkReference64x32 &nextFragment);
 
 private:
-  virtual void deserialize(QDataStream& ds) override;
-  virtual void serialize(QDataStream& ds) const override;
+  virtual void deserialize(QDataStream &ds) override;
+  virtual void serialize(QDataStream &ds) const override;
+
+  virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
 };
 
 } // namespace MSONcommon

@@ -15,7 +15,7 @@ void GlobalIdTableEndFNDX::toDebugString(QDebug dbg) const
 }
 
 
-void GlobalIdTableEndFNDX::generateXml(QXmlStreamWriter& xmlWriter) const
+void GlobalIdTableEndFNDX::writeLowLevelXml(QXmlStreamWriter& xmlWriter) const
 {
     xmlWriter.writeStartElement("GlobalIdTableEndFNDX");
     xmlWriter.writeEndElement();

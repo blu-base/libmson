@@ -13,12 +13,12 @@ void RevisionManifest::setFileNodeSquence(
   m_FileNodeSquence = value;
 }
 
-void RevisionManifest::generateXml(QXmlStreamWriter &xmlWriter) const {
+void RevisionManifest::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("RevisionManifest");
 
   //  xmlWriter.writeStartElement("FileNodeSquence");
   for (const auto &entry : m_FileNodeSquence) {
-    entry->generateXml(xmlWriter);
+    xmlWriter << *entry;
   }
   //  xmlWriter.writeEndElement();
 

@@ -4,12 +4,11 @@
 #include <QXmlStreamWriter>
 #include <QtCore/qglobal.h>
 
-#include "../IDeserializable.h"
-#include "../ISerializable.h"
+#include "../IRevisionStoreFileObject.h"
 
 namespace MSONcommon {
 
-class ObjectSpaceObjectStreamHeader : public ISerializable, public IDeserializable {
+class ObjectSpaceObjectStreamHeader : public IRevisionStoreFileObject {
 private:
   quint32 m_count;
   bool m_OsidStreamNotPresent;
@@ -46,8 +45,6 @@ public:
   bool OsidStream_isNotPresent() const;
   void setOsidStreamPresence(const OsidStreamPresence &osidStreamPresence);
 
-  void generateXml(QXmlStreamWriter &xmlWriter) const;
-
   friend QDebug operator<<(QDebug dbg,
                            const ObjectSpaceObjectStreamHeader &obj);
 
@@ -67,6 +64,8 @@ private:
    * ObjectSpaceObjectStreamHeader is send
    */
   virtual void serialize(QDataStream &ds) const override;
+
+  virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
 
   /**
    * @brief prints the ObjectSpaceObjectStreamHeader to a <QDebug> object

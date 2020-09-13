@@ -8,12 +8,11 @@
 #include <QUuid>
 #include <QXmlStreamWriter>
 
-#include "../IDeserializable.h"
-#include "../ISerializable.h"
+#include "../IRevisionStoreFileObject.h"
 
 namespace MSONcommon {
 
-class ExtendedGUID : public ISerializable, public IDeserializable {
+class ExtendedGUID : public IRevisionStoreFileObject {
 private:
   QUuid m_guid;
   quint32 data_n;
@@ -40,8 +39,6 @@ public:
   friend QDebug operator<<(QDebug dbg, const ExtendedGUID &obj);
   ;
 
-
-
   friend bool operator==(const ExtendedGUID &lhs,
                          const ExtendedGUID &rhs) noexcept;
   friend bool operator!=(const ExtendedGUID &lhs,
@@ -51,11 +48,11 @@ public:
   friend bool operator>=(const ExtendedGUID &lhs,
                          const ExtendedGUID &rhs) noexcept;
 
-  void generateXml(QXmlStreamWriter &xmlWriter) const;
-
 private:
   virtual void deserialize(QDataStream &ds) override;
   virtual void serialize(QDataStream &ds) const override;
+
+  virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
 
   void toDebugString(QDebug dbg) const;
 };

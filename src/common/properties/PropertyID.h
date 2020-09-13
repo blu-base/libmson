@@ -263,16 +263,15 @@ enum class PropertyIDs : quint32 {
   ///   0x1c00345d
   ///
 
-    /// the following values always appear in a group
-    /// 0x1400349e
-    /// 0x1400349f
-    /// 0x140034a0
-    /// 0x140034a1
-    /// 0x140034a2
-    /// 0x140034a3
-    /// 0x140034a4
-    /// 0x140034a5
-
+  /// the following values always appear in a group
+  /// 0x1400349e
+  /// 0x1400349f
+  /// 0x140034a0
+  /// 0x140034a1
+  /// 0x140034a2
+  /// 0x140034a3
+  /// 0x140034a4
+  /// 0x140034a5
 
   /// seems to be always 32 byte wide
   ///
@@ -331,11 +330,12 @@ public:
   int boolValue() const;
   void setBoolValue(bool boolValue);
 
-  void generateXml(QXmlStreamWriter &xmlWriter) const;
-
 private:
   virtual void deserialize(QDataStream &ds) override;
   virtual void serialize(QDataStream &ds) const override;
+
+  virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
+
   void toDebugString(QDebug dbg) const override;
 };
 

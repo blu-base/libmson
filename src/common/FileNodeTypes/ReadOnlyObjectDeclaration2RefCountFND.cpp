@@ -66,12 +66,12 @@ void ReadOnlyObjectDeclaration2RefCountFND::toDebugString(QDebug dbg) const {
       << " md5hash: " << m_md5hash.toHex() << '\n';
 }
 
-void ReadOnlyObjectDeclaration2RefCountFND::generateXml(
+void ReadOnlyObjectDeclaration2RefCountFND::writeLowLevelXml(
     QXmlStreamWriter &xmlWriter) const {
 
   xmlWriter.writeStartElement("ReadOnlyObjectDeclaration2RefCountFND");
 
-  m_base.generateXml(xmlWriter);
+  xmlWriter << m_base;
 
   xmlWriter.writeStartElement("md5hash");
   xmlWriter.writeCharacters(m_md5hash.toHex());

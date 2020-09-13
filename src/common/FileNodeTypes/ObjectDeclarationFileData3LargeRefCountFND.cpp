@@ -78,22 +78,22 @@ void ObjectDeclarationFileData3LargeRefCountFND::toDebugString(
       << '\n';
 }
 
-void ObjectDeclarationFileData3LargeRefCountFND::generateXml(
+void ObjectDeclarationFileData3LargeRefCountFND::writeLowLevelXml(
     QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("ObjectDeclarationFileData3LargeRefCountFND");
 
   xmlWriter.writeAttribute("cRef", qStringHex(m_cRef, 8));
 
   xmlWriter.writeStartElement("oid");
-  m_oid.generateXml(xmlWriter);
+  xmlWriter << m_oid;
   xmlWriter.writeEndElement();
 
   xmlWriter.writeStartElement("jcid");
-  m_jcid.generateXml(xmlWriter);
+  xmlWriter << m_jcid;
   xmlWriter.writeEndElement();
 
-  m_FileDataReference.generateXml(xmlWriter);
-  m_Extension.generateXml(xmlWriter);
+  xmlWriter << m_FileDataReference;
+  xmlWriter << m_Extension;
 
   xmlWriter.writeEndElement();
 }

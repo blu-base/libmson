@@ -35,12 +35,12 @@ void FileDataStoreListReferenceFND::toDebugString(QDebug dbg) const {
       << " ref: " << m_ref << '\n';
 }
 
-void FileDataStoreListReferenceFND::generateXml(
+void FileDataStoreListReferenceFND::writeLowLevelXml(
     QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("FileDataStoreListReferenceFND");
-  m_ref.generateXml(xmlWriter);
+  xmlWriter << m_ref;
 
-  m_StoreList.generateXml(xmlWriter);
+  xmlWriter << m_StoreList;
   xmlWriter.writeEndElement();
 }
 } // namespace MSONcommon

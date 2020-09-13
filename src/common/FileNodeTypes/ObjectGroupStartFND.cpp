@@ -17,7 +17,7 @@ void ObjectGroupStartFND::toDebugString(QDebug dbg) const {
       << " oid:  " << m_oid << '\n';
 }
 
-void ObjectGroupStartFND::generateXml(QXmlStreamWriter &xmlWriter) const {
+void ObjectGroupStartFND::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("ObjectGroupStartFND");
 
   xmlWriter.writeStartElement("oid");

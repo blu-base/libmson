@@ -21,7 +21,8 @@ void ObjectSpaceManifestList::setRef(const FileNodeChunkReference &ref) {
   m_ref = ref;
 }
 
-void ObjectSpaceManifestList::generateXml(QXmlStreamWriter &xmlWriter) const {
+void ObjectSpaceManifestList::writeLowLevelXml(
+    QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("ObjectSpaceManifestList");
 
   ExtendedGUID gosid =
@@ -36,13 +37,13 @@ void ObjectSpaceManifestList::generateXml(QXmlStreamWriter &xmlWriter) const {
 
   xmlWriter.writeStartElement("revisionManifestLists");
   for (const auto &entry : m_revisionManifestLists) {
-    entry->generateXml(xmlWriter);
+    xmlWriter << *entry;
   }
   xmlWriter.writeEndElement();
 
   xmlWriter.writeStartElement("fileNodeSequence");
   for (const auto &entry : m_fileNodeSequence) {
-    entry->generateXml(xmlWriter);
+    xmlWriter << *entry;
   }
   xmlWriter.writeEndElement();
 
@@ -108,6 +109,8 @@ void ObjectSpaceManifestList::deserialize(QDataStream &ds) {
     m_revisionManifestLists.push_back(rmfl);
   }
 }
+
+void ObjectSpaceManifestList::serialize(QDataStream &ds) const {}
 
 void ObjectSpaceManifestList::toDebugString(QDebug dbg) const {
   dbg << " ObjectSpaceManifestList:\n"

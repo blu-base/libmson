@@ -11,7 +11,7 @@ void RevisionManifestEndFND::toDebugString(QDebug dbg) const {
 }
 
 
-void RevisionManifestEndFND::generateXml(QXmlStreamWriter& xmlWriter) const
+void RevisionManifestEndFND::writeLowLevelXml(QXmlStreamWriter& xmlWriter) const
 {
     xmlWriter.writeStartElement("RevisionManifestEndFND");
     xmlWriter.writeEndElement();

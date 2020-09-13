@@ -9,7 +9,7 @@ QDebug operator<<(QDebug dbg, const LayoutAlignment &obj) {
   return dbg;
 }
 
-void LayoutAlignment::generateXml(QXmlStreamWriter &xmlWriter) const {
+void LayoutAlignment::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("LayoutAlignment");
   xmlWriter.writeAttribute("horizontal", hAlignmentToString(lha()));
   xmlWriter.writeAttribute("vertial", vAlignmentToString(lva()));

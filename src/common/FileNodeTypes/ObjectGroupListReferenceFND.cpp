@@ -43,13 +43,13 @@ void ObjectGroupListReferenceFND::toDebugString(QDebug dbg) const {
       << " ObjectGroupID: " << m_ObjectGroupID << '\n';
 }
 
-void ObjectGroupListReferenceFND::generateXml(
+void ObjectGroupListReferenceFND::writeLowLevelXml(
     QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("ObjectGroupListReferenceFND");
 
-  m_ref.generateXml(xmlWriter);
+  xmlWriter << m_ref;
 
-  m_ObjectGroupID.generateXml(xmlWriter);
+  xmlWriter << m_ObjectGroupID;
 
   xmlWriter.writeEndElement();
 }

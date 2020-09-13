@@ -7,12 +7,11 @@
 #include <QUuid>
 #include <QXmlStreamWriter>
 
-#include "../IDeserializable.h"
-#include "../ISerializable.h"
+#include "../IRevisionStoreFileObject.h"
 
 namespace MSONcommon {
 
-class FileDataStoreObject : public ISerializable, public IDeserializable {
+class FileDataStoreObject : public IRevisionStoreFileObject {
 private:
   /**
    * @brief MUST be {BDE316E7-2665-4511-A4C4-8D4D0B7A9EAC}.
@@ -70,8 +69,6 @@ public:
   QUuid guidFooter() const;
   void setGuidFooter(const QUuid &guidFooter);
 
-  void generateXml(QXmlStreamWriter &xmlWriter) const;
-
 private:
   /**
    * @brief creates IProperty from QDataStream
@@ -89,6 +86,7 @@ private:
    */
   virtual void serialize(QDataStream &ds) const override;
 
+  virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
   /**
    * @brief prints the IProperty to a <QDebug> object
    * @param dbg <QDebug> string builder for the debug information

@@ -945,6 +945,13 @@ void LCID::serialize(QDataStream &ds) const {
   ds << lid_value;
 }
 
+void LCID::writeLowLevelXml(QXmlStreamWriter& xmlWriter) const
+{
+  xmlWriter.writeStartElement("LCID");
+  xmlWriter.writeCharacters(toString());
+  xmlWriter.writeEndElement();
+}
+
 void LCID::toDebugString(QDebug dbg) const { dbg << "LCID:\n"; }
 
 } // namespace MSONcommon

@@ -10,6 +10,11 @@ FileNodeList::FileNodeList() : m_paddingLength() {}
 
 void MSONcommon::FileNodeList::serialize(QDataStream &ds) const {}
 
+void FileNodeList::writeLowLevelXml(QXmlStreamWriter& xmlWriter) const
+{
+
+}
+
 void MSONcommon::FileNodeList::deserialize(QDataStream &ds) {
   // if byte order is big endian, change to little endian
   if (!ds.byteOrder()) {

@@ -3,13 +3,12 @@
 
 #include <QtCore/qglobal.h>
 
+#include "../IRevisionStoreFileObject.h"
 #include "../commonTypes/CompactID.h"
-#include "../IDeserializable.h"
-#include "../ISerializable.h"
 
 namespace MSONcommon {
 
-class ObjectDeclarationWithRefCountBody : public ISerializable, public IDeserializable {
+class ObjectDeclarationWithRefCountBody : public IRevisionStoreFileObject {
 private:
   /**
    * @brief specifies the identity of this object
@@ -91,6 +90,8 @@ private:
    * ObjectDeclarationWithRefCountBody is send
    */
   virtual void serialize(QDataStream &ds) const override;
+
+  virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
 
   /**
    * @brief prints the ObjectDeclarationWithRefCountBody to a <QDebug> object

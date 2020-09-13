@@ -10,12 +10,11 @@
 #include "ObjectSpaceManifestList.h"
 #include "commonTypes/FileChunkReference64x32.h"
 
-#include "IDeserializable.h"
-#include "ISerializable.h"
+#include "IRevisionStoreFileObject.h"
 
 namespace MSONcommon {
 
-class RootFileNodeList: public IDeserializable {
+class RootFileNodeList: public IRevisionStoreFileObject {
 private:
   /** raw, fragmented FileNode list, can be ignored after defragmenting into
    * m_fileNodeSequence */
@@ -66,20 +65,15 @@ public:
 
   friend QDebug operator<<(QDebug dbg, const RootFileNodeList &obj);
 
-  void generateXml(QXmlStreamWriter &xmlWriter) const;
-
 private:
   /**
    * @brief creates RootFileNodeList from QDataStream
    * @param ds <QDataStream> containing the deserializable RootFileNodeList
    */
   virtual void deserialize(QDataStream &ds) override;
-  //  /**
-  //   * @brief creates byte stream from RootFileNodeList object
-  //   * @param ds <QDataStream> is the output stream to which the serialized
-  //   * RootFileNodeList is send
-  //   */
-  //  void serialize(QDataStream &ds) const;
+  virtual void serialize(QDataStream &ds) const override;
+
+  virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
 
   /**
    * @brief prints the RootFileNodeList to a <QDebug> object

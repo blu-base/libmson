@@ -66,12 +66,12 @@ void ReadOnlyObjectDeclaration2LargeRefCountFND::toDebugString(
       << m_base << "\nmd5hash: " << m_md5hash.toHex() << '\n';
 }
 
-void ReadOnlyObjectDeclaration2LargeRefCountFND::generateXml(
+void ReadOnlyObjectDeclaration2LargeRefCountFND::writeLowLevelXml(
     QXmlStreamWriter &xmlWriter) const {
 
   xmlWriter.writeStartElement("ReadOnlyObjectDeclaration2LargeRefCountFND");
 
-  m_base.generateXml(xmlWriter);
+  xmlWriter << m_base;
 
   xmlWriter.writeStartElement("md5hash");
   xmlWriter.writeCharacters(m_md5hash.toHex());

@@ -11,7 +11,7 @@ void PropertyType_EightBytesOfData::setData(const QByteArray &data) {
   m_data = data;
 }
 
-void PropertyType_EightBytesOfData::generateXml(
+void PropertyType_EightBytesOfData::writeLowLevelXml(
     QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("EightBytesOfData");
   xmlWriter.writeCharacters(m_data.toHex());
