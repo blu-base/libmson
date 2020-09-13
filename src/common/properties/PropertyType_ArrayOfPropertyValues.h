@@ -31,9 +31,6 @@ private:
 public:
   PropertyType_ArrayOfPropertyValues();
 
-  friend QDebug operator<<(QDebug dbg,
-                           const PropertyType_ArrayOfPropertyValues &obj);
-
   quint32 cProperties() const;
   void setCProperties(const quint32 &cProperties);
 

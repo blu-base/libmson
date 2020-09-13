@@ -184,45 +184,56 @@ enum class PropertyIDs : quint32 {
   // FourBytesOfData
   undoc_StrokesColor = 0x1400340f,
 
-  // indicates to jcid 0x0002003b
-  // which contains:
-  // * unodc_StrokeLanguage
-  // * 0x8800341f
-  // * 0x1c003418
-  // * undoc_StrokesRecognizedText
-  // ArrayOfObjectIDs
+  /** ObjectID which lives in undoc_jcidShape (0x00060014)
+   * Points to the undoc_jcidDrawingGroupNode (0x0002003b)
+   * Which contains PropertyID 0x24003416
+   * which further points to undoc_jcidDrawingNode (0x00020047)
+   *
+   * also contains
+   */
+  undoc_StrokesContainer = 0x20003415,
 
-  // also indicates to jcid 0x00020047
-  //  which contains:
-  // * undoc_StrokesBlob
-  // * 0x20003409
-  // 0x24003416
+  /** ArrayofObjectIDs
+   *  lives within undoc_jcidDrawingGroupNode(0x0002003b)
+   *
+   * points to undoc_jcidDrawingNodes which are likely
+   * contain the strokes for which matches according to
+   * undoc_StrokesRecognizedText have been found
+   */
+  undoc_StrokesGroup = 0x24003416,
 
-  // 16 byte structure, not a guid
-  // FourBytesOfLengthFollowedByData
-  // 0x1c003418
+  /** 16 byte structure, not a guid, maybe 4 uint32 being coordinates or bound
+   * box in a unit with very small increments (such as the StrokeTool)
+   *
+   * only present when Handwritting modus is active
+   */
+  undoc_Strokes003418 = 0x1c003418,
 
-  // squential number likely indicating the input order
-  // FourBytesOfData
+  /** squential number likely indicating the input order
+   * FourBytesOfData
+   */
   undoc_StrokesIndex = 0x14003419,
-  // likely the language setting, maybe is used for ocr
-  // TwoBytesOfData
+  /** likely the language setting, maybe is used for ocr
+  * TwoBytesOfData
 
-  // 16 bytes structure
-  // values seem to be quite random, except a GUID' constant bits (56-59, and
-  // likely 64-65).
-  // FourBytesOfLengthFollowedByData
+  * 16 bytes structure
+  * values seem to be quite random, except a GUID' constant bits (56-59, and
+  * likely 64-65).
+  * FourBytesOfLengthFollowedByData
+  */
   undoc_StrokesGUID = 0x1c00341a,
 
-  // likely to be the language id from an LCID.
-  // TwoBytesOfData
+  /* likely to be the language id from an LCID.
+   * TwoBytesOfData
+   */
   unodc_StrokeLanguage = 0x1000341b,
 
-  // observed only values 0x00, 0x01, 0x02.
-  // 0x00 seems to be the default value, 'handwriting and drawing'
-  // 0x01 seems to only occur when drawing is set to 'handwriting only'
-  // 0x02 only occurs when modus is 'drawning only'
-  // OneByteOfData
+  /** observed only values 0x00, 0x01, 0x02.
+   * 0x00 seems to be the default value, 'handwriting and drawing'
+   * 0x01 seems to only occur when drawing is set to 'handwriting only'
+   * 0x02 only occurs when modus is 'drawning only'
+   * OneByteOfData
+   */
   undoc_StrokesModus = 0x0c00341c,
 
   // high 4 bytes does not seem to change, FileTime returns a plausible result

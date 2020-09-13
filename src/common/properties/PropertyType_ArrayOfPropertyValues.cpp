@@ -8,10 +8,6 @@ namespace MSONcommon {
 PropertyType_ArrayOfPropertyValues::PropertyType_ArrayOfPropertyValues()
     : m_cProperties(0) {}
 
-QDebug operator<<(QDebug dbg, const PropertyType_ArrayOfPropertyValues &obj) {
-  obj.toDebugString(dbg);
-  return dbg;
-}
 
 quint32 PropertyType_ArrayOfPropertyValues::cProperties() const {
   return m_cProperties;

@@ -142,6 +142,9 @@ common/DocumentManager.cpp
     common/simpleTypes/FileTime.cpp
     common/simpleTypes/LCID.cpp
     common/simpleTypes/ColorRef.cpp
+    common/simpleTypes/ListMSAAIndex.cpp
+    common/simpleTypes/PageSize.cpp
+    common/simpleTypes/NoteTagShape.cpp
 
 
     common/helper/Helper.cpp

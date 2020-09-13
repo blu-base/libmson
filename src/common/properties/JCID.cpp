@@ -183,6 +183,14 @@ QString JCID::typeToString() const {
     return QString("jcidVersionHistoryMetaData");
   case JCIDs::jcidParagraphStyleObject:
     return QString("jcidParagraphStyleObject");
+
+  case JCIDs::undoc_jcidShape:
+    return QString("undoc_jcidShape");
+  case JCIDs::undoc_jcidDrawingNode:
+    return QString("undoc_jcidDrawingNode");
+  case JCIDs::undoc_jciddrawingToolData:
+    return QString("undoc_jciddrawingToolData");
+
   case JCIDs::none:
     return QString("none");
   default:
