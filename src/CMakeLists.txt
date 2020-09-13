@@ -21,10 +21,9 @@ set (MSONcommon_PART_SRCS
     common/ISerializable.cpp
     common/IDeserializable.cpp
     common/IRevisionStoreFileToXmlable.cpp
-    common/IRevisionStoreFileObject.h
+#    common/IRevisionStoreFileObject.h
 
-#    common/DocumentSingleton.cpp
-    common/DocumentManager.cpp
+common/DocumentManager.cpp
 
 #    common/MSONStreamReader.cpp
     common/FileNodeListFragment.cpp
@@ -41,7 +40,7 @@ set (MSONcommon_PART_SRCS
     common/TransactionLogFragment.cpp
 
 
-    common/commonTypes/Enums.h
+#    common/commonTypes/Enums.h
     common/commonTypes/CompactID.cpp
     common/commonTypes/ExtendedGUID.cpp
     common/commonTypes/IFileChunkReference.cpp
@@ -111,10 +110,6 @@ set (MSONcommon_PART_SRCS
     common/otherTypes/ObjectDeclarationWithRefCountBody.cpp
     common/otherTypes/ObjectDeclaration2Body.cpp
     common/otherTypes/FileDataStoreObject.cpp
-
-    common/otherTypes/prtFourBytesOfLengthFollowedByData.cpp
-
-
 
     common/properties/JCID.cpp
 
