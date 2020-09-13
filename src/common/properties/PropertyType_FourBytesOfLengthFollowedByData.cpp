@@ -49,6 +49,6 @@ void PropertyType_FourBytesOfLengthFollowedByData::serialize(
 }
 
 void PropertyType_FourBytesOfLengthFollowedByData::toDebugString(
-    QDebug dbg) const {}
+    QDebug &dbg) const {}
 
 } // namespace MSONcommon

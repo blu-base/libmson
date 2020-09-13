@@ -34,11 +34,6 @@ public:
 
   QString toString() const;
 
-  //  bool equals(const ExtendedGUID &extGuid) const;
-
-  friend QDebug operator<<(QDebug dbg, const ExtendedGUID &obj);
-  ;
-
   friend bool operator==(const ExtendedGUID &lhs,
                          const ExtendedGUID &rhs) noexcept;
   friend bool operator!=(const ExtendedGUID &lhs,
@@ -54,7 +49,7 @@ private:
 
   virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
 
-  void toDebugString(QDebug dbg) const;
+  virtual void toDebugString(QDebug &dbg) const override;
 };
 
 } // namespace MSONcommon

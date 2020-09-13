@@ -49,8 +49,6 @@ private:
 public:
   LayoutAlignment();
 
-  friend QDebug operator<<(QDebug dbg, const LayoutAlignment &obj);
-
   HAlignment lha() const;
   void setLha(const HAlignment &val);
 
@@ -72,7 +70,7 @@ private:
 
   virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
 
-  void toDebugString(QDebug dbg) const;
+  virtual void toDebugString(QDebug &dbg) const override;
 };
 
 } // namespace MSONcommon

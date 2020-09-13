@@ -638,6 +638,6 @@ void PropertyID::serialize(QDataStream &ds) const {
   ds << temp;
 }
 
-void PropertyID::toDebugString(QDebug dbg) const {}
+void PropertyID::toDebugString(QDebug &dbg) const {}
 
 } // namespace MSONcommon

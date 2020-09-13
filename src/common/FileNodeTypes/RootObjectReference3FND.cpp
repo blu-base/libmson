@@ -26,7 +26,7 @@ void RootObjectReference3FND::serialize(QDataStream &ds) const {
   ds << m_RootRole;
 }
 
-void RootObjectReference3FND::toDebugString(QDebug dbg) const {
+void RootObjectReference3FND::toDebugString(QDebug &dbg) const {
   dbg << " RootObjectReference2FNDX:\n"
       << " oidRoot: " << m_oidRoot << '\n'
       << " RootRole: " << m_RootRole << '\n';

@@ -4,17 +4,13 @@ namespace MSONcommon {
 
 StringInStorageBuffer::StringInStorageBuffer() : m_cch(0) {}
 
-void StringInStorageBuffer::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
+void StringInStorageBuffer::writeLowLevelXml(
+    QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("StringInStorageBuffer");
   xmlWriter.writeAttribute("cch", QString::number(m_cch));
 
   xmlWriter.writeCharacters(getStringData());
   xmlWriter.writeEndElement();
-}
-
-QDebug operator<<(QDebug dbg, const StringInStorageBuffer &obj) {
-  obj.toDebugString(dbg);
-  return dbg;
 }
 
 QString StringInStorageBuffer::getStringData() const {
@@ -58,7 +54,7 @@ void StringInStorageBuffer::serialize(QDataStream &ds) const {
            << '\n';
 }
 
-void StringInStorageBuffer::toDebugString(QDebug dbg) const {
+void StringInStorageBuffer::toDebugString(QDebug &dbg) const {
   dbg << " StringInStorageBuffer:\n length: " << m_cch << '\n'
       << "/* " << getStringData() << " */\n";
 }

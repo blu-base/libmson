@@ -31,7 +31,7 @@ void RevisionRoleAndContextDeclarationFND::serialize(QDataStream &ds) const {
   ds << m_gctxid;
 }
 
-void RevisionRoleAndContextDeclarationFND::toDebugString(QDebug dbg) const {
+void RevisionRoleAndContextDeclarationFND::toDebugString(QDebug &dbg) const {
   dbg << " RevisionRoleAndContextDeclarationFND\n"
       << " Base:\n"
       << m_base << "gctxid: " << m_gctxid << '\n';

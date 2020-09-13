@@ -12,7 +12,7 @@ void ObjectGroupStartFND::deserialize(QDataStream &ds) { ds >> m_oid; }
 
 void ObjectGroupStartFND::serialize(QDataStream &ds) const { ds << m_oid; }
 
-void ObjectGroupStartFND::toDebugString(QDebug dbg) const {
+void ObjectGroupStartFND::toDebugString(QDebug &dbg) const {
   dbg << " ObjectGroupStartFND: \n"
       << " oid:  " << m_oid << '\n';
 }

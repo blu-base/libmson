@@ -21,6 +21,6 @@ void PropertyType_ObjectID::deserialize(QDataStream &ds) { ds >> m_data; }
 
 void PropertyType_ObjectID::serialize(QDataStream &ds) const { ds << m_data; }
 
-void PropertyType_ObjectID::toDebugString(QDebug dbg) const {}
+void PropertyType_ObjectID::toDebugString(QDebug &dbg) const {}
 
 } // namespace MSONcommon

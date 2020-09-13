@@ -59,7 +59,7 @@ void ObjectDeclarationFileData3RefCountFND::serialize(QDataStream &ds) const {
   ds << m_Extension;
 }
 
-void ObjectDeclarationFileData3RefCountFND::toDebugString(QDebug dbg) const {
+void ObjectDeclarationFileData3RefCountFND::toDebugString(QDebug &dbg) const {
   dbg << " ObjectDeclarationFileData3RefCountFND\n"
       << " oid: " << m_oid << '\n'
       << " jcid: " << m_jcid << '\n'

@@ -62,11 +62,6 @@ bool operator>=(const ExtendedGUID &lhs, const ExtendedGUID &rhs) noexcept {
   return (lhs.m_guid >= rhs.m_guid) && (lhs.data_n >= rhs.data_n);
 }
 
-QDebug operator<<(QDebug dbg, const ExtendedGUID &obj) {
-  obj.toDebugString(dbg);
-  return dbg;
-}
-
 void ExtendedGUID::deserialize(QDataStream &ds) {
 
   // if byte order is big endian, change to little endian
@@ -86,7 +81,7 @@ void ExtendedGUID::serialize(QDataStream &ds) const {
   ds << data_n;
 }
 
-void ExtendedGUID::toDebugString(QDebug dbg) const {
+void ExtendedGUID::toDebugString(QDebug &dbg) const {
   dbg.noquote() << "{" << m_guid.toString() << "," << data_n << "}";
 }
 

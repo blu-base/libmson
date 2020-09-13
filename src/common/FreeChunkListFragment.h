@@ -31,8 +31,6 @@ private:
 public:
   FreeChunkListFragment(quint64 size);
 
-  friend QDebug operator<<(QDebug dbg, const FreeChunkListFragment &obj);
-
   quint32 getCrc() const;
   void setCrc(const quint32 &value);
 
@@ -62,7 +60,7 @@ private:
    * @brief prints the FreeChunkListFragment to a <QDebug> object
    * @param dbg <QDebug> string builder for the debug information
    */
-  void toDebugString(QDebug dbg) const;
+  virtual void toDebugString(QDebug &dbg) const override;
 };
 
 } // namespace MSONcommon

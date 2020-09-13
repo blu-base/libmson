@@ -63,8 +63,6 @@ public:
   void
   setFcrFileNodeListRoot(const FileChunkReference64x32 &fcrFileNodeListRoot);
 
-  friend QDebug operator<<(QDebug dbg, const RootFileNodeList &obj);
-
 private:
   /**
    * @brief creates RootFileNodeList from QDataStream
@@ -79,7 +77,8 @@ private:
    * @brief prints the RootFileNodeList to a <QDebug> object
    * @param dbg <QDebug> string builder for the debug information
    */
-  void toDebugString(QDebug dbg) const;
+  virtual void toDebugString(QDebug &dbg) const override;
+
 };
 
 } // namespace MSONcommon

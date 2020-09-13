@@ -4,11 +4,6 @@ namespace MSONcommon {
 
 LayoutAlignment::LayoutAlignment() : m_value() {}
 
-QDebug operator<<(QDebug dbg, const LayoutAlignment &obj) {
-  obj.toDebugString(dbg);
-  return dbg;
-}
-
 void LayoutAlignment::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("LayoutAlignment");
   xmlWriter.writeAttribute("horizontal", hAlignmentToString(lha()));
@@ -72,7 +67,7 @@ void LayoutAlignment::deserialize(QDataStream &ds) { ds >> m_value; }
 
 void LayoutAlignment::serialize(QDataStream &ds) const { ds << m_value; }
 
-void LayoutAlignment::toDebugString(QDebug dbg) const {
+void LayoutAlignment::toDebugString(QDebug &dbg) const {
   dbg << "LayoutAligment:\n"
       << "h: " << hAlignmentToString(lha())
       << " v: " << vAlignmentToString(lva())

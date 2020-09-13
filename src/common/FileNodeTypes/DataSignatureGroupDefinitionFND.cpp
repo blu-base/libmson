@@ -22,7 +22,7 @@ void DataSignatureGroupDefinitionFND::serialize(QDataStream &ds) const {
   ds << m_dataSignatureGroup;
 }
 
-void DataSignatureGroupDefinitionFND::toDebugString(QDebug dbg) const {
+void DataSignatureGroupDefinitionFND::toDebugString(QDebug &dbg) const {
   dbg << " DataSignatureGroupDefinitionFND: \n"
       << " m_dataSignatureGroup:  " << m_dataSignatureGroup << '\n';
 }

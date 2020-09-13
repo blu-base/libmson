@@ -13,11 +13,6 @@ QDateTime FileTime::getTime() const { return m_time; }
 
 void FileTime::setTime(const QDateTime time) { m_time = time; }
 
-QDebug operator<<(QDebug dbg, const FileTime &obj) {
-  obj.toDebugString(dbg);
-  return dbg;
-}
-
 void FileTime::deserialize(QDataStream &ds) {
   quint32 fileTimeLow;
   quint32 fileTimeHigh;
@@ -46,7 +41,7 @@ void FileTime::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeEndElement();
 }
 
-void FileTime::toDebugString(QDebug dbg) const {
+void FileTime::toDebugString(QDebug &dbg) const {
   dbg << "FileTime:\n" << m_time;
 }
 

@@ -15,10 +15,6 @@ void ObjectInfoDependencyOverride8::writeLowLevelXml(
   xmlWriter.writeEndElement();
 }
 
-QDebug operator<<(QDebug dbg, const ObjectInfoDependencyOverride8 &obj) {
-  obj.toDebugString(dbg);
-  return dbg;
-}
 
 CompactID ObjectInfoDependencyOverride8::oid() const { return m_oid; }
 
@@ -42,7 +38,7 @@ void ObjectInfoDependencyOverride8::serialize(QDataStream &ds) const {
   ds << m_cRef;
 }
 
-void ObjectInfoDependencyOverride8::toDebugString(QDebug dbg) const {
+void ObjectInfoDependencyOverride8::toDebugString(QDebug &dbg) const {
   dbg << "ObjectInfoDependencyOverride8:\n"
       << "oid:  " << m_oid << '\n'
       << "cRef: " << m_cRef << '\n';

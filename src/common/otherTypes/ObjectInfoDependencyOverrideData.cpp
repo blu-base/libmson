@@ -40,10 +40,6 @@ void ObjectInfoDependencyOverrideData::writeLowLevelXml(
   xmlWriter.writeEndElement();
 }
 
-QDebug operator<<(QDebug dbg, const ObjectInfoDependencyOverrideData &obj) {
-  obj.toDebugString(dbg);
-  return dbg;
-}
 
 quint32 ObjectInfoDependencyOverrideData::c8BitOverrides() const {
   return m_c8BitOverrides;
@@ -121,6 +117,6 @@ void ObjectInfoDependencyOverrideData::serialize(QDataStream &ds) const {
   }
 }
 
-void ObjectInfoDependencyOverrideData::toDebugString(QDebug dbg) const {}
+void ObjectInfoDependencyOverrideData::toDebugString(QDebug &dbg) const {}
 
 } // namespace MSONcommon

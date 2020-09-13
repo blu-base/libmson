@@ -33,8 +33,6 @@ public:
 
   QString toString() const;
 
-  friend QDebug operator<<(QDebug dbg, const CompactID &obj);
-
   friend bool operator==(const CompactID &lhs, const CompactID &rhs) noexcept;
   friend bool operator!=(const CompactID &lhs, const CompactID &rhs) noexcept;
 
@@ -44,7 +42,7 @@ private:
 
   virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
 
-  void toDebugString(QDebug dbg) const;
+  virtual void toDebugString(QDebug &dbg) const override;
 };
 
 } // namespace MSONcommon

@@ -37,7 +37,7 @@ void ObjectGroupListReferenceFND::serialize(QDataStream &ds) const {
   ds << m_ObjectGroupID;
 }
 
-void ObjectGroupListReferenceFND::toDebugString(QDebug dbg) const {
+void ObjectGroupListReferenceFND::toDebugString(QDebug &dbg) const {
   dbg << " ObjectGroupListReferenceFND:\n"
       << " ref:           " << m_ref << '\n'
       << " ObjectGroupID: " << m_ObjectGroupID << '\n';

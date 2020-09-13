@@ -37,8 +37,6 @@ private:
 public:
   JCID();
 
-  friend QDebug operator<<(QDebug dbg, const JCID &obj);
-
   quint16 index() const;
   void setIndex(const quint16 &index);
 
@@ -66,7 +64,7 @@ private:
 
   virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
 
-  void toDebugString(QDebug dbg) const;
+  virtual void toDebugString(QDebug &dbg) const override;
 };
 
 } // namespace MSONcommon

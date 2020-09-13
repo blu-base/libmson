@@ -25,8 +25,6 @@ protected:
 public:
   virtual ~IObjectSpaceOpbjectStream();
 
-  friend QDebug operator<<(QDebug dbg, const IObjectSpaceOpbjectStream &obj);
-
   ObjectSpaceObjectStreamHeader header() const;
   void setHeader(const ObjectSpaceObjectStreamHeader &header);
 
@@ -91,7 +89,7 @@ protected:
    * @brief prints the IObjectSpaceOpbjectStream to a <QDebug> object
    * @param dbg <QDebug> string builder for the debug information
    */
-  void toDebugString(QDebug dbg) const;
+  virtual void toDebugString(QDebug &dbg) const override;
 };
 
 } // namespace MSONcommon

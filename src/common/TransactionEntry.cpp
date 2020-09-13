@@ -3,11 +3,6 @@
 namespace MSONcommon {
 TransactionEntry::TransactionEntry() : srcID{}, TransactionEntrySwitch{} {}
 
-QDebug operator<<(QDebug dbg, const TransactionEntry &obj) {
-  obj.toDebugString(dbg);
-  return dbg;
-}
-
 void TransactionEntry::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
 
   xmlWriter.writeStartElement("TransactionEntry");
@@ -34,7 +29,7 @@ void TransactionEntry::deserialize(QDataStream &ds) {
   ds >> TransactionEntrySwitch;
 }
 
-void TransactionEntry::toDebugString(QDebug dbg) const {
+void TransactionEntry::toDebugString(QDebug &dbg) const {
   dbg.noquote() << "TransactionEntry:  srcID: " << qStringHex(srcID, 8)
                 << " transactionEntrySwitch: "
                 << qStringHex(TransactionEntrySwitch, 8) << '\n';

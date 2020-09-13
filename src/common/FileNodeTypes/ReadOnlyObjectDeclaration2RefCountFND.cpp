@@ -58,7 +58,7 @@ void ReadOnlyObjectDeclaration2RefCountFND::serialize(QDataStream &ds) const {
   ds << m_md5hash;
 }
 
-void ReadOnlyObjectDeclaration2RefCountFND::toDebugString(QDebug dbg) const {
+void ReadOnlyObjectDeclaration2RefCountFND::toDebugString(QDebug &dbg) const {
 
   dbg << " ReadOnlyObjectDeclaration2RefCountFND\n"
       << " Base:\n"

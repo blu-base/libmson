@@ -24,9 +24,6 @@ private:
 public:
   ObjectInfoDependencyOverride8() = default;
 
-  friend QDebug operator<<(QDebug dbg,
-                           const ObjectInfoDependencyOverride8 &obj);
-
   CompactID oid() const;
   void setOid(const CompactID &oid);
 
@@ -57,7 +54,7 @@ private:
    * @brief prints the ObjectInfoDependencyOverride8 to a <QDebug> object
    * @param dbg <QDebug> string builder for the debug information
    */
-  void toDebugString(QDebug dbg) const;
+  virtual void toDebugString(QDebug &dbg) const override;
 };
 
 } // namespace MSONcommon

@@ -3,6 +3,7 @@
 
 #include <QtCore/qglobal.h>
 
+#include "IDebugOutputable.h"
 #include "IDeserializable.h"
 #include "IRevisionStoreFileToXmlable.h"
 #include "ISerializable.h"
@@ -14,7 +15,8 @@ namespace MSONcommon {
  */
 class IRevisionStoreFileObject : public ISerializable,
                                  public IDeserializable,
-                                 public IRevisionStoreFileToXmlable {
+                                 public IRevisionStoreFileToXmlable,
+                                 public IDebugOutputable {
 protected:
   IRevisionStoreFileObject() = default;
   virtual ~IRevisionStoreFileObject() = default;

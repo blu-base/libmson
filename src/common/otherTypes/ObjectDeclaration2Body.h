@@ -35,8 +35,6 @@ public:
   quint8 getFReserved2() const;
   void setFReserved2(const quint8 &value);
 
-  friend QDebug operator<<(QDebug dbg, const ObjectDeclaration2Body &obj);
-
 private:
   /**
    * @brief creates ObjectDeclaration2Body from QDataStream
@@ -57,7 +55,7 @@ private:
    * @brief prints the ObjectDeclaration2Body to a <QDebug> object
    * @param dbg <QDebug> string builder for the debug information
    */
-  void toDebugString(QDebug dbg) const;
+  virtual void toDebugString(QDebug &dbg) const override;
 };
 
 } // namespace MSONcommon

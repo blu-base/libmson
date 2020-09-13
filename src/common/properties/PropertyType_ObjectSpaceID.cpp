@@ -17,6 +17,6 @@ void PropertyType_ObjectSpaceID::deserialize(QDataStream &ds) {}
 
 void PropertyType_ObjectSpaceID::serialize(QDataStream &ds) const {}
 
-void PropertyType_ObjectSpaceID::toDebugString(QDebug dbg) const {}
+void PropertyType_ObjectSpaceID::toDebugString(QDebug &dbg) const {}
 
 } // namespace MSONcommon

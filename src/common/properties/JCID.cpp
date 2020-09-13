@@ -194,7 +194,7 @@ void JCID::deserialize(QDataStream &ds) { ds >> m_value; }
 
 void JCID::serialize(QDataStream &ds) const { ds << m_value; }
 
-void JCID::toDebugString(QDebug dbg) const {
+void JCID::toDebugString(QDebug &dbg) const {
   dbg << " JCID: index: " << qStringHex(index(), 4)
       << " m_IsBinary: " << IsBinary() << '\n'
       << " m_IsPropertySet: " << IsPropertySet() << '\n'
@@ -217,11 +217,6 @@ void JCID::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeAttribute("IsReadOnly", IsReadOnly() ? "true" : "false");
 
   xmlWriter.writeEndElement();
-}
-
-QDebug operator<<(QDebug dbg, const JCID &obj) {
-  obj.toDebugString(dbg);
-  return dbg;
 }
 
 } // namespace MSONcommon

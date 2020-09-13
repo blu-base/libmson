@@ -29,20 +29,16 @@ void FileNodeListHeader::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeEndElement();
 }
 
-
-QDebug operator<<(QDebug dbg, const FileNodeListHeader &obj) {
-  QDebugStateSaver saver(dbg);
+void FileNodeListHeader::toDebugString(QDebug &dbg) const {
   dbg.setAutoInsertSpaces(false);
   dbg.noquote();
 
   dbg << " FileNodeListHeader\n";
   dbg << " FileNodeListID:    "
-      << QString("0x%1").arg(obj.m_fileNodeListID, 8, 16, QLatin1Char('0'))
-      << (obj.isFileNodeListIDValid() ? "" : " INVALID") << "\n";
-  dbg << " nFragmentSequence: " << obj.m_nFragmentSequence
-      << (obj.isNFragmentSequenceValid() ? "" : " INVALID") << "\n";
-
-  return dbg;
+      << QString("0x%1").arg(m_fileNodeListID, 8, 16, QLatin1Char('0'))
+      << (isFileNodeListIDValid() ? "" : " INVALID") << "\n";
+  dbg << " nFragmentSequence: " << m_nFragmentSequence
+      << (isNFragmentSequenceValid() ? "" : " INVALID") << "\n";
 };
 
 quint32 FileNodeListHeader::getNFragmentSequence() const {
@@ -85,9 +81,7 @@ bool FileNodeListHeader::isFileNodeListIDValid() const {
 }
 } // namespace MSONcommon
 
-
-void MSONcommon::FileNodeListHeader::deserialize(QDataStream& ds)
-{
+void MSONcommon::FileNodeListHeader::deserialize(QDataStream &ds) {
   // if byte order is big endian, change to little endian
   if (!ds.byteOrder()) {
     ds.setByteOrder(QDataStream::LittleEndian);
@@ -99,8 +93,7 @@ void MSONcommon::FileNodeListHeader::deserialize(QDataStream& ds)
   ds >> m_nFragmentSequence;
 }
 
-void MSONcommon::FileNodeListHeader::serialize(QDataStream& ds) const
-{
+void MSONcommon::FileNodeListHeader::serialize(QDataStream &ds) const {
   // if byte order is big endian, change to little endian
   if (!ds.byteOrder()) {
     ds.setByteOrder(QDataStream::LittleEndian);

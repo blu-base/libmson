@@ -55,8 +55,6 @@ private:
 public:
   FileDataStoreObject();
 
-  friend QDebug operator<<(QDebug dbg, const FileDataStoreObject &obj);
-
   QUuid guidHeader() const;
   void setGuidHeader(const QUuid &guidHeader);
 
@@ -91,7 +89,7 @@ private:
    * @brief prints the IProperty to a <QDebug> object
    * @param dbg <QDebug> string builder for the debug information
    */
-  void toDebugString(QDebug dbg) const;
+  virtual void toDebugString(QDebug &dbg) const override;
 };
 
 } // namespace MSONcommon

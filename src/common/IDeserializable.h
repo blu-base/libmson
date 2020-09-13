@@ -2,7 +2,7 @@
 #define IDESERIALIZABLE_H
 
 #include <QtCore/qglobal.h>
-
+#include <QDataStream>
 namespace MSONcommon {
 
 class IDeserializable {

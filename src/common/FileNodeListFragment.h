@@ -41,7 +41,7 @@ public:
   FileNodeListFragment(const FileChunkReference64x32 ref);
   FileNodeListFragment(const FileChunkReference32 ref);
   FileNodeListFragment(const FileNodeChunkReference ref);
-  ~FileNodeListFragment();
+  virtual ~FileNodeListFragment() = default;
 
   FileChunkReference64 getRef() const;
   void setRef(const FileChunkReference64 &ref);
@@ -61,8 +61,6 @@ public:
 
   FileChunkReference64x32 getNextFragment() const;
   void setNextFragment(const FileChunkReference64x32 &next);
-
-  friend QDebug operator<<(QDebug dbg, const FileNodeListFragment &obj);
 
 private:
   /**
@@ -84,7 +82,7 @@ private:
    * @brief prints the FileNodeListFragment to a <QDebug> object
    * @param dbg <QDebug> string builder for the debug information
    */
-  void toDebugString(QDebug dbg) const;
+  virtual void toDebugString(QDebug &dbg) const override;
 };
 } // namespace MSONcommon
 #endif // FILENODELISTFRAGMENT_H

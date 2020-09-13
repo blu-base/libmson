@@ -59,7 +59,7 @@ void ReadOnlyObjectDeclaration2LargeRefCountFND::serialize(
 }
 
 void ReadOnlyObjectDeclaration2LargeRefCountFND::toDebugString(
-    QDebug dbg) const {
+    QDebug &dbg) const {
 
   dbg << " ReadOnlyObjectDeclaration2LargeRefCountFND\n"
       << " Base:\n"

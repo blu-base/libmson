@@ -20,9 +20,6 @@ public:
   prtFourBytesOfLengthFollowedByData() = default;
   virtual ~prtFourBytesOfLengthFollowedByData() = default;
 
-  friend QDebug operator<<(QDebug dbg,
-                           const prtFourBytesOfLengthFollowedByData &obj);
-
   quint32 cb() const;
   void setCb(const quint32 &cb);
 
@@ -33,9 +30,9 @@ private:
   virtual void deserialize(QDataStream &ds) override;
   virtual void serialize(QDataStream &ds) const override;
 
- virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
+  virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
 
-  void toDebugString(QDebug dbg) const;
+  virtual void toDebugString(QDebug &dbg) const override;
 };
 
 } // namespace MSONcommon

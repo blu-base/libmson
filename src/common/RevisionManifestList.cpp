@@ -17,11 +17,6 @@ void RevisionManifestList::setRef(const FileNodeChunkReference &ref) {
   m_ref = ref;
 }
 
-QDebug operator<<(QDebug dbg, const RevisionManifestList &obj) {
-  obj.toDebugString(dbg);
-  return dbg;
-}
-
 void RevisionManifestList::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("RevisionManifestList");
   xmlWriter.writeAttribute("stp", qStringHex(m_ref.stp(), 16));
@@ -143,7 +138,7 @@ void RevisionManifestList::deserialize(QDataStream &ds) {
 
 void MSONcommon::RevisionManifestList::serialize(QDataStream &ds) const {}
 
-void RevisionManifestList::toDebugString(QDebug dbg) const {
+void RevisionManifestList::toDebugString(QDebug &dbg) const {
 
   dbg << "RevisionManifestList:\n";
   dbg << "ref: " << m_ref << '\n';

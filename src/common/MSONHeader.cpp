@@ -300,7 +300,7 @@ void MSONHeader::deserialize(QDataStream& ds) {
 
 }
 
-QDebug operator<<(QDebug dbg, const MSONHeader &obj) {
+void MSONHeader::toDebugString(QDebug &dbg) const {
 
   QDebugStateSaver saver(dbg);
   dbg.setAutoInsertSpaces(false);
@@ -310,137 +310,136 @@ QDebug operator<<(QDebug dbg, const MSONHeader &obj) {
       << " MSON Header:\n"
       << " ------------\n";
 
-  dbg << " guidFileType:                      " << obj.guidFileType
-      << (obj.isGuidFileTypeValid() ? "" : " INVALID")
-      << (obj.isGuidFileTypeIgnored() ? " ignored" : "") << "\n";
-  dbg << " guidFile:                          " << obj.guidFile
-      << (obj.isGuidFileValid() ? "" : " INVALID")
-      << (obj.isGuidFileIgnored() ? " ignored" : "") << "\n";
-  dbg << " guidLegacyFileVersion:             " << obj.guidLegacyFileVersion
-      << (obj.isFNeedsGarbageCollectValid() ? "" : " INVALID")
-      << (obj.isFNeedsGarbageCollectIgnored() ? " ignored" : "") << "\n";
-  dbg << " guidFileFormat:                    " << obj.guidFileFormat
-      << (obj.isGuidFileFormatValid() ? "" : " INVALID")
-      << (obj.isGuidFileFormatIgnored() ? " ignored" : "") << "\n";
-  dbg << " ffvLastWriterVersion:              " << obj.ffvLastWriterVersion
-      << (obj.isFfvLastWriterVersionValid() ? "" : " INVALID")
-      << (obj.isFfvLastWriterVersionIgnored() ? " ignored" : "") << "\n";
-  dbg << " ffvOldestWriterVersion:            " << obj.ffvOldestWriterVersion
-      << (obj.isFfvOldestWriterVersionValid() ? "" : " INVALID")
-      << (obj.isFfvOldestWriterVersionIgnored() ? " ignored" : "") << "\n";
-  dbg << " ffvNewestWriterVersion:            " << obj.ffvNewestWriterVersion
-      << (obj.isFfvNewestWriterVersionValid() ? "" : " INVALID")
-      << (obj.isFfvNewestWriterVersionIgnored() ? " ignored" : "") << "\n";
-  dbg << " ffvOldestReader:                   " << obj.ffvOldestReader
-      << (obj.isFfvOldestReaderValid() ? "" : " INVALID")
-      << (obj.isFfvOldestReaderIgnored() ? " ignored" : "") << "\n";
-  dbg << " fcrLegacyFreeChunkList:            " << obj.fcrLegacyFreeChunkList
-      << (obj.isFcrLegacyFreeChunkListValid() ? "" : " INVALID")
-      << (obj.isFcrLegacyFreeChunkListIgnored() ? " ignored" : "") << "\n";
-  dbg << " fcrLegacyTransactionLog:           " << obj.fcrLegacyTransactionLog
-      << (obj.isFcrLegacyTransactionLogValid() ? "" : " INVALID")
-      << (obj.isFcrLegacyTransactionLogIgnored() ? " ignored" : "") << "\n";
-  dbg << " cTransactionsInLog:                " << obj.cTransactionsInLog
-      << (obj.isCTransactionsInLogValid() ? "" : " INVALID")
-      << (obj.isCTransactionsInLogIgnored() ? " ignored" : "") << "\n";
+  dbg << " guidFileType:                      " << guidFileType
+      << (isGuidFileTypeValid() ? "" : " INVALID")
+      << (isGuidFileTypeIgnored() ? " ignored" : "") << "\n";
+  dbg << " guidFile:                          " << guidFile
+      << (isGuidFileValid() ? "" : " INVALID")
+      << (isGuidFileIgnored() ? " ignored" : "") << "\n";
+  dbg << " guidLegacyFileVersion:             " << guidLegacyFileVersion
+      << (isFNeedsGarbageCollectValid() ? "" : " INVALID")
+      << (isFNeedsGarbageCollectIgnored() ? " ignored" : "") << "\n";
+  dbg << " guidFileFormat:                    " << guidFileFormat
+      << (isGuidFileFormatValid() ? "" : " INVALID")
+      << (isGuidFileFormatIgnored() ? " ignored" : "") << "\n";
+  dbg << " ffvLastWriterVersion:              " << ffvLastWriterVersion
+      << (isFfvLastWriterVersionValid() ? "" : " INVALID")
+      << (isFfvLastWriterVersionIgnored() ? " ignored" : "") << "\n";
+  dbg << " ffvOldestWriterVersion:            " << ffvOldestWriterVersion
+      << (isFfvOldestWriterVersionValid() ? "" : " INVALID")
+      << (isFfvOldestWriterVersionIgnored() ? " ignored" : "") << "\n";
+  dbg << " ffvNewestWriterVersion:            " << ffvNewestWriterVersion
+      << (isFfvNewestWriterVersionValid() ? "" : " INVALID")
+      << (isFfvNewestWriterVersionIgnored() ? " ignored" : "") << "\n";
+  dbg << " ffvOldestReader:                   " << ffvOldestReader
+      << (isFfvOldestReaderValid() ? "" : " INVALID")
+      << (isFfvOldestReaderIgnored() ? " ignored" : "") << "\n";
+  dbg << " fcrLegacyFreeChunkList:            " << fcrLegacyFreeChunkList
+      << (isFcrLegacyFreeChunkListValid() ? "" : " INVALID")
+      << (isFcrLegacyFreeChunkListIgnored() ? " ignored" : "") << "\n";
+  dbg << " fcrLegacyTransactionLog:           " << fcrLegacyTransactionLog
+      << (isFcrLegacyTransactionLogValid() ? "" : " INVALID")
+      << (isFcrLegacyTransactionLogIgnored() ? " ignored" : "") << "\n";
+  dbg << " cTransactionsInLog:                " << cTransactionsInLog
+      << (isCTransactionsInLogValid() ? "" : " INVALID")
+      << (isCTransactionsInLogIgnored() ? " ignored" : "") << "\n";
   dbg << " cbLegacyExpectedFileLength:        "
-      << obj.cbLegacyExpectedFileLength
-      << (obj.isCbLegacyExpectedFileLengthValid() ? "" : " INVALID")
-      << (obj.isCbLegacyExpectedFileLengthIgnored() ? " ignored" : "") << "\n";
-  dbg << " rgbPlaceholder:                    " << obj.rgbPlaceholder
-      << (obj.isRgbPlaceholderValid() ? "" : " INVALID")
-      << (obj.isRgbPlaceholderIgnored() ? " ignored" : "") << "\n";
-  dbg << " fcrLegacyFileNodeListRoot:         " << obj.fcrLegacyFileNodeListRoot
-      << (obj.isFcrLegacyFileNodeListRootValid() ? "" : " INVALID")
-      << (obj.isFcrLegacyFileNodeListRootIgnored() ? " ignored" : "") << "\n";
+      << cbLegacyExpectedFileLength
+      << (isCbLegacyExpectedFileLengthValid() ? "" : " INVALID")
+      << (isCbLegacyExpectedFileLengthIgnored() ? " ignored" : "") << "\n";
+  dbg << " rgbPlaceholder:                    " << rgbPlaceholder
+      << (isRgbPlaceholderValid() ? "" : " INVALID")
+      << (isRgbPlaceholderIgnored() ? " ignored" : "") << "\n";
+  dbg << " fcrLegacyFileNodeListRoot:         " << fcrLegacyFileNodeListRoot
+      << (isFcrLegacyFileNodeListRootValid() ? "" : " INVALID")
+      << (isFcrLegacyFileNodeListRootIgnored() ? " ignored" : "") << "\n";
   dbg << " cbLegacyFreeSpaceInFreeChunkList:  "
-      << obj.cbLegacyFreeSpaceInFreeChunkList
-      << (obj.isCbLegacyFreeSpaceInFreeChunkListValid() ? "" : " INVALID")
-      << (obj.isCbLegacyFreeSpaceInFreeChunkListIgnored() ? " ignored" : "")
+      << cbLegacyFreeSpaceInFreeChunkList
+      << (isCbLegacyFreeSpaceInFreeChunkListValid() ? "" : " INVALID")
+      << (isCbLegacyFreeSpaceInFreeChunkListIgnored() ? " ignored" : "")
       << "\n";
-  dbg << " fNeedsDefrag:                      " << obj.fNeedsDefrag
-      << (obj.isFNeedsDefragValid() ? "" : " INVALID")
-      << (obj.isFNeedsDefragIgnored() ? " ignored" : "") << "\n";
-  dbg << " fRepairedFile:                     " << obj.fRepairedFile
-      << (obj.isFRepairedFileValid() ? "" : " INVALID")
-      << (obj.isFRepairedFileIgnored() ? " ignored" : "") << "\n";
-  dbg << " fNeedsGarbageCollect:              " << obj.fNeedsGarbageCollect
-      << (obj.isFNeedsGarbageCollectValid() ? "" : " INVALID")
-      << (obj.isFNeedsGarbageCollectIgnored() ? " ignored" : "") << "\n";
-  dbg << " fHasNoEmbeddedFileObjects:         " << obj.fHasNoEmbeddedFileObjects
-      << (obj.isFHasNoEmbeddedFileObjectsValid() ? "" : " INVALID")
-      << (obj.isFHasNoEmbeddedFileObjectsIgnored() ? " ignored" : "") << "\n";
-  dbg << " guidAncestor:                      " << obj.guidAncestor
-      << (obj.isGuidAncestorValid() ? "" : " INVALID")
-      << (obj.isGuidAncestorIgnored() ? " ignored" : "") << "\n";
-  dbg << " crcName:                           " << obj.crcName
-      << (obj.isCrcNameValid() ? "" : " INVALID")
-      << (obj.isCrcNameIgnored() ? " ignored" : "") << "\n";
-  dbg << " fcrHashedChunkList:                " << obj.fcrHashedChunkList
-      << (obj.isFcrHashedChunkListValid() ? "" : " INVALID")
-      << (obj.isFcrHashedChunkListIgnored() ? " ignored" : "") << "\n";
-  dbg << " fcrTransactionLog:                 " << obj.fcrTransactionLog
-      << (obj.isFcrTransactionLogValid() ? "" : " INVALID")
-      << (obj.isFcrTransactionLogIgnored() ? " ignored" : "")
-      << (obj.fcrTransactionLog.is_fcrNil() ? " FCRNIL" : "")
-      << (obj.fcrTransactionLog.is_fcrZero() ? " FCRZERO" : "") << "\n";
-  dbg << " fcrFileNodeListRoot:               " << obj.fcrFileNodeListRoot
-      << (obj.isFcrFileNodeListRootValid() ? "" : " INVALID")
-      << (obj.isFcrFileNodeListRootIgnored() ? " ignored" : "") << "\n";
-  dbg << " fcrFreeChunkList:                  " << obj.fcrFreeChunkList
-      << (obj.isFcrFreeChunkListValid() ? "" : " INVALID")
-      << (obj.isFcrFreeChunkListIgnored() ? " ignored" : "") << "\n";
+  dbg << " fNeedsDefrag:                      " << fNeedsDefrag
+      << (isFNeedsDefragValid() ? "" : " INVALID")
+      << (isFNeedsDefragIgnored() ? " ignored" : "") << "\n";
+  dbg << " fRepairedFile:                     " << fRepairedFile
+      << (isFRepairedFileValid() ? "" : " INVALID")
+      << (isFRepairedFileIgnored() ? " ignored" : "") << "\n";
+  dbg << " fNeedsGarbageCollect:              " << fNeedsGarbageCollect
+      << (isFNeedsGarbageCollectValid() ? "" : " INVALID")
+      << (isFNeedsGarbageCollectIgnored() ? " ignored" : "") << "\n";
+  dbg << " fHasNoEmbeddedFileObjects:         " << fHasNoEmbeddedFileObjects
+      << (isFHasNoEmbeddedFileObjectsValid() ? "" : " INVALID")
+      << (isFHasNoEmbeddedFileObjectsIgnored() ? " ignored" : "") << "\n";
+  dbg << " guidAncestor:                      " << guidAncestor
+      << (isGuidAncestorValid() ? "" : " INVALID")
+      << (isGuidAncestorIgnored() ? " ignored" : "") << "\n";
+  dbg << " crcName:                           " << crcName
+      << (isCrcNameValid() ? "" : " INVALID")
+      << (isCrcNameIgnored() ? " ignored" : "") << "\n";
+  dbg << " fcrHashedChunkList:                " << fcrHashedChunkList
+      << (isFcrHashedChunkListValid() ? "" : " INVALID")
+      << (isFcrHashedChunkListIgnored() ? " ignored" : "") << "\n";
+  dbg << " fcrTransactionLog:                 " << fcrTransactionLog
+      << (isFcrTransactionLogValid() ? "" : " INVALID")
+      << (isFcrTransactionLogIgnored() ? " ignored" : "")
+      << (fcrTransactionLog.is_fcrNil() ? " FCRNIL" : "")
+      << (fcrTransactionLog.is_fcrZero() ? " FCRZERO" : "") << "\n";
+  dbg << " fcrFileNodeListRoot:               " << fcrFileNodeListRoot
+      << (isFcrFileNodeListRootValid() ? "" : " INVALID")
+      << (isFcrFileNodeListRootIgnored() ? " ignored" : "") << "\n";
+  dbg << " fcrFreeChunkList:                  " << fcrFreeChunkList
+      << (isFcrFreeChunkListValid() ? "" : " INVALID")
+      << (isFcrFreeChunkListIgnored() ? " ignored" : "") << "\n";
   dbg << " cbExpectedFileLength:              "
-      << qStringHex(obj.cbExpectedFileLength,
-                    sizeof(obj.cbExpectedFileLength) * 2)
-      << (obj.isCbExpectedFileLengthValid() ? "" : " INVALID")
-      << (obj.isCbExpectedFileLengthIgnored() ? " ignored" : "") << "\n";
+      << qStringHex(cbExpectedFileLength,
+                    sizeof(cbExpectedFileLength) * 2)
+      << (isCbExpectedFileLengthValid() ? "" : " INVALID")
+      << (isCbExpectedFileLengthIgnored() ? " ignored" : "") << "\n";
   dbg << " cbFreeSpaceInFreeChunkList:        "
-      << obj.cbFreeSpaceInFreeChunkList
-      << (obj.isCbFreeSpaceInFreeChunkListValid() ? "" : " INVALID")
-      << (obj.isCbFreeSpaceInFreeChunkListIgnored() ? " ignored" : "") << "\n";
-  dbg << " guidFileVersion:                   " << obj.guidFileVersion
-      << (obj.isGuidFileVersionValid() ? "" : " INVALID")
-      << (obj.isGuidFileVersionIgnored() ? " ignored" : "") << "\n";
-  dbg << " nFileVersionGeneration:            " << obj.nFileVersionGeneration
-      << (obj.isNFileVersionGenerationValid() ? "" : " INVALID")
-      << (obj.isNFileVersionGenerationIgnored() ? " ignored" : "") << "\n";
-  dbg << " guidDenyReadFileVersion:           " << obj.guidDenyReadFileVersion
-      << (obj.isGuidDenyReadFileVersionValid() ? "" : " INVALID")
-      << (obj.isGuidDenyReadFileVersionIgnored() ? " ignored" : "") << "\n";
-  dbg << " grfDebugLogFlags:                  " << obj.grfDebugLogFlags
-      << (obj.isGrfDebugLogFlagsValid() ? "" : " INVALID")
-      << (obj.isGrfDebugLogFlagsIgnored() ? " ignored" : "") << "\n";
-  dbg << " fcrDebugLog:                       " << obj.fcrDebugLog
-      << (obj.isFcrDebugLogValid() ? "" : " INVALID")
-      << (obj.isFcrDebugLogIgnored() ? " ignored" : "") << "\n";
+      << cbFreeSpaceInFreeChunkList
+      << (isCbFreeSpaceInFreeChunkListValid() ? "" : " INVALID")
+      << (isCbFreeSpaceInFreeChunkListIgnored() ? " ignored" : "") << "\n";
+  dbg << " guidFileVersion:                   " << guidFileVersion
+      << (isGuidFileVersionValid() ? "" : " INVALID")
+      << (isGuidFileVersionIgnored() ? " ignored" : "") << "\n";
+  dbg << " nFileVersionGeneration:            " << nFileVersionGeneration
+      << (isNFileVersionGenerationValid() ? "" : " INVALID")
+      << (isNFileVersionGenerationIgnored() ? " ignored" : "") << "\n";
+  dbg << " guidDenyReadFileVersion:           " << guidDenyReadFileVersion
+      << (isGuidDenyReadFileVersionValid() ? "" : " INVALID")
+      << (isGuidDenyReadFileVersionIgnored() ? " ignored" : "") << "\n";
+  dbg << " grfDebugLogFlags:                  " << grfDebugLogFlags
+      << (isGrfDebugLogFlagsValid() ? "" : " INVALID")
+      << (isGrfDebugLogFlagsIgnored() ? " ignored" : "") << "\n";
+  dbg << " fcrDebugLog:                       " << fcrDebugLog
+      << (isFcrDebugLogValid() ? "" : " INVALID")
+      << (isFcrDebugLogIgnored() ? " ignored" : "") << "\n";
   dbg << " fcrAllocVerificationFreeChunkList: "
-      << obj.fcrAllocVerificationFreeChunkList
-      << (obj.isFcrAllocVerificationFreeChunkListValid() ? "" : " INVALID")
-      << (obj.isFcrAllocVerificationFreeChunkListIgnored() ? " ignored" : "")
+      << fcrAllocVerificationFreeChunkList
+      << (isFcrAllocVerificationFreeChunkListValid() ? "" : " INVALID")
+      << (isFcrAllocVerificationFreeChunkListIgnored() ? " ignored" : "")
       << "\n";
   dbg << " bnCreated:                         "
-      << qStringHex(obj.bnCreated, sizeof(obj.bnCreated) * 2)
-      << (obj.isBnCreatedValid() ? "" : " INVALID")
-      << (obj.isBnCreatedIgnored() ? " ignored" : "") << "\n";
+      << qStringHex(bnCreated, sizeof(bnCreated) * 2)
+      << (isBnCreatedValid() ? "" : " INVALID")
+      << (isBnCreatedIgnored() ? " ignored" : "") << "\n";
   dbg << " bnLastWroteToThisFile:             "
-      << qStringHex(obj.bnLastWroteToThisFile,
-                    sizeof(obj.bnLastWroteToThisFile) * 2)
-      << (obj.isBnLastWroteToThisFileValid() ? "" : " INVALID")
-      << (obj.isBnLastWroteToThisFileIgnored() ? " ignored" : "") << "\n";
+      << qStringHex(bnLastWroteToThisFile,
+                    sizeof(bnLastWroteToThisFile) * 2)
+      << (isBnLastWroteToThisFileValid() ? "" : " INVALID")
+      << (isBnLastWroteToThisFileIgnored() ? " ignored" : "") << "\n";
   dbg << " bnOldestWritten:                   "
-      << qStringHex(obj.bnOldestWritten, sizeof(obj.bnOldestWritten) * 2)
-      << (obj.isBnOldestWrittenValid() ? "" : " INVALID")
-      << (obj.isBnOldestWrittenIgnored() ? " ignored" : "") << "\n";
+      << qStringHex(bnOldestWritten, sizeof(bnOldestWritten) * 2)
+      << (isBnOldestWrittenValid() ? "" : " INVALID")
+      << (isBnOldestWrittenIgnored() ? " ignored" : "") << "\n";
   dbg << " bnNewestWritten:                   "
-      << qStringHex(obj.bnNewestWritten, sizeof(obj.bnNewestWritten) * 2)
-      << (obj.isBnNewestWrittenValid() ? "" : " INVALID")
-      << (obj.isBnNewestWrittenIgnored() ? " ignored" : "") << "\n";
-  dbg << " reservedHeaderTailLength:          " << obj.reservedHeaderTailLength
-      << (obj.isReservedHeaderTailValid() ? "" : " INVALID")
-      << (obj.isReservedHeaderTailIgnored() ? " ignored" : "") << "\n";
+      << qStringHex(bnNewestWritten, sizeof(bnNewestWritten) * 2)
+      << (isBnNewestWrittenValid() ? "" : " INVALID")
+      << (isBnNewestWrittenIgnored() ? " ignored" : "") << "\n";
+  dbg << " reservedHeaderTailLength:          " << reservedHeaderTailLength
+      << (isReservedHeaderTailValid() ? "" : " INVALID")
+      << (isReservedHeaderTailIgnored() ? " ignored" : "") << "\n";
   dbg << "++++++++++++++++++MSONHeader+++++++++++++++++++++++\n\n";
-  return dbg;
 }
 
 QUuid MSONHeader::getGuidFileType() const { return guidFileType; }

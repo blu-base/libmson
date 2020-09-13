@@ -29,7 +29,7 @@ void FreeChunkListFragment::serialize(QDataStream &ds) const {
   }
 }
 
-void FreeChunkListFragment::toDebugString(QDebug dbg) const {
+void FreeChunkListFragment::toDebugString(QDebug &dbg) const {
   dbg.noquote() << "FreeChunkListFragment:  size: "
                 << QString("0x%1").arg(m_size, 16, 16, QLatin1Char('0')) << '\n'
                 << " fcrNextChunk: " << fcrNextChunk << '\n';
@@ -41,11 +41,6 @@ void FreeChunkListFragment::toDebugString(QDebug dbg) const {
 
 FreeChunkListFragment::FreeChunkListFragment(quint64 size)
     : m_size{size}, crc{} {}
-
-QDebug operator<<(QDebug dbg, const FreeChunkListFragment &obj) {
-  obj.toDebugString(dbg);
-  return dbg;
-}
 
 void FreeChunkListFragment::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
 

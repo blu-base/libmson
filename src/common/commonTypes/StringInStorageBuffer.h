@@ -20,8 +20,6 @@ private:
 public:
   StringInStorageBuffer();
 
-  friend QDebug operator<<(QDebug dbg, const StringInStorageBuffer &obj);
-
   quint32 getCch() const;
   void setCch(const quint32 &value);
 
@@ -48,7 +46,7 @@ private:
    * @brief prints the StringInStorageBuffer to a <QDebug> object
    * @param dbg <QDebug> string builder for the debug information
    */
-  void toDebugString(QDebug dbg) const;
+  virtual void toDebugString(QDebug &dbg) const override;
 };
 
 } // namespace MSONcommon

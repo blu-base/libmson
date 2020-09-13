@@ -1,11 +1,10 @@
 #ifndef TIME32_H
 #define TIME32_H
 
-
 #include <QtCore/qglobal.h>
 
-#include <QDateTime>
 #include <QDataStream>
+#include <QDateTime>
 #include <QDebug>
 #include <QXmlStreamWriter>
 
@@ -13,15 +12,13 @@
 
 namespace MSONcommon {
 
-class Time32: public IRevisionStoreFileObject {
+class Time32 : public IRevisionStoreFileObject {
 private:
   QDateTime m_time;
 
 public:
   Time32();
   Time32(const QDateTime time);
-
-  friend QDebug operator<<(QDebug dbg, const Time32 &obj);
 
   QDateTime getTime() const;
   void setTime(const QDateTime time);
@@ -30,9 +27,9 @@ private:
   virtual void deserialize(QDataStream &ds) override;
   virtual void serialize(QDataStream &ds) const override;
 
-    virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
+  virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
 
-  void toDebugString(QDebug dbg) const;
+  virtual void toDebugString(QDebug &dbg) const override;
 
   static const quint64 utcoffset = 315576000;
 };

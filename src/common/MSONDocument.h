@@ -58,8 +58,6 @@ public:
   MSONDocument();
   ~MSONDocument() = default;
 
-  friend QDebug operator<<(QDebug dbg, const MSONDocument &obj);
-
   QMap<quint32, quint32> &fileNodeCountMapping();
   QMap<quint32, quint32> getFileNodeCountMapping() const;
   void setFileNodeCountMapping(const QMap<quint32, quint32> &value);
@@ -94,10 +92,12 @@ public:
       const std::vector<std::shared_ptr<FileNodeListFragment>> &fileNodeList);
 
 private:
-  virtual void deserialize(QDataStream& ds) override;
-  virtual void serialize(QDataStream& ds) const override;
+  virtual void deserialize(QDataStream &ds) override;
+  virtual void serialize(QDataStream &ds) const override;
 
   virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
+
+  virtual void toDebugString(QDebug &dbg) const override;
 };
 
 } // namespace MSONcommon

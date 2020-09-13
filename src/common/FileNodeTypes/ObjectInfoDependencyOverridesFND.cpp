@@ -68,7 +68,7 @@ void ObjectInfoDependencyOverridesFND::serialize(QDataStream &ds) const {
   }
 }
 
-void ObjectInfoDependencyOverridesFND::toDebugString(QDebug dbg) const {
+void ObjectInfoDependencyOverridesFND::toDebugString(QDebug &dbg) const {
   dbg << " ObjectInfoDependencyOverridesFND:\n"
       << " ref: " << m_ref << "data: " << m_data << '\n';
 }

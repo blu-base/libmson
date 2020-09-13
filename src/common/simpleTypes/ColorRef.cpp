@@ -18,11 +18,6 @@ bool ColorRef::isSpecifiesColor() const { return (m_colorVal >> 6) == 0xFF; }
 
 quint32 ColorRef::getColorRef() const { return m_colorVal; }
 
-QDebug operator<<(QDebug dbg, const ColorRef &obj) {
-  obj.toDebugString(dbg);
-  return dbg;
-}
-
 void ColorRef::deserialize(QDataStream &ds) {
   ds.setByteOrder(QDataStream::LittleEndian);
   ds >> m_colorVal;
@@ -30,7 +25,7 @@ void ColorRef::deserialize(QDataStream &ds) {
 
 void ColorRef::serialize(QDataStream &ds) const { ds << m_colorVal; }
 
-void ColorRef::toDebugString(QDebug dbg) const {
+void ColorRef::toDebugString(QDebug &dbg) const {
   dbg << "ColorRef:\n" << qStringHex(m_colorVal, 8);
 }
 

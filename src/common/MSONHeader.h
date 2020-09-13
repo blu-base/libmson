@@ -68,13 +68,13 @@ private:
 public:
   MSONHeader();
 
-  friend QDebug operator<<(QDebug dbg, const MSONHeader &obj);
-
 private:
   virtual void deserialize(QDataStream &ds) override;
   virtual void serialize(QDataStream &ds) const override;
 
   virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
+
+  virtual void toDebugString(QDebug &dbg) const override;
 
 public:
   QUuid getGuidFileType() const;

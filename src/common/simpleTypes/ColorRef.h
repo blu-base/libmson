@@ -18,10 +18,6 @@ public:
   ColorRef();
   ColorRef(const quint32 colorVal);
 
-  friend QDebug operator<<(QDebug dbg, const ColorRef &obj);
-
-
-
   bool isSpecifiesColor() const;
 
   quint32 getColorRef() const;
@@ -32,7 +28,7 @@ private:
 
   virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
 
-  void toDebugString(QDebug dbg) const;
+  virtual void toDebugString(QDebug &dbg) const override;
 };
 
 } // namespace MSONcommon

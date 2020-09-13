@@ -29,11 +29,6 @@ void ObjectDeclarationWithRefCountBody::writeLowLevelXml(
   xmlWriter.writeEndElement();
 }
 
-QDebug operator<<(QDebug dbg, const ObjectDeclarationWithRefCountBody &obj) {
-  obj.toDebugString(dbg);
-  return dbg;
-}
-
 void ObjectDeclarationWithRefCountBody::deserialize(QDataStream &ds) {
   ds >> m_oid;
   quint32 temp;
@@ -61,7 +56,7 @@ void ObjectDeclarationWithRefCountBody::serialize(QDataStream &ds) const {
   ds << temp;
 }
 
-void ObjectDeclarationWithRefCountBody::toDebugString(QDebug dbg) const {
+void ObjectDeclarationWithRefCountBody::toDebugString(QDebug &dbg) const {
   dbg << "ObjectDeclarationWithRefCountBody:\n"
       << "oid: " << m_oid << '\n'
       << "jci: " << m_jci << '\n'

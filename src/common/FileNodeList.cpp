@@ -32,17 +32,16 @@ void MSONcommon::FileNodeList::deserialize(QDataStream &ds) {
   }
 }
 
-QDebug operator<<(QDebug dbg, const FileNodeList &obj) {
+void FileNodeList::toDebugString(QDebug &dbg) const {
   QDebugStateSaver saver(dbg);
-  dbg.nospace() << obj.m_fileNodeListHeader << '\n';
+  dbg.nospace() << m_fileNodeListHeader << '\n';
 
-  for (size_t i{0}; i < obj.getChildren().size(); i++) {
-    dbg.nospace() << *obj.getChildren().at(i) << '\n';
+  for (size_t i{0}; i < getChildren().size(); i++) {
+    dbg.nospace() << *getChildren().at(i) << '\n';
   }
 
-  //  dbg.nospace() << *obj.getChildren().at(0) << '\n';
+  //  dbg.nospace() << *getChildren().at(0) << '\n';
 
-  return dbg;
 }
 
 FileNodeListHeader FileNodeList::getFileNodeListHeader() const {

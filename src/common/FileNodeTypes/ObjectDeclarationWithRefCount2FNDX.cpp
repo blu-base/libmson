@@ -73,7 +73,7 @@ void ObjectDeclarationWithRefCount2FNDX::serialize(QDataStream &ds) const {
   ds << m_cRef;
 }
 
-void ObjectDeclarationWithRefCount2FNDX::toDebugString(QDebug dbg) const {
+void ObjectDeclarationWithRefCount2FNDX::toDebugString(QDebug &dbg) const {
   dbg << " ObjectDeclarationWithRefCount2FNDX:\n"
       << " objectRef: " << m_objectRef << '\n'
       << " body: " << m_body << '\n'

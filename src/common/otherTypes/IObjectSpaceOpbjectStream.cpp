@@ -131,7 +131,7 @@ void IObjectSpaceOpbjectStream::serialize(QDataStream &ds) const {
   }
 }
 
-void IObjectSpaceOpbjectStream::toDebugString(QDebug dbg) const {
+void IObjectSpaceOpbjectStream::toDebugString(QDebug &dbg) const {
 
   dbg << "ObjectSpaceOpbjectStream:\n";
   dbg << m_header;
@@ -139,11 +139,6 @@ void IObjectSpaceOpbjectStream::toDebugString(QDebug dbg) const {
   for (quint32 i(0); i < m_body.size(); i++) {
     dbg << m_body[i];
   }
-}
-
-QDebug operator<<(QDebug dbg, const IObjectSpaceOpbjectStream &obj) {
-  obj.toDebugString(dbg);
-  return dbg;
 }
 
 } // namespace MSONcommon

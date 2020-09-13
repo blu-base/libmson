@@ -36,8 +36,6 @@ private:
 public:
   PropertySet();
 
-  friend QDebug operator<<(QDebug dbg, const PropertySet &obj);
-
   quint16 cProperties() const;
   void setCProperties(const quint16 &cProperties);
 
@@ -53,7 +51,7 @@ private:
 
   virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
 
-  void toDebugString(QDebug dbg) const;
+  virtual void toDebugString(QDebug &dbg) const override;
 };
 
 } // namespace MSONcommon

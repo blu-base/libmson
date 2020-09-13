@@ -17,8 +17,6 @@ private:
 public:
   BodyTextAlignment();
 
-  friend QDebug operator<<(QDebug dbg, const BodyTextAlignment &obj);
-
   quint32 value() const;
   void setValue(const quint32 val);
 
@@ -28,7 +26,7 @@ private:
 
   virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
 
-  void toDebugString(QDebug dbg) const;
+  virtual void toDebugString(QDebug &dbg) const override;
 };
 
 } // namespace MSONcommon

@@ -31,8 +31,6 @@ public:
   ObjectSpaceObjectPropSet();
   ObjectSpaceObjectPropSet(QDataStream &ds, const FileNodeChunkReference &ref);
 
-  friend QDebug operator<<(QDebug dbg, const ObjectSpaceObjectPropSet &obj);
-
   ObjectSpaceObjectStreamOfOIDs OIDs() const;
   void setOIDs(const ObjectSpaceObjectStreamOfOIDs &OIDs);
 
@@ -68,7 +66,7 @@ private:
    * @brief prints the ObjectSpaceObjectPropSet to a <QDebug> object
    * @param dbg <QDebug> string builder for the debug information
    */
-  void toDebugString(QDebug dbg) const;
+  virtual void toDebugString(QDebug &dbg) const override;
 };
 
 } // namespace MSONcommon

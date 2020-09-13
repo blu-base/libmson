@@ -23,7 +23,7 @@ void prtFourBytesOfLengthFollowedByData::serialize(QDataStream &ds) const {
   ds << m_Data;
 }
 
-void prtFourBytesOfLengthFollowedByData::toDebugString(QDebug dbg) const {
+void prtFourBytesOfLengthFollowedByData::toDebugString(QDebug &dbg) const {
   dbg << "prtFourBytesOfLengthFollowedByData: size: " << m_cb << '\n';
 }
 

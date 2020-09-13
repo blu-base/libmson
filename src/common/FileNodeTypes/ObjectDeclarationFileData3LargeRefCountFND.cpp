@@ -65,7 +65,7 @@ void ObjectDeclarationFileData3LargeRefCountFND::serialize(
 }
 
 void ObjectDeclarationFileData3LargeRefCountFND::toDebugString(
-    QDebug dbg) const {
+    QDebug &dbg) const {
   dbg << " ObjectDeclarationFileData3LargeRefCountFND\n"
       << " oid: " << m_oid << '\n'
       << " jcid: " << m_jcid << '\n'

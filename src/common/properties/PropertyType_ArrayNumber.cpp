@@ -19,7 +19,7 @@ void PropertyType_ArrayNumber::serialize(QDataStream &ds) const {
   ds << m_cCIDs;
 }
 
-void PropertyType_ArrayNumber::toDebugString(QDebug dbg) const {}
+void PropertyType_ArrayNumber::toDebugString(QDebug &dbg) const {}
 
 void PropertyType_ArrayNumber::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
 

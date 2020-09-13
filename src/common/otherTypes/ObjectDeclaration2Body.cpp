@@ -24,11 +24,6 @@ void ObjectDeclaration2Body::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const
   xmlWriter.writeEndElement();
 }
 
-QDebug operator<<(QDebug dbg, const ObjectDeclaration2Body &obj) {
-  obj.toDebugString(dbg);
-  return dbg;
-}
-
 void ObjectDeclaration2Body::deserialize(QDataStream &ds) {
   ds >> m_oid;
   ds >> m_jcid;
@@ -49,7 +44,7 @@ void ObjectDeclaration2Body::serialize(QDataStream &ds) const {
   ds << temp;
 }
 
-void ObjectDeclaration2Body::toDebugString(QDebug dbg) const {
+void ObjectDeclaration2Body::toDebugString(QDebug &dbg) const {
   dbg << "  ObjectDeclaration2Body:"
       << " HasOid: " << m_fHasOidReferences
       << " HasOsid: " << m_fHasOsidReferences << '\n'

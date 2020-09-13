@@ -20,8 +20,6 @@ public:
   FileTime();
   FileTime(const QDateTime time);
 
-  friend QDebug operator<<(QDebug dbg, const FileTime &obj);
-
   QDateTime getTime() const;
   void setTime(const QDateTime time);
 
@@ -31,7 +29,7 @@ private:
 
   virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
 
-  void toDebugString(QDebug dbg) const;
+  virtual void toDebugString(QDebug &dbg) const override;
 
   /// \todo figure out a way to make this a const value
   static QDateTime origin() {

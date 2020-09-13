@@ -21,7 +21,7 @@ void GlobalIdTableEntryFNDX::serialize(QDataStream &ds) const {
   ds << m_guid;
 }
 
-void GlobalIdTableEntryFNDX::toDebugString(QDebug dbg) const {
+void GlobalIdTableEntryFNDX::toDebugString(QDebug &dbg) const {
   dbg << " GlobalIdTableEntryFNDX: \n"
       << " Index: " << m_index << '\n'
       << " GUID:  " << m_guid << '\n';

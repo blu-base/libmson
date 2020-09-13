@@ -10,11 +10,6 @@ namespace MSONcommon {
 FileDataStoreObject::FileDataStoreObject()
     : m_cbLength(), m_unused(), m_reserved(), m_padding() {}
 
-QDebug operator<<(QDebug dbg, const FileDataStoreObject &obj) {
-  obj.toDebugString(dbg);
-  return dbg;
-}
-
 QUuid FileDataStoreObject::guidHeader() const { return m_guidHeader; }
 
 void FileDataStoreObject::setGuidHeader(const QUuid &guidHeader) {
@@ -90,7 +85,7 @@ void FileDataStoreObject::serialize(QDataStream &ds) const {
   ds << m_guidFooter;
 }
 
-void FileDataStoreObject::toDebugString(QDebug dbg) const {
+void FileDataStoreObject::toDebugString(QDebug &dbg) const {
   dbg << "FileDataStoreObject: size: " << qStringHex(m_cbLength, 16) << '\n'
       << "guidHeader: " << m_guidHeader << '\n'
       << "guidFooter: " << m_guidFooter << '\n';

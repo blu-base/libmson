@@ -245,21 +245,18 @@ void MSONcommon::FileNode::deserialize(QDataStream &ds) {
   }
 }
 
-QDebug operator<<(QDebug dbg, const FileNode &obj) {
-  QDebugStateSaver saver(dbg);
+void FileNode::toDebugString(QDebug &dbg) const {
+  dbg.noquote() << "FileNode. ID: " << qStringHex(fileNodeID, 3)
+                << " Size: " << qStringHex(fileNodeSize, 4)
+                << " Stp/Cb format: " << stpFormat << "/" << cbFormat
+                << " BaseType: " << baseType << '\n';
 
-  dbg.noquote() << "FileNode. ID: " << qStringHex(obj.fileNodeID, 3)
-                << " Size: " << qStringHex(obj.fileNodeSize, 4)
-                << " Stp/Cb format: " << obj.stpFormat << "/" << obj.cbFormat
-                << " BaseType: " << obj.baseType << '\n';
 
-  if (obj.fnt != nullptr) {
-    dbg << *obj.fnt;
+  if (fnt != nullptr) {
+    dbg << *fnt;
   } else {
     dbg << "FileNodeType is not declared.\n";
   }
-
-  return dbg;
 }
 
 quint16 FileNode::getFileNodeID() const { return fileNodeID; }

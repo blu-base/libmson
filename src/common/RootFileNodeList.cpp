@@ -23,12 +23,6 @@ void RootFileNodeList::setFileDataStoreListReference(
   m_fileDataStoreListReference = value;
 }
 
-QDebug operator<<(QDebug dbg, const RootFileNodeList &obj) {
-  obj.toDebugString(dbg);
-
-  return dbg;
-}
-
 void RootFileNodeList::deserialize(QDataStream &ds) {
   qInfo() << "Parsing RootFileNodeList";
 
@@ -94,7 +88,7 @@ void RootFileNodeList::serialize(QDataStream& ds) const
 
 //}
 
-void RootFileNodeList::toDebugString(QDebug dbg) const {
+void RootFileNodeList::toDebugString(QDebug &dbg) const {
   dbg << "=========================================================\n";
   dbg << "RootFileNodeList\n"
       << "------------------\n";
@@ -231,3 +225,4 @@ void RootFileNodeList::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeEndElement();
 }
 } // namespace MSONcommon
+

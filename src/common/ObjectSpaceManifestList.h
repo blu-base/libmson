@@ -49,8 +49,6 @@ public:
   FileNodeChunkReference getRef() const;
   void setRef(const FileNodeChunkReference &ref);
 
-  friend QDebug operator<<(QDebug dbg, const ObjectSpaceManifestList &obj);
-
 private:
   /**
    * @brief creates ObjectSpaceManifestList from QDataStream
@@ -71,7 +69,7 @@ private:
    * @brief prints the ObjectSpaceManifestList to a <QDebug> object
    * @param dbg <QDebug> string builder for the debug information
    */
-  void toDebugString(QDebug dbg) const;
+  virtual void toDebugString(QDebug &dbg) const override;
 };
 
 } // namespace MSONcommon

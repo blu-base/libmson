@@ -5,11 +5,6 @@
 
 namespace MSONcommon {
 
-QDebug operator<<(QDebug dbg, const ObjectInfoDependencyOverride32 &obj) {
-  obj.toDebugString(dbg);
-  return dbg;
-}
-
 CompactID ObjectInfoDependencyOverride32::oid() const { return m_oid; }
 
 void ObjectInfoDependencyOverride32::setOid(const CompactID &oid) {
@@ -41,7 +36,7 @@ void ObjectInfoDependencyOverride32::serialize(QDataStream &ds) const {
   ds << m_cRef;
 }
 
-void ObjectInfoDependencyOverride32::toDebugString(QDebug dbg) const {
+void ObjectInfoDependencyOverride32::toDebugString(QDebug &dbg) const {
   dbg << "ObjectInfoDependencyOverride32:\n"
       << "oid:  " << m_oid << '\n'
       << "cRef: " << m_cRef << '\n';

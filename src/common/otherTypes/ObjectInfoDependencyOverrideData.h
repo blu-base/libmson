@@ -42,9 +42,6 @@ private:
 public:
   ObjectInfoDependencyOverrideData();
 
-  friend QDebug operator<<(QDebug dbg,
-                           const ObjectInfoDependencyOverrideData &obj);
-
   quint32 c8BitOverrides() const;
   void setC8BitOverrides(const quint32 &c8BitOverrides);
 
@@ -87,7 +84,7 @@ private:
    * @brief prints the ObjectInfoDependencyOverrideData to a <QDebug> object
    * @param dbg <QDebug> string builder for the debug information
    */
-  void toDebugString(QDebug dbg) const;
+  virtual void toDebugString(QDebug &dbg) const override;
 };
 
 } // namespace MSONcommon

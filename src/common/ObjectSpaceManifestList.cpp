@@ -50,11 +50,6 @@ void ObjectSpaceManifestList::writeLowLevelXml(
   xmlWriter.writeEndElement();
 }
 
-QDebug operator<<(QDebug dbg, const ObjectSpaceManifestList &obj) {
-  obj.toDebugString(dbg);
-  return dbg;
-}
-
 void ObjectSpaceManifestList::deserialize(QDataStream &ds) {
   qInfo() << "Parsing ObjectSpaceManifestList";
   m_fileNodeListFragments = parseFileNodeListFragments(ds, m_ref);
@@ -112,7 +107,7 @@ void ObjectSpaceManifestList::deserialize(QDataStream &ds) {
 
 void ObjectSpaceManifestList::serialize(QDataStream &ds) const {}
 
-void ObjectSpaceManifestList::toDebugString(QDebug dbg) const {
+void ObjectSpaceManifestList::toDebugString(QDebug &dbg) const {
   dbg << " ObjectSpaceManifestList:\n"
       << " fileNodeListFragments:\n";
 

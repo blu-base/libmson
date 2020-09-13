@@ -14,11 +14,6 @@ ObjectSpaceObjectPropSet::ObjectSpaceObjectPropSet(
   ds.device()->seek(currentLocation);
 }
 
-QDebug operator<<(QDebug dbg, const ObjectSpaceObjectPropSet &obj) {
-  obj.toDebugString(dbg);
-  return dbg;
-}
-
 ObjectSpaceObjectStreamOfOIDs ObjectSpaceObjectPropSet::OIDs() const {
   return m_OIDs;
 }
@@ -115,7 +110,7 @@ void ObjectSpaceObjectPropSet::serialize(QDataStream &ds) const {
   ds << padding.append('\0', m_paddingLength);
 }
 
-void ObjectSpaceObjectPropSet::toDebugString(QDebug dbg) const {
+void ObjectSpaceObjectPropSet::toDebugString(QDebug &dbg) const {
   dbg << "ObjectSpaceObjectPropSet:\n";
   dbg << m_OIDs;
 

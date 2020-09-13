@@ -26,7 +26,7 @@ void RevisionManifestListReferenceFND::serialize(QDataStream &ds) const {
   ds << m_ref;
 }
 
-void RevisionManifestListReferenceFND::toDebugString(QDebug dbg) const {
+void RevisionManifestListReferenceFND::toDebugString(QDebug &dbg) const {
   dbg << " RevisionManifestListReferenceFND:\n"
       << " ref: " << m_ref << '\n';
 }

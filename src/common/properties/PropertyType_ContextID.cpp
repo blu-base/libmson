@@ -15,7 +15,7 @@ void PropertyType_ContextID::deserialize(QDataStream &ds) { ds >> m_data; }
 
 void PropertyType_ContextID::serialize(QDataStream &ds) const { ds << m_data; }
 
-void PropertyType_ContextID::toDebugString(QDebug dbg) const {}
+void PropertyType_ContextID::toDebugString(QDebug &dbg) const {}
 
 
 void PropertyType_ContextID::writeLowLevelXml(QXmlStreamWriter& xmlWriter) const

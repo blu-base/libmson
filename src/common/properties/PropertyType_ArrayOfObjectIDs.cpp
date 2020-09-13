@@ -40,7 +40,7 @@ void PropertyType_ArrayOfObjectIDs::serialize(QDataStream &ds) const {
   }
 }
 
-void PropertyType_ArrayOfObjectIDs::toDebugString(QDebug dbg) const {}
+void PropertyType_ArrayOfObjectIDs::toDebugString(QDebug &dbg) const {}
 
 
 void PropertyType_ArrayOfObjectIDs::generateXml(QXmlStreamWriter& xmlWriter) const

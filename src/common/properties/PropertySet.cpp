@@ -135,7 +135,7 @@ void PropertySet::serialize(QDataStream &ds) const {
   }
 }
 
-void PropertySet::toDebugString(QDebug dbg) const {}
+void PropertySet::toDebugString(QDebug &dbg) const {}
 
 PropertySet::PropertySet() : m_cProperties{} {}
 
@@ -1365,13 +1365,6 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   //  xmlWriter.writeEndElement();
 
   xmlWriter.writeEndElement();
-}
-
-
-
-QDebug operator<<(QDebug dbg, const PropertySet &obj) {
-  obj.toDebugString(dbg);
-  return dbg;
 }
 
 } // namespace MSONcommon

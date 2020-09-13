@@ -18,7 +18,7 @@ void RevisionManifestStart7FND::serialize(QDataStream &ds) const {
   ds << m_gctxid;
 }
 
-void RevisionManifestStart7FND::toDebugString(QDebug dbg) const {
+void RevisionManifestStart7FND::toDebugString(QDebug &dbg) const {
   dbg << " RevisionManifestStart7FND:\n"
       << " base: " << m_base << "\n gctxid: " << m_gctxid << '\n';
 }

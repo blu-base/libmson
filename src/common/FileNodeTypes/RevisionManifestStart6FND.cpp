@@ -48,7 +48,7 @@ void RevisionManifestStart6FND::serialize(QDataStream &ds) const {
   ds << m_odcsDefault;
 }
 
-void RevisionManifestStart6FND::toDebugString(QDebug dbg) const {
+void RevisionManifestStart6FND::toDebugString(QDebug &dbg) const {
   dbg << " RevisionManifestStart6FND:\n"
       << " rid:          " << m_rid << '\n'
       << " ridDependent: " << m_ridDependent << '\n'

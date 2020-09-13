@@ -16,11 +16,6 @@ void Time32::setTime(const QDateTime time) {
   m_time.setOffsetFromUtc(utcoffset);
 }
 
-QDebug operator<<(QDebug dbg, const Time32 &obj) {
-  obj.toDebugString(dbg);
-  return dbg;
-}
-
 void Time32::deserialize(QDataStream &ds) {
   quint32 time32;
   ds >> time32;
@@ -39,6 +34,6 @@ void Time32::writeLowLevelXml(QXmlStreamWriter& xmlWriter) const
   xmlWriter.writeEndElement();
 }
 
-void Time32::toDebugString(QDebug dbg) const { dbg << "Time32:\n" << m_time; }
+void Time32::toDebugString(QDebug &dbg) const { dbg << "Time32:\n" << m_time; }
 
 } // namespace MSONcommon

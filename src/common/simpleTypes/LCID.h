@@ -477,8 +477,6 @@ class LCID : public IRevisionStoreFileObject {
 public:
   LCID();
 
-  friend QDebug operator<<(QDebug dbg, const LCID &obj);
-
   QString toString() const;
 
   void setLCID(const LanguageID lid);
@@ -490,7 +488,7 @@ private:
 
   virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
 
-  void toDebugString(QDebug dbg) const;
+  virtual void toDebugString(QDebug &dbg) const override;
 };
 
 } // namespace MSONcommon

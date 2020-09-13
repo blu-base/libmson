@@ -48,7 +48,7 @@ private:
 
   virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
 
-  virtual void toDebugString(QDebug dbg) const override;
+  virtual void toDebugString(QDebug &dbg) const override;
 
   FNCR_STP_FORMAT m_stpFormat;
   FNCR_CB_FORMAT m_cbFormat;

@@ -52,7 +52,7 @@ void HashedChunkDescriptor2FND::serialize(QDataStream &ds) const {
   ds << m_guidHash;
 }
 
-void HashedChunkDescriptor2FND::toDebugString(QDebug dbg) const {
+void HashedChunkDescriptor2FND::toDebugString(QDebug &dbg) const {
   dbg << " HashedChunkDescriptor2FND\n"
       << " m_BlobRef:" << m_BlobRef << '\n'
       << " m_guidHash: " << m_guidHash.toHex() << '\n';

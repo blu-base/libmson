@@ -41,7 +41,7 @@ void GlobalIdTableEntry3FNDX::serialize(QDataStream &ds) const {
   ds << m_iIndexCopyToStart;
 }
 
-void GlobalIdTableEntry3FNDX::toDebugString(QDebug dbg) const {
+void GlobalIdTableEntry3FNDX::toDebugString(QDebug &dbg) const {
   dbg << " GlobalIdTableEntry3FNDX: \n"
       << " iIndexCopyFromStart: " << m_iIndexCopyFromStart << '\n'
       << " cEntriesToCopy:      " << m_cEntriesToCopy << '\n'

@@ -38,8 +38,6 @@ public:
   void removeFileNode(const quint32 &position);
   void removeFileNodeByID(const quint16 FileNodeID);
 
-  friend QDebug operator<<(QDebug dbg, const FileNodeList &obj);
-
   FileNodeListHeader getFileNodeListHeader() const;
   void setFileNodeListHeader(const FileNodeListHeader &value);
 
@@ -57,6 +55,8 @@ private:
   virtual void serialize(QDataStream &ds) const override;
 
   virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
+
+  virtual void toDebugString(QDebug &dbg) const override;
 };
 
 } // namespace MSONcommon

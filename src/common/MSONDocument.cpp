@@ -213,68 +213,67 @@ void MSONDocument::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeEndDocument();
 }
 
-QDebug operator<<(QDebug dbg, const MSONDocument &obj) {
+void MSONDocument::toDebugString(QDebug &dbg) const {
 
   QDebugStateSaver saver(dbg);
   dbg.setAutoInsertSpaces(false);
 
   dbg << "MSON Document\n"
-      << *obj.m_header;
+      << *m_header;
 
   dbg << "FileNodeCountMapping: ";
-  if (obj.FileNodeCountMapping.empty()) {
+  if (FileNodeCountMapping.empty()) {
     dbg << "none mapped\n";
   } else {
     dbg << '\n';
-    for (const auto& key : obj.FileNodeCountMapping) {
-      dbg << qStringHex(key, 8) << ", " << obj.FileNodeCountMapping[key]
+    for (const auto& key : FileNodeCountMapping) {
+      dbg << qStringHex(key, 8) << ", " << FileNodeCountMapping[key]
           << '\n';
     }
   }
 
   dbg << "FreeChunkList: ";
-  if (obj.m_freeChunkList.empty()) {
+  if (m_freeChunkList.empty()) {
     dbg << "no free chunks\n";
   } else {
     dbg << '\n';
-    for (const auto& key : obj.m_freeChunkList) {
+    for (const auto& key : m_freeChunkList) {
       dbg << *key << '\n';
     }
   }
 
   dbg << "TransactionLog: ";
-  if (obj.m_transactionLog.empty()) {
+  if (m_transactionLog.empty()) {
     dbg << "no transactions\n";
   } else {
     dbg << '\n';
-    for (const auto& entry : obj.m_transactionLog) {
+    for (const auto& entry : m_transactionLog) {
       dbg << *entry << '\n';
     }
   }
 
   dbg << "HashedChunkList: ";
-  if (obj.m_hashedChunkList.empty()) {
+  if (m_hashedChunkList.empty()) {
     dbg << "no hashed chunks\n";
   } else {
     dbg << '\n';
-    for (const auto& entry : obj.m_hashedChunkList) {
+    for (const auto& entry : m_hashedChunkList) {
       dbg << *entry << '\n';
     }
   }
 
-  dbg << *obj.m_rootFileNodeList;
+  dbg << *m_rootFileNodeList;
 
   dbg << "File Node List: ";
-  if (obj.m_fileNodeList.empty()) {
+  if (m_fileNodeList.empty()) {
     dbg << "no file nodes\n";
   } else {
     dbg << '\n';
-    for (const auto& entry : obj.m_fileNodeList) {
+    for (const auto& entry : m_fileNodeList) {
       dbg << *entry << '\n';
     }
   }
 
-  return dbg;
 }
 
 } // namespace MSONcommon

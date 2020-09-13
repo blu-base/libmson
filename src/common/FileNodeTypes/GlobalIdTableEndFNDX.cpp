@@ -10,7 +10,7 @@ void GlobalIdTableEndFNDX::serialize(QDataStream& ds) const
 {
 }
 
-void GlobalIdTableEndFNDX::toDebugString(QDebug dbg) const
+void GlobalIdTableEndFNDX::toDebugString(QDebug &dbg) const
 {
 }
 

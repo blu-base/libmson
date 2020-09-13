@@ -25,11 +25,9 @@ void RevisionManifest::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeEndElement();
 }
 
-QDebug operator<<(QDebug dbg, const RevisionManifest &obj) {
-  obj.toDebugString(dbg);
-  return dbg;
-}
+void RevisionManifest::serialize(QDataStream &ds) const {}
+void RevisionManifest::deserialize(QDataStream &ds) {}
 
-void RevisionManifest::toDebugString(QDebug dbg) const {}
+void RevisionManifest::toDebugString(QDebug &dbg) const {}
 
 } // namespace MSONcommon

@@ -18,7 +18,7 @@ void ObjectSpaceManifestRootFND::serialize(QDataStream &ds) const {
   ds << m_gosidRoot;
 }
 
-void ObjectSpaceManifestRootFND::toDebugString(QDebug dbg) const {
+void ObjectSpaceManifestRootFND::toDebugString(QDebug &dbg) const {
   dbg << " ObjectSpaceManifestRootFND:\n"
       << " gosidRoot: " << m_gosidRoot << '\n';
 }

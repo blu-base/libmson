@@ -27,15 +27,13 @@ public:
 
   bool isZero() const;
 
-  friend QDebug operator<<(QDebug dbg, const TransactionEntry &obj);
-
 private:
   virtual void serialize(QDataStream &ds) const override;
   virtual void deserialize(QDataStream &ds) override;
 
-    virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
+  virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
 
-  void toDebugString(QDebug dbg) const;
+  virtual void toDebugString(QDebug &dbg) const override;
 };
 
 } // namespace MSONcommon

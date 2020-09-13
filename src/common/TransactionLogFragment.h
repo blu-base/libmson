@@ -33,8 +33,6 @@ public:
   TransactionLogFragment(quint64 size);
   ~TransactionLogFragment() = default;
 
-  friend QDebug operator<<(QDebug dbg, const TransactionLogFragment &obj);
-
   std::vector<std::shared_ptr<TransactionEntry>> getSizeTable() const;
   void
   setSizeTable(const std::vector<std::shared_ptr<TransactionEntry>> &value);
@@ -48,7 +46,7 @@ private:
 
   virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
 
-  void toDebugString(QDebug dbg) const;
+  virtual void toDebugString(QDebug &dbg) const override;
 };
 
 } // namespace MSONcommon

@@ -70,7 +70,7 @@ void ObjectDataEncryptionKeyV2FNDX::serialize(QDataStream &ds) const {
   ds << m_ref;
 }
 
-void ObjectDataEncryptionKeyV2FNDX::toDebugString(QDebug dbg) const {
+void ObjectDataEncryptionKeyV2FNDX::toDebugString(QDebug &dbg) const {
   dbg << " ObjectDataEncryptionKeyV2FNDX:\n"
       << " Ref: " << m_ref << '\n';
 }

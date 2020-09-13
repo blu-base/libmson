@@ -37,18 +37,6 @@ public:
 
   virtual C cb() const = 0;
   virtual void setCb(const C &cb) = 0;
-
-private:
-  /**
-   * @brief prints the IFileChunkReference to a <QDebug> object
-   * @param dbg <QDebug> string builder for the debug information
-   */
-  virtual void toDebugString(QDebug dbg) const = 0;
-
-  friend QDebug operator<<(QDebug dbg, const IFileChunkReference &obj) {
-    obj.toDebugString(dbg);
-    return dbg;
-  };
 };
 
 } // namespace MSONcommon

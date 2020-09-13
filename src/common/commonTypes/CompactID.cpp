@@ -62,12 +62,8 @@ void CompactID::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeEndElement();
 }
 
-QDebug operator<<(QDebug dbg, const CompactID &obj) {
-  obj.toDebugString(dbg);
-  return dbg;
-}
 
-void CompactID::toDebugString(QDebug dbg) const {
+void CompactID::toDebugString(QDebug &dbg) const {
   QDebugStateSaver saver(dbg);
   dbg.nospace() << "CompactID(" << toString() << ')';
 }

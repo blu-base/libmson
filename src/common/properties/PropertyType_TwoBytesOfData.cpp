@@ -29,6 +29,6 @@ void PropertyType_TwoBytesOfData::serialize(QDataStream &ds) const {
   ds << m_data;
 }
 
-void PropertyType_TwoBytesOfData::toDebugString(QDebug dbg) const {}
+void PropertyType_TwoBytesOfData::toDebugString(QDebug &dbg) const {}
 
 } // namespace MSONcommon

@@ -63,11 +63,6 @@ void ObjectSpaceObjectStreamHeader::writeLowLevelXml(
   xmlWriter.writeEndElement();
 }
 
-QDebug operator<<(QDebug dbg, const ObjectSpaceObjectStreamHeader &obj) {
-  obj.toDebugString(dbg);
-  return dbg;
-}
-
 void ObjectSpaceObjectStreamHeader::deserialize(QDataStream &ds) {
   quint32 composed;
   ds >> composed;
@@ -87,7 +82,7 @@ void ObjectSpaceObjectStreamHeader::serialize(QDataStream &ds) const {
   ds << composed;
 }
 
-void ObjectSpaceObjectStreamHeader::toDebugString(QDebug dbg) const {
+void ObjectSpaceObjectStreamHeader::toDebugString(QDebug &dbg) const {
   dbg << "ObjectSpaceObjectStreamHeader:\n"
       << " count: " << m_count << "\n"
       << "ExtendedStreamsPresent: " << m_ExtendedStreamsPresent << '\n'

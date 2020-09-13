@@ -27,7 +27,7 @@ void RootObjectReference2FNDX::serialize(QDataStream &ds) const {
   ds << m_RootRole;
 }
 
-void RootObjectReference2FNDX::toDebugString(QDebug dbg) const {
+void RootObjectReference2FNDX::toDebugString(QDebug &dbg) const {
   dbg << " RootObjectReference2FNDX:\n"
       << " oidRoot: " << m_oidRoot << '\n'
       << " RootRole: " << m_RootRole << '\n';

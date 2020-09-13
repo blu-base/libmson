@@ -54,7 +54,7 @@ void FileDataStoreObjectReferenceFND::serialize(QDataStream &ds) const {
   ds << m_guidReference;
 }
 
-void FileDataStoreObjectReferenceFND::toDebugString(QDebug dbg) const {
+void FileDataStoreObjectReferenceFND::toDebugString(QDebug &dbg) const {
   dbg << " FileDataStoreObjectReferenceFND:\n"
       << " ref: " << m_ref << '\n'
       << " guidReference: " << m_guidReference << '\n';

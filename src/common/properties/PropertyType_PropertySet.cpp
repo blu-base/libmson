@@ -23,6 +23,6 @@ void PropertyType_PropertySet::serialize(QDataStream &ds) const {
   ds << m_data;
 }
 
-void PropertyType_PropertySet::toDebugString(QDebug dbg) const {}
+void PropertyType_PropertySet::toDebugString(QDebug &dbg) const {}
 
 } // namespace MSONcommon

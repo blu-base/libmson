@@ -181,7 +181,7 @@ void FileNodeListFragment::deserialize(QDataStream &ds) {
 
 void FileNodeListFragment::serialize(QDataStream &ds) const {}
 
-void FileNodeListFragment::toDebugString(QDebug dbg) const {
+void FileNodeListFragment::toDebugString(QDebug &dbg) const {
   dbg << "FileNodeListFragment:\n"
       << "FileNodeListHeader:\n"
       << m_fnlheader;
@@ -218,22 +218,6 @@ FileNodeListFragment::FileNodeListFragment(const FileNodeChunkReference ref)
       m_nextFragment() {
   m_ref.setCb(ref.cb());
   m_ref.setStp(ref.stp());
-}
-
-/**
- * @brief FileNodeListFragment::~FileNodeListFragment
- *
- * \todo deleting next fragment likely breaks the whole list, revise
- */
-FileNodeListFragment::~FileNodeListFragment() {
-  //  for (auto *fn : m_rgFileNodes) {
-  //    delete fn;
-  //  }
-}
-
-QDebug operator<<(QDebug dbg, const FileNodeListFragment &obj) {
-  obj.toDebugString(dbg);
-  return dbg;
 }
 
 } // namespace MSONcommon

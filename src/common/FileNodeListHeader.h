@@ -1,7 +1,6 @@
 #ifndef FILENODELISTHEADER_H
 #define FILENODELISTHEADER_H
 
-
 #include <QDebug>
 #include <QXmlStreamWriter>
 #include <QtCore/qglobal.h>
@@ -22,8 +21,6 @@ public:
 
   bool isValid();
 
-  friend QDebug operator<<(QDebug dbg, const FileNodeListHeader &obj);
-
   static quint64 getUintMagic();
 
   quint32 getFileNodeListID() const;
@@ -38,7 +35,9 @@ private:
   virtual void deserialize(QDataStream &ds) override;
   virtual void serialize(QDataStream &ds) const override;
 
-    virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
+  virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
+
+  virtual void toDebugString(QDebug &dbg) const override;
 };
 
 } // namespace MSONcommon

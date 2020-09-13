@@ -20,8 +20,10 @@ set (MSONcommon_PART_SRCS
 
     common/ISerializable.cpp
     common/IDeserializable.cpp
+    common/IDebugOutputable.cpp
     common/IRevisionStoreFileToXmlable.cpp
-#    common/IRevisionStoreFileObject.h
+
+
 
 common/DocumentManager.cpp
 
@@ -40,7 +42,7 @@ common/DocumentManager.cpp
     common/TransactionLogFragment.cpp
 
 
-#    common/commonTypes/Enums.h
+
     common/commonTypes/CompactID.cpp
     common/commonTypes/ExtendedGUID.cpp
     common/commonTypes/IFileChunkReference.cpp
@@ -51,7 +53,7 @@ common/DocumentManager.cpp
     common/commonTypes/StringInStorageBuffer.cpp
 
 
-    common/FileNodeTypes/IFileNodeType.cpp
+
     common/FileNodeTypes/ObjectSpaceManifestRootFND.cpp
     common/FileNodeTypes/ObjectSpaceManifestListReferenceFND.cpp
     common/FileNodeTypes/ObjectSpaceManifestListStartFND.cpp
@@ -145,6 +147,14 @@ common/DocumentManager.cpp
     common/helper/Helper.cpp
     )
 
+  set (MSONcommon_PART_HEADERS
+    common/commonTypes/Enums.h
+    common/IRevisionStoreFileObject.h
+    common/FileNodeTypes/IFileNodeType.h
+    common/properties/IPropertyType.h
+    common/properties/IProperty.h
+    )
+
 add_library(MSONcommon SHARED ${MSONcommon_PART_SRCS})
 
 target_link_libraries(
@@ -152,6 +162,14 @@ target_link_libraries(
     Qt5::Core
     Qt5::Xml #?
     )
+
+  target_include_directories(
+      MSONcommon PUBLIC
+      # Headers used from source/build location:
+      "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
+      # Headers used from the installed location:
+      "$<INSTALL_INTERFACE:include>"
+  )
 
 install(TARGETS MSONcommon DESTINATION ${PLUGIN_INSTALL_DIR}/)
 

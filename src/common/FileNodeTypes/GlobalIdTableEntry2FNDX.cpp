@@ -30,7 +30,7 @@ void GlobalIdTableEntry2FNDX::serialize(QDataStream &ds) const {
   ds << m_iIndexMapTo;
 }
 
-void GlobalIdTableEntry2FNDX::toDebugString(QDebug dbg) const {
+void GlobalIdTableEntry2FNDX::toDebugString(QDebug &dbg) const {
   dbg << " GlobalIdTableEntry2FNDX: \n"
       << " iIndexMapFrom: " << m_iIndexMapFrom
       << " iIndexMapTo: " << m_iIndexMapTo << '\n';

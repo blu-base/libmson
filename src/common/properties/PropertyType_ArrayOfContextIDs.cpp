@@ -38,7 +38,7 @@ void PropertyType_ArrayOfContextIDs::serialize(QDataStream &ds) const {
   }
 }
 
-void PropertyType_ArrayOfContextIDs::toDebugString(QDebug dbg) const {}
+void PropertyType_ArrayOfContextIDs::toDebugString(QDebug &dbg) const {}
 
 
 void PropertyType_ArrayOfContextIDs::generateXml(QXmlStreamWriter& xmlWriter) const

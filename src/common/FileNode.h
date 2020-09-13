@@ -30,7 +30,7 @@ static constexpr const quint32 FileNode_shiftFileNodeSize = 10;
 static constexpr const quint32 FileNode_shiftFileNodeID = 0;
 
 class FileNode : public IRevisionStoreFileObject {
-protected:
+private:
   // nonessential. position in byte stream. for debug purposes.
   quint64 stp;
 
@@ -57,8 +57,6 @@ public:
   FileNode(const FileNode &source);
 
   ~FileNode();
-
-  friend QDebug operator<<(QDebug dbg, const FileNode &obj);
 
   bool isValid();
 
@@ -88,6 +86,8 @@ private:
   virtual void serialize(QDataStream& ds) const override;
 
   virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
+
+  virtual void toDebugString(QDebug &dbg) const override;
 };
 
 } // namespace MSONcommon

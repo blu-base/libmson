@@ -925,12 +925,6 @@ QString LCID::toString() const {
   }
 }
 
-
-QDebug operator<<(QDebug dbg, const LCID &obj) {
-  obj.toDebugString(dbg);
-  return dbg;
-}
-
 void LCID::deserialize(QDataStream &ds) {
   quint16 lid_value;
   ds >> lid_value;
@@ -952,6 +946,6 @@ void LCID::writeLowLevelXml(QXmlStreamWriter& xmlWriter) const
   xmlWriter.writeEndElement();
 }
 
-void LCID::toDebugString(QDebug dbg) const { dbg << "LCID:\n"; }
+void LCID::toDebugString(QDebug &dbg) const { dbg << "LCID:\n"; }
 
 } // namespace MSONcommon

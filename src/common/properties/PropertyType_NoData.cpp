@@ -14,6 +14,6 @@ void PropertyType_NoData::deserialize(QDataStream &ds) {}
 
 void PropertyType_NoData::serialize(QDataStream &ds) const {}
 
-void PropertyType_NoData::toDebugString(QDebug dbg) const {}
+void PropertyType_NoData::toDebugString(QDebug &dbg) const {}
 
 } // namespace MSONcommon

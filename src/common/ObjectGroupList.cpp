@@ -44,11 +44,6 @@ void ObjectGroupList::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeEndElement();
 }
 
-QDebug operator<<(QDebug dbg, const ObjectGroupList &obj) {
-  obj.toDebugString(dbg);
-  return dbg;
-}
-
 void ObjectGroupList::deserialize(QDataStream &ds) {
 
   m_fileNodeListFragments = parseFileNodeListFragments(ds, m_ref);
@@ -66,7 +61,7 @@ void ObjectGroupList::deserialize(QDataStream &ds) {
 
 void MSONcommon::ObjectGroupList::serialize(QDataStream &ds) const {}
 
-void ObjectGroupList::toDebugString(QDebug dbg) const {}
+void ObjectGroupList::toDebugString(QDebug &dbg) const {}
 
 std::vector<std::shared_ptr<FileNode>>
 ObjectGroupList::getFileNodeSequence() const {

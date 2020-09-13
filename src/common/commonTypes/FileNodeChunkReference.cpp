@@ -263,7 +263,7 @@ void FileNodeChunkReference::serialize(QDataStream &ds) const {
   }
 }
 
-void FileNodeChunkReference::toDebugString(QDebug dbg) const {
+void FileNodeChunkReference::toDebugString(QDebug &dbg) const {
   dbg.noquote();
   dbg << "FileNodeChunkReference(";
   if (is_fcrNil()) {

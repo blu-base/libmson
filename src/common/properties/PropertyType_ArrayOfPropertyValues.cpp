@@ -63,7 +63,7 @@ void PropertyType_ArrayOfPropertyValues::serialize(QDataStream &ds) const {
   }
 }
 
-void PropertyType_ArrayOfPropertyValues::toDebugString(QDebug dbg) const {}
+void PropertyType_ArrayOfPropertyValues::toDebugString(QDebug &dbg) const {}
 
 void PropertyType_ArrayOfPropertyValues::writeLowLevelXml(
     QXmlStreamWriter &xmlWriter) const {

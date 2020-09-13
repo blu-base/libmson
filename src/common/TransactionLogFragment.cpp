@@ -36,18 +36,13 @@ void TransactionLogFragment::serialize(QDataStream &ds) const {
            << qStringHex(ds.device()->pos(), 16);
 }
 
-void TransactionLogFragment::toDebugString(QDebug dbg) const {
+void TransactionLogFragment::toDebugString(QDebug &dbg) const {
   dbg << "TransactionLogFragment: size: "
       << QString("0x%1").arg(m_size, 16, 16, QLatin1Char('0')) << '\n'
       << " nextFragment: " << nextFragment << '\n';
   for (const auto& te : sizeTable) {
     dbg << *te;
   }
-}
-
-QDebug operator<<(QDebug dbg, const TransactionLogFragment &obj) {
-  obj.toDebugString(dbg);
-  return dbg;
 }
 
 void TransactionLogFragment::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {

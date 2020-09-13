@@ -28,7 +28,7 @@ void RevisionRoleDeclarationFND::serialize(QDataStream &ds) const {
   ds << m_RevisionRole;
 }
 
-void RevisionRoleDeclarationFND::toDebugString(QDebug dbg) const {
+void RevisionRoleDeclarationFND::toDebugString(QDebug &dbg) const {
   dbg << " RevisionRoleDeclarationFND:\n"
       << " Rid: " << m_rid << '\n'
       << " RevisionRole: " << m_RevisionRole << '\n';
