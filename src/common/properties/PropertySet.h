@@ -31,7 +31,7 @@ private:
    * @brief vector which contains the data associated to the PropertyIDs in
    * m_rgPrids
    */
-  std::vector<IPropertyType *> m_rgData;
+  std::vector<std::shared_ptr<IPropertyType>> m_rgData;
 
 public:
   PropertySet();
@@ -42,8 +42,8 @@ public:
   std::vector<PropertyID> rgPrids() const;
   void setRgPrids(const std::vector<PropertyID> &rgPrids);
 
-  std::vector<IPropertyType *> rgData() const;
-  void setRgData(const std::vector<IPropertyType *> &rgData);
+ std::vector<std::shared_ptr<IPropertyType>> rgData() const;
+  void setRgData(const std::vector<std::shared_ptr<IPropertyType>> &rgData);
 
 private:
   virtual void deserialize(QDataStream &ds) override;

@@ -39,9 +39,12 @@ void PropertySet::setRgPrids(const std::vector<PropertyID> &rgPrids) {
   m_rgPrids = rgPrids;
 }
 
-std::vector<IPropertyType *> PropertySet::rgData() const { return m_rgData; }
+std::vector<std::shared_ptr<IPropertyType>> PropertySet::rgData() const {
+  return m_rgData;
+}
 
-void PropertySet::setRgData(const std::vector<IPropertyType *> &rgData) {
+void PropertySet::setRgData(
+    const std::vector<std::shared_ptr<IPropertyType>> &rgData) {
   m_rgData = rgData;
 }
 
@@ -59,8 +62,8 @@ void PropertySet::deserialize(QDataStream &ds) {
 
   for (const auto &propID : m_rgPrids) {
     quint64 curLocation = ds.device()->pos();
-    /// \todo fix memory leak here
-    IPropertyType *prop = nullptr;
+
+    std::shared_ptr<IPropertyType> prop;
 
     switch (propID.type()) {
     case PropertyIDType::NoData:
@@ -68,41 +71,41 @@ void PropertySet::deserialize(QDataStream &ds) {
     case PropertyIDType::ContextID:
     case PropertyIDType::ObjectSpaceID:
     case PropertyIDType::ObjectID:
-      prop = new PropertyType_NoData();
+      prop = std::make_shared<PropertyType_NoData>();
       break;
 
     case PropertyIDType::ArrayOfObjectIDs:
     case PropertyIDType::ArrayOfObjectSpaceIDs:
     case PropertyIDType::ArrayOfContextIDs:
-      prop = new PropertyType_ArrayNumber();
+      prop = std::make_shared<PropertyType_ArrayNumber>();
       break;
 
     case PropertyIDType::OneByteOfData:
-      prop = new PropertyType_OneByteOfData();
+      prop = std::make_shared<PropertyType_OneByteOfData>();
       break;
 
     case PropertyIDType::TwoBytesOfData:
-      prop = new PropertyType_TwoBytesOfData();
+      prop = std::make_shared<PropertyType_TwoBytesOfData>();
       break;
 
     case PropertyIDType::FourBytesOfData:
-      prop = new PropertyType_FourBytesOfData();
+      prop = std::make_shared<PropertyType_FourBytesOfData>();
       break;
 
     case PropertyIDType::EightBytesOfData:
-      prop = new PropertyType_EightBytesOfData();
+      prop = std::make_shared<PropertyType_EightBytesOfData>();
       break;
 
     case PropertyIDType::FourBytesOfLengthFollowedByData:
-      prop = new PropertyType_FourBytesOfLengthFollowedByData();
+      prop = std::make_shared<PropertyType_FourBytesOfLengthFollowedByData>();
       break;
 
     case PropertyIDType::ArrayOfPropertyValues:
-      prop = new PropertyType_ArrayOfPropertyValues();
+      prop = std::make_shared<PropertyType_ArrayOfPropertyValues>();
       break;
 
     case PropertyIDType::PropertySet:
-      prop = new PropertyType_PropertySet();
+      prop = std::make_shared<PropertyType_PropertySet>();
       break;
 
     default:
@@ -130,11 +133,11 @@ void PropertySet::serialize(QDataStream &ds) const {
 
   ds << m_cProperties;
 
-  for (auto propid : m_rgPrids) {
+  for (const auto &propid : m_rgPrids) {
     ds << propid;
   }
 
-  for (IPropertyType *prop : m_rgData) {
+  for (const auto &prop : m_rgData) {
     ds << *prop;
   }
 }
@@ -172,7 +175,8 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     case PropertyIDs::PageWidth: {
       xmlWriter.writeStartElement("PageWidth");
       const auto body =
-          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
       QDataStream bytes(body);
       bytes.setByteOrder(QDataStream::LittleEndian);
       bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
@@ -189,7 +193,8 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     case PropertyIDs::PageHeight: {
       xmlWriter.writeStartElement("PageHeight");
       const auto body =
-          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
       QDataStream bytes(body);
       bytes.setByteOrder(QDataStream::LittleEndian);
       bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
@@ -208,7 +213,8 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     case PropertyIDs::OutlineElementChildLevel: {
       xmlWriter.writeStartElement("IndentationLevel");
       const auto body =
-          static_cast<PropertyType_OneByteOfData *>(m_rgData[i])->data();
+          std::dynamic_pointer_cast<PropertyType_OneByteOfData>(m_rgData[i])
+              ->data();
       QDataStream bytes(body);
 
       uint8_t val;
@@ -277,11 +283,11 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
       xmlWriter.writeStartElement("Font");
       if (m_rgPrids[i].type() ==
           PropertyIDType::FourBytesOfLengthFollowedByData) {
-        const auto body =
-            static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
-                m_rgData[i]);
-        QString string =
-            QString::fromUtf8(body->data().constData(), body->cb());
+        const auto data =
+            std::dynamic_pointer_cast<
+                PropertyType_FourBytesOfLengthFollowedByData>(m_rgData[i])
+                ->data();
+        QString string = QString::fromUtf8(data.constData(), data.size());
         xmlWriter.writeCharacters(string);
       }
       xmlWriter.writeEndElement();
@@ -289,9 +295,10 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     }
     case PropertyIDs::FontSize: {
       xmlWriter.writeStartElement("FontSize");
-      const auto body =
-          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
-      QDataStream bytes(body);
+      const auto data =
+          std::dynamic_pointer_cast<PropertyType_TwoBytesOfData>(m_rgData[i])
+              ->data();
+      QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
       uint16_t val;
       bytes >> val;
@@ -306,7 +313,8 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     case PropertyIDs::FontColor: {
       xmlWriter.writeStartElement("FontColor");
       const auto data =
-          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
       QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
       ColorRef val;
@@ -320,7 +328,8 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     case PropertyIDs::Highlight: {
       xmlWriter.writeStartElement("Highlight");
       const auto data =
-          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
       QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
       ColorRef val;
@@ -333,8 +342,8 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     case PropertyIDs::RgOutlineIndentDistance: {
       xmlWriter.writeStartElement("RgOutlineIndentDistance");
       const auto body =
-          static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
-              m_rgData[i])
+          std::dynamic_pointer_cast<
+              PropertyType_FourBytesOfLengthFollowedByData>(m_rgData[i])
               ->data();
       QDataStream bytes(body);
       bytes.setByteOrder(QDataStream::LittleEndian);
@@ -362,10 +371,11 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
       break;
     }
     case PropertyIDs::BodyTextAlignment: {
-      const auto body =
-          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+      const auto data =
+          std::dynamic_pointer_cast<PropertyType_OneByteOfData>(m_rgData[i])
+              ->data();
       BodyTextAlignment bta;
-      QDataStream bytes(body);
+      QDataStream bytes(data);
       bytes >> bta;
       xmlWriter << bta;
       break;
@@ -373,7 +383,8 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     case PropertyIDs::OffsetFromParentHoriz: {
       xmlWriter.writeStartElement("OffsetFromParentHoriz");
       const auto data =
-          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
       QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
       bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
@@ -385,9 +396,10 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     }
     case PropertyIDs::OffsetFromParentVert: {
       xmlWriter.writeStartElement("OffsetFromParentVert");
-      const auto body =
-          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
-      QDataStream bytes(body);
+      const auto data =
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
+      QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
       bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
       float val;
@@ -401,9 +413,10 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
       //      break;
     case PropertyIDs::LayoutMaxWidth: {
       xmlWriter.writeStartElement("LayoutMaxWidth");
-      const auto body =
-          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
-      QDataStream bytes(body);
+      const auto data =
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
+      QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
       bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
       float val;
@@ -414,9 +427,10 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     }
     case PropertyIDs::LayoutMaxHeight: {
       xmlWriter.writeStartElement("LayoutMaxHeight");
-      const auto body =
-          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
-      QDataStream bytes(body);
+      const auto data =
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
+      QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
       bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
       float val;
@@ -443,8 +457,8 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     case PropertyIDs::RichEditTextUnicode: {
       xmlWriter.writeStartElement("RichEditTextUnicode");
       const auto data =
-          static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
-              m_rgData[i])
+          std::dynamic_pointer_cast<
+              PropertyType_FourBytesOfLengthFollowedByData>(m_rgData[i])
               ->data();
       QString string = QString::fromUtf16(
           reinterpret_cast<const ushort *>(data.constData()), data.size() / 2);
@@ -458,11 +472,11 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
       //      break;
     case PropertyIDs::NotebookManagementEntityGuid: {
       xmlWriter.writeStartElement("NotebookManagementEntityGuid");
-      const auto body =
-          static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
-              m_rgData[i])
+      const auto data =
+          std::dynamic_pointer_cast<
+              PropertyType_FourBytesOfLengthFollowedByData>(m_rgData[i])
               ->data();
-      QDataStream bytes(body);
+      QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
       QUuid val;
       bytes >> val;
@@ -480,22 +494,26 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
       break;
     }
 
-    case PropertyIDs::LanguageID: {
-      xmlWriter.writeStartElement("LanguageID");
-      const auto body =
-          static_cast<PropertyType_TwoBytesOfData *>(m_rgData[i])->data();
-      QDataStream bytes(body);
-      bytes.setByteOrder(QDataStream::LittleEndian);
-      LCID val;
-      bytes >> val;
-      xmlWriter.writeCharacters(val.toString());
-      xmlWriter.writeEndElement();
-      break;
-    }
+      /// \todo LanguageID is four byte, not two, check content
+      //    case PropertyIDs::LanguageID: {
+      //      xmlWriter.writeStartElement("LanguageID");
+      //      const auto data =
+      //          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+      //              ->data();
+      //      QDataStream bytes(data);
+      //      bytes.setByteOrder(QDataStream::LittleEndian);
+      //      LCID val;
+      //      bytes >> val;
+      //      xmlWriter.writeCharacters(val.toString());
+      //      xmlWriter.writeEndElement();
+      //      break;
+      //    }
+
     case PropertyIDs::LayoutAlignmentInParent: {
-      const auto body =
-          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
-      QDataStream bytes(body);
+      const auto data =
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
+      QDataStream bytes(data);
       LayoutAlignment val;
       bytes >> val;
       xmlWriter << val;
@@ -506,8 +524,10 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
       //      break;
     case PropertyIDs::PageMarginTop: {
       xmlWriter.writeStartElement("PageMarginTop");
-      auto body = static_cast<PropertyType_FourBytesOfData *>(m_rgData[i]);
-      QDataStream bytes(body->data());
+      const auto data =
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
+      QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
       bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
       float val;
@@ -518,8 +538,10 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     }
     case PropertyIDs::PageMarginBottom: {
       xmlWriter.writeStartElement("PageMarginBottom");
-      auto body = static_cast<PropertyType_FourBytesOfData *>(m_rgData[i]);
-      QDataStream bytes(body->data());
+      const auto data =
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
+      QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
       bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
       float val;
@@ -530,8 +552,10 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     }
     case PropertyIDs::PageMarginLeft: {
       xmlWriter.writeStartElement("PageMarginLeft");
-      auto body = static_cast<PropertyType_FourBytesOfData *>(m_rgData[i]);
-      QDataStream bytes(body->data());
+      const auto data =
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
+      QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
       bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
       float val;
@@ -542,8 +566,10 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     }
     case PropertyIDs::PageMarginRight: {
       xmlWriter.writeStartElement("PageMarginRight");
-      auto body = static_cast<PropertyType_FourBytesOfData *>(m_rgData[i]);
-      QDataStream bytes(body->data());
+      const auto data =
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
+      QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
       bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
       float val;
@@ -556,8 +582,8 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
       xmlWriter.writeStartElement("ListFont");
       if (m_rgPrids[i].type() ==
           PropertyIDType::FourBytesOfLengthFollowedByData) {
-        auto body = static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
-            m_rgData[i]);
+        const auto body = std::dynamic_pointer_cast<
+            PropertyType_FourBytesOfLengthFollowedByData>(m_rgData[i]);
         QString string =
             QString::fromUtf8(body->data().constData(), body->cb());
         xmlWriter.writeCharacters(string);
@@ -567,10 +593,11 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     }
     case PropertyIDs::TopologyCreationTimeStamp: {
       xmlWriter.writeStartElement("TopologyCreationTimeStamp");
-      auto body =
-          static_cast<PropertyType_EightBytesOfData *>(m_rgData[i])->data();
+      const auto data =
+          std::dynamic_pointer_cast<PropertyType_EightBytesOfData>(m_rgData[i])
+              ->data();
 
-      QDataStream bytes(body);
+      QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
       FileTime time;
       bytes >> time;
@@ -580,8 +607,10 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
       break;
     }
     case PropertyIDs::LayoutAlignmentSelf: {
-      auto body = static_cast<PropertyType_FourBytesOfData *>(m_rgData[i]);
-      QDataStream bytes(body->data());
+      const auto data =
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
+      QDataStream bytes(data);
       LayoutAlignment val;
       bytes >> val;
       xmlWriter << val;
@@ -607,7 +636,8 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     }
     case PropertyIDs::PageSize: {
       const auto data =
-          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
       QDataStream bytes(data);
       PageSize ps;
       bytes >> ps;
@@ -670,8 +700,9 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
       break;
     }
     case PropertyIDs::ListRestart: {
-      auto data =
-          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+      const auto data =
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
       QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
 
@@ -693,8 +724,9 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
       break;
     }
     case PropertyIDs::ListSpacingMu: {
-      auto data =
-          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+      const auto data =
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
       QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
       bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
@@ -707,8 +739,9 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
       break;
     }
     case PropertyIDs::LayoutOutlineReservedWidth: {
-      auto data =
-          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+      const auto data =
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
       QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
       bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
@@ -743,7 +776,8 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     case PropertyIDs::LayoutMinimumOutlineWidth: {
       xmlWriter.writeStartElement("LayoutMinimumOutlineWidth");
       const auto data =
-          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
       QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
       bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
@@ -754,8 +788,9 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
       break;
     }
     case PropertyIDs::LayoutCollisionPriority: {
-      auto data =
-          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+      const auto data =
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
       QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
       bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
@@ -769,9 +804,8 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     }
     case PropertyIDs::CachedTitleString: {
       xmlWriter.writeStartElement("wz");
-      const auto body =
-          static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
-              m_rgData[i]);
+      const auto body = std::dynamic_pointer_cast<
+          PropertyType_FourBytesOfLengthFollowedByData>(m_rgData[i]);
       QString string = QString::fromUtf8(body->data().constData(), body->cb());
       xmlWriter.writeCharacters(string);
       xmlWriter.writeEndElement();
@@ -789,7 +823,8 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     case PropertyIDs::RichEditTextLangID: {
       xmlWriter.writeStartElement("RichEditTextLangID");
       const auto data =
-          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+          std::dynamic_pointer_cast<PropertyType_TwoBytesOfData>(m_rgData[i])
+              ->data();
       QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
       LCID val;
@@ -810,7 +845,8 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     case PropertyIDs::Charset: {
       xmlWriter.writeStartElement("Charset");
       auto data =
-          static_cast<PropertyType_OneByteOfData *>(m_rgData[i])->data();
+          std::dynamic_pointer_cast<PropertyType_OneByteOfData>(m_rgData[i])
+              ->data();
       QString string;
       switch (static_cast<Charset>(data.toUInt())) {
       case Charset::ANSI_CHARSET:
@@ -877,8 +913,9 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     }
     case PropertyIDs::CreationTimeStamp: {
       xmlWriter.writeStartElement("CreationTimeStamp");
-      auto data =
-          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+      const auto data =
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
 
       QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
@@ -899,8 +936,9 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
       break;
     }
     case PropertyIDs::ListMSAAIndex: {
-      auto data =
-          static_cast<PropertyType_TwoBytesOfData *>(m_rgData[i])->data();
+      const auto data =
+          std::dynamic_pointer_cast<PropertyType_TwoBytesOfData>(m_rgData[i])
+              ->data();
       QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
 
@@ -923,8 +961,9 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
 
     case PropertyIDs::IRecordMedia: {
       xmlWriter.writeStartElement("IRecordMedia");
-      auto data =
-          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+      const auto data =
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
 
       QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
@@ -937,8 +976,8 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     }
     case PropertyIDs::CachedTitleStringFromPage: {
       xmlWriter.writeStartElement("wz");
-      auto body = static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
-          m_rgData[i]);
+      const auto body = std::dynamic_pointer_cast<
+          PropertyType_FourBytesOfLengthFollowedByData>(m_rgData[i]);
       QString string = QString::fromUtf8(body->data().constData(), body->cb());
       xmlWriter.writeCharacters(string);
       xmlWriter.writeEndElement();
@@ -947,8 +986,9 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
 
     case PropertyIDs::RowCount: {
       xmlWriter.writeStartElement("RowCount");
-      auto data =
-          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+      const auto data =
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
 
       QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
@@ -960,8 +1000,9 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     }
     case PropertyIDs::ColumnCount: {
       xmlWriter.writeStartElement("ColumnCount");
-      auto data =
-          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+      const auto data =
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
 
       QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
@@ -991,8 +1032,8 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     case PropertyIDs::TableColumnWidths: {
       xmlWriter.writeStartElement("TableColumnWidths");
       const auto data =
-          static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
-              m_rgData[i])
+          std::dynamic_pointer_cast<
+              PropertyType_FourBytesOfLengthFollowedByData>(m_rgData[i])
               ->data();
       QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
@@ -1019,8 +1060,8 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
 
     case PropertyIDs::Author: {
       xmlWriter.writeStartElement("Author");
-      auto body = static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
-          m_rgData[i]);
+      const auto body = std::dynamic_pointer_cast<
+          PropertyType_FourBytesOfLengthFollowedByData>(m_rgData[i]);
       QString string = QString::fromUtf16(
           reinterpret_cast<const ushort *>(body->data().constData()));
 
@@ -1031,10 +1072,11 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
 
     case PropertyIDs::LastModifiedTimeStamp: {
       xmlWriter.writeStartElement("LastModifiedTimeStamp");
-      auto body =
-          static_cast<PropertyType_EightBytesOfData *>(m_rgData[i])->data();
+      const auto data =
+          std::dynamic_pointer_cast<PropertyType_EightBytesOfData>(m_rgData[i])
+              ->data();
 
-      QDataStream bytes(body);
+      QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
       FileTime time;
       bytes >> time;
@@ -1064,10 +1106,11 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     }
     case PropertyIDs::LastModifiedTime: {
       xmlWriter.writeStartElement("LastModifiedTime");
-      auto body =
-          static_cast<PropertyType_EightBytesOfData *>(m_rgData[i])->data();
+      const auto data =
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
 
-      QDataStream bytes(body);
+      QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
       Time32 time;
       bytes >> time;
@@ -1089,8 +1132,8 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     /// \todo test TableColumnsLocked whether it produces correct output
     case PropertyIDs::TableColumnsLocked: {
       const auto data =
-          static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
-              m_rgData[i])
+          std::dynamic_pointer_cast<
+              PropertyType_FourBytesOfLengthFollowedByData>(m_rgData[i])
               ->data();
 
       quint8 cColumns = data.at(0);
@@ -1124,7 +1167,8 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     case PropertyIDs::SchemaRevisionInOrderToRead: {
       xmlWriter.writeStartElement("SchemaRevisionInOrderToRead");
       const auto data =
-          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
       QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
       quint32 val;
@@ -1147,10 +1191,12 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
       //      break;
     case PropertyIDs::EmbeddedFileName: {
       xmlWriter.writeStartElement("EmbeddedFileName");
-      auto body = static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
-          m_rgData[i]);
+      const auto data =
+          std::dynamic_pointer_cast<
+              PropertyType_FourBytesOfLengthFollowedByData>(m_rgData[i])
+              ->data();
       QString string = QString::fromUtf16(
-          reinterpret_cast<const ushort *>(body->data().constData()));
+          reinterpret_cast<const ushort *>(data.constData()), data.size() / 2);
 
       xmlWriter.writeCharacters(string);
       xmlWriter.writeEndElement();
@@ -1158,10 +1204,12 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     }
     case PropertyIDs::SourceFilepath: {
       xmlWriter.writeStartElement("SourceFilepath");
-      auto body = static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
-          m_rgData[i]);
+      const auto data =
+          std::dynamic_pointer_cast<
+              PropertyType_FourBytesOfLengthFollowedByData>(m_rgData[i])
+              ->data();
       QString string = QString::fromUtf16(
-          reinterpret_cast<const ushort *>(body->data().constData()));
+          reinterpret_cast<const ushort *>(data.constData()), data.size() / 2);
 
       xmlWriter.writeCharacters(string);
       xmlWriter.writeEndElement();
@@ -1169,19 +1217,23 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     }
     case PropertyIDs::ConflictingUserName: {
       xmlWriter.writeStartElement("ConflictingUserName");
-      auto body = static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
-          m_rgData[i]);
-      QString string = QString::fromUtf8(body->data().constData(), body->cb());
+      const auto data =
+          std::dynamic_pointer_cast<
+              PropertyType_FourBytesOfLengthFollowedByData>(m_rgData[i])
+              ->data();
+      QString string = QString::fromUtf8(data.constData(), data.size());
       xmlWriter.writeCharacters(string);
       xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::ImageFilename: {
       xmlWriter.writeStartElement("ImageFilename");
-      auto body = static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
-          m_rgData[i]);
+      const auto data =
+          std::dynamic_pointer_cast<
+              PropertyType_FourBytesOfLengthFollowedByData>(m_rgData[i])
+              ->data();
       QString string = QString::fromUtf16(
-          reinterpret_cast<const ushort *>(body->data().constData()));
+          reinterpret_cast<const ushort *>(data.constData()), data.size() / 2);
 
       xmlWriter.writeCharacters(string);
       xmlWriter.writeEndElement();
@@ -1198,9 +1250,10 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     }
     case PropertyIDs::PageLevel: {
       xmlWriter.writeStartElement("PageLevel");
-      auto body =
-          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
-      QDataStream bytes(body);
+      const auto data =
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
+      QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
       bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
       qint32 val;
@@ -1211,8 +1264,8 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     }
     case PropertyIDs::TextRunIndex: {
       const auto data =
-          static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
-              m_rgData[i])
+          std::dynamic_pointer_cast<
+              PropertyType_FourBytesOfLengthFollowedByData>(m_rgData[i])
               ->data();
       QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
@@ -1248,7 +1301,8 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     }
     case PropertyIDs::UnderlineType: {
       const auto data =
-          static_cast<PropertyType_OneByteOfData *>(m_rgData[i])->data();
+          std::dynamic_pointer_cast<PropertyType_OneByteOfData>(m_rgData[i])
+              ->data();
       quint8 val = data.toUInt();
       xmlWriter.writeStartElement("UnderlineType");
       xmlWriter.writeCharacters(val == 0 ? "False"
@@ -1286,8 +1340,8 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     case PropertyIDs::ImageAltText: {
       xmlWriter.writeStartElement("ImageAltText");
       const auto data =
-          static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
-              m_rgData[i])
+          std::dynamic_pointer_cast<
+              PropertyType_FourBytesOfLengthFollowedByData>(m_rgData[i])
               ->data();
       QString string = QString::fromUtf16(
           reinterpret_cast<const ushort *>(data.constData()));
@@ -1310,9 +1364,10 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
       //    }
     case PropertyIDs::ParagraphSpaceBefore: {
       xmlWriter.writeStartElement("ParagraphSpaceBefore");
-      auto body =
-          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
-      QDataStream bytes(body);
+      const auto data =
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
+      QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
       bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
       float val;
@@ -1323,9 +1378,10 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     }
     case PropertyIDs::ParagraphSpaceAfter: {
       xmlWriter.writeStartElement("ParagraphSpaceBefore");
-      auto body =
-          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
-      QDataStream bytes(body);
+      const auto data =
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
+      QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
       bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
       float val;
@@ -1336,9 +1392,10 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     }
     case PropertyIDs::ParagraphLineSpacingExact: {
       xmlWriter.writeStartElement("ParagraphLineSpacingExact");
-      auto body =
-          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
-      QDataStream bytes(body);
+      const auto data =
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
+      QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
       bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
       float val;
@@ -1364,10 +1421,11 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
       xmlWriter.writeStartElement("ParagraphStyleId");
       if (m_rgPrids[i].type() ==
           PropertyIDType::FourBytesOfLengthFollowedByData) {
-        auto body = static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
-            m_rgData[i]);
-        QString string =
-            QString::fromUtf8(body->data().constData(), body->cb());
+        const auto data =
+            std::dynamic_pointer_cast<
+                PropertyType_FourBytesOfLengthFollowedByData>(m_rgData[i])
+                ->data();
+        QString string = QString::fromUtf8(data.constData(), data.size());
         xmlWriter.writeCharacters(string);
       }
       xmlWriter.writeEndElement();
@@ -1386,8 +1444,9 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
 
       if (m_rgPrids[i].type() ==
           PropertyIDType::FourBytesOfLengthFollowedByData) {
-        auto data =
-            static_cast<PropertyType_TwoBytesOfData *>(m_rgData[i])->data();
+        const auto data =
+            std::dynamic_pointer_cast<PropertyType_TwoBytesOfData>(m_rgData[i])
+                ->data();
         QDataStream ds(data);
         quint16 val;
         ds >> val;
@@ -1424,7 +1483,8 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
       }
     case PropertyIDs::NoteTagShape: {
       const auto data =
-          static_cast<PropertyType_TwoBytesOfData *>(m_rgData[i])->data();
+          std::dynamic_pointer_cast<PropertyType_TwoBytesOfData>(m_rgData[i])
+              ->data();
 
       QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
@@ -1436,7 +1496,8 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     case PropertyIDs::NoteTagHighlightColor: {
       xmlWriter.writeStartElement("NoteTagHighlightColor");
       const auto data =
-          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
       QDataStream bytes(data);
       ColorRef val;
       bytes >> val;
@@ -1447,7 +1508,8 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     case PropertyIDs::NoteTagTextColor: {
       xmlWriter.writeStartElement("NoteTagTextColor");
       const auto data =
-          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
       QDataStream bytes(data);
       ColorRef val;
       bytes >> val;
@@ -1460,7 +1522,8 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     case PropertyIDs::NoteTagPropertyStatus: {
       xmlWriter.writeStartElement("NoteTagPropertyStatus");
       const auto data =
-          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
       QDataStream bytes(data);
       quint32 val;
       bytes >> val;
@@ -1503,19 +1566,22 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     /// \todo not sure whether this is the correct string format (utf8/utf16)
     case PropertyIDs::NoteTagLabel: {
       xmlWriter.writeStartElement("wz");
-      auto body = static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
-          m_rgData[i]);
-      QString string = QString::fromUtf8(body->data().constData(), body->cb());
+      const auto data =
+          std::dynamic_pointer_cast<
+              PropertyType_FourBytesOfLengthFollowedByData>(m_rgData[i])
+              ->data();
+      QString string = QString::fromUtf8(data.constData(), data.size());
       xmlWriter.writeCharacters(string);
       xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::NoteTagCreated: {
       xmlWriter.writeStartElement("NoteTagCreated");
-      auto body =
-          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+      const auto data =
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
 
-      QDataStream bytes(body);
+      QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
       Time32 time;
       bytes >> time;
@@ -1526,10 +1592,11 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     }
     case PropertyIDs::NoteTagCompleted: {
       xmlWriter.writeStartElement("NoteTagCompleted");
-      auto body =
-          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+      const auto data =
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
 
-      QDataStream bytes(body);
+      QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
       Time32 time;
       bytes >> time;
@@ -1547,7 +1614,8 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     case PropertyIDs::ActionItemStatus: {
       xmlWriter.writeStartElement("ActionItemStatus");
       const auto data =
-          static_cast<PropertyType_TwoBytesOfData *>(m_rgData[i])->data();
+          std::dynamic_pointer_cast<PropertyType_TwoBytesOfData>(m_rgData[i])
+              ->data();
       QDataStream bytes(data);
       quint16 val;
       bytes >> val;
@@ -1574,7 +1642,8 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     case PropertyIDs::ActionItemSchemaVersion: {
       xmlWriter.writeStartElement("ActionItemSchemaVersion");
       const auto data =
-          static_cast<PropertyType_OneByteOfData *>(m_rgData[i])->data();
+          std::dynamic_pointer_cast<PropertyType_OneByteOfData>(m_rgData[i])
+              ->data();
       xmlWriter.writeCharacters("0x" + data.toHex());
       xmlWriter.writeEndElement();
       break;
@@ -1593,7 +1662,8 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     case PropertyIDs::ParagraphAlignment: {
 
       const auto data =
-          static_cast<PropertyType_OneByteOfData *>(m_rgData[i])->data();
+          std::dynamic_pointer_cast<PropertyType_OneByteOfData>(m_rgData[i])
+              ->data();
 
       QString align;
 
@@ -1621,30 +1691,38 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
       //    case PropertyIDs::VersionHistoryGraphSpaceContextNodes:
       //      m_id_string = "VersionHistoryGraphSpaceContextNodes";
       //      break;
+
     case PropertyIDs::DisplayedPageNumber: {
       xmlWriter.writeStartElement("DisplayedPageNumber");
       const auto data =
-          static_cast<PropertyType_OneByteOfData *>(m_rgData[i])->data();
-      xmlWriter.writeCharacters(QString::number(data.toUInt()));
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
+      QDataStream bytes(data);
+      bytes.setByteOrder(QDataStream::LittleEndian);
+      quint32 val;
+      bytes >> val;
+      xmlWriter.writeCharacters(QString::number(val));
       xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::SectionDisplayName: {
       xmlWriter.writeStartElement("wz");
-      const auto body =
-          static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
-              m_rgData[i]);
-      QString string = QString::fromUtf8(body->data().constData(), body->cb());
+      const auto data =
+          std::dynamic_pointer_cast<
+              PropertyType_FourBytesOfLengthFollowedByData>(m_rgData[i])
+              ->data();
+      QString string = QString::fromUtf8(data.constData(), data.size());
       xmlWriter.writeCharacters(string);
       xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::NextStyle: {
       xmlWriter.writeStartElement("wz");
-      const auto body =
-          static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
-              m_rgData[i]);
-      QString string = QString::fromUtf8(body->data().constData(), body->cb());
+      const auto data =
+          std::dynamic_pointer_cast<
+              PropertyType_FourBytesOfLengthFollowedByData>(m_rgData[i])
+              ->data();
+      QString string = QString::fromUtf8(data.constData(), data.size());
       xmlWriter.writeCharacters(string);
       xmlWriter.writeEndElement();
       break;
@@ -1655,7 +1733,8 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     case PropertyIDs::ImageUploadState: {
 
       const auto data =
-          static_cast<PropertyType_OneByteOfData *>(m_rgData[i])->data();
+          std::dynamic_pointer_cast<PropertyType_OneByteOfData>(m_rgData[i])
+              ->data();
 
       QString state;
       switch (data.toUInt()) {
@@ -1680,9 +1759,11 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     }
     case PropertyIDs::TextExtendedAscii: {
       xmlWriter.writeStartElement("String");
-      auto body = static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
-          m_rgData[i]);
-      QString string = QString::fromUtf8(body->data().constData(), body->cb());
+      const auto data =
+          std::dynamic_pointer_cast<
+              PropertyType_FourBytesOfLengthFollowedByData>(m_rgData[i])
+              ->data();
+      QString string = QString::fromUtf8(data.constData(), data.size());
       xmlWriter.writeCharacters(string);
       xmlWriter.writeEndElement();
       break;
@@ -1690,7 +1771,8 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     case PropertyIDs::PictureWidth: {
       xmlWriter.writeStartElement("PictureWidth");
       const auto data =
-          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
       QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
       bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
@@ -1703,7 +1785,8 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     case PropertyIDs::PictureHeight: {
       xmlWriter.writeStartElement("PictureHeight");
       const auto data =
-          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
       QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
       bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
@@ -1715,8 +1798,10 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     }
     case PropertyIDs::PageMarginOriginX: {
       xmlWriter.writeStartElement("PageMarginOriginX");
-      auto body = static_cast<PropertyType_FourBytesOfData *>(m_rgData[i]);
-      QDataStream bytes(body->data());
+      const auto data =
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
+      QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
       bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
       float val;
@@ -1727,8 +1812,10 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     }
     case PropertyIDs::PageMarginOriginY: {
       xmlWriter.writeStartElement("PageMarginOriginY");
-      auto body = static_cast<PropertyType_FourBytesOfData *>(m_rgData[i]);
-      QDataStream bytes(body->data());
+      const auto data =
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
+      QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
       bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
       float val;
@@ -1740,8 +1827,8 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     case PropertyIDs::WzHyperlinkUrl: {
       xmlWriter.writeStartElement("wz");
       const auto data =
-          static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
-              m_rgData[i])
+          std::dynamic_pointer_cast<
+              PropertyType_FourBytesOfLengthFollowedByData>(m_rgData[i])
               ->data();
       QString string = QString::fromUtf8(data.constData(), data.size());
       xmlWriter.writeCharacters(string);
@@ -1750,10 +1837,11 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     }
     case PropertyIDs::TaskTagDueDate: {
       xmlWriter.writeStartElement("TaskTagDueDate");
-      auto body =
-          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+      const auto data =
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
 
-      QDataStream bytes(body);
+      QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
       Time32 time;
       bytes >> time;
@@ -1766,10 +1854,11 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
       xmlWriter.writeStartElement("undoc_AuthorInitials");
       if (m_rgPrids[i].type() ==
           PropertyIDType::FourBytesOfLengthFollowedByData) {
-        auto body = static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
-            m_rgData[i]);
-        QString string =
-            QString::fromUtf8(body->data().constData(), body->cb());
+        const auto data =
+            std::dynamic_pointer_cast<
+                PropertyType_FourBytesOfLengthFollowedByData>(m_rgData[i])
+                ->data();
+        QString string = QString::fromUtf8(data.constData(), data.size());
         xmlWriter.writeCharacters(string);
       }
       xmlWriter.writeEndElement();
@@ -1779,10 +1868,11 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
       xmlWriter.writeStartElement("undoc_ResolutionID");
       if (m_rgPrids[i].type() ==
           PropertyIDType::FourBytesOfLengthFollowedByData) {
-        auto body = static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
-            m_rgData[i]);
-        QString string =
-            QString::fromUtf8(body->data().constData(), body->cb());
+        const auto data =
+            std::dynamic_pointer_cast<
+                PropertyType_FourBytesOfLengthFollowedByData>(m_rgData[i])
+                ->data();
+        QString string = QString::fromUtf8(data.constData(), data.size());
         xmlWriter.writeCharacters(string);
       }
       xmlWriter.writeEndElement();
@@ -1797,9 +1887,10 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     case PropertyIDs::undoc_StrokesIndex: {
       xmlWriter.writeStartElement("undoc_StrokesIndex");
       if (m_rgPrids[i].type() == PropertyIDType::FourBytesOfData) {
-        auto body =
-            static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
-        QDataStream bytes(body);
+        const auto data =
+            std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+                ->data();
+        QDataStream bytes(data);
         bytes.setByteOrder(QDataStream::LittleEndian);
         bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
         uint32_t val;
@@ -1811,9 +1902,10 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     }
     case PropertyIDs::unodc_StrokeLanguage: {
       xmlWriter.writeStartElement("unodc_StrokeLanguage");
-      const auto body =
-          static_cast<PropertyType_TwoBytesOfData *>(m_rgData[i])->data();
-      QDataStream bytes(body);
+      const auto data =
+          std::dynamic_pointer_cast<PropertyType_TwoBytesOfData>(m_rgData[i])
+              ->data();
+      QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
       LCID val;
       bytes >> val;
@@ -1825,7 +1917,8 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     case PropertyIDs::undoc_StrokesColor: {
       xmlWriter.writeStartElement("undoc_StrokesColor");
       const auto data =
-          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
 
       xmlWriter.writeCharacters("#" + data.toHex());
       xmlWriter.writeEndElement();
@@ -1834,8 +1927,10 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
 
     case PropertyIDs::undoc_StrokesToolSizeHeight: {
       xmlWriter.writeStartElement("undoc_StrokesToolSizeHeight");
-      auto body = static_cast<PropertyType_FourBytesOfData *>(m_rgData[i]);
-      QDataStream bytes(body->data());
+      const auto data =
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
+      QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
       bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
       float val;
@@ -1846,8 +1941,10 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     }
     case PropertyIDs::undoc_StrokesToolSizeWidth: {
       xmlWriter.writeStartElement("undoc_StrokesToolSizeWidth");
-      auto body = static_cast<PropertyType_FourBytesOfData *>(m_rgData[i]);
-      QDataStream bytes(body->data());
+      const auto data =
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
+      QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
       bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
       float val;
@@ -1859,11 +1956,12 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
 
     case PropertyIDs::undoc_StrokesCreationTime: {
       xmlWriter.writeStartElement("undoc_StrokesCreationTime");
-      auto body = static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
-                      m_rgData[i])
-                      ->data();
+      const auto data =
+          std::dynamic_pointer_cast<
+              PropertyType_FourBytesOfLengthFollowedByData>(m_rgData[i])
+              ->data();
 
-      QDataStream bytes(body);
+      QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
       FileTime time;
       bytes >> time;
@@ -1875,12 +1973,13 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
 
     case PropertyIDs::undoc_StrokesRecognizedText: {
       xmlWriter.writeStartElement("undoc_StrokesRecognizedText");
-      auto body = static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
-          m_rgData[i]);
+      const auto data =
+          std::dynamic_pointer_cast<
+              PropertyType_FourBytesOfLengthFollowedByData>(m_rgData[i])
+              ->data();
 
       QString string = QString::fromUtf16(
-          reinterpret_cast<const ushort *>(body->data().constData()),
-          body->cb() / 2);
+          reinterpret_cast<const ushort *>(data.constData()), data.size() / 2);
       QStringList strings = string.split('\0');
       for (const auto &str : strings) {
         if (str.size() > 0) {
@@ -1896,8 +1995,8 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     case PropertyIDs::undoc_StrokesOffsetsVertHoriz: {
       xmlWriter.writeStartElement("undoc_StrokesOffsetsVertHoriz");
       const auto data =
-          static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
-              m_rgData[i])
+          std::dynamic_pointer_cast<
+              PropertyType_FourBytesOfLengthFollowedByData>(m_rgData[i])
               ->data();
       QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
@@ -1920,7 +2019,8 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     case PropertyIDs::undoc_StrokesModus: {
       xmlWriter.writeStartElement("undoc_StrokesModus");
       const auto data =
-          static_cast<PropertyType_OneByteOfData *>(m_rgData[i])->data();
+          std::dynamic_pointer_cast<PropertyType_OneByteOfData>(m_rgData[i])
+              ->data();
       switch (data.toInt()) {
       case 0:
         xmlWriter.writeCharacters("HandwrittingAndDrawing");
@@ -1942,8 +2042,8 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     case PropertyIDs::undoc_StrokesGUID: {
       xmlWriter.writeStartElement("undoc_StrokesGUID");
       const auto data =
-          static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
-              m_rgData[i])
+          std::dynamic_pointer_cast<
+              PropertyType_FourBytesOfLengthFollowedByData>(m_rgData[i])
               ->data();
       QDataStream bytes(data);
       QUuid guid;
@@ -1956,12 +2056,13 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
 
     case PropertyIDs::undoc_RecognizedText: {
       xmlWriter.writeStartElement("undoc_RecognizedText");
-      auto body = static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
-          m_rgData[i]);
+      const auto data =
+          std::dynamic_pointer_cast<
+              PropertyType_FourBytesOfLengthFollowedByData>(m_rgData[i])
+              ->data();
 
       QString string = QString::fromUtf16(
-          reinterpret_cast<const ushort *>(body->data().constData()),
-          body->cb() / 2);
+          reinterpret_cast<const ushort *>(data.constData()), data.size() / 2);
       QStringList strings = string.split('\0');
       for (const auto &str : strings) {
         if (str.size() > 0) {
@@ -1976,12 +2077,13 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
 
     case PropertyIDs::undoc_tocSectionName: {
       xmlWriter.writeStartElement("undoc_tocSectionName");
-      const auto body =
-          static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
-              m_rgData[i]);
+      const auto data =
+          std::dynamic_pointer_cast<
+              PropertyType_FourBytesOfLengthFollowedByData>(m_rgData[i])
+              ->data();
+
       QString string = QString::fromUtf16(
-          reinterpret_cast<const ushort *>(body->data().constData()),
-          body->cb() / 2);
+          reinterpret_cast<const ushort *>(data.constData()), data.size() / 2);
 
       xmlWriter.writeCharacters(string);
       xmlWriter.writeEndElement();
@@ -1991,7 +2093,8 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     case PropertyIDs::undoc_tocSectionIndex: {
       xmlWriter.writeStartElement("undoc_tocSectionIndex");
       const auto data =
-          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
       QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
       quint32 val;
@@ -2005,8 +2108,8 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     case PropertyIDs::undoc_tocSectionGUID: {
       xmlWriter.writeStartElement("undoc_tocSectionGUID");
       const auto data =
-          static_cast<PropertyType_FourBytesOfLengthFollowedByData *>(
-              m_rgData[i])
+          std::dynamic_pointer_cast<
+              PropertyType_FourBytesOfLengthFollowedByData>(m_rgData[i])
               ->data();
       QDataStream bytes(data);
       QUuid val;
@@ -2019,7 +2122,8 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     case PropertyIDs::undoc_tocSectionColor: {
       xmlWriter.writeStartElement("undoc_tocSectionColor");
       const auto data =
-          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
       QDataStream bytes(data);
       ColorRef val;
       bytes >> val;
@@ -2031,7 +2135,8 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     case PropertyIDs::undoc_SchemaRevisionInOrderToRead: {
       xmlWriter.writeStartElement("undoc_SchemaRevisionInOrderToRead");
       const auto data =
-          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
       QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
       quint32 val;
@@ -2044,7 +2149,8 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
     case PropertyIDs::undoc_PageBackgroundColor: {
       xmlWriter.writeStartElement("undoc_PageBackgroundColor");
       const auto data =
-          static_cast<PropertyType_FourBytesOfData *>(m_rgData[i])->data();
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
 
       xmlWriter.writeCharacters("#" + data.toHex());
       xmlWriter.writeEndElement();
