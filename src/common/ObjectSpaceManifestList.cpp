@@ -69,9 +69,8 @@ void ObjectSpaceManifestList::deserialize(QDataStream &ds) {
   std::copy_if(m_fileNodeSequence.begin(), m_fileNodeSequence.end(),
                back_inserter(objectSpaceManifestListStarts),
                [](const std::shared_ptr<FileNode> &entry) {
-                 return entry->getFileNodeID() ==
-                        static_cast<quint16>(
-                            FileNodeTypeID::ObjectSpaceManifestListStartFND);
+                 return entry->getFileNodeTypeID() ==
+                            FileNodeTypeID::ObjectSpaceManifestListStartFND;
                });
 
   if (objectSpaceManifestListStarts.size() == 1) {
@@ -83,9 +82,8 @@ void ObjectSpaceManifestList::deserialize(QDataStream &ds) {
   std::copy_if(m_fileNodeSequence.begin(), m_fileNodeSequence.end(),
                back_inserter(revisionManifestListRefs),
                [](const std::shared_ptr<FileNode> &entry) {
-                 return entry->getFileNodeID() ==
-                        static_cast<quint16>(
-                            FileNodeTypeID::RevisionManifestListReferenceFND);
+                 return entry->getFileNodeTypeID() ==
+                            FileNodeTypeID::RevisionManifestListReferenceFND;
                });
 
   for (const auto &entry : revisionManifestListRefs) {

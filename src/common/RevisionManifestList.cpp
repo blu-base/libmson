@@ -72,25 +72,23 @@ void RevisionManifestList::deserialize(QDataStream &ds) {
   std::copy_if(m_FileNodeSequence.begin(), m_FileNodeSequence.end(),
                back_inserter(m_RevisionRoleDeclarations),
                [](const std::shared_ptr<FileNode> &entry) {
-                 return entry->getFileNodeID() ==
-                        static_cast<quint16>(
-                            FileNodeTypeID::RevisionRoleDeclarationFND);
+                 return entry->getFileNodeTypeID() ==
+                            FileNodeTypeID::RevisionRoleDeclarationFND;
                });
 
   std::copy_if(
       m_FileNodeSequence.begin(), m_FileNodeSequence.end(),
       back_inserter(m_RevisionRoleAndContextDeclarations),
       [](const std::shared_ptr<FileNode> &entry) {
-        return entry->getFileNodeID() ==
-               static_cast<quint16>(
-                   FileNodeTypeID::RevisionRoleAndContextDeclarationFND);
+        return entry->getFileNodeTypeID() ==
+                   FileNodeTypeID::RevisionRoleAndContextDeclarationFND;
       });
 
   std::shared_ptr<RevisionManifest> revManifest =
       std::make_shared<RevisionManifest>();
   for (auto fn : m_FileNodeSequence) {
 
-    switch (static_cast<FileNodeTypeID>(fn->getFileNodeID())) {
+    switch (fn->getFileNodeTypeID()) {
     case FileNodeTypeID::RevisionManifestStart6FND:
     case FileNodeTypeID::RevisionManifestStart7FND:
     case FileNodeTypeID::RevisionManifestStart4FND: {
@@ -115,8 +113,7 @@ void RevisionManifestList::deserialize(QDataStream &ds) {
       break;
     default: {
       revManifest->fileNodeSquence().push_back(fn);
-      if (fn->getFileNodeID() ==
-          static_cast<quint16>(FileNodeTypeID::ObjectGroupListReferenceFND)) {
+      if (fn->getFileNodeTypeID()== FileNodeTypeID::ObjectGroupListReferenceFND) {
 
         const auto objectGroupListRef =
             std::dynamic_pointer_cast<ObjectGroupListReferenceFND>(fn->getFnt())

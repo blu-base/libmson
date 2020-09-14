@@ -106,7 +106,7 @@ void MSONcommon::FileNode::deserialize(QDataStream &ds) {
       (temp >> FileNode_shiftFileNodeSize) & FileNode_maskFileNodeSize;
   fileNodeID = (temp >> FileNode_shiftFileNodeID) & FileNode_maskFileNodeID;
 
-  switch (static_cast<FileNodeTypeID>(fileNodeID)) {
+  switch (getFileNodeTypeID()) {
   case FileNodeTypeID::ChunkTerminatorFND:
     fnt = std::make_shared<ChunkTerminatorFND>();
     break;
