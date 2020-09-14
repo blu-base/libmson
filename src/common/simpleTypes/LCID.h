@@ -471,16 +471,24 @@ enum class LanguageID : quint16 {
   invalid = 0xFFFF
 };
 
+
+
+/// \todo refactor LCID class. sortid, and toString are not well designed
 class LCID : public IRevisionStoreFileObject {
   LanguageID lid;
+  quint8 sortid;
 
 public:
   LCID();
 
   QString toString() const;
+  static QString toString(const LanguageID l_id);
 
   void setLCID(const LanguageID lid);
-  void getLCID() const;
+  LanguageID getLCID() const;
+
+  void setSortID(const quint8 sid);
+  quint8 getSortID() const;
 
 private:
   virtual void deserialize(QDataStream &ds) override;

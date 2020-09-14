@@ -420,30 +420,23 @@ QString PropertyID::idToString(const PropertyIDs &val) {
   case PropertyIDs::TaskTagDueDate:
     m_id_string = "TaskTagDueDate";
     break;
-  case PropertyIDs::undoc_ResolutionID:
-    m_id_string = "undoc_ResolutionID";
-    break;
+
   case PropertyIDs::undoc_AuthorInitials:
     m_id_string = "undoc_AuthorInitials";
     break;
 
-  case PropertyIDs::undoc_StrokesIndex:
-    m_id_string = "undoc_StrokesIndex";
+  case PropertyIDs::undoc_ResolutionID:
+    m_id_string = "undoc_ResolutionID";
+    break;
+
+  case PropertyIDs::undoc_StrokesToolSettings:
+    m_id_string = "undoc_StrokesToolSettings";
+    break;
+  case PropertyIDs::undoc_Undetermined64byteBlock:
+    m_id_string = "undoc_Undetermined64byteBlock";
     break;
   case PropertyIDs::undoc_StrokesBlob:
     m_id_string = "undoc_StrokesBlob";
-    break;
-  case PropertyIDs::undoc_StrokesColor:
-    m_id_string = "undoc_StrokesColor";
-    break;
-  case PropertyIDs::undoc_StrokesCreationTime:
-    m_id_string = "undoc_StrokesCreationTime";
-    break;
-  case PropertyIDs::undoc_SchemaRevisionInOrderToRead:
-    m_id_string = "undoc_SchemaRevisionInOrderToRead";
-    break;
-  case PropertyIDs::unodc_StrokeLanguage:
-    m_id_string = "unodc_StrokeLanguage";
     break;
   case PropertyIDs::undoc_StrokesToolSizeHeight:
     m_id_string = "undoc_StrokesToolSizeHeight";
@@ -451,33 +444,48 @@ QString PropertyID::idToString(const PropertyIDs &val) {
   case PropertyIDs::undoc_StrokesToolSizeWidth:
     m_id_string = "undoc_StrokesToolSizeWidth";
     break;
-  case PropertyIDs::undoc_StrokesRecognizedText:
-    m_id_string = "undoc_StrokesRecognizedText";
+  case PropertyIDs::undoc_StrokesColor:
+    m_id_string = "undoc_StrokesColor";
     break;
-  case PropertyIDs::undoc_StrokesOffsetsVertHoriz:
-    m_id_string = "undoc_StrokesOffsetsVertHoriz";
+  case PropertyIDs::undoc_StrokesContainer:
+    m_id_string = "undoc_StrokesContainer";
     break;
-  case PropertyIDs::undoc_StrokesModus:
-    m_id_string = "undoc_StrokesModus";
+  case PropertyIDs::undoc_StrokesGroup:
+    m_id_string = "undoc_StrokesGroup";
+    break;
+  case PropertyIDs::undoc_Strokes003418:
+    m_id_string = "undoc_Strokes003418";
+    break;
+  case PropertyIDs::undoc_StrokesIndex:
+    m_id_string = "undoc_StrokesIndex";
     break;
   case PropertyIDs::undoc_StrokesGUID:
     m_id_string = "undoc_StrokesGUID";
     break;
+  case PropertyIDs::unodc_StrokeLanguage:
+    m_id_string = "unodc_StrokeLanguage";
+    break;
+  case PropertyIDs::undoc_StrokesModus:
+    m_id_string = "undoc_StrokesModus";
+    break;
 
+  case PropertyIDs::undoc_StrokesCreationTime:
+    m_id_string = "undoc_StrokesCreationTime";
+    break;
+  case PropertyIDs::undoc_StrokesRecognizedText:
+    m_id_string = "undoc_StrokesRecognizedText";
+    break;
+
+  case PropertyIDs::undoc_StrokesOffsetsVertHoriz:
+    m_id_string = "undoc_StrokesOffsetsVertHoriz";
+    break;
+
+  case PropertyIDs::undoc_SchemaRevisionInOrderToRead:
+    m_id_string = "undoc_SchemaRevisionInOrderToRead";
+    break;
   case PropertyIDs::undoc_RecognizedText:
     m_id_string = "undoc_RecognizedText";
     break;
-
-
-
-
-
-
-  case PropertyIDs::undoc_Undetermined64byteBlock:
-    m_id_string = "undoc_Undetermined64byteBlock";
-    break;
-
-
 
   case PropertyIDs::undoc_tocSectionName:
     m_id_string = "undoc_tocSectionName";

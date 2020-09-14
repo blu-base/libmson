@@ -494,20 +494,23 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
       break;
     }
 
-      /// \todo LanguageID is four byte, not two, check content
-      //    case PropertyIDs::LanguageID: {
-      //      xmlWriter.writeStartElement("LanguageID");
-      //      const auto data =
-      //          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
-      //              ->data();
-      //      QDataStream bytes(data);
-      //      bytes.setByteOrder(QDataStream::LittleEndian);
-      //      LCID val;
-      //      bytes >> val;
-      //      xmlWriter.writeCharacters(val.toString());
-      //      xmlWriter.writeEndElement();
-      //      break;
-      //    }
+    case PropertyIDs::LanguageID: {
+
+      const auto data =
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(m_rgData[i])
+              ->data();
+      QDataStream bytes(data);
+      bytes.setByteOrder(QDataStream::LittleEndian);
+      LCID val;
+      bytes >> val;
+
+      xmlWriter.writeStartElement("LanguageID");
+      xmlWriter.writeAttribute("SortID", qStringHex(val.getSortID(),4));
+      xmlWriter.writeCharacters(LCID::toString(val.getLCID()));
+      xmlWriter.writeEndElement();
+
+      break;
+    }
 
     case PropertyIDs::LayoutAlignmentInParent: {
       const auto data =
@@ -1085,25 +1088,14 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
       xmlWriter.writeEndElement();
       break;
     }
+//      ObjectID:
+//    case PropertyIDs::AuthorOriginal:
 
-    case PropertyIDs::AuthorOriginal: {
-      xmlWriter.writeStartElement("AuthorOriginal");
+//      ObjectID:
+//    case PropertyIDs::AuthorMostRecent:
 
-      int val = m_rgPrids[i].boolValue();
-      xmlWriter.writeCharacters(val == 0 ? "False"
-                                         : (val == 1 ? "True" : "n.a."));
-      xmlWriter.writeEndElement();
-      break;
-    }
-    case PropertyIDs::AuthorMostRecent: {
-      xmlWriter.writeStartElement("AuthorMostRecent");
 
-      int val = m_rgPrids[i].boolValue();
-      xmlWriter.writeCharacters(val == 0 ? "False"
-                                         : (val == 1 ? "True" : "n.a."));
-      xmlWriter.writeEndElement();
-      break;
-    }
+
     case PropertyIDs::LastModifiedTime: {
       xmlWriter.writeStartElement("LastModifiedTime");
       const auto data =
@@ -1907,9 +1899,9 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
               ->data();
       QDataStream bytes(data);
       bytes.setByteOrder(QDataStream::LittleEndian);
-      LCID val;
+      quint16 val;
       bytes >> val;
-      xmlWriter.writeCharacters(val.toString());
+      xmlWriter.writeCharacters(LCID::toString(static_cast<LanguageID>(val)));
       xmlWriter.writeEndElement();
       break;
     }

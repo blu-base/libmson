@@ -1,11 +1,72 @@
 #include "LCID.h"
 
+#include "../helper/Helper.h"
+
 namespace MSONcommon {
 
-LCID::LCID() : lid(LanguageID::invalid) {}
+LCID::LCID() : lid(LanguageID::invalid), sortid() {}
 
-QString LCID::toString() const {
-  switch (lid) {
+QString LCID::toString() const
+{
+  return LCID::toString(lid);
+}
+
+
+
+void LCID::setLCID(const LanguageID lid)
+{
+  this->lid = lid;
+}
+
+LanguageID LCID::getLCID() const
+{
+  return lid;
+}
+
+
+
+
+void LCID::setSortID(const quint8 sid)
+{
+  sortid = sid;
+}
+
+quint8 LCID::getSortID() const
+{
+  return sortid;
+}
+
+void LCID::deserialize(QDataStream &ds) {
+  quint16 lvalue;
+  ds >> lvalue;
+  quint16 svalue;
+  ds >> svalue;
+
+
+  lid = static_cast<LanguageID>(lvalue);
+  sortid = svalue & 0xF;
+}
+
+void LCID::serialize(QDataStream &ds) const {
+
+  quint32 value = static_cast<quint32>(lid) << 16;
+  value += sortid << 12;
+
+  ds << value;
+}
+
+void LCID::writeLowLevelXml(QXmlStreamWriter& xmlWriter) const
+{
+  xmlWriter.writeStartElement("LCID");
+  xmlWriter.writeAttribute("SortID", qStringHex(sortid,4));
+  xmlWriter.writeCharacters(toString());
+  xmlWriter.writeEndElement();
+}
+
+void LCID::toDebugString(QDebug &dbg) const { dbg << "LCID:\n"; }
+
+QString LCID::toString(const LanguageID l_id) {
+  switch (l_id) {
   case LanguageID::ar:
     return "ar";
   case LanguageID::bg:
@@ -925,27 +986,5 @@ QString LCID::toString() const {
   }
 }
 
-void LCID::deserialize(QDataStream &ds) {
-  quint16 lid_value;
-  ds >> lid_value;
-
-  lid = static_cast<LanguageID>(lid_value);
-}
-
-void LCID::serialize(QDataStream &ds) const {
-
-  quint32 lid_value = static_cast<quint16>(lid);
-
-  ds << lid_value;
-}
-
-void LCID::writeLowLevelXml(QXmlStreamWriter& xmlWriter) const
-{
-  xmlWriter.writeStartElement("LCID");
-  xmlWriter.writeCharacters(toString());
-  xmlWriter.writeEndElement();
-}
-
-void LCID::toDebugString(QDebug &dbg) const { dbg << "LCID:\n"; }
 
 } // namespace MSONcommon

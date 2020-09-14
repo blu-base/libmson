@@ -62,6 +62,10 @@ enum class JCIDs : quint32 {
    * - undoc_StrokesToolSizeHeight
    * - undoc_StrokesToolSizeWidth
    * - undoc_StrokesColor (optionally)
+   * - 0x88003411, Bool, optionally, only present when highlighter (square tool) is used
+   * - 0x0c003412, OneByteOfData, optionally, only present when highlighter (square tool) is used
+   * - 0x0c003414, OneByteOfData, optionally, only present when highlighter (square tool) is used
+   * - 0x0c003413, OneByteOfData, optionally, only present when highlighter (square tool) is used
    */
   undoc_jciddrawingToolData = 0x00120048,
 

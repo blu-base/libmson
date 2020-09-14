@@ -156,33 +156,78 @@ enum class PropertyIDs : quint32 {
   // cid=&quot;abcdefg&quot;/&gt;&lt;/resolutionId&gt;
   undoc_ResolutionID = 0x1c001e30,
 
-  // indicates to jcid 0x00120048
-  // which contains:
-  // * undoc_Undetermined64byteBlock/ 0x1c00340a
-  // * undoc_StrokesColor
-  // * undoc_StrokesToolSizeHeight
-  // * undoc_StrokesToolSizeWidth
-  // maybe this is a container for the tool settings
-  // ObjectID   0x20003409
+  /** ObjectID which points to undoc_jciddrawingToolData(0x00120048), the tool settings
+  * which contains:
+  * * undoc_Undetermined64byteBlock/ 0x1c00340a
+  * * undoc_StrokesColor
+  * * undoc_StrokesToolSizeHeight
+  * * undoc_StrokesToolSizeWidth
+  */
+  undoc_StrokesToolSettings = 0x20003409,
 
-  // When ever there are strokes or a shape, there is this 64bytes object which
-  // always have the same content:
-  // 0x8f6a8a59c052a04b93afaf357411a56100000080ffffff7f0200000000007a44759f3fb5e0049844a7eec30dbb5a901100000080ffffff7f0200000000007a44
-  // FourBytesOfLengthFollowedByData
+
+  /** When ever there are strokes or a shape, there is this 64bytes object which
+  * always have the same content (unparsed):
+  * 8f6a8a59c052a04b93afaf357411a561 00000080 ffffff7f 02000000 00007a44
+  * 759f3fb5e0049844a7eec30dbb5a9011 00000080 ffffff7f 02000000 00007a44
+  *
+  * there seem to be two GUIDs in this chunk.
+  *
+  * FourBytesOfLengthFollowedByData
+  */
   undoc_Undetermined64byteBlock = 0x1c00340a,
 
-  // Likely contains serialized strokes
-  // FourBytesOfLengthFollowedByData
+  /** Blob containing serialized strokes in native format
+  *
+  * FourBytesOfLengthFollowedByData
+  */
   undoc_StrokesBlob = 0x1c00340b,
 
-  // both values describe the tool size. float32 where 1 unit represents 0.01mm
-  // FourBytesOfData
+  /// \todo find ToolSettings whether it's round or square
+  /** float32 for the tool height, 1 unit represents 0.01mm
+   */
   undoc_StrokesToolSizeHeight = 0x1400340c,
+
+  /** float32 for the tool width, 1 unit represents 0.01mm
+   *
+   */
   undoc_StrokesToolSizeWidth = 0x1400340d,
 
-  // maybe is color of the used tool/stroke
-  // FourBytesOfData
+  /** Stroke's Tool color
+   * FourBytesOfData
+   * it's a array of the type: byte[4]
+   * RGB + X
+   *
+   * the first three bytes seem to be the color hex code.
+   *
+   * X might be a switch to declare fixed color versus automatically changeble,such as maybe color scheme
+   */
   undoc_StrokesColor = 0x1400340f,
+
+
+
+  /** Strokes's tool setting, which seem to correlate with square-like tool such as the highlight markers
+   * Bool
+   * usually seems to have only the value True when present
+   */
+  undoc_StrokesToolSetting003411 = 0x0c003411,
+  /** Strokes's tool setting, which seem to correlate with square-like tool such as the highlight markers
+   * OneByteOfData
+   * usually seems to have only the value 0x01
+   */
+  undoc_StrokesToolSetting003412 = 0x0c003412,
+
+  /** Strokes's tool setting, which seem to correlate with square-like tool such as the highlight markers
+   * OneByteOfData
+   * usually seems to have only the value 0x09
+   */
+  undoc_StrokesToolSetting003413 = 0x0c003413,
+
+  /** Strokes's tool setting, which seem to correlate with square-like tool such as the highlight markers
+   * OneByteOfData
+   * usually seems to have only the value 0x7f
+   */
+  undoc_StrokesToolSetting003414 = 0x0c003414,
 
   /** ObjectID which lives in undoc_jcidShape (0x00060014)
    * Points to the undoc_jcidDrawingGroupNode (0x0002003b)
@@ -223,7 +268,8 @@ enum class PropertyIDs : quint32 {
   */
   undoc_StrokesGUID = 0x1c00341a,
 
-  /* likely to be the language id from an LCID.
+
+  /** TwoBytes declaring the LanguageID without a SortID
    * TwoBytesOfData
    */
   unodc_StrokeLanguage = 0x1000341b,
@@ -236,17 +282,24 @@ enum class PropertyIDs : quint32 {
    */
   undoc_StrokesModus = 0x0c00341c,
 
-  // high 4 bytes does not seem to change, FileTime returns a plausible result
-  // FourBytesOfLengthFollowedByData
+  /** FILETIME object with creation time of the respective stroke
+   *
+   * eight bytes in FourBytesOfLengthFollowedByData
+   */
   undoc_StrokesCreationTime = 0x1c00341d,
 
-  // \0-seperated list of recognized text
-  // FourBytesOfLengthFollowedByData
+
+  /** \0-seperated list of recognized text
+   * It seems the sorting is sorted by likelyhood
+   *
+   * FourBytesOfLengthFollowedByData
+   */
   undoc_StrokesRecognizedText = 0x1c00341e,
 
-  /// seems to be only present when handwriting modus or dual modus is active
-  /// bool
-  /// 0x8800341f
+  /** seems to be only present when handwriting modus or dual modus is active
+   * bool
+   */
+  undoc_Strokes00341f = 0x8800341f,
 
   /// might not be writtng when modus is only drawing
   /// in other handwriting modus and dual modus the value seems somewhat
@@ -263,30 +316,31 @@ enum class PropertyIDs : quint32 {
   /// FourBytesOfLengthFollowedByData
   undoc_RecognizedText = 0x1c001cc4,
 
-  /// seems to be only present when "undoc_RecognizedText = 0x1c001cc4" is set
-  /// maybe two allow highlighting when search handwritten stuff
-  ///
-  /// seems to contain alot of zero bytes
-  /// seems to contain similar content across different sections,
-  ///
-  /// appears in jcidRichTextOENode
-  /// FourBytesOfLengthFollowedByData
-  ///   0x1c00345d
-  ///
+  /** seems to be only present when "undoc_RecognizedText = 0x1c001cc4" is set
+  * maybe two allow highlighting when search handwritten stuff
+  *
+  * seems to contain alot of zero bytes
+  * seems to contain similar content across different sections,
+  *
+  * appears in jcidRichTextOENode
+  * FourBytesOfLengthFollowedByData
+  */
+  undoc_Strokes00345d =  0x1c00345d,
 
-  /// the following values always appear in a group
-  /// 0x1400349e
-  /// 0x1400349f
-  /// 0x140034a0
-  /// 0x140034a1
-  /// 0x140034a2
-  /// 0x140034a3
-  /// 0x140034a4
-  /// 0x140034a5
+  /** the following values always appear in a group
+   */
+  undoc_Strokes00349e = 0x1400349e,
+  undoc_Strokes00349f = 0x1400349f,
+  undoc_Strokes0034a0 = 0x140034a0,
+  undoc_Strokes0034a1 = 0x140034a1,
+  undoc_Strokes0034a2 = 0x140034a2,
+  undoc_Strokes0034a3 = 0x140034a3,
+  undoc_Strokes0034a4 = 0x140034a4,
+  undoc_Strokes0034a5 = 0x140034a5,
 
-  /// seems to be always 32 byte wide
-  ///
-  /// 0x1c001d4d
+  /** seems to be always 32 byte wide
+  */
+  undoc_001d4d =0x1c001d4d,
 
   // Maybe stores a file name of a section file, but also found FileSyncandWOPI
   // and OneNote_RecycleBin
@@ -302,7 +356,9 @@ enum class PropertyIDs : quint32 {
   // last byte also switches between default color and selected color
   undoc_tocSectionColor = 0x14001cbe,
 
-  // seems to always have the same value as SchemaRevisionInOrderToRead
+  /* seems to always have the same value as SchemaRevisionInOrderToRead
+   * might also be SchemaRevisionInOrderToWrite
+   */
   undoc_SchemaRevisionInOrderToRead = 0x1400348b,
 
   // mono color background
