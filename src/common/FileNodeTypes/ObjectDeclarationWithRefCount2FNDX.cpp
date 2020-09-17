@@ -54,17 +54,8 @@ void ObjectDeclarationWithRefCount2FNDX::deserialize(QDataStream &ds) {
   ds >> m_body;
   ds >> m_cRef;
 
-  std::shared_ptr<MSONDocument> doc = DocumentManager::getDocument(ds);
 
-  if (!doc->isEncrypted()) {
-    // getting remote ObjectPropSet
-    quint64 curLocation = ds.device()->pos();
-    quint64 destLocation = m_objectRef.stp();
-
-    ds.device()->seek(destLocation);
-    ds >> m_blob;
-    ds.device()->seek(curLocation);
-  }
+  m_blob = ObjectSpaceObjectPropSet(ds, m_objectRef);
 }
 
 void ObjectDeclarationWithRefCount2FNDX::serialize(QDataStream &ds) const {

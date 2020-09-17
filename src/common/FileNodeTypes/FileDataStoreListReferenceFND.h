@@ -14,7 +14,7 @@ class FileDataStoreListReferenceFND : public IFileNodeType {
 private:
   FileNodeChunkReference m_ref;
 
-  MSONcommon::FileNodeListFragment m_StoreList;
+  FileNodeListFragment m_StoreList;
 
 public:
   FileDataStoreListReferenceFND(FNCR_STP_FORMAT stpFormat,

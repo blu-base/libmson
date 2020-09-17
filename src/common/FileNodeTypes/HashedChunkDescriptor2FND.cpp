@@ -38,13 +38,7 @@ void HashedChunkDescriptor2FND::deserialize(QDataStream &ds) {
 
   m_guidHash = ds.device()->read(guidHashWidth);
 
-  // getting remote ObjectPropSet
-  quint64 curLocation = ds.device()->pos();
-  quint64 destLocation = m_BlobRef.stp();
-
-  ds.device()->seek(destLocation);
-  ds >> m_blob;
-  ds.device()->seek(curLocation);
+  m_blob = ObjectSpaceObjectPropSet(ds, m_BlobRef);
 }
 
 void HashedChunkDescriptor2FND::serialize(QDataStream &ds) const {

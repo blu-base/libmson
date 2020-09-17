@@ -67,17 +67,11 @@ void ObjectRevisionWithRefCount2FNDX::deserialize(QDataStream &ds) {
   ds >> temp;
 
   m_fHasOidReferences = static_cast<bool>(temp & 0x1);
-  m_fHasOsidReferences = static_cast<bool>((temp & 0x2) >> 1) ;
+  m_fHasOsidReferences = static_cast<bool>((temp & 0x2) >> 1);
 
   ds >> m_cRef;
 
-  // getting remote ObjectPropSet
-  quint64 curLocation = ds.device()->pos();
-  quint64 destLocation = m_ref.stp();
-
-  ds.device()->seek(destLocation);
-  ds >> m_blob;
-  ds.device()->seek(curLocation);
+  m_blob = ObjectSpaceObjectPropSet(ds, m_ref);
 }
 
 void ObjectRevisionWithRefCount2FNDX::serialize(QDataStream &ds) const {

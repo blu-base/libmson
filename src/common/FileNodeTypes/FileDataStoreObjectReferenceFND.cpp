@@ -40,13 +40,7 @@ void FileDataStoreObjectReferenceFND::deserialize(QDataStream &ds) {
   ds >> m_ref;
   ds >> m_guidReference;
 
-  // getting remote FileDataStoreObject
-  quint64 origLocation = ds.device()->pos();
-  quint64 destLocation = m_ref.stp();
-
-  ds.device()->seek(destLocation);
-  ds >> m_blob;
-  ds.device()->seek(origLocation);
+  m_blob = FileDataStoreObject(ds, m_ref);
 }
 
 void FileDataStoreObjectReferenceFND::serialize(QDataStream &ds) const {
