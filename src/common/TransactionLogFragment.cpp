@@ -13,6 +13,7 @@ void TransactionLogFragment::setNextFragment(
 }
 
 void TransactionLogFragment::deserialize(QDataStream &ds) {
+  quint64 startLocation = ds.device()->pos();
   quint64 num_entries = (m_size - 12) / 8;
 
   for (size_t i{0}; i < num_entries; i++) {
@@ -20,8 +21,9 @@ void TransactionLogFragment::deserialize(QDataStream &ds) {
     ds >> *entry;
     sizeTable.push_back(entry);
   }
-
+  ds.device()->seek(startLocation + m_size-12);
   ds >> nextFragment;
+
 }
 
 void TransactionLogFragment::serialize(QDataStream &ds) const {
