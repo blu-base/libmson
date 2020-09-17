@@ -5,10 +5,25 @@
 
 #include "../helper/Helper.h"
 
+#include "../DocumentManager.h"
+
 namespace MSONcommon {
 
 FileDataStoreObject::FileDataStoreObject()
     : m_cbLength(), m_unused(), m_reserved(), m_padding() {}
+
+FileDataStoreObject::FileDataStoreObject(QDataStream &ds,
+                                         const FileNodeChunkReference &ref)
+    : m_cbLength(), m_unused(), m_reserved(), m_padding() {
+  std::shared_ptr<MSONDocument> doc = DocumentManager::getDocument(ds);
+  if (!doc->isEncrypted()) {
+    quint64 currentLocation = ds.device()->pos();
+
+    ds.device()->seek(ref.stp());
+    ds >> *this;
+    ds.device()->seek(currentLocation);
+  }
+}
 
 QUuid FileDataStoreObject::guidHeader() const { return m_guidHeader; }
 

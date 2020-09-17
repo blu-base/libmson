@@ -8,6 +8,7 @@
 #include <QXmlStreamWriter>
 
 #include "../IRevisionStoreFileObject.h"
+#include "../commonTypes/FileNodeChunkReference.h"
 
 namespace MSONcommon {
 
@@ -54,6 +55,7 @@ private:
 
 public:
   FileDataStoreObject();
+  FileDataStoreObject(QDataStream &ds, const FileNodeChunkReference &ref);
 
   QUuid guidHeader() const;
   void setGuidHeader(const QUuid &guidHeader);
