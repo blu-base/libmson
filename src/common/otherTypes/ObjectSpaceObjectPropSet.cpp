@@ -1,17 +1,23 @@
 #include "ObjectSpaceObjectPropSet.h"
 
+#include "../DocumentManager.h"
+
 namespace MSONcommon {
 
 ObjectSpaceObjectPropSet::ObjectSpaceObjectPropSet() {}
 
 ObjectSpaceObjectPropSet::ObjectSpaceObjectPropSet(
     QDataStream &ds, const FileNodeChunkReference &ref) {
+
+  std::shared_ptr<MSONDocument> doc = DocumentManager::getDocument(ds);
+    if (!doc->isEncrypted()) {
   quint64 currentLocation = ds.device()->pos();
 
   ds.device()->seek(ref.stp());
   deserialize(ds);
 
   ds.device()->seek(currentLocation);
+    }
 }
 
 ObjectSpaceObjectStreamOfOIDs ObjectSpaceObjectPropSet::OIDs() const {
