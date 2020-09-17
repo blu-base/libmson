@@ -2,9 +2,6 @@
 #include "helper/Helper.h"
 namespace MSONcommon {
 void FreeChunkListFragment::deserialize(QDataStream &ds) {
-
-  qDebug() << "FreeChunkListFragment: Reading at pos in file: "
-           << qStringHex(ds.device()->pos(), 16);
   ds >> crc;
   ds >> fcrNextChunk;
 
@@ -15,9 +12,6 @@ void FreeChunkListFragment::deserialize(QDataStream &ds) {
     ds >> *temp;
     fcrFreeChunk.push_back(temp);
   }
-
-  qDebug() << "FreeChunkListFragment: Finished at pos in file: "
-           << qStringHex(ds.device()->pos(), 16);
 }
 
 void FreeChunkListFragment::serialize(QDataStream &ds) const {
