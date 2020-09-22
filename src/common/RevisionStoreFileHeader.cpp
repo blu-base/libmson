@@ -1,6 +1,6 @@
 
 
-#include "MSONHeader.h"
+#include "RevisionStoreFileHeader.h"
 #include <memory>
 
 #include "commonTypes/FileChunkReference32.h"
@@ -21,7 +21,7 @@ static const QUuid v_guidZero("{00000000-0000-0000-0000-000000000000}");
 
 static constexpr const quint32 def_reservedHeaderTailLength = 728;
 
-MSONHeader::MSONHeader()
+RevisionStoreFileHeader::RevisionStoreFileHeader()
     : // guidFileType {QUuid::fromString(QString(v_guidFileType_One))},
       guidFile{QUuid::createUuid()}, guidLegacyFileVersion{QUuid()},
       guidFileFormat{QUuid(v_guidFileFormat)}, ffvLastWriterVersion{0x0000002A},
@@ -48,9 +48,9 @@ MSONHeader::MSONHeader()
       bnNewestWritten{0}, reservedHeaderTailLength{
                             def_reservedHeaderTailLength} {}
 
-quint64 MSONHeader::getSizeInFile() { return sizeInFile; }
+quint64 RevisionStoreFileHeader::getSizeInFile() { return sizeInFile; }
 
-void MSONHeader::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
+void RevisionStoreFileHeader::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("Header");
 
   xmlWriter.writeStartElement("guidFileType");
@@ -208,7 +208,7 @@ void MSONHeader::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeEndElement(); // Header
 }
 
-void MSONHeader::serialize(QDataStream &ds) const {
+void RevisionStoreFileHeader::serialize(QDataStream &ds) const {
   // if byte order is big endian, change to little endian
   if (ds.byteOrder() == QDataStream::BigEndian) {
     ds.setByteOrder(QDataStream::LittleEndian);
@@ -254,7 +254,7 @@ void MSONHeader::serialize(QDataStream &ds) const {
   ds << QByteArray(reservedHeaderTailLength, '\00');
 }
 
-void MSONHeader::deserialize(QDataStream &ds) {
+void RevisionStoreFileHeader::deserialize(QDataStream &ds) {
   // if byte order is big endian, change to little endian
   if (ds.byteOrder() == QDataStream::BigEndian) {
     ds.setByteOrder(QDataStream::LittleEndian);
@@ -300,7 +300,7 @@ void MSONHeader::deserialize(QDataStream &ds) {
   ds.skipRawData(reservedHeaderTailLength);
 }
 
-void MSONHeader::toDebugString(QDebug &dbg) const {
+void RevisionStoreFileHeader::toDebugString(QDebug &dbg) const {
 
   QDebugStateSaver saver(dbg);
   dbg.setAutoInsertSpaces(false);
@@ -435,701 +435,701 @@ void MSONHeader::toDebugString(QDebug &dbg) const {
   dbg << " reservedHeaderTailLength:          " << reservedHeaderTailLength
       << (isReservedHeaderTailValid() ? "" : " INVALID")
       << (isReservedHeaderTailIgnored() ? " ignored" : "") << "\n";
-  dbg << "++++++++++++++++++MSONHeader+++++++++++++++++++++++\n\n";
+  dbg << "++++++++++++++++++RevisionStoreFileHeader+++++++++++++++++++++++\n\n";
 }
 
-QUuid MSONHeader::getGuidFileType() const { return guidFileType; }
+QUuid RevisionStoreFileHeader::getGuidFileType() const { return guidFileType; }
 
-void MSONHeader::setGuidFileType(const QUuid &value) { guidFileType = value; }
+void RevisionStoreFileHeader::setGuidFileType(const QUuid &value) { guidFileType = value; }
 
 /**
- * @brief MSONHeader::isGuidFileTypeValid
+ * @brief RevisionStoreFileHeader::isGuidFileTypeValid
  * @return
  *
  * GuidFile is only valid if it contains
  * {7B5C52E4-D88C-4DA7-AEB1-5378D02996D3} for .one file format, or
  * {43FF2FA1-EFD9-4C76-9EE2-10EA5722765F} for .onetoc2 file format
  */
-bool MSONHeader::isGuidFileTypeValid() const {
+bool RevisionStoreFileHeader::isGuidFileTypeValid() const {
   return guidFileType == v_guidFileType_One ||
          guidFileType == v_guidFileType_OneToc2;
 }
 
-bool MSONHeader::isGuidFileTypeIgnored() { return false; }
+bool RevisionStoreFileHeader::isGuidFileTypeIgnored() { return false; }
 
-QUuid MSONHeader::getGuidFile() const { return guidFile; }
+QUuid RevisionStoreFileHeader::getGuidFile() const { return guidFile; }
 
-void MSONHeader::setGuidFile(const QUuid &value) { guidFile = value; }
+void RevisionStoreFileHeader::setGuidFile(const QUuid &value) { guidFile = value; }
 
-bool MSONHeader::isGuidFileValid() const { return guidFile != v_guidZero; }
+bool RevisionStoreFileHeader::isGuidFileValid() const { return guidFile != v_guidZero; }
 
-bool MSONHeader::isGuidFileIgnored() { return false; }
+bool RevisionStoreFileHeader::isGuidFileIgnored() { return false; }
 
-QUuid MSONHeader::getGuidLegacyFileVersion() const {
+QUuid RevisionStoreFileHeader::getGuidLegacyFileVersion() const {
   return guidLegacyFileVersion;
 }
 
-void MSONHeader::setGuidLegacyFileVersion(const QUuid &value) {
+void RevisionStoreFileHeader::setGuidLegacyFileVersion(const QUuid &value) {
   guidLegacyFileVersion = value;
 }
 
 /**
- * @brief MSONHeader::isGuidLegacyFileVersionValid
+ * @brief RevisionStoreFileHeader::isGuidLegacyFileVersionValid
  * @return
  *
  * guidLegacyFileVersion must be {00000000-0000-0000-0000-000000000000}"
  */
-bool MSONHeader::isGuidLegacyFileVersionValid() const {
+bool RevisionStoreFileHeader::isGuidLegacyFileVersionValid() const {
   return guidLegacyFileVersion == v_guidZero;
 }
 
-bool MSONHeader::isGuidLegacyFileVersionIgnored() { return true; }
+bool RevisionStoreFileHeader::isGuidLegacyFileVersionIgnored() { return true; }
 
-QUuid MSONHeader::getGuidFileFormat() const { return guidFileFormat; }
+QUuid RevisionStoreFileHeader::getGuidFileFormat() const { return guidFileFormat; }
 
-void MSONHeader::setGuidFileFormat(const QUuid &value) {
+void RevisionStoreFileHeader::setGuidFileFormat(const QUuid &value) {
   guidFileFormat = value;
 }
 
 /**
- * @brief MSONHeader::isGuidFileFormatValid
+ * @brief RevisionStoreFileHeader::isGuidFileFormatValid
  * @return
  *
  * guidFileFormat must be {109ADD3F-911B-49F5-A5D0-1791EDC8AED8}
  */
-bool MSONHeader::isGuidFileFormatValid() const {
+bool RevisionStoreFileHeader::isGuidFileFormatValid() const {
   return guidFileFormat == v_guidFileFormat;
 }
 
-bool MSONHeader::isGuidFileFormatIgnored() { return false; }
+bool RevisionStoreFileHeader::isGuidFileFormatIgnored() { return false; }
 
-quint32 MSONHeader::getFfvLastWriterVersion() const {
+quint32 RevisionStoreFileHeader::getFfvLastWriterVersion() const {
   return ffvLastWriterVersion;
 }
 
-void MSONHeader::setFfvLastWriterVersion(quint32 value) {
+void RevisionStoreFileHeader::setFfvLastWriterVersion(quint32 value) {
   ffvLastWriterVersion = value;
 }
 
 /**
- * @brief MSONHeader::isFfvLastWriterVersionValid
+ * @brief RevisionStoreFileHeader::isFfvLastWriterVersionValid
  * @return
  *
  * must be 0x0000002A to indicate .one file format, or
  * must be 0x0000001B to indicate .onetoc2 file format
  */
-bool MSONHeader::isFfvLastWriterVersionValid() const {
+bool RevisionStoreFileHeader::isFfvLastWriterVersionValid() const {
   return ffvLastWriterVersion == 0x0000002A ||
          ffvLastWriterVersion == 0x0000001B;
 }
 
-bool MSONHeader::isFfvLastWriterVersionIgnored() { return false; }
+bool RevisionStoreFileHeader::isFfvLastWriterVersionIgnored() { return false; }
 
-quint32 MSONHeader::getFfvNewestWriterVersion() const {
+quint32 RevisionStoreFileHeader::getFfvNewestWriterVersion() const {
   return ffvNewestWriterVersion;
 }
 
-void MSONHeader::setFfvNewestWriterVersion(quint32 value) {
+void RevisionStoreFileHeader::setFfvNewestWriterVersion(quint32 value) {
   ffvNewestWriterVersion = value;
 }
 /**
- * @brief MSONHeader::isFfvNewestWriterVersionValid
+ * @brief RevisionStoreFileHeader::isFfvNewestWriterVersionValid
  * @return
  *
  * must be 0x0000002A to indicate .one file format, or
  * must be 0x0000001B to indicate .onetoc2 file format
  */
-bool MSONHeader::isFfvNewestWriterVersionValid() const {
+bool RevisionStoreFileHeader::isFfvNewestWriterVersionValid() const {
   return ffvLastWriterVersion == 0x0000002A ||
          ffvLastWriterVersion == 0x0000001B;
 }
 
-bool MSONHeader::isFfvNewestWriterVersionIgnored() { return false; }
+bool RevisionStoreFileHeader::isFfvNewestWriterVersionIgnored() { return false; }
 
-quint32 MSONHeader::getFfvOldestWriterVersion() const {
+quint32 RevisionStoreFileHeader::getFfvOldestWriterVersion() const {
   return ffvOldestWriterVersion;
 }
 
-void MSONHeader::setFfvOldestWriterVersion(quint32 value) {
+void RevisionStoreFileHeader::setFfvOldestWriterVersion(quint32 value) {
   ffvOldestWriterVersion = value;
 }
 
 /**
- * @brief MSONHeader::isFfvOldestWriterVersionValid
+ * @brief RevisionStoreFileHeader::isFfvOldestWriterVersionValid
  * @return
  * must be 0x0000002A to indicate .one file format, or
  * must be 0x0000001B to indicate .onetoc2 file format
  */
-bool MSONHeader::isFfvOldestWriterVersionValid() const {
+bool RevisionStoreFileHeader::isFfvOldestWriterVersionValid() const {
   return ffvLastWriterVersion == 0x0000002A ||
          ffvLastWriterVersion == 0x0000001B;
 }
 
-bool MSONHeader::isFfvOldestWriterVersionIgnored() { return false; }
+bool RevisionStoreFileHeader::isFfvOldestWriterVersionIgnored() { return false; }
 
-quint32 MSONHeader::getFfvOldestReader() const { return ffvOldestReader; }
+quint32 RevisionStoreFileHeader::getFfvOldestReader() const { return ffvOldestReader; }
 
-void MSONHeader::setFfvOldestReader(quint32 value) { ffvOldestReader = value; }
+void RevisionStoreFileHeader::setFfvOldestReader(quint32 value) { ffvOldestReader = value; }
 
 /**
- * @brief MSONHeader::isFfvOldestReaderValid
+ * @brief RevisionStoreFileHeader::isFfvOldestReaderValid
  * @return
  * must be 0x0000002A to indicate .one file format, or
  * must be 0x0000001B to indicate .onetoc2 file format
  */
-bool MSONHeader::isFfvOldestReaderValid() const {
+bool RevisionStoreFileHeader::isFfvOldestReaderValid() const {
   return ffvLastWriterVersion == 0x0000002A ||
          ffvLastWriterVersion == 0x0000001B;
 }
 
-bool MSONHeader::isFfvOldestReaderIgnored() { return false; }
+bool RevisionStoreFileHeader::isFfvOldestReaderIgnored() { return false; }
 
-FileChunkReference32 MSONHeader::getFcrLegacyFreeChunkList() const {
+FileChunkReference32 RevisionStoreFileHeader::getFcrLegacyFreeChunkList() const {
   return fcrLegacyFreeChunkList;
 }
 
-void MSONHeader::setFcrLegacyFreeChunkList(const FileChunkReference32 &value) {
+void RevisionStoreFileHeader::setFcrLegacyFreeChunkList(const FileChunkReference32 &value) {
   fcrLegacyFreeChunkList = value;
 }
 
 /**
- * @brief MSONHeader::isFcrLegacyFreeChunkListValid
+ * @brief RevisionStoreFileHeader::isFcrLegacyFreeChunkListValid
  * @return
  *
  * must be fcrZero
  */
-bool MSONHeader::isFcrLegacyFreeChunkListValid() const {
+bool RevisionStoreFileHeader::isFcrLegacyFreeChunkListValid() const {
   return fcrLegacyFreeChunkList.is_fcrZero();
 }
 
-bool MSONHeader::isFcrLegacyFreeChunkListIgnored() const { return false; }
+bool RevisionStoreFileHeader::isFcrLegacyFreeChunkListIgnored() const { return false; }
 
-FileChunkReference32 MSONHeader::getFcrLegacyTransactionLog() const {
+FileChunkReference32 RevisionStoreFileHeader::getFcrLegacyTransactionLog() const {
   return fcrLegacyTransactionLog;
 }
 
-void MSONHeader::setFcrLegacyTransactionLog(const FileChunkReference32 &value) {
+void RevisionStoreFileHeader::setFcrLegacyTransactionLog(const FileChunkReference32 &value) {
   fcrLegacyTransactionLog = value;
 }
 
 /**
- * @brief MSONHeader::isFcrLegacyTransactionLogValid
+ * @brief RevisionStoreFileHeader::isFcrLegacyTransactionLogValid
  * @return
  *
  * must be fcrNil
  */
-bool MSONHeader::isFcrLegacyTransactionLogValid() const {
+bool RevisionStoreFileHeader::isFcrLegacyTransactionLogValid() const {
   return fcrLegacyTransactionLog.is_fcrNil();
 }
 
-bool MSONHeader::isFcrLegacyTransactionLogIgnored() const { return false; }
+bool RevisionStoreFileHeader::isFcrLegacyTransactionLogIgnored() const { return false; }
 
-quint32 MSONHeader::getCTransactionsInLog() const { return cTransactionsInLog; }
+quint32 RevisionStoreFileHeader::getCTransactionsInLog() const { return cTransactionsInLog; }
 
 /**
- * @brief MSONHeader::setCTransactionsInLog
+ * @brief RevisionStoreFileHeader::setCTransactionsInLog
  * @param value
  *
  * \todo setting this value forces a new UUID for guidFileVersion as well
  */
-void MSONHeader::setCTransactionsInLog(quint32 value) {
+void RevisionStoreFileHeader::setCTransactionsInLog(quint32 value) {
   cTransactionsInLog = value;
 }
 
-void MSONHeader::changeTransactionsInLog(quint32 value) {
+void RevisionStoreFileHeader::changeTransactionsInLog(quint32 value) {
   cTransactionsInLog = value;
   nextGuidFileVersion();
 }
 
 /**
- * @brief MSONHeader::isCTransactionsInLogValid
+ * @brief RevisionStoreFileHeader::isCTransactionsInLogValid
  * @return
  *
  * must not be zero
  */
-bool MSONHeader::isCTransactionsInLogValid() const {
+bool RevisionStoreFileHeader::isCTransactionsInLogValid() const {
   return cTransactionsInLog != 0;
 }
 
-bool MSONHeader::isCTransactionsInLogIgnored() const { return false; }
+bool RevisionStoreFileHeader::isCTransactionsInLogIgnored() const { return false; }
 
-quint32 MSONHeader::getCbLegacyExpectedFileLength() const {
+quint32 RevisionStoreFileHeader::getCbLegacyExpectedFileLength() const {
   return cbLegacyExpectedFileLength;
 }
 
-void MSONHeader::setCbLegacyExpectedFileLength(quint32 value) {
+void RevisionStoreFileHeader::setCbLegacyExpectedFileLength(quint32 value) {
   cbLegacyExpectedFileLength = value;
 }
 
 /**
- * @brief MSONHeader::isCbLegacyExpectedFileLengthValid
+ * @brief RevisionStoreFileHeader::isCbLegacyExpectedFileLengthValid
  * @return
  *
  * must be zero
  */
 
-bool MSONHeader::isCbLegacyExpectedFileLengthValid() const {
+bool RevisionStoreFileHeader::isCbLegacyExpectedFileLengthValid() const {
   return cbLegacyExpectedFileLength == 0;
 }
 
-bool MSONHeader::isCbLegacyExpectedFileLengthIgnored() const { return true; }
+bool RevisionStoreFileHeader::isCbLegacyExpectedFileLengthIgnored() const { return true; }
 
-quint64 MSONHeader::getRgbPlaceholder() const { return rgbPlaceholder; }
+quint64 RevisionStoreFileHeader::getRgbPlaceholder() const { return rgbPlaceholder; }
 
-void MSONHeader::setRgbPlaceholder(quint64 value) { rgbPlaceholder = value; }
+void RevisionStoreFileHeader::setRgbPlaceholder(quint64 value) { rgbPlaceholder = value; }
 
 /**
- * @brief MSONHeader::isRgbPlaceholderValid
+ * @brief RevisionStoreFileHeader::isRgbPlaceholderValid
  * @return
  *
  * must be zero
  */
-bool MSONHeader::isRgbPlaceholderValid() const { return rgbPlaceholder == 0; }
+bool RevisionStoreFileHeader::isRgbPlaceholderValid() const { return rgbPlaceholder == 0; }
 
-bool MSONHeader::isRgbPlaceholderIgnored() const { return true; }
+bool RevisionStoreFileHeader::isRgbPlaceholderIgnored() const { return true; }
 
-FileChunkReference32 MSONHeader::getFcrLegacyFileNodeListRoot() const {
+FileChunkReference32 RevisionStoreFileHeader::getFcrLegacyFileNodeListRoot() const {
   return fcrLegacyFileNodeListRoot;
 }
 
-void MSONHeader::setFcrLegacyFileNodeListRoot(
+void RevisionStoreFileHeader::setFcrLegacyFileNodeListRoot(
     const FileChunkReference32 &value) {
   fcrLegacyFileNodeListRoot = value;
 }
 
-bool MSONHeader::isFcrLegacyFileNodeListRootValid() const {
+bool RevisionStoreFileHeader::isFcrLegacyFileNodeListRootValid() const {
   return fcrLegacyFileNodeListRoot.is_fcrNil();
 }
 
-bool MSONHeader::isFcrLegacyFileNodeListRootIgnored() const { return false; }
+bool RevisionStoreFileHeader::isFcrLegacyFileNodeListRootIgnored() const { return false; }
 
-quint32 MSONHeader::getCbLegacyFreeSpaceInFreeChunkList() const {
+quint32 RevisionStoreFileHeader::getCbLegacyFreeSpaceInFreeChunkList() const {
   return cbLegacyFreeSpaceInFreeChunkList;
 }
 
-void MSONHeader::setCbLegacyFreeSpaceInFreeChunkList(quint32 value) {
+void RevisionStoreFileHeader::setCbLegacyFreeSpaceInFreeChunkList(quint32 value) {
   cbLegacyFreeSpaceInFreeChunkList = value;
 }
 
-bool MSONHeader::isCbLegacyFreeSpaceInFreeChunkListValid() const {
+bool RevisionStoreFileHeader::isCbLegacyFreeSpaceInFreeChunkListValid() const {
   return cbLegacyExpectedFileLength == 0;
 }
 
-bool MSONHeader::isCbLegacyFreeSpaceInFreeChunkListIgnored() const {
+bool RevisionStoreFileHeader::isCbLegacyFreeSpaceInFreeChunkListIgnored() const {
   return true;
 }
 
-uchar MSONHeader::getFNeedsDefrag() const { return fNeedsDefrag; }
+uchar RevisionStoreFileHeader::getFNeedsDefrag() const { return fNeedsDefrag; }
 
-void MSONHeader::setFNeedsDefrag(quint8 value) { fNeedsDefrag = value; }
+void RevisionStoreFileHeader::setFNeedsDefrag(quint8 value) { fNeedsDefrag = value; }
 
 /**
- * @brief MSONHeader::isFNeedsDefragValid
+ * @brief RevisionStoreFileHeader::isFNeedsDefragValid
  *
  * not specified
  * @return
  */
-bool MSONHeader::isFNeedsDefragValid() const { return true; }
+bool RevisionStoreFileHeader::isFNeedsDefragValid() const { return true; }
 
-bool MSONHeader::isFNeedsDefragIgnored() const { return true; }
+bool RevisionStoreFileHeader::isFNeedsDefragIgnored() const { return true; }
 
-quint8 MSONHeader::getFRepairedFile() const { return fRepairedFile; }
+quint8 RevisionStoreFileHeader::getFRepairedFile() const { return fRepairedFile; }
 
-void MSONHeader::setFRepairedFile(quint8 value) { fRepairedFile = value; }
+void RevisionStoreFileHeader::setFRepairedFile(quint8 value) { fRepairedFile = value; }
 
 /**
- * @brief MSONHeader::isFRepairedFileValid
+ * @brief RevisionStoreFileHeader::isFRepairedFileValid
  *
  * not specified
  * @return
  */
-bool MSONHeader::isFRepairedFileValid() const { return true; }
+bool RevisionStoreFileHeader::isFRepairedFileValid() const { return true; }
 
-bool MSONHeader::isFRepairedFileIgnored() const { return true; }
+bool RevisionStoreFileHeader::isFRepairedFileIgnored() const { return true; }
 
-quint8 MSONHeader::getFNeedsGarbageCollect() const {
+quint8 RevisionStoreFileHeader::getFNeedsGarbageCollect() const {
   return fNeedsGarbageCollect;
 }
 
-void MSONHeader::setFNeedsGarbageCollect(quint8 value) {
+void RevisionStoreFileHeader::setFNeedsGarbageCollect(quint8 value) {
   fNeedsGarbageCollect = value;
 }
 
 /**
- * @brief MSONHeader::isFNeedsGarbageCollectValid
+ * @brief RevisionStoreFileHeader::isFNeedsGarbageCollectValid
  *
  * not specified
  * @return
  */
-bool MSONHeader::isFNeedsGarbageCollectValid() const { return true; }
+bool RevisionStoreFileHeader::isFNeedsGarbageCollectValid() const { return true; }
 
-bool MSONHeader::isFNeedsGarbageCollectIgnored() const { return true; }
+bool RevisionStoreFileHeader::isFNeedsGarbageCollectIgnored() const { return true; }
 
-quint8 MSONHeader::getFHasNoEmbeddedFileObjects() const {
+quint8 RevisionStoreFileHeader::getFHasNoEmbeddedFileObjects() const {
   return fHasNoEmbeddedFileObjects;
 }
 
-void MSONHeader::setFHasNoEmbeddedFileObjects(quint8 value) {
+void RevisionStoreFileHeader::setFHasNoEmbeddedFileObjects(quint8 value) {
   fHasNoEmbeddedFileObjects = value;
 }
 
-bool MSONHeader::isFHasNoEmbeddedFileObjectsValid() const {
+bool RevisionStoreFileHeader::isFHasNoEmbeddedFileObjectsValid() const {
   return fHasNoEmbeddedFileObjects == 0;
 }
 
-bool MSONHeader::isFHasNoEmbeddedFileObjectsIgnored() const { return true; }
+bool RevisionStoreFileHeader::isFHasNoEmbeddedFileObjectsIgnored() const { return true; }
 
-QUuid MSONHeader::getGuidAncestor() const { return guidAncestor; }
+QUuid RevisionStoreFileHeader::getGuidAncestor() const { return guidAncestor; }
 
-void MSONHeader::setGuidAncestor(const QUuid &value) { guidAncestor = value; }
+void RevisionStoreFileHeader::setGuidAncestor(const QUuid &value) { guidAncestor = value; }
 
 /**
   \todo Check if Header.guidFile exists
- * @brief MSONHeader::isGuidAncestorValid
+ * @brief RevisionStoreFileHeader::isGuidAncestorValid
  *
  * guidAncestor should mark the Header.guidFile location of the table of
  contents file
  *
  * @return
  */
-bool MSONHeader::isGuidAncestorValid() const { return true; }
+bool RevisionStoreFileHeader::isGuidAncestorValid() const { return true; }
 
-bool MSONHeader::isGuidAncestorIgnored() const { return false; }
+bool RevisionStoreFileHeader::isGuidAncestorIgnored() const { return false; }
 
 /**
- * @brief MSONHeader::guidAncestorLocationInCWD
+ * @brief RevisionStoreFileHeader::guidAncestorLocationInCWD
  * \todo
  * Deduct if Header.guidFile is in current directory, or whether it is in the
  * parent directory. If GUID is zero, no table of contents file present
  * @return
  */
-bool MSONHeader::guidAncestorLocationInCD() const { return false; }
-bool MSONHeader::guidAncestorLocationInPD() const { return false; }
+bool RevisionStoreFileHeader::guidAncestorLocationInCD() const { return false; }
+bool RevisionStoreFileHeader::guidAncestorLocationInPD() const { return false; }
 
-bool MSONHeader::guidAncestorLocationNotPresent() const {
+bool RevisionStoreFileHeader::guidAncestorLocationNotPresent() const {
   return guidAncestor == v_guidZero;
 }
 
-quint32 MSONHeader::getCrcName() const { return crcName; }
+quint32 RevisionStoreFileHeader::getCrcName() const { return crcName; }
 
-void MSONHeader::setCrcName(quint32 value) { crcName = value; }
+void RevisionStoreFileHeader::setCrcName(quint32 value) { crcName = value; }
 
-bool MSONHeader::isCrcNameValid() const { return true; }
+bool RevisionStoreFileHeader::isCrcNameValid() const { return true; }
 
-bool MSONHeader::isCrcNameIgnored() const { return false; }
+bool RevisionStoreFileHeader::isCrcNameIgnored() const { return false; }
 
-FileChunkReference64x32 &MSONHeader::getFcrHashedChunkList() {
+FileChunkReference64x32 &RevisionStoreFileHeader::getFcrHashedChunkList() {
   return fcrHashedChunkList;
 }
 
-void MSONHeader::setFcrHashedChunkList(const FileChunkReference64x32 &value) {
+void RevisionStoreFileHeader::setFcrHashedChunkList(const FileChunkReference64x32 &value) {
   fcrHashedChunkList = value;
 }
 
-bool MSONHeader::isFcrHashedChunkListValid() const { return true; }
+bool RevisionStoreFileHeader::isFcrHashedChunkListValid() const { return true; }
 
-bool MSONHeader::isFcrHashedChunkListIgnored() const { return false; }
+bool RevisionStoreFileHeader::isFcrHashedChunkListIgnored() const { return false; }
 
 /**
- * @brief MSONHeader::fcrHashedChunkList_exits
+ * @brief RevisionStoreFileHeader::fcrHashedChunkList_exits
  * @return
  *
  * if fcrHashedChunkList is fcrNil or fcrZero, then HashedChunkLink does not
  * exist.
  */
-bool MSONHeader::fcrHashedChunkList_exits() const {
+bool RevisionStoreFileHeader::fcrHashedChunkList_exits() const {
   return !(fcrHashedChunkList.is_fcrNil() || fcrHashedChunkList.is_fcrZero());
 }
 
-FileChunkReference64x32 &MSONHeader::getFcrTransactionLog() {
+FileChunkReference64x32 &RevisionStoreFileHeader::getFcrTransactionLog() {
   return fcrTransactionLog;
 }
 
-void MSONHeader::setFcrTransactionLog(const FileChunkReference64x32 &value) {
+void RevisionStoreFileHeader::setFcrTransactionLog(const FileChunkReference64x32 &value) {
 
   fcrTransactionLog = value;
 }
 
 /**
- * @brief MSONHeader::isFcrTransactionLogValid
+ * @brief RevisionStoreFileHeader::isFcrTransactionLogValid
  * @return
  *
  * must not be fcrNil and fcrZero
  */
-bool MSONHeader::isFcrTransactionLogValid() const {
+bool RevisionStoreFileHeader::isFcrTransactionLogValid() const {
   return !fcrTransactionLog.is_fcrNil() && !fcrTransactionLog.is_fcrZero();
 }
 
-bool MSONHeader::isFcrTransactionLogIgnored() const { return false; }
+bool RevisionStoreFileHeader::isFcrTransactionLogIgnored() const { return false; }
 
-FileChunkReference64x32 &MSONHeader::getFcrFileNodeListRoot() {
+FileChunkReference64x32 &RevisionStoreFileHeader::getFcrFileNodeListRoot() {
   return fcrFileNodeListRoot;
 }
 
-void MSONHeader::setFcrFileNodeListRoot(const FileChunkReference64x32 &value) {
+void RevisionStoreFileHeader::setFcrFileNodeListRoot(const FileChunkReference64x32 &value) {
 
   fcrFileNodeListRoot = value;
 }
 
 /**
- * @brief MSONHeader::isFcrFileNodeListRootValid
+ * @brief RevisionStoreFileHeader::isFcrFileNodeListRootValid
  * @return
  *
  * must not be fcrNil and fcrZero
  */
-bool MSONHeader::isFcrFileNodeListRootValid() const {
+bool RevisionStoreFileHeader::isFcrFileNodeListRootValid() const {
   return !fcrFileNodeListRoot.is_fcrNil() && !fcrFileNodeListRoot.is_fcrZero();
 }
 
-bool MSONHeader::isFcrFileNodeListRootIgnored() const { return false; }
+bool RevisionStoreFileHeader::isFcrFileNodeListRootIgnored() const { return false; }
 
-FileChunkReference64x32 &MSONHeader::getFcrFreeChunkList() {
+FileChunkReference64x32 &RevisionStoreFileHeader::getFcrFreeChunkList() {
   return fcrFreeChunkList;
 }
 
-void MSONHeader::setFcrFreeChunkList(const FileChunkReference64x32 &value) {
+void RevisionStoreFileHeader::setFcrFreeChunkList(const FileChunkReference64x32 &value) {
   fcrFreeChunkList = value;
 }
 
 /**
- * @brief MSONHeader::isFcrFreeChunkListValid
+ * @brief RevisionStoreFileHeader::isFcrFreeChunkListValid
  * @return
  *
  * unspecified validity
  */
-bool MSONHeader::isFcrFreeChunkListValid() const { return true; }
+bool RevisionStoreFileHeader::isFcrFreeChunkListValid() const { return true; }
 
-bool MSONHeader::isFcrFreeChunkListIgnored() const { return false; }
+bool RevisionStoreFileHeader::isFcrFreeChunkListIgnored() const { return false; }
 
 /**
- * @brief MSONHeader::fcrFreeChunkList_exits
+ * @brief RevisionStoreFileHeader::fcrFreeChunkList_exits
  * @return
  *
  * If fcrFreeChunkList is zero, then FreeChunkList does not exist
  */
-bool MSONHeader::fcrFreeChunkList_exits() const {
+bool RevisionStoreFileHeader::fcrFreeChunkList_exits() const {
   return !(fcrFreeChunkList.is_fcrNil() || fcrFreeChunkList.is_fcrZero());
 }
 
-quint64 MSONHeader::getCbExpectedFileLength() const {
+quint64 RevisionStoreFileHeader::getCbExpectedFileLength() const {
   return cbExpectedFileLength;
 }
 
-void MSONHeader::setCbExpectedFileLength(quint64 value) {
+void RevisionStoreFileHeader::setCbExpectedFileLength(quint64 value) {
   cbExpectedFileLength = value;
 }
 
-bool MSONHeader::isCbExpectedFileLengthValid() const { return true; }
+bool RevisionStoreFileHeader::isCbExpectedFileLengthValid() const { return true; }
 
-bool MSONHeader::isCbExpectedFileLengthIgnored() const { return false; }
+bool RevisionStoreFileHeader::isCbExpectedFileLengthIgnored() const { return false; }
 
-quint64 MSONHeader::getCbFreeSpaceInFreeChunkList() const {
+quint64 RevisionStoreFileHeader::getCbFreeSpaceInFreeChunkList() const {
   return cbFreeSpaceInFreeChunkList;
 }
 
-void MSONHeader::setCbFreeSpaceInFreeChunkList(quint64 value) {
+void RevisionStoreFileHeader::setCbFreeSpaceInFreeChunkList(quint64 value) {
   cbFreeSpaceInFreeChunkList = value;
 }
 
 /**
- * @brief MSONHeader::isCbFreeSpaceInFreeChunkListValid
+ * @brief RevisionStoreFileHeader::isCbFreeSpaceInFreeChunkListValid
  * @return
  *
  * \todo unspecified validity
  *
  * OneNote 2010 sometimes writes invalid value here
  */
-bool MSONHeader::isCbFreeSpaceInFreeChunkListValid() const { return true; }
+bool RevisionStoreFileHeader::isCbFreeSpaceInFreeChunkListValid() const { return true; }
 
-bool MSONHeader::isCbFreeSpaceInFreeChunkListIgnored() const { return false; }
+bool RevisionStoreFileHeader::isCbFreeSpaceInFreeChunkListIgnored() const { return false; }
 
-QUuid MSONHeader::getGuidFileVersion() const { return guidFileVersion; }
+QUuid RevisionStoreFileHeader::getGuidFileVersion() const { return guidFileVersion; }
 
-void MSONHeader::setGuidFileVersion(const QUuid &value) {
+void RevisionStoreFileHeader::setGuidFileVersion(const QUuid &value) {
   guidFileVersion = value;
 }
 
 /**
- * @brief MSONHeader::nextGuidFileVersion
+ * @brief RevisionStoreFileHeader::nextGuidFileVersion
  *
  * advances guidFileVersion, and increments nFileVersionGeneration
  */
-void MSONHeader::nextGuidFileVersion() {
+void RevisionStoreFileHeader::nextGuidFileVersion() {
   guidFileVersion = QUuid::createUuid();
 
   nFileVersionGeneration++;
 }
 
-bool MSONHeader::isGuidFileVersionValid() const {
+bool RevisionStoreFileHeader::isGuidFileVersionValid() const {
   return guidFileVersion != v_guidZero;
 }
 
-bool MSONHeader::isGuidFileVersionIgnored() const { return false; }
+bool RevisionStoreFileHeader::isGuidFileVersionIgnored() const { return false; }
 
-quint64 MSONHeader::getNFileVersionGeneration() const {
+quint64 RevisionStoreFileHeader::getNFileVersionGeneration() const {
   return nFileVersionGeneration;
 }
 
 /**
- * @brief MSONHeader::setNFileVersionGeneration
+ * @brief RevisionStoreFileHeader::setNFileVersionGeneration
  * @param value
  *
  * must be incremented with change of setGuidFileVersion
  */
-void MSONHeader::setNFileVersionGeneration(quint64 value) {
+void RevisionStoreFileHeader::setNFileVersionGeneration(quint64 value) {
   nFileVersionGeneration = value;
 }
 
 /**
- * @brief MSONHeader::isNFileVersionGenerationValid
+ * @brief RevisionStoreFileHeader::isNFileVersionGenerationValid
  * @return
  *
  * unspecified validity
  */
-bool MSONHeader::isNFileVersionGenerationValid() const { return true; }
+bool RevisionStoreFileHeader::isNFileVersionGenerationValid() const { return true; }
 
-bool MSONHeader::isNFileVersionGenerationIgnored() const { return false; }
+bool RevisionStoreFileHeader::isNFileVersionGenerationIgnored() const { return false; }
 
-QUuid MSONHeader::getGuidDenyReadFileVersion() const {
+QUuid RevisionStoreFileHeader::getGuidDenyReadFileVersion() const {
   return guidDenyReadFileVersion;
 }
 
 /**
- * @brief MSONHeader::setGuidDenyReadFileVersion
+ * @brief RevisionStoreFileHeader::setGuidDenyReadFileVersion
  * @param value
  *
  * \todo setting guidDenyReadFileVersion also requires a new file version
  */
-void MSONHeader::setGuidDenyReadFileVersion(const QUuid &value) {
+void RevisionStoreFileHeader::setGuidDenyReadFileVersion(const QUuid &value) {
   guidDenyReadFileVersion = value;
 }
 
-void MSONHeader::changeGuidDenyReadFileVersion() {
+void RevisionStoreFileHeader::changeGuidDenyReadFileVersion() {
   guidDenyReadFileVersion = QUuid::createUuid();
 }
 
-bool MSONHeader::isGuidDenyReadFileVersionValid() const {
+bool RevisionStoreFileHeader::isGuidDenyReadFileVersionValid() const {
   return guidDenyReadFileVersion != v_guidZero;
 }
 
-bool MSONHeader::isGuidDenyReadFileVersionIgnored() const { return false; }
+bool RevisionStoreFileHeader::isGuidDenyReadFileVersionIgnored() const { return false; }
 
-quint32 MSONHeader::getGrfDebugLogFlags() const { return grfDebugLogFlags; }
+quint32 RevisionStoreFileHeader::getGrfDebugLogFlags() const { return grfDebugLogFlags; }
 
-void MSONHeader::setGrfDebugLogFlags(quint32 value) {
+void RevisionStoreFileHeader::setGrfDebugLogFlags(quint32 value) {
   grfDebugLogFlags = value;
 }
 
-bool MSONHeader::isGrfDebugLogFlagsValid() const {
+bool RevisionStoreFileHeader::isGrfDebugLogFlagsValid() const {
   return grfDebugLogFlags == 0;
 }
 
-bool MSONHeader::isGrfDebugLogFlagsIgnored() const { return true; }
+bool RevisionStoreFileHeader::isGrfDebugLogFlagsIgnored() const { return true; }
 
-FileChunkReference64x32 &MSONHeader::getFcrDebugLog() { return fcrDebugLog; }
+FileChunkReference64x32 &RevisionStoreFileHeader::getFcrDebugLog() { return fcrDebugLog; }
 
-void MSONHeader::setFcrDebugLog(const FileChunkReference64x32 &value) {
+void RevisionStoreFileHeader::setFcrDebugLog(const FileChunkReference64x32 &value) {
   fcrDebugLog = value;
 }
 
-bool MSONHeader::isFcrDebugLogValid() const { return fcrDebugLog.is_fcrZero(); }
+bool RevisionStoreFileHeader::isFcrDebugLogValid() const { return fcrDebugLog.is_fcrZero(); }
 
-bool MSONHeader::isFcrDebugLogIgnored() const { return true; }
+bool RevisionStoreFileHeader::isFcrDebugLogIgnored() const { return true; }
 
 FileChunkReference64x32
-MSONHeader::getFcrAllocVerificationFreeChunkList() const {
+RevisionStoreFileHeader::getFcrAllocVerificationFreeChunkList() const {
   return fcrAllocVerificationFreeChunkList;
 }
 
-void MSONHeader::setFcrAllocVerificationFreeChunkList(
+void RevisionStoreFileHeader::setFcrAllocVerificationFreeChunkList(
     const FileChunkReference64x32 &value) {
   fcrAllocVerificationFreeChunkList = value;
 }
 
-bool MSONHeader::isFcrAllocVerificationFreeChunkListValid() const {
+bool RevisionStoreFileHeader::isFcrAllocVerificationFreeChunkListValid() const {
   return fcrAllocVerificationFreeChunkList.is_fcrZero();
 }
 
-bool MSONHeader::isFcrAllocVerificationFreeChunkListIgnored() const {
+bool RevisionStoreFileHeader::isFcrAllocVerificationFreeChunkListIgnored() const {
   return true;
 }
 
-quint32 MSONHeader::getBnCreated() const { return bnCreated; }
+quint32 RevisionStoreFileHeader::getBnCreated() const { return bnCreated; }
 
-void MSONHeader::setBnCreated(quint32 value) { bnCreated = value; }
+void RevisionStoreFileHeader::setBnCreated(quint32 value) { bnCreated = value; }
 
 /**
- * @brief MSONHeader::isBnCreatedValid
+ * @brief RevisionStoreFileHeader::isBnCreatedValid
  * @return
  *
  * unspecified validity
  */
-bool MSONHeader::isBnCreatedValid() const { return true; }
+bool RevisionStoreFileHeader::isBnCreatedValid() const { return true; }
 
-bool MSONHeader::isBnCreatedIgnored() const { return true; }
+bool RevisionStoreFileHeader::isBnCreatedIgnored() const { return true; }
 
-quint32 MSONHeader::getBnLastWroteToThisFile() const {
+quint32 RevisionStoreFileHeader::getBnLastWroteToThisFile() const {
   return bnLastWroteToThisFile;
 }
 
-void MSONHeader::setBnLastWroteToThisFile(quint32 value) {
+void RevisionStoreFileHeader::setBnLastWroteToThisFile(quint32 value) {
   bnLastWroteToThisFile = value;
 }
 
 /**
- * @brief MSONHeader::isBnLastWroteToThisFileValid
+ * @brief RevisionStoreFileHeader::isBnLastWroteToThisFileValid
  * @return
  *
  * unspecified validity
  */
-bool MSONHeader::isBnLastWroteToThisFileValid() const { return true; }
+bool RevisionStoreFileHeader::isBnLastWroteToThisFileValid() const { return true; }
 
-bool MSONHeader::isBnLastWroteToThisFileIgnored() const { return true; }
+bool RevisionStoreFileHeader::isBnLastWroteToThisFileIgnored() const { return true; }
 
-quint32 MSONHeader::getBnOldestWritten() const { return bnOldestWritten; }
+quint32 RevisionStoreFileHeader::getBnOldestWritten() const { return bnOldestWritten; }
 
-void MSONHeader::setBnOldestWritten(quint32 value) { bnOldestWritten = value; }
+void RevisionStoreFileHeader::setBnOldestWritten(quint32 value) { bnOldestWritten = value; }
 
 /**
- * @brief MSONHeader::isBnOldestWrittenValid
+ * @brief RevisionStoreFileHeader::isBnOldestWrittenValid
  * @return
  *
  * unspecified validity
  */
-bool MSONHeader::isBnOldestWrittenValid() const { return true; }
+bool RevisionStoreFileHeader::isBnOldestWrittenValid() const { return true; }
 
-bool MSONHeader::isBnOldestWrittenIgnored() const { return true; }
+bool RevisionStoreFileHeader::isBnOldestWrittenIgnored() const { return true; }
 
-quint32 MSONHeader::getBnNewestWritten() const { return bnNewestWritten; }
+quint32 RevisionStoreFileHeader::getBnNewestWritten() const { return bnNewestWritten; }
 
-void MSONHeader::setBnNewestWritten(quint32 value) { bnNewestWritten = value; }
+void RevisionStoreFileHeader::setBnNewestWritten(quint32 value) { bnNewestWritten = value; }
 
 /**
- * @brief MSONHeader::isBnNewestWrittenValid
+ * @brief RevisionStoreFileHeader::isBnNewestWrittenValid
  * @return
  *
  * unspecified validity
  */
-bool MSONHeader::isBnNewestWrittenValid() const { return true; }
+bool RevisionStoreFileHeader::isBnNewestWrittenValid() const { return true; }
 
-bool MSONHeader::isBnNewestWrittenIgnored() const { return true; }
+bool RevisionStoreFileHeader::isBnNewestWrittenIgnored() const { return true; }
 
-quint32 MSONHeader::getReservedHeaderTailLength() const {
+quint32 RevisionStoreFileHeader::getReservedHeaderTailLength() const {
   return reservedHeaderTailLength;
 }
 
-void MSONHeader::setReservedHeaderTailLength(const quint32 &value) {
+void RevisionStoreFileHeader::setReservedHeaderTailLength(const quint32 &value) {
   reservedHeaderTailLength = value;
 }
 
 /**
- * @brief MSONHeader::isReservedHeaderTailValid
+ * @brief RevisionStoreFileHeader::isReservedHeaderTailValid
  * @return true if reservedHeaderTail is all '\0'
  *
  * Is actually not checked
  */
-bool MSONHeader::isReservedHeaderTailValid() const { return true; }
+bool RevisionStoreFileHeader::isReservedHeaderTailValid() const { return true; }
 
-bool MSONHeader::isReservedHeaderTailIgnored() const { return true; }
+bool RevisionStoreFileHeader::isReservedHeaderTailIgnored() const { return true; }
 
 } // namespace MSONcommon

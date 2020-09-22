@@ -15,7 +15,7 @@ QUuid MSONcommon::DocumentManager::parseDocument(QDataStream &ds) {
   QUuid guid;
   if (ds.device()->isReadable()) {
 
-    MSONHeader newDocHead;
+    RevisionStoreFileHeader newDocHead;
     ds >> newDocHead;
     guid = newDocHead.getGuidFile();
 

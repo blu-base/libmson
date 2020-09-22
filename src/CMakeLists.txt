@@ -15,9 +15,9 @@ include_directories(
 ########### common MSONParser object library ###############
 set (MSONcommon_PART_SRCS
 
-    common/MSONHeader.cpp
 
     common/RevisionStoreFile.cpp
+    common/RevisionStoreFileHeader.cpp
 
     common/ISerializable.cpp
     common/IDeserializable.cpp

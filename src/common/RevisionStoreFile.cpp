@@ -30,9 +30,9 @@ void RevisionStoreFile::setIsEncrypted(const bool isEncrypted) {
   m_isEncrypted = isEncrypted;
 }
 
-std::shared_ptr<MSONHeader> RevisionStoreFile::getHeader() const { return m_header; }
+std::shared_ptr<RevisionStoreFileHeader> RevisionStoreFile::getHeader() const { return m_header; }
 
-void RevisionStoreFile::setHeader(std::shared_ptr<MSONHeader> header) {
+void RevisionStoreFile::setHeader(std::shared_ptr<RevisionStoreFileHeader> header) {
   m_header = header;
 }
 
@@ -101,7 +101,7 @@ void RevisionStoreFile::deserialize(QDataStream &ds) {
 
   if (ds.device()->size() >= 1024) {
 
-    m_header = std::make_shared<MSONHeader>();
+    m_header = std::make_shared<RevisionStoreFileHeader>();
     ds >> *m_header;
 
     // Parsing FreeChunkList

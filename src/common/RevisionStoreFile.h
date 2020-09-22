@@ -11,7 +11,7 @@
 #include <vector>
 
 #include "FileNodeList.h"
-#include "MSONHeader.h"
+#include "RevisionStoreFileHeader.h"
 
 #include "FileNodeListFragment.h"
 #include "FreeChunkListFragment.h"
@@ -32,7 +32,7 @@ private:
 
   bool m_isEncrypted;
 
-  std::shared_ptr<MSONHeader> m_header;
+  std::shared_ptr<RevisionStoreFileHeader> m_header;
 
   std::vector<std::shared_ptr<FreeChunkListFragment>> m_freeChunkList;
   std::vector<std::shared_ptr<TransactionLogFragment>> m_transactionLog;
@@ -65,8 +65,8 @@ public:
   bool isEncrypted() const;
   void setIsEncrypted(const bool isEncrypted);
 
-  std::shared_ptr<MSONHeader> getHeader() const;
-  void setHeader(std::shared_ptr<MSONHeader> header);
+  std::shared_ptr<RevisionStoreFileHeader> getHeader() const;
+  void setHeader(std::shared_ptr<RevisionStoreFileHeader> header);
 
   std::vector<std::shared_ptr<FreeChunkListFragment>> &freeChunkList();
   std::vector<std::shared_ptr<FreeChunkListFragment>> getFreeChunkList() const;

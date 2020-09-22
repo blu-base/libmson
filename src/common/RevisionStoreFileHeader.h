@@ -18,13 +18,13 @@
 namespace MSONcommon {
 
 /**
- * @class MSONHeader
+ * @class RevisionStoreFileHeader
  *
  * @brief serialzies and deserializes an MSON file stream
  *
  * MSON Header class which (de)serialzies an input stream
  */
-class MSONHeader : public IRevisionStoreFileObject {
+class RevisionStoreFileHeader : public IRevisionStoreFileObject {
 private:
   QUuid guidFileType;
   QUuid guidFile;
@@ -68,7 +68,7 @@ private:
   static const quint64 sizeInFile = 1024;
 
 public:
-  MSONHeader();
+  RevisionStoreFileHeader();
 
   static quint64 getSizeInFile();
 
