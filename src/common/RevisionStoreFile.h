@@ -1,5 +1,5 @@
-#ifndef MSONDOCUMENT_H
-#define MSONDOCUMENT_H
+#ifndef REVISIONSTOREFILE_H
+#define REVISIONSTOREFILE_H
 
 #include <QtCore/qglobal.h>
 
@@ -25,7 +25,7 @@
 
 namespace MSONcommon {
 
-class MSONDocument : public IRevisionStoreFileObject {
+class RevisionStoreFile : public IRevisionStoreFileObject {
 
 private:
   QMap<quint32, quint32> FileNodeCountMapping;
@@ -55,8 +55,8 @@ private:
   ExtendedGUID currentRevision;
 
 public:
-  MSONDocument();
-  ~MSONDocument() = default;
+  RevisionStoreFile();
+  ~RevisionStoreFile() = default;
 
   QMap<quint32, quint32> &fileNodeCountMapping();
   QMap<quint32, quint32> getFileNodeCountMapping() const;
@@ -102,4 +102,4 @@ private:
 
 } // namespace MSONcommon
 
-#endif // MSONDOCUMENT_H
+#endif // REVISIONSTOREFILE_H

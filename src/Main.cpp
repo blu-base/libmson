@@ -14,7 +14,7 @@
 #include <QUuid>
 
 #include "common/DocumentManager.h"
-#include "common/MSONDocument.h"
+#include "common/RevisionStoreFile.h"
 
 static const QStringList onenotefileextensions{"*.one", "*.onetoc2"};
 

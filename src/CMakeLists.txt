@@ -14,9 +14,10 @@ include_directories(
 
 ########### common MSONParser object library ###############
 set (MSONcommon_PART_SRCS
+
     common/MSONHeader.cpp
 
-    common/MSONDocument.cpp
+    common/RevisionStoreFile.cpp
 
     common/ISerializable.cpp
     common/IDeserializable.cpp
@@ -175,40 +176,3 @@ target_link_libraries(
   )
 
 install(TARGETS MSONcommon DESTINATION ${PLUGIN_INSTALL_DIR}/)
-
-########### import MSONParser library ######################
-set (MSONParser_import_PART_SRCS
-    import/MSONParser_import.cpp
-    import/MSONHeaderReader.cpp
-    import/MSONParser.cpp
-    )
-add_library(MSONParser_import SHARED ${MSONParser_import_PART_SRCS})
-
-target_link_libraries(
-    MSONParser_import
-    MSONcommon
-    Qt5::Core #?
-    Qt5::Xml #?
-    )
-
-install(TARGETS MSONParser_import DESTINATION ${PLUGIN_INSTALL_DIR}/)
-
-########### export MSONParser library ######################
-set (MSONParser_export_PART_SRCS
-    export/MSONParser_export.cpp
-    )
-add_library(MSONParser_export SHARED ${MSONParser_export_PART_SRCS})
-
-target_link_libraries(
-    MSONParser_export
-    MSONcommon
-    Qt5::Core #?
-    Qt5::Xml #?
-    )
-
-install(TARGETS MSONParser_export DESTINATION ${PLUGIN_INSTALL_DIR}/)
-
-
-
-
-

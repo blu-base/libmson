@@ -9,7 +9,7 @@ ObjectSpaceObjectPropSet::ObjectSpaceObjectPropSet() {}
 ObjectSpaceObjectPropSet::ObjectSpaceObjectPropSet(
     QDataStream &ds, const FileNodeChunkReference &ref) {
 
-  std::shared_ptr<MSONDocument> doc = DocumentManager::getDocument(ds);
+  std::shared_ptr<RevisionStoreFile> doc = DocumentManager::getDocument(ds);
     if (!doc->isEncrypted()) {
   quint64 currentLocation = ds.device()->pos();
 

@@ -3,7 +3,7 @@
 #include "helper/Helper.h"
 
 #include "DocumentManager.h"
-#include "MSONDocument.h"
+#include "RevisionStoreFile.h"
 
 namespace MSONcommon {
 
@@ -125,7 +125,7 @@ void FileNodeListFragment::deserialize(QDataStream &ds) {
   quint32 fileNodeCount = UINT32_MAX;
 
   // Get Document pointer to check whether fileNodeCount has been preset.
-  std::shared_ptr<MSONDocument> doc = DocumentManager::getDocument(ds);
+  std::shared_ptr<RevisionStoreFile> doc = DocumentManager::getDocument(ds);
 
   if (doc->getFileNodeCountMapping().contains(
           m_fnlheader.getFileNodeListID())) {

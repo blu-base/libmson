@@ -15,7 +15,7 @@ FileDataStoreObject::FileDataStoreObject()
 FileDataStoreObject::FileDataStoreObject(QDataStream &ds,
                                          const FileNodeChunkReference &ref)
     : m_cbLength(), m_unused(), m_reserved(), m_padding() {
-  std::shared_ptr<MSONDocument> doc = DocumentManager::getDocument(ds);
+  std::shared_ptr<RevisionStoreFile> doc = DocumentManager::getDocument(ds);
   if (!doc->isEncrypted()) {
     quint64 currentLocation = ds.device()->pos();
 

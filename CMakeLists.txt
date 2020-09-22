@@ -49,8 +49,6 @@ add_executable(
 target_link_libraries(
     one2xml
     MSONcommon
-    MSONParser_import
-    MSONParser_export
     Qt5::Core #?
     Qt5::Xml #?
     )

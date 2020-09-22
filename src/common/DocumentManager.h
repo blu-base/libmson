@@ -10,13 +10,13 @@
 #include <QUuid>
 #include <QtCore/qglobal.h>
 
-#include "MSONDocument.h"
+#include "RevisionStoreFile.h"
 
 namespace MSONcommon {
 
 class DocumentManager {
 private:
-  static QMap<QUuid, std::shared_ptr<MSONDocument>> docs;
+  static QMap<QUuid, std::shared_ptr<RevisionStoreFile>> docs;
 
 public:
   DocumentManager() = default;
@@ -29,14 +29,14 @@ public:
   /** Returns true if the document exists in this Manager */
   bool containsDocument(const QUuid &guidFile);
 
-  /** Parse MSONDocument from QDataStream. */
+  /** Parse RevisionStoreFile from QDataStream. */
   QUuid parseDocument(QDataStream &ds);
 
-  /** Parse MSONDocument from specified File. */
+  /** Parse RevisionStoreFile from specified File. */
   QUuid parseDocument(const QString& fileName);
 
   /** Adds Document to this Manager*/
-  void addDocument(std::shared_ptr<MSONDocument> doc );
+  void addDocument(std::shared_ptr<RevisionStoreFile> doc );
 
   /** Creates new, empty Document */
   QUuid createDocument();
@@ -55,22 +55,22 @@ public:
 
   /** Get pointer to MSON Document. Returns nullptr if guidFile is not in this
    * Manager */
-  static std::shared_ptr<MSONDocument> getDocument(const QUuid &guidFile);
+  static std::shared_ptr<RevisionStoreFile> getDocument(const QUuid &guidFile);
 
-  static std::shared_ptr<MSONDocument> getDocument(QDataStream &ds);
+  static std::shared_ptr<RevisionStoreFile> getDocument(QDataStream &ds);
 
 
   /** Utility function to reparse guid from the stream head. */
   static QUuid getDocumentID(QDataStream &ds);
 
   /** Returns all Documents governed by this Manager */
-  static QList<std::shared_ptr<MSONDocument>> getDocuments();
+  static QList<std::shared_ptr<RevisionStoreFile>> getDocuments();
 
   /** Returns all Documents' IDs governed by this Manager */
   static QList<QUuid> getDocumentIDs();
 
   /** Return the complete storage of this Manager */
-  static QMap<QUuid, std::shared_ptr<MSONDocument>> getDocumentsMap();
+  static QMap<QUuid, std::shared_ptr<RevisionStoreFile>> getDocumentsMap();
 
   void generateXml(const QUuid &guidFile, const QString &outputfile);
 };

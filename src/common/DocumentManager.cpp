@@ -1,7 +1,7 @@
 #include "DocumentManager.h"
 namespace MSONcommon {
 
-QMap<QUuid, std::shared_ptr<MSONDocument>> DocumentManager::docs;
+QMap<QUuid, std::shared_ptr<RevisionStoreFile>> DocumentManager::docs;
 
 bool MSONcommon::DocumentManager::containsDocument(QDataStream &ds) {
   return docs.contains(getDocumentID(ds));
@@ -21,7 +21,7 @@ QUuid MSONcommon::DocumentManager::parseDocument(QDataStream &ds) {
 
     // go back to the start and add pointer
     ds.device()->seek(0);
-    std::shared_ptr<MSONDocument> newDoc = std::make_shared<MSONDocument>();
+    std::shared_ptr<RevisionStoreFile> newDoc = std::make_shared<RevisionStoreFile>();
     docs.insert(guid, newDoc);
 
     ds >> *newDoc;
@@ -52,14 +52,14 @@ QUuid MSONcommon::DocumentManager::parseDocument(const QString& fileName) {
   return newDocId;
 }
 
-void MSONcommon::DocumentManager::addDocument(std::shared_ptr<MSONDocument> doc) {
+void MSONcommon::DocumentManager::addDocument(std::shared_ptr<RevisionStoreFile> doc) {
 
   docs.insert(doc->getHeader()->getGuidFile(), doc);
 }
 
 QUuid MSONcommon::DocumentManager::createDocument() {
 
-  std::shared_ptr<MSONDocument> newDoc = std::make_shared<MSONDocument>();
+  std::shared_ptr<RevisionStoreFile> newDoc = std::make_shared<RevisionStoreFile>();
 
   QUuid newDocId = newDoc->getHeader()->getGuidFile();
 
@@ -112,13 +112,13 @@ bool MSONcommon::DocumentManager::removeDocument(const QUuid &guidFile) {
 
 void MSONcommon::DocumentManager::removeDocuments() { docs.clear(); }
 
-std::shared_ptr<MSONDocument>
+std::shared_ptr<RevisionStoreFile>
 MSONcommon::DocumentManager::getDocument(const QUuid &guidFile) {
 
   return docs.value(guidFile);
 }
 
-std::shared_ptr<MSONDocument>
+std::shared_ptr<RevisionStoreFile>
 MSONcommon::DocumentManager::getDocument(QDataStream &ds) {
 
   return docs.value(getDocumentID(ds));
@@ -140,7 +140,7 @@ QUuid MSONcommon::DocumentManager::getDocumentID(QDataStream &ds) {
   return id;
 }
 
-QList<std::shared_ptr<MSONDocument>> MSONcommon::DocumentManager::getDocuments() {
+QList<std::shared_ptr<RevisionStoreFile>> MSONcommon::DocumentManager::getDocuments() {
   return docs.values();
 }
 
@@ -148,7 +148,7 @@ QList<QUuid> MSONcommon::DocumentManager::getDocumentIDs() {
   return docs.keys();
 }
 
-QMap<QUuid, std::shared_ptr<MSONDocument>>
+QMap<QUuid, std::shared_ptr<RevisionStoreFile>>
 MSONcommon::DocumentManager::getDocumentsMap() {
   return docs;
 }
