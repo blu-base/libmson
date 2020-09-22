@@ -27,6 +27,8 @@ public:
 
   bool isZero() const;
 
+  static quint64 getSizeInFile() { return sizeInFile; }
+
 private:
   virtual void serialize(QDataStream &ds) const override;
   virtual void deserialize(QDataStream &ds) override;
@@ -34,6 +36,8 @@ private:
   virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
 
   virtual void toDebugString(QDebug &dbg) const override;
+
+  static const quint64 sizeInFile = 8;
 };
 
 } // namespace MSONcommon

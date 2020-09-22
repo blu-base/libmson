@@ -59,6 +59,8 @@ public:
   void
   setOverrides2(const std::vector<ObjectInfoDependencyOverride32> &Overrides2);
 
+  quint64 getSizeInFile() const;
+
 private:
   /**
    * @brief creates ObjectInfoDependencyOverrideData from QDataStream
@@ -85,6 +87,8 @@ private:
    * @param dbg <QDebug> string builder for the debug information
    */
   virtual void toDebugString(QDebug &dbg) const override;
+
+  static const quint64 sizeInFileBase;
 };
 
 } // namespace MSONcommon

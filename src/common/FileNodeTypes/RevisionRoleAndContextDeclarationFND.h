@@ -23,6 +23,8 @@ public:
   ExtendedGUID getGctxid() const;
   void setGctxid(const ExtendedGUID &value);
 
+  virtual quint64 getSizeInFile() const override;
+
 private:
   virtual void deserialize(QDataStream &ds) override;
   virtual void serialize(QDataStream &ds) const override;

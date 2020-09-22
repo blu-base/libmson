@@ -17,6 +17,7 @@ private:
 
   QByteArray m_rawstring;
 
+  static const quint64 minSizeInFile = 4;
 public:
   StringInStorageBuffer();
 
@@ -25,6 +26,8 @@ public:
 
   QString getStringData() const;
   void setStringData(const QString &value);
+
+  quint64 getSizeInFile() const;
 
 private:
   /**

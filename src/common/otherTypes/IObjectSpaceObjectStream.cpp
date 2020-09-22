@@ -1,4 +1,4 @@
-#include "IObjectSpaceOpbjectStream.h"
+#include "IObjectSpaceObjectStream.h"
 
 #include "ObjectSpaceObjectStreamHeader.h"
 
@@ -9,25 +9,24 @@
 
 namespace MSONcommon {
 
-ObjectSpaceObjectStreamHeader IObjectSpaceOpbjectStream::header() const {
+ObjectSpaceObjectStreamHeader IObjectSpaceObjectStream::header() const {
   return m_header;
 }
 
-void IObjectSpaceOpbjectStream::setHeader(
+void IObjectSpaceObjectStream::setHeader(
     const ObjectSpaceObjectStreamHeader &header) {
   m_header = header;
 }
 
-std::vector<CompactID> IObjectSpaceOpbjectStream::body() const {
-  return m_body;
-}
+std::vector<CompactID> IObjectSpaceObjectStream::body() const { return m_body; }
 
-void IObjectSpaceOpbjectStream::setBody(const std::vector<CompactID> &body) {
+void IObjectSpaceObjectStream::setBody(const std::vector<CompactID> &body) {
   m_body = body;
 }
 
-void IObjectSpaceOpbjectStream::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
-  //    xmlWriter.writeStartElement("IObjectSpaceOpbjectStream");
+void IObjectSpaceObjectStream::writeLowLevelXml(
+    QXmlStreamWriter &xmlWriter) const {
+  //    xmlWriter.writeStartElement("IObjectSpaceObjectStream");
   xmlWriter << m_header;
 
   xmlWriter.writeStartElement("CompactIDs");
@@ -38,7 +37,7 @@ void IObjectSpaceOpbjectStream::writeLowLevelXml(QXmlStreamWriter &xmlWriter) co
   //    xmlWriter.writeEndElement();
 }
 
-bool IObjectSpaceOpbjectStream::pushbackToBody(const CompactID &entry) {
+bool IObjectSpaceObjectStream::pushbackToBody(const CompactID &entry) {
   if (m_header.count() < 0xFFFFFF) {
     m_body.push_back(entry);
     m_header.incrementCount();
@@ -48,7 +47,7 @@ bool IObjectSpaceOpbjectStream::pushbackToBody(const CompactID &entry) {
   }
 }
 
-bool IObjectSpaceOpbjectStream::removeIdFromBody(const CompactID &entry) {
+bool IObjectSpaceObjectStream::removeIdFromBody(const CompactID &entry) {
   if (m_body.empty()) {
     return false;
   }
@@ -64,7 +63,7 @@ bool IObjectSpaceOpbjectStream::removeIdFromBody(const CompactID &entry) {
   }
 }
 
-bool IObjectSpaceOpbjectStream::removeIdFromBody(const quint32 &position) {
+bool IObjectSpaceObjectStream::removeIdFromBody(const quint32 &position) {
   if (m_body.size() > position) {
     m_body.erase(m_body.begin() + position);
     return true;
@@ -73,7 +72,7 @@ bool IObjectSpaceOpbjectStream::removeIdFromBody(const quint32 &position) {
   }
 }
 
-qint32 IObjectSpaceOpbjectStream::positionOfIdInBody(const CompactID &entry) {
+qint32 IObjectSpaceObjectStream::positionOfIdInBody(const CompactID &entry) {
   if (m_body.empty()) {
     return -1;
   }
@@ -86,7 +85,7 @@ qint32 IObjectSpaceOpbjectStream::positionOfIdInBody(const CompactID &entry) {
   }
 }
 
-bool IObjectSpaceOpbjectStream::isIdInBody(const CompactID &entry) {
+bool IObjectSpaceObjectStream::isIdInBody(const CompactID &entry) {
   if (m_body.empty()) {
     return false;
   }
@@ -99,17 +98,24 @@ bool IObjectSpaceOpbjectStream::isIdInBody(const CompactID &entry) {
   }
 }
 
-IObjectSpaceOpbjectStream::IObjectSpaceOpbjectStream() : m_header(), m_body() {}
+const quint64 IObjectSpaceObjectStream::sizeInFileBase =
+    ObjectSpaceObjectStreamHeader::getSizeInFile();
 
-IObjectSpaceOpbjectStream::IObjectSpaceOpbjectStream(
+quint64 IObjectSpaceObjectStream::getSizeInFile() const {
+  return sizeInFileBase + m_header.count() * CompactID::getSizeInFile();
+}
+
+IObjectSpaceObjectStream::IObjectSpaceObjectStream() : m_header(), m_body() {}
+
+IObjectSpaceObjectStream::IObjectSpaceObjectStream(
     const ObjectSpaceObjectStreamHeader::OsidStreamPresence &osidStreamPresence,
     const ObjectSpaceObjectStreamHeader::ExtendedStreamPresence
         &extendedStreamPresence)
     : m_header(osidStreamPresence, extendedStreamPresence), m_body() {}
 
-IObjectSpaceOpbjectStream::~IObjectSpaceOpbjectStream() {}
+IObjectSpaceObjectStream::~IObjectSpaceObjectStream() {}
 
-void IObjectSpaceOpbjectStream::deserialize(QDataStream &ds) {
+void IObjectSpaceObjectStream::deserialize(QDataStream &ds) {
   ds >> m_header;
 
   std::vector<CompactID> ids{};
@@ -123,7 +129,7 @@ void IObjectSpaceOpbjectStream::deserialize(QDataStream &ds) {
   m_body = ids;
 }
 
-void IObjectSpaceOpbjectStream::serialize(QDataStream &ds) const {
+void IObjectSpaceObjectStream::serialize(QDataStream &ds) const {
   ds << m_header;
 
   for (quint32 i{0}; i < m_header.count(); i++) {
@@ -131,7 +137,7 @@ void IObjectSpaceOpbjectStream::serialize(QDataStream &ds) const {
   }
 }
 
-void IObjectSpaceOpbjectStream::toDebugString(QDebug &dbg) const {
+void IObjectSpaceObjectStream::toDebugString(QDebug &dbg) const {
 
   dbg << "ObjectSpaceOpbjectStream:\n";
   dbg << m_header;

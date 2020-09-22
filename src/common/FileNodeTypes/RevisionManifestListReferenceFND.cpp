@@ -18,6 +18,10 @@ void RevisionManifestListReferenceFND::setRef(
   m_ref = value;
 }
 
+quint64 RevisionManifestListReferenceFND::getSizeInFile() const {
+  return m_ref.getSizeInFile();
+}
+
 void RevisionManifestListReferenceFND::deserialize(QDataStream &ds) {
   ds >> m_ref;
 }

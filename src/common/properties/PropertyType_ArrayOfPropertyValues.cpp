@@ -8,7 +8,6 @@ namespace MSONcommon {
 PropertyType_ArrayOfPropertyValues::PropertyType_ArrayOfPropertyValues()
     : m_cProperties(0) {}
 
-
 quint32 PropertyType_ArrayOfPropertyValues::cProperties() const {
   return m_cProperties;
 }
@@ -31,6 +30,16 @@ std::vector<PropertySet> PropertyType_ArrayOfPropertyValues::data() const {
 void PropertyType_ArrayOfPropertyValues::setData(
     const std::vector<PropertySet> &data) {
   m_data = data;
+}
+
+quint64 PropertyType_ArrayOfPropertyValues::getSizeInFile() const {
+  quint64 propSetSize = 0;
+
+  for (const auto& entry : m_data) {
+    propSetSize += entry.getSizeInFile();
+  }
+
+  return sizeInFileBase + propSetSize;
 }
 
 void PropertyType_ArrayOfPropertyValues::deserialize(QDataStream &ds) {

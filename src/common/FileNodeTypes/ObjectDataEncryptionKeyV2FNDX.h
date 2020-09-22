@@ -32,6 +32,9 @@ public:
   QByteArray getEncryptionData() const;
   void setEncryptionData(const QByteArray &value);
 
+  virtual quint64 getSizeInFile() const override;
+
+
 private:
   virtual void deserialize(QDataStream &ds) override;
   virtual void serialize(QDataStream &ds) const override;

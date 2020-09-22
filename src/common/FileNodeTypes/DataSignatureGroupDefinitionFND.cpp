@@ -36,4 +36,11 @@ void DataSignatureGroupDefinitionFND::writeLowLevelXml(
   xmlWriter.writeEndElement();
 }
 
+quint64 MSONcommon::DataSignatureGroupDefinitionFND::getSizeInFile() const
+{
+  return sizeInFile;
+}
+
 } // namespace MSONcommon
+
+

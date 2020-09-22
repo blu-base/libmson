@@ -43,6 +43,8 @@ public:
   PropertySet body() const;
   void setBody(const PropertySet &body);
 
+  quint64 getSizeInFile() const;
+
 private:
   /**
    * @brief creates ObjectSpaceObjectPropSet from QDataStream

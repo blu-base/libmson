@@ -19,6 +19,9 @@ class IFileNodeType : public IRevisionStoreFileObject {
 protected:
   IFileNodeType() = default;
   virtual ~IFileNodeType() = default;
+
+public:
+  virtual quint64 getSizeInFile() const = 0;
 };
 
 } // namespace MSONcommon

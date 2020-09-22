@@ -2,12 +2,14 @@
 
 namespace MSONcommon {
 
-ExtendedGUID ObjectSpaceManifestListStartFND::gosid() const {
-  return m_gosid;
-}
+ExtendedGUID ObjectSpaceManifestListStartFND::gosid() const { return m_gosid; }
 
 void ObjectSpaceManifestListStartFND::setGosid(const ExtendedGUID &value) {
   m_gosid = value;
+}
+
+quint64 ObjectSpaceManifestListStartFND::getSizeInFile() const {
+  return ExtendedGUID::getSizeInFile();
 }
 
 void ObjectSpaceManifestListStartFND::deserialize(QDataStream &ds) {

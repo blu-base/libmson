@@ -80,6 +80,18 @@ void FreeChunkListFragment::setFcrFreeChunk(
   fcrFreeChunk = value;
 }
 
+quint64 FreeChunkListFragment::getSizeInFile() const
+{
+  quint64 size = sizeof(crc) + fcrNextChunk.getSizeInFile();
+
+  /// \todo use std::accumulate
+  for(const auto& entry : fcrFreeChunk) {
+    size += entry->getSizeInFile();
+  }
+
+  return size;
+}
+
 quint32 FreeChunkListFragment::getCrc() const { return crc; }
 
 void FreeChunkListFragment::setCrc(const quint32 &value) { crc = value; }

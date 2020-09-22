@@ -41,6 +41,8 @@ quint64 FileChunkReference64::cb() const { return m_cb; }
 
 void FileChunkReference64::setCb(const quint64 &cb) { m_cb = cb; }
 
+quint64 FileChunkReference64::getSizeInFile() { return sizeInFile; }
+
 void FileChunkReference64::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("FileChunkReference64");
 

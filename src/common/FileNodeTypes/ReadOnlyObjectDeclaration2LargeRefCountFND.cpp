@@ -11,6 +11,11 @@ FNCR_CB_FORMAT ReadOnlyObjectDeclaration2LargeRefCountFND::getCbFormat() const {
   return m_cbFormat;
 }
 
+quint64 ReadOnlyObjectDeclaration2LargeRefCountFND::getSizeInFile() const
+{
+  return md5HashSize + m_base.getSizeInFile();
+}
+
 ReadOnlyObjectDeclaration2LargeRefCountFND::
     ReadOnlyObjectDeclaration2LargeRefCountFND(FNCR_STP_FORMAT stpFormat,
                                                FNCR_CB_FORMAT cbFormat)
@@ -48,7 +53,7 @@ void ReadOnlyObjectDeclaration2LargeRefCountFND::deserialize(QDataStream &ds) {
   m_base = ObjectDeclaration2LargeRefCountFND(m_stpFormat, m_cbFormat);
   ds >> m_base;
 
-  m_md5hash = ds.device()->read(16);
+  m_md5hash = ds.device()->read(md5HashSize);
 }
 
 void ReadOnlyObjectDeclaration2LargeRefCountFND::serialize(

@@ -13,21 +13,7 @@
 
 #include "IRevisionStoreFileObject.h"
 
-namespace MSONcommon{
-
-static constexpr const quint32 FileNode_maskReserved = 0x1;
-static constexpr const quint32 FileNode_maskBaseType = 0xF;
-static constexpr const quint32 FileNode_maskCbFormat = 0x3;
-static constexpr const quint32 FileNode_maskStpFormat = 0x3;
-static constexpr const quint32 FileNode_maskFileNodeSize = 0x1FFF;
-static constexpr const quint32 FileNode_maskFileNodeID = 0x3FF;
-
-static constexpr const quint32 FileNode_shiftReserved = 31;
-static constexpr const quint32 FileNode_shiftBaseType = 27;
-static constexpr const quint32 FileNode_shiftCbFormat = 25;
-static constexpr const quint32 FileNode_shiftStpFormat = 23;
-static constexpr const quint32 FileNode_shiftFileNodeSize = 10;
-static constexpr const quint32 FileNode_shiftFileNodeID = 0;
+namespace MSONcommon {
 
 class FileNode : public IRevisionStoreFileObject {
 private:
@@ -45,12 +31,6 @@ private:
   quint8 reserved;
 
   std::shared_ptr<IFileNodeType> fnt;
-
-  /**
-   * @brief maskReserved
-   *
-   * masks and shifts for parsing filenode
-   */
 
 public:
   FileNode();
@@ -81,13 +61,39 @@ public:
   void setFileNodeType(const std::shared_ptr<IFileNodeType> &value);
   std::shared_ptr<IFileNodeType> getFnt() const;
 
+  quint64 getSizeInFile() const;
+
 private:
-  virtual void deserialize(QDataStream& ds) override;
-  virtual void serialize(QDataStream& ds) const override;
+  virtual void deserialize(QDataStream &ds) override;
+  virtual void serialize(QDataStream &ds) const override;
 
   virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
 
   virtual void toDebugString(QDebug &dbg) const override;
+
+  /**
+   * @brief maskReserved
+   *
+   * masks and shifts for parsing filenode
+   */
+  static constexpr const quint32 FileNode_maskReserved = 0x1;
+  static constexpr const quint32 FileNode_maskBaseType = 0xF;
+  static constexpr const quint32 FileNode_maskCbFormat = 0x3;
+  static constexpr const quint32 FileNode_maskStpFormat = 0x3;
+  static constexpr const quint32 FileNode_maskFileNodeSize = 0x1FFF;
+  static constexpr const quint32 FileNode_maskFileNodeID = 0x3FF;
+
+  static constexpr const quint32 FileNode_shiftReserved = 31;
+  static constexpr const quint32 FileNode_shiftBaseType = 27;
+  static constexpr const quint32 FileNode_shiftCbFormat = 25;
+  static constexpr const quint32 FileNode_shiftStpFormat = 23;
+  static constexpr const quint32 FileNode_shiftFileNodeSize = 10;
+  static constexpr const quint32 FileNode_shiftFileNodeID = 0;
+
+  /// magic numbers for file sizes
+  ///
+
+  static const quint64 sizeInFileBase = 4;
 };
 
 } // namespace MSONcommon

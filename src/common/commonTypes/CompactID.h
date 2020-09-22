@@ -14,6 +14,8 @@ private:
   quint8 m_n;
   quint32 guidIndex; // 24bits used.
 
+  static const quint64 sizeInFile = 4;
+
 public:
   CompactID();
   CompactID(const quint8 m_n, const quint32 compactEGUID);
@@ -32,6 +34,8 @@ public:
   QByteArray toByteArray() const;
 
   QString toString() const;
+
+  static constexpr quint64 getSizeInFile() { return sizeInFile; };
 
   friend bool operator==(const CompactID &lhs, const CompactID &rhs) noexcept;
   friend bool operator!=(const CompactID &lhs, const CompactID &rhs) noexcept;

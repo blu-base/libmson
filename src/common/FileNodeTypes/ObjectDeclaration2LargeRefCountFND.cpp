@@ -27,6 +27,10 @@ void ObjectDeclaration2LargeRefCountFND::setCRef(const quint32 &cRef) {
   m_cRef = cRef;
 }
 
+quint64 ObjectDeclaration2LargeRefCountFND::getSizeInFile() const {
+  return m_blobRef.getSizeInFile() + m_body.getSizeInFile() + sizeof(m_cRef);
+}
+
 FileNodeChunkReference ObjectDeclaration2LargeRefCountFND::blobRef() const {
   return m_blobRef;
 }

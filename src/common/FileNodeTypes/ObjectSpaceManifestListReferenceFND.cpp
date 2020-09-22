@@ -21,6 +21,10 @@ void ObjectSpaceManifestListReferenceFND::setGosid(const ExtendedGUID &value) {
   m_gosid = value;
 }
 
+quint64 ObjectSpaceManifestListReferenceFND::getSizeInFile() const {
+  return m_ref.getSizeInFile() + ExtendedGUID::getSizeInFile();
+}
+
 void ObjectSpaceManifestListReferenceFND::deserialize(QDataStream &ds) {
   ds >> m_ref;
   ds >> m_gosid;

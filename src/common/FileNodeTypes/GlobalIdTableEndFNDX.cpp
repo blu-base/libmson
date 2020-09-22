@@ -20,4 +20,11 @@ void GlobalIdTableEndFNDX::writeLowLevelXml(QXmlStreamWriter& xmlWriter) const
     xmlWriter.writeStartElement("GlobalIdTableEndFNDX");
     xmlWriter.writeEndElement();
 }
+
+quint64 MSONcommon::GlobalIdTableEndFNDX::getSizeInFile() const
+{
+  return 0;
+}
 } // namespace MSONcommon
+
+

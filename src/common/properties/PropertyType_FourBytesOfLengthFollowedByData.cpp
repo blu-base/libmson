@@ -14,6 +14,10 @@ void PropertyType_FourBytesOfLengthFollowedByData::setData(
   m_data = data;
 }
 
+quint64 PropertyType_FourBytesOfLengthFollowedByData::getSizeInFile() const {
+  return sizeInFileBase + m_cb;
+}
+
 void PropertyType_FourBytesOfLengthFollowedByData::writeLowLevelXml(
     QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("FourBytesOfLengthFollowedByData");

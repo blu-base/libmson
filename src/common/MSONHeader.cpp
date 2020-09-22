@@ -46,7 +46,9 @@ MSONHeader::MSONHeader()
       fcrAllocVerificationFreeChunkList{FileChunkReference64x32()},
       bnCreated{0}, bnLastWroteToThisFile{0}, bnOldestWritten{0},
       bnNewestWritten{0}, reservedHeaderTailLength{
-                              def_reservedHeaderTailLength} {}
+                            def_reservedHeaderTailLength} {}
+
+quint64 MSONHeader::getSizeInFile() { return sizeInFile; }
 
 void MSONHeader::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("Header");
@@ -206,7 +208,7 @@ void MSONHeader::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeEndElement(); // Header
 }
 
-void MSONHeader::serialize(QDataStream& ds) const {
+void MSONHeader::serialize(QDataStream &ds) const {
   // if byte order is big endian, change to little endian
   if (ds.byteOrder() == QDataStream::BigEndian) {
     ds.setByteOrder(QDataStream::LittleEndian);
@@ -250,10 +252,9 @@ void MSONHeader::serialize(QDataStream& ds) const {
   ds << bnOldestWritten;
   ds << bnNewestWritten;
   ds << QByteArray(reservedHeaderTailLength, '\00');
-
 }
 
-void MSONHeader::deserialize(QDataStream& ds) {
+void MSONHeader::deserialize(QDataStream &ds) {
   // if byte order is big endian, change to little endian
   if (ds.byteOrder() == QDataStream::BigEndian) {
     ds.setByteOrder(QDataStream::LittleEndian);
@@ -297,7 +298,6 @@ void MSONHeader::deserialize(QDataStream& ds) {
   ds >> bnOldestWritten;
   ds >> bnNewestWritten;
   ds.skipRawData(reservedHeaderTailLength);
-
 }
 
 void MSONHeader::toDebugString(QDebug &dbg) const {
@@ -343,8 +343,7 @@ void MSONHeader::toDebugString(QDebug &dbg) const {
   dbg << " cTransactionsInLog:                " << cTransactionsInLog
       << (isCTransactionsInLogValid() ? "" : " INVALID")
       << (isCTransactionsInLogIgnored() ? " ignored" : "") << "\n";
-  dbg << " cbLegacyExpectedFileLength:        "
-      << cbLegacyExpectedFileLength
+  dbg << " cbLegacyExpectedFileLength:        " << cbLegacyExpectedFileLength
       << (isCbLegacyExpectedFileLengthValid() ? "" : " INVALID")
       << (isCbLegacyExpectedFileLengthIgnored() ? " ignored" : "") << "\n";
   dbg << " rgbPlaceholder:                    " << rgbPlaceholder
@@ -391,12 +390,10 @@ void MSONHeader::toDebugString(QDebug &dbg) const {
       << (isFcrFreeChunkListValid() ? "" : " INVALID")
       << (isFcrFreeChunkListIgnored() ? " ignored" : "") << "\n";
   dbg << " cbExpectedFileLength:              "
-      << qStringHex(cbExpectedFileLength,
-                    sizeof(cbExpectedFileLength) * 2)
+      << qStringHex(cbExpectedFileLength, sizeof(cbExpectedFileLength) * 2)
       << (isCbExpectedFileLengthValid() ? "" : " INVALID")
       << (isCbExpectedFileLengthIgnored() ? " ignored" : "") << "\n";
-  dbg << " cbFreeSpaceInFreeChunkList:        "
-      << cbFreeSpaceInFreeChunkList
+  dbg << " cbFreeSpaceInFreeChunkList:        " << cbFreeSpaceInFreeChunkList
       << (isCbFreeSpaceInFreeChunkListValid() ? "" : " INVALID")
       << (isCbFreeSpaceInFreeChunkListIgnored() ? " ignored" : "") << "\n";
   dbg << " guidFileVersion:                   " << guidFileVersion
@@ -424,8 +421,7 @@ void MSONHeader::toDebugString(QDebug &dbg) const {
       << (isBnCreatedValid() ? "" : " INVALID")
       << (isBnCreatedIgnored() ? " ignored" : "") << "\n";
   dbg << " bnLastWroteToThisFile:             "
-      << qStringHex(bnLastWroteToThisFile,
-                    sizeof(bnLastWroteToThisFile) * 2)
+      << qStringHex(bnLastWroteToThisFile, sizeof(bnLastWroteToThisFile) * 2)
       << (isBnLastWroteToThisFileValid() ? "" : " INVALID")
       << (isBnLastWroteToThisFileIgnored() ? " ignored" : "") << "\n";
   dbg << " bnOldestWritten:                   "

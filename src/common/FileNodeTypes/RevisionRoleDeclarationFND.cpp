@@ -12,6 +12,11 @@ void RevisionRoleDeclarationFND::setRevisionRole(const quint32 &value) {
   m_RevisionRole = value;
 }
 
+const quint64 RevisionRoleDeclarationFND::sizeInFile =
+    ExtendedGUID::getSizeInFile() + sizeof(m_RevisionRole);
+
+quint64 RevisionRoleDeclarationFND::getSizeInFile() const { return sizeInFile; }
+
 ExtendedGUID RevisionRoleDeclarationFND::getRid() const { return m_rid; }
 
 void RevisionRoleDeclarationFND::setRid(const ExtendedGUID &value) {

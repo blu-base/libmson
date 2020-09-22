@@ -12,6 +12,11 @@ FNCR_STP_FORMAT ReadOnlyObjectDeclaration2RefCountFND::getStpFormat() const {
   return m_stpFormat;
 }
 
+quint64 ReadOnlyObjectDeclaration2RefCountFND::getSizeInFile() const
+{
+  return md5HashSize + m_base.getSizeInFile();
+}
+
 ReadOnlyObjectDeclaration2RefCountFND::ReadOnlyObjectDeclaration2RefCountFND(
     FNCR_STP_FORMAT stpFormat, FNCR_CB_FORMAT cbFormat)
     : m_stpFormat(stpFormat), m_cbFormat(cbFormat),
@@ -48,8 +53,7 @@ void ReadOnlyObjectDeclaration2RefCountFND::deserialize(QDataStream &ds) {
   m_base = ObjectDeclaration2RefCountFND(m_stpFormat, m_cbFormat);
   ds >> m_base;
 
-  m_md5hash.resize(16);
-  ds.readRawData(m_md5hash.data(), 16);
+  m_md5hash = ds.device()->read(md5HashSize);
 }
 
 void ReadOnlyObjectDeclaration2RefCountFND::serialize(QDataStream &ds) const {

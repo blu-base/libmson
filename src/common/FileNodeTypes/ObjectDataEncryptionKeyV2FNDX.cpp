@@ -90,4 +90,7 @@ void ObjectDataEncryptionKeyV2FNDX::writeLowLevelXml(
 
   xmlWriter.writeEndElement();
 }
+
+quint64 ObjectDataEncryptionKeyV2FNDX::getSizeInFile() const { return m_ref.getSizeInFile(); }
+
 } // namespace MSONcommon

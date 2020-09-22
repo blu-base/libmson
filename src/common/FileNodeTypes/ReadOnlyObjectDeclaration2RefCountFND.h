@@ -34,6 +34,8 @@ public:
 
   FNCR_STP_FORMAT getStpFormat() const;
 
+  virtual quint64 getSizeInFile() const override;
+
 private:
   virtual void deserialize(QDataStream &ds) override;
   virtual void serialize(QDataStream &ds) const override;
@@ -41,6 +43,8 @@ private:
   virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
 
   virtual void toDebugString(QDebug &dbg) const override;
+
+  static const quint64 md5HashSize = 16;
 };
 
 } // namespace MSONcommon

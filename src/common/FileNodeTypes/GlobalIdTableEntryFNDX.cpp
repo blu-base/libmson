@@ -37,4 +37,8 @@ void GlobalIdTableEntryFNDX::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const
 
   xmlWriter.writeEndElement();
 }
+
+quint64 GlobalIdTableEntryFNDX::getSizeInFile() const { return sizeInFile; }
+
+
 } // namespace MSONcommon

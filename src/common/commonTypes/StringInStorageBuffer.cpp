@@ -23,6 +23,10 @@ void StringInStorageBuffer::setStringData(const QString &value) {
                            value.size() * 2);
 }
 
+quint64 StringInStorageBuffer::getSizeInFile() const {
+  return minSizeInFile + m_cch * 2;
+}
+
 /**
  * @brief StringInStorageBuffer::deserialize
  * @param ds

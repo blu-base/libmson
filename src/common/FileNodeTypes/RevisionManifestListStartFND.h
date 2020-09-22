@@ -40,6 +40,8 @@ public:
   quint32 getNInstance() const;
   void setNInstance(const quint32 &value);
 
+  virtual quint64 getSizeInFile() const override;
+
 private:
   virtual void deserialize(QDataStream &ds) override;
   virtual void serialize(QDataStream &ds) const override;

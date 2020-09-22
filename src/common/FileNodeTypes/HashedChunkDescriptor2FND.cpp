@@ -65,4 +65,7 @@ void HashedChunkDescriptor2FND::writeLowLevelXml(QXmlStreamWriter &xmlWriter) co
 
   xmlWriter.writeEndElement();
 }
+
+quint64 HashedChunkDescriptor2FND::getSizeInFile() const { return m_BlobRef.getSizeInFile() + guidHashWidth; }
+
 } // namespace MSONcommon

@@ -245,12 +245,15 @@ void MSONcommon::FileNode::deserialize(QDataStream &ds) {
   }
 }
 
+quint64 FileNode::getSizeInFile() const {
+  return sizeInFileBase + fnt->getSizeInFile();
+}
+
 void FileNode::toDebugString(QDebug &dbg) const {
   dbg.noquote() << "FileNode. ID: " << qStringHex(fileNodeID, 3)
                 << " Size: " << qStringHex(fileNodeSize, 4)
                 << " Stp/Cb format: " << stpFormat << "/" << cbFormat
                 << " BaseType: " << baseType << '\n';
-
 
   if (fnt != nullptr) {
     dbg << *fnt;

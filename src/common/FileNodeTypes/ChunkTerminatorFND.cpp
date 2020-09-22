@@ -15,4 +15,6 @@ void ChunkTerminatorFND::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeEndElement();
 }
 
+quint64 MSONcommon::ChunkTerminatorFND::getSizeInFile() const { return sizeInFile; }
+
 } // namespace MSONcommon

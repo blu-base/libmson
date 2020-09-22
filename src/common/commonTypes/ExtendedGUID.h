@@ -17,6 +17,8 @@ private:
   QUuid m_guid;
   quint32 data_n;
 
+  static const quint64 sizeInFile = 20;
+
 public:
   ExtendedGUID();
   ExtendedGUID(const QUuid &guid, const quint32 &n);
@@ -42,6 +44,8 @@ public:
                          const ExtendedGUID &rhs) noexcept;
   friend bool operator>=(const ExtendedGUID &lhs,
                          const ExtendedGUID &rhs) noexcept;
+
+  static constexpr quint64 getSizeInFile() { return sizeInFile; };
 
 private:
   virtual void deserialize(QDataStream &ds) override;

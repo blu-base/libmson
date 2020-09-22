@@ -3,12 +3,12 @@
 
 #include <QtCore/qglobal.h>
 
-#include "IObjectSpaceOpbjectStream.h"
+#include "IObjectSpaceObjectStream.h"
 #include "ObjectSpaceObjectStreamHeader.h"
 
 namespace MSONcommon {
 
-class ObjectSpaceObjectStreamOfOSIDs : public IObjectSpaceOpbjectStream {
+class ObjectSpaceObjectStreamOfOSIDs : public IObjectSpaceObjectStream {
 public:
   ObjectSpaceObjectStreamOfOSIDs();
   ObjectSpaceObjectStreamOfOSIDs(

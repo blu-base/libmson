@@ -54,6 +54,12 @@ void ObjectSpaceObjectPropSet::setBody(const PropertySet &body) {
   m_body = body;
 }
 
+quint64 ObjectSpaceObjectPropSet::getSizeInFile() const
+{
+  return m_OIDs.getSizeInFile() + m_OSIDs.getSizeInFile() + m_ContextIDs.getSizeInFile()
+      + m_body.getSizeInFile() + m_paddingLength;
+}
+
 void ObjectSpaceObjectPropSet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("ObjectSpaceObjectPropSet");
   xmlWriter.writeAttribute("paddingLength", QString::number(m_paddingLength));

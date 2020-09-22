@@ -11,7 +11,13 @@ void ObjectDeclaration2Body::setFReserved2(const quint8 &value) {
   m_fReserved2 = value;
 }
 
-void ObjectDeclaration2Body::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
+const quint64 ObjectDeclaration2Body::sizeInFile =
+    CompactID::getSizeInFile() + JCID::getSizeInFile() + 1;
+
+quint64 ObjectDeclaration2Body::getSizeInFile() { return sizeInFile; }
+
+void ObjectDeclaration2Body::writeLowLevelXml(
+    QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("ObjectDeclaration2Body");
   xmlWriter.writeAttribute("fHasOidReferences",
                            m_fHasOidReferences ? "true" : "false");

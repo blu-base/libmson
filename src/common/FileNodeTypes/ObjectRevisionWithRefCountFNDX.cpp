@@ -59,6 +59,10 @@ void ObjectRevisionWithRefCountFNDX::setPropSet(
   m_blob = value;
 }
 
+quint64 ObjectRevisionWithRefCountFNDX::getSizeInFile() const {
+  return sizeInFileBase + m_ref.getSizeInFile();
+}
+
 void ObjectRevisionWithRefCountFNDX::deserialize(QDataStream &ds) {
 
   ds.setByteOrder(QDataStream::LittleEndian);

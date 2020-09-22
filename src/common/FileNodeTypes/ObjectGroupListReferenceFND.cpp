@@ -19,6 +19,11 @@ void ObjectGroupListReferenceFND::setObjectGroupID(
   m_ObjectGroupID = objectGroupID;
 }
 
+quint64 ObjectGroupListReferenceFND::getSizeInFile() const
+{
+  return m_ref.getSizeInFile() + ExtendedGUID::getSizeInFile();
+}
+
 FileNodeChunkReference ObjectGroupListReferenceFND::ref() const {
   return m_ref;
 }

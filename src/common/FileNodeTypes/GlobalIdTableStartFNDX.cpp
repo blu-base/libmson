@@ -19,9 +19,13 @@ void GlobalIdTableStartFNDX::toDebugString(QDebug &dbg) const {
   dbg << " GlobalIdTableStartFNDX: reserved: " << m_reserved << '\n';
 }
 
-void GlobalIdTableStartFNDX::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
+void GlobalIdTableStartFNDX::writeLowLevelXml(
+    QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("GlobalIdTableStartFNDX");
   xmlWriter.writeAttribute("reserved", QString::number(m_reserved));
   xmlWriter.writeEndElement();
 }
+
+quint64 GlobalIdTableStartFNDX::getSizeInFile() const { return sizeInFile; }
+
 } // namespace MSONcommon

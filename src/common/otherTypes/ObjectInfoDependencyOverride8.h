@@ -8,7 +8,7 @@
 
 namespace MSONcommon {
 
-class ObjectInfoDependencyOverride8 : public IRevisionStoreFileObject{
+class ObjectInfoDependencyOverride8 : public IRevisionStoreFileObject {
 private:
   /**
    * @brief the identity of the object with the updated reference count.
@@ -29,6 +29,8 @@ public:
 
   quint8 cRef() const;
   void setCRef(const quint8 &cRef);
+
+  static quint64 getSizeInFile() { return sizeInFile; }
 
 private:
   /**
@@ -55,6 +57,8 @@ private:
    * @param dbg <QDebug> string builder for the debug information
    */
   virtual void toDebugString(QDebug &dbg) const override;
+
+  static const quint64 sizeInFile = CompactID::getSizeInFile() + sizeof(m_cRef);
 };
 
 } // namespace MSONcommon

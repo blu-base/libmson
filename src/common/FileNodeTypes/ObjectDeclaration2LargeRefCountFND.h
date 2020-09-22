@@ -36,6 +36,8 @@ public:
   ObjectSpaceObjectPropSet getPropSet() const;
   void setPropSet(const ObjectSpaceObjectPropSet &value);
 
+  virtual quint64 getSizeInFile() const override;
+
 private:
   virtual void deserialize(QDataStream &ds) override;
   virtual void serialize(QDataStream &ds) const override;

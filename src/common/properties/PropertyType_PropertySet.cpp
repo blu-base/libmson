@@ -11,7 +11,12 @@ void PropertyType_PropertySet::setData(const PropertySet &data) {
   m_data = data;
 }
 
-void PropertyType_PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
+quint64 PropertyType_PropertySet::getSizeInFile() const {
+  return m_data.getSizeInFile();
+}
+
+void PropertyType_PropertySet::writeLowLevelXml(
+    QXmlStreamWriter &xmlWriter) const {
   xmlWriter << m_data;
 }
 

@@ -198,6 +198,11 @@ QString JCID::typeToString() const {
   }
 }
 
+quint64 JCID::getSizeInFile()
+{
+  return sizeInFile;
+}
+
 void JCID::deserialize(QDataStream &ds) { ds >> m_value; }
 
 void JCID::serialize(QDataStream &ds) const { ds << m_value; }

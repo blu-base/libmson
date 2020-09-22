@@ -67,4 +67,9 @@ void FileDataStoreObjectReferenceFND::writeLowLevelXml(
 
   xmlWriter.writeEndElement();
 }
+
+quint64 MSONcommon::FileDataStoreObjectReferenceFND::getSizeInFile() const {
+  return m_ref.getSizeInFile() + sizeOfGUID;
+}
+
 } // namespace MSONcommon

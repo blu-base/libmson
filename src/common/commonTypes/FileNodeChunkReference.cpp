@@ -128,7 +128,8 @@ void FileNodeChunkReference::setCb(const quint64 &cb) {
   }
 }
 
-void FileNodeChunkReference::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
+void FileNodeChunkReference::writeLowLevelXml(
+    QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("FileNodeChunkReference");
 
   switch (m_stpFormat) {
@@ -228,6 +229,42 @@ bool FileNodeChunkReference::isSTPcompressed() {
 bool FileNodeChunkReference::isCBcompressed() {
   return m_cbFormat == FNCR_CB_FORMAT::COMPRESSED_2BYTE ||
          m_cbFormat == FNCR_CB_FORMAT::COMPRESSED_1BYTE;
+}
+
+quint64 FileNodeChunkReference::getSizeInFile() const {
+  quint64 sizeInFile = 0;
+
+  switch (m_stpFormat) {
+  case FNCR_STP_FORMAT::UNCOMPRESED_8BYTE:
+    sizeInFile += 8;
+    break;
+
+  case FNCR_STP_FORMAT::UNCOMPRESED_4BYTE:
+  case FNCR_STP_FORMAT::COMPRESSED_4BYTE:
+    sizeInFile += 4;
+    break;
+
+  case FNCR_STP_FORMAT::COMPRESSED_2BYTE:
+    sizeInFile += 2;
+    break;
+  }
+
+  switch (m_cbFormat) {
+  case FNCR_CB_FORMAT::UNCOMPRESED_8BYTE:
+    sizeInFile += 8;
+    break;
+  case FNCR_CB_FORMAT::UNCOMPRESED_4BYTE:
+    sizeInFile += 4;
+    break;
+  case FNCR_CB_FORMAT::COMPRESSED_1BYTE:
+    sizeInFile += 1;
+    break;
+  case FNCR_CB_FORMAT::COMPRESSED_2BYTE:
+    sizeInFile += 2;
+    break;
+  }
+
+  return sizeInFile;
 }
 
 void FileNodeChunkReference::serialize(QDataStream &ds) const {

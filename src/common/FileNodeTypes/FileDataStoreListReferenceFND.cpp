@@ -43,4 +43,11 @@ void FileDataStoreListReferenceFND::writeLowLevelXml(
   xmlWriter << m_StoreList;
   xmlWriter.writeEndElement();
 }
+
+quint64 MSONcommon::FileDataStoreListReferenceFND::getSizeInFile() const
+{ return m_ref.getSizeInFile();
+}
+
 } // namespace MSONcommon
+
+

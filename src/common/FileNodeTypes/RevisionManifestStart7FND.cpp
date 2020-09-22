@@ -8,6 +8,11 @@ void RevisionManifestStart7FND::setGctxid(const ExtendedGUID &value) {
   m_gctxid = value;
 }
 
+quint64 RevisionManifestStart7FND::getSizeInFile() const
+{
+  return m_base.getSizeInFile() + ExtendedGUID::getSizeInFile();
+}
+
 void RevisionManifestStart7FND::deserialize(QDataStream &ds) {
   ds >> m_base;
   ds >> m_gctxid;

@@ -59,6 +59,11 @@ void ObjectRevisionWithRefCount2FNDX::setPropSet(
   m_blob = value;
 }
 
+quint64 ObjectRevisionWithRefCount2FNDX::getSizeInFile() const
+{
+  return sizeInFileBase + m_ref.getSizeInFile();
+}
+
 void ObjectRevisionWithRefCount2FNDX::deserialize(QDataStream &ds) {
   ds >> m_ref;
   ds >> m_oid;

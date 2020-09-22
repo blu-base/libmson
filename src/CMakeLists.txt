@@ -98,7 +98,7 @@ common/DocumentManager.cpp
 
     common/otherTypes/ObjectSpaceObjectPropSet.cpp
 
-    common/otherTypes/IObjectSpaceOpbjectStream.cpp
+    common/otherTypes/IObjectSpaceObjectStream.cpp
     common/otherTypes/ObjectSpaceObjectStreamOfOIDs.cpp
     common/otherTypes/ObjectSpaceObjectStreamOfOSIDs.cpp
     common/otherTypes/ObjectSpaceObjectStreamOfContextIDs.cpp

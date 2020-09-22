@@ -24,6 +24,7 @@ enum class FNCR_CB_FORMAT {
 };
 
 class FileNodeChunkReference : public IFileChunkReference<quint64, quint64> {
+
 public:
   FileNodeChunkReference(FNCR_STP_FORMAT stpFormat, FNCR_CB_FORMAT cbFormat);
   FileNodeChunkReference(quint8 stpFormat, quint8 cbFormat);
@@ -41,6 +42,8 @@ public:
 
   bool isSTPcompressed();
   bool isCBcompressed();
+
+  quint64 getSizeInFile() const;
 
 private:
   virtual void deserialize(QDataStream &ds) override;

@@ -41,6 +41,8 @@ public:
   void setFcrFreeChunk(
       const std::vector<std::shared_ptr<FileChunkReference64>> &value);
 
+  quint64 getSizeInFile() const;
+
 private:
   /**
    * @brief creates FreeChunkListFragment from QDataStream

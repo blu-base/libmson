@@ -33,6 +33,8 @@ public:
   FileDataStoreObject getFileDataStoreObject() const;
   void setFileDataStoreObject(const FileDataStoreObject &value);
 
+  virtual quint64 getSizeInFile() const override;
+
 private:
   virtual void deserialize(QDataStream &ds) override;
   virtual void serialize(QDataStream &ds) const override;
@@ -40,6 +42,8 @@ private:
   virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
 
   virtual void toDebugString(QDebug &dbg) const override;
+
+  static const quint64 sizeOfGUID = 16;
 };
 
 } // namespace MSONcommon

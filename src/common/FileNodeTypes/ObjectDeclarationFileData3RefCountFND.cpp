@@ -40,6 +40,12 @@ void ObjectDeclarationFileData3RefCountFND::setExtension(
   m_Extension = Extension;
 }
 
+quint64 ObjectDeclarationFileData3RefCountFND::getSizeInFile() const {
+  return CompactID::getSizeInFile() + JCID::getSizeInFile() + sizeof(m_cRef) +
+         m_FileDataReference.getSizeInFile() + m_Extension.getSizeInFile();
+}
+
+
 ObjectDeclarationFileData3RefCountFND::ObjectDeclarationFileData3RefCountFND()
     : m_cRef(0) {}
 

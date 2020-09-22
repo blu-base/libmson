@@ -48,6 +48,19 @@ void PropertySet::setRgData(
   m_rgData = rgData;
 }
 
+quint64 PropertySet::getSizeInFile() const {
+
+  // compute m_rgData size
+  quint64 dataSize = 0;
+
+  for (const auto& entry : m_rgData) {
+    dataSize += entry->getSizeInFile();
+  }
+
+  return sizeof(m_cProperties) +
+         m_rgPrids.size() * PropertyID::getSizeInFile() + dataSize;
+}
+
 /// \todo implement propertyset
 void PropertySet::deserialize(QDataStream &ds) {
 
@@ -505,7 +518,7 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
       bytes >> val;
 
       xmlWriter.writeStartElement("LanguageID");
-      xmlWriter.writeAttribute("SortID", qStringHex(val.getSortID(),4));
+      xmlWriter.writeAttribute("SortID", qStringHex(val.getSortID(), 4));
       xmlWriter.writeCharacters(LCID::toString(val.getLCID()));
       xmlWriter.writeEndElement();
 
@@ -1088,13 +1101,11 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
       xmlWriter.writeEndElement();
       break;
     }
-//      ObjectID:
-//    case PropertyIDs::AuthorOriginal:
+      //      ObjectID:
+      //    case PropertyIDs::AuthorOriginal:
 
-//      ObjectID:
-//    case PropertyIDs::AuthorMostRecent:
-
-
+      //      ObjectID:
+      //    case PropertyIDs::AuthorMostRecent:
 
     case PropertyIDs::LastModifiedTime: {
       xmlWriter.writeStartElement("LastModifiedTime");

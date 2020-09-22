@@ -10,20 +10,20 @@
 
 namespace MSONcommon {
 
-class IObjectSpaceOpbjectStream : public IRevisionStoreFileObject {
+class IObjectSpaceObjectStream : public IRevisionStoreFileObject {
 protected:
   ObjectSpaceObjectStreamHeader m_header;
   std::vector<CompactID> m_body;
 
-  IObjectSpaceOpbjectStream();
-  IObjectSpaceOpbjectStream(
+  IObjectSpaceObjectStream();
+  IObjectSpaceObjectStream(
       const ObjectSpaceObjectStreamHeader::OsidStreamPresence
           &osidStreamPresence,
       const ObjectSpaceObjectStreamHeader::ExtendedStreamPresence
           &extendedStreamPresence);
 
 public:
-  virtual ~IObjectSpaceOpbjectStream();
+  virtual ~IObjectSpaceObjectStream();
 
   ObjectSpaceObjectStreamHeader header() const;
   void setHeader(const ObjectSpaceObjectStreamHeader &header);
@@ -64,20 +64,22 @@ public:
 
   bool isIdInBody(const CompactID &entry);
 
+  quint64 getSizeInFile() const;
+
 protected:
   /**
-   * @brief creates IObjectSpaceOpbjectStream from QDataStream
+   * @brief creates IObjectSpaceObjectStream from QDataStream
    * @param ds <QDataStream> containing the deserializable
-   * IObjectSpaceOpbjectStream
+   * IObjectSpaceObjectStream
    *
    * Note, that only 4GB of an FileDataStoreObject can be parsed because an
    * limitation of QByteArray
    */
   virtual void deserialize(QDataStream &ds) override;
   /**
-   * @brief creates byte stream from IObjectSpaceOpbjectStream object
+   * @brief creates byte stream from IObjectSpaceObjectStream object
    * @param ds <QDataStream> is the output stream to which the serialized
-   * IObjectSpaceOpbjectStream is send
+   * IObjectSpaceObjectStream is send
    *
 
    */
@@ -86,10 +88,12 @@ protected:
   virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
 
   /**
-   * @brief prints the IObjectSpaceOpbjectStream to a <QDebug> object
+   * @brief prints the IObjectSpaceObjectStream to a <QDebug> object
    * @param dbg <QDebug> string builder for the debug information
    */
   virtual void toDebugString(QDebug &dbg) const override;
+
+  static const quint64 sizeInFileBase;
 };
 
 } // namespace MSONcommon

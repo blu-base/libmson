@@ -148,12 +148,14 @@ enum class PropertyIDs : quint32 {
   // undocumented ids, this is mostly guessed, do no trust whether they are
   // deducted correctly
 
+  /** Likely is used for labeling multi-author document changes
+   * Uses two letters for author with one family name and one given name (in german, and english)
+   */
   undoc_AuthorInitials = 0x1c001df8,
 
-  // some windows live stuff, eg:
-  // &lt;resolutionId provider=&quot;Windows Live&quot;
-  // hash=&quot;abcdefg==&quot;&gt; &lt;localId
-  // cid=&quot;abcdefg&quot;/&gt;&lt;/resolutionId&gt;
+  /** some windows live stuff, eg:
+   * <resolutionId provider="Windows Live" hash="abcdefg"> <localId cid="abcdefg"/></resolutionId>
+   */
   undoc_ResolutionID = 0x1c001e30,
 
   /** ObjectID which points to undoc_jciddrawingToolData(0x00120048), the tool settings
@@ -178,6 +180,8 @@ enum class PropertyIDs : quint32 {
   undoc_Undetermined64byteBlock = 0x1c00340a,
 
   /** Blob containing serialized strokes in native format
+   * 
+   * Seems to correlate with InkStroke class from onenote api
   *
   * FourBytesOfLengthFollowedByData
   */
@@ -397,6 +401,8 @@ public:
   int boolValue() const;
   void setBoolValue(bool boolValue);
 
+  static constexpr quint64 getSizeInFile() {return sizeInFile; }
+
 private:
   virtual void deserialize(QDataStream &ds) override;
   virtual void serialize(QDataStream &ds) const override;
@@ -404,6 +410,8 @@ private:
   virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
 
   virtual void toDebugString(QDebug &dbg) const override;
+
+  static const quint64 sizeInFile = 4;
 };
 
 } // namespace MSONcommon

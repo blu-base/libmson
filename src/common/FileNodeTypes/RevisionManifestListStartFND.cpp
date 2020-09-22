@@ -18,6 +18,10 @@ void RevisionManifestListStartFND::setNInstance(const quint32 &value) {
   m_nInstance = value;
 }
 
+quint64 RevisionManifestListStartFND::getSizeInFile() const {
+  return ExtendedGUID::getSizeInFile() + sizeof(m_nInstance);
+}
+
 void RevisionManifestListStartFND::deserialize(QDataStream &ds) {
   ds >> m_gosid;
   ds >> m_nInstance;

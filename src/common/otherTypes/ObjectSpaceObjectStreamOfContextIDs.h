@@ -2,12 +2,12 @@
 #define OBJECTSPACEOBJECTSTREAMOFCONTEXTIDS_H
 #include <QtCore/qglobal.h>
 
-#include "IObjectSpaceOpbjectStream.h"
+#include "IObjectSpaceObjectStream.h"
 #include "ObjectSpaceObjectStreamHeader.h"
 
 namespace MSONcommon {
 
-class ObjectSpaceObjectStreamOfContextIDs : public IObjectSpaceOpbjectStream {
+class ObjectSpaceObjectStreamOfContextIDs : public IObjectSpaceObjectStream {
 public:
   ObjectSpaceObjectStreamOfContextIDs();
   ObjectSpaceObjectStreamOfContextIDs(

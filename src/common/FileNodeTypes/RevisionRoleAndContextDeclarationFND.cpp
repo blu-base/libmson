@@ -11,6 +11,11 @@ void RevisionRoleAndContextDeclarationFND::setGctxid(
   m_gctxid = value;
 }
 
+quint64 RevisionRoleAndContextDeclarationFND::getSizeInFile() const
+{
+  return m_base.getSizeInFile() + ExtendedGUID::getSizeInFile();
+}
+
 RevisionRoleDeclarationFND
 RevisionRoleAndContextDeclarationFND::getBase() const {
   return m_base;

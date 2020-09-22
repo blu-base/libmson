@@ -5,13 +5,13 @@
 namespace MSONcommon {
 
 ObjectSpaceObjectStreamOfOIDs::ObjectSpaceObjectStreamOfOIDs()
-    : IObjectSpaceOpbjectStream() {}
+    : IObjectSpaceObjectStream() {}
 
 ObjectSpaceObjectStreamOfOIDs::ObjectSpaceObjectStreamOfOIDs(
     const ObjectSpaceObjectStreamHeader::OsidStreamPresence &osidStreamPresence,
     const ObjectSpaceObjectStreamHeader::ExtendedStreamPresence
         &extendedStreamPresence)
-    : IObjectSpaceOpbjectStream(osidStreamPresence, extendedStreamPresence) {}
+    : IObjectSpaceObjectStream(osidStreamPresence, extendedStreamPresence) {}
 
 ObjectSpaceObjectStreamOfOIDs::~ObjectSpaceObjectStreamOfOIDs() {}
 

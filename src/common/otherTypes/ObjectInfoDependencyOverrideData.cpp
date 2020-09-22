@@ -40,7 +40,6 @@ void ObjectInfoDependencyOverrideData::writeLowLevelXml(
   xmlWriter.writeEndElement();
 }
 
-
 quint32 ObjectInfoDependencyOverrideData::c8BitOverrides() const {
   return m_c8BitOverrides;
 }
@@ -83,6 +82,15 @@ ObjectInfoDependencyOverrideData::Overrides2() const {
 void ObjectInfoDependencyOverrideData::setOverrides2(
     const std::vector<ObjectInfoDependencyOverride32> &Overrides2) {
   m_Overrides2 = Overrides2;
+}
+
+const quint64 ObjectInfoDependencyOverrideData::sizeInFileBase =
+    sizeof(m_c8BitOverrides) + sizeof(m_c32BitOverrides) + sizeof(m_crc);
+
+quint64 ObjectInfoDependencyOverrideData::getSizeInFile() const {
+  return sizeInFileBase +
+         m_c8BitOverrides * ObjectInfoDependencyOverride8::getSizeInFile() +
+         m_c32BitOverrides * ObjectInfoDependencyOverride32::getSizeInFile();
 }
 
 void ObjectInfoDependencyOverrideData::deserialize(QDataStream &ds) {

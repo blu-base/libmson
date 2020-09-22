@@ -18,6 +18,7 @@ public:
   ExtendedGUID oid() const;
   void setOid(const ExtendedGUID &oid);
 
+  virtual quint64 getSizeInFile() const override;
 
 private:
   virtual void deserialize(QDataStream &ds) override;
@@ -26,6 +27,7 @@ private:
   virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
 
   virtual void toDebugString(QDebug &dbg) const override;
+
 };
 
 } // namespace MSONcommon

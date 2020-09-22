@@ -8,6 +8,9 @@
 namespace MSONcommon {
 
 class FileChunkReference32 : public IFileChunkReference<quint32, quint32> {
+private:
+  static const quint64 sizeInFile = 8;
+
 public:
   FileChunkReference32() = default;
   FileChunkReference32(FCR_INITTYPE inittype);
@@ -22,6 +25,8 @@ public:
   void setStp(const quint32 &stp) override;
   quint32 cb() const override;
   void setCb(const quint32 &cb) override;
+
+  static constexpr quint64 getSizeInFile() { return sizeInFile; };
 
 private:
   virtual void deserialize(QDataStream &ds) override;

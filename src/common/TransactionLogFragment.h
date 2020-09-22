@@ -40,6 +40,8 @@ public:
   FileChunkReference64x32 getNextFragment() const;
   void setNextFragment(const FileChunkReference64x32 &value);
 
+  quint64 getSizeInFile() const;
+
 private:
   virtual void serialize(QDataStream &ds) const override;
   virtual void deserialize(QDataStream &ds) override;

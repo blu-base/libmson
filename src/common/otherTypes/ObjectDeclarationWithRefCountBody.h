@@ -74,7 +74,10 @@ public:
   bool getFHasOsidReferences() const;
   void setFHasOsidReferences(bool value);
 
+  static quint64 getSizeInFile();
+
 private:
+  static const quint64 sizeInFile;
   /**
    * @brief creates ObjectDeclarationWithRefCountBody from QDataStream
    * @param ds <QDataStream> containing the deserializable

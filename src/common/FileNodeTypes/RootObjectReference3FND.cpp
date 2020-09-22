@@ -10,6 +10,11 @@ void RootObjectReference3FND::setRootRole(const quint32 &value) {
   m_RootRole = value;
 }
 
+const quint64 RootObjectReference3FND::sizeInFile =
+    ExtendedGUID::getSizeInFile() + sizeof(m_RootRole);
+
+quint64 RootObjectReference3FND::getSizeInFile() const { return sizeInFile; }
+
 ExtendedGUID RootObjectReference3FND::getOidRoot() const { return m_oidRoot; }
 
 void RootObjectReference3FND::setOidRoot(const ExtendedGUID &value) {
@@ -32,7 +37,8 @@ void RootObjectReference3FND::toDebugString(QDebug &dbg) const {
       << " RootRole: " << m_RootRole << '\n';
 }
 
-void RootObjectReference3FND::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
+void RootObjectReference3FND::writeLowLevelXml(
+    QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("RootObjectReference3FND");
   xmlWriter.writeAttribute("rootRole", QString::number(m_RootRole));
 

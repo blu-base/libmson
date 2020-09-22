@@ -44,8 +44,14 @@ void ObjectDeclarationFileData3LargeRefCountFND::setExtension(
   m_Extension = Extension;
 }
 
+quint64 ObjectDeclarationFileData3LargeRefCountFND::getSizeInFile() const {
+  return CompactID::getSizeInFile() + JCID::getSizeInFile() + sizeof(m_cRef) +
+         m_FileDataReference.getSizeInFile() + m_Extension.getSizeInFile();
+}
+
 ObjectDeclarationFileData3LargeRefCountFND::
-    ObjectDeclarationFileData3LargeRefCountFND() : m_cRef() {}
+    ObjectDeclarationFileData3LargeRefCountFND()
+    : m_cRef() {}
 
 void ObjectDeclarationFileData3LargeRefCountFND::deserialize(QDataStream &ds) {
   ds >> m_oid;

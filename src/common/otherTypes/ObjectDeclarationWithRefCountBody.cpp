@@ -73,6 +73,13 @@ void ObjectDeclarationWithRefCountBody::setFHasOsidReferences(bool value) {
   m_fHasOsidReferences = value;
 }
 
+const quint64 ObjectDeclarationWithRefCountBody::sizeInFile =
+    CompactID::getSizeInFile() + 8;
+
+quint64 ObjectDeclarationWithRefCountBody::getSizeInFile() {
+  return sizeInFile;
+}
+
 bool ObjectDeclarationWithRefCountBody::getFHasOidReferences() const {
   return m_fHasOidReferences;
 }

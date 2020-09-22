@@ -36,6 +36,8 @@ public:
   quint8 getCRef() const;
   void setCRef(const quint8 &value);
 
+  virtual quint64 getSizeInFile() const override;
+
 private:
   virtual void deserialize(QDataStream &ds) override;
   virtual void serialize(QDataStream &ds) const override;

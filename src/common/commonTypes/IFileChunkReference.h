@@ -37,6 +37,7 @@ public:
 
   virtual C cb() const = 0;
   virtual void setCb(const C &cb) = 0;
+
 };
 
 } // namespace MSONcommon

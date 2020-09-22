@@ -18,6 +18,8 @@ public:
   PropertySet data() const;
   void setData(const PropertySet &data);
 
+  virtual quint64 getSizeInFile() const override;
+
 private:
   virtual void deserialize(QDataStream &ds) override;
   virtual void serialize(QDataStream &ds) const override;

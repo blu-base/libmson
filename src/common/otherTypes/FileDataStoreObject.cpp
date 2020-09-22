@@ -49,6 +49,16 @@ void FileDataStoreObject::setGuidFooter(const QUuid &guidFooter) {
   m_guidFooter = guidFooter;
 }
 
+const quint64 FileDataStoreObject::sizeInFileBase =
+    guidSizeInFile + sizeof(m_cbLength) + sizeof(m_unused) +
+    sizeof(m_reserved) + guidSizeInFile;
+
+quint64 FileDataStoreObject::getSizeInFile() const {
+  quint64 fileDataSizeInFile = ceilToMultiple(m_cbLength, 8);
+
+  return sizeInFileBase + fileDataSizeInFile ;
+}
+
 void FileDataStoreObject::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("FileDataStoreObject");
   xmlWriter.writeAttribute("cb", QString::number(m_cbLength));

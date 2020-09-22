@@ -47,6 +47,7 @@ public:
   ObjectSpaceObjectPropSet getPropSet() const;
   void setPropSet(const ObjectSpaceObjectPropSet &value);
 
+  virtual quint64 getSizeInFile() const override;
 
 private:
   virtual void deserialize(QDataStream &ds) override;
@@ -55,6 +56,8 @@ private:
   virtual void writeLowLevelXml(QXmlStreamWriter &xmlWriter) const override;
 
   virtual void toDebugString(QDebug &dbg) const override;
+
+  static const quint64 sizeInFileBase = 12;
 };
 
 } // namespace MSONcommon

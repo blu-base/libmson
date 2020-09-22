@@ -13,6 +13,8 @@ class IPropertyType : public IRevisionStoreFileObject {
 public:
   IPropertyType() = default;
   virtual ~IPropertyType() = default;
+
+  virtual quint64 getSizeInFile() const = 0;
 };
 
 } // namespace MSONcommon

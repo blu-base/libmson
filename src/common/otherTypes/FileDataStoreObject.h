@@ -69,6 +69,8 @@ public:
   QUuid guidFooter() const;
   void setGuidFooter(const QUuid &guidFooter);
 
+  quint64 getSizeInFile() const;
+
 private:
   /**
    * @brief creates IProperty from QDataStream
@@ -92,6 +94,9 @@ private:
    * @param dbg <QDebug> string builder for the debug information
    */
   virtual void toDebugString(QDebug &dbg) const override;
+
+  static const quint64 guidSizeInFile = 16;
+  static const quint64 sizeInFileBase;
 };
 
 } // namespace MSONcommon

@@ -13,6 +13,10 @@ void PropertyType_ArrayNumber::setCCIDs(const quint32 &cCIDs) {
 
 PropertyType_ArrayNumber::PropertyType_ArrayNumber() : m_cCIDs{} {}
 
+quint64 MSONcommon::PropertyType_ArrayNumber::getSizeInFile() const {
+  return sizeInFile;
+}
+
 void PropertyType_ArrayNumber::deserialize(QDataStream &ds) { ds >> m_cCIDs; }
 
 void PropertyType_ArrayNumber::serialize(QDataStream &ds) const {
@@ -21,7 +25,8 @@ void PropertyType_ArrayNumber::serialize(QDataStream &ds) const {
 
 void PropertyType_ArrayNumber::toDebugString(QDebug &dbg) const {}
 
-void PropertyType_ArrayNumber::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
+void PropertyType_ArrayNumber::writeLowLevelXml(
+    QXmlStreamWriter &xmlWriter) const {
 
   xmlWriter.writeStartElement("ArrayNumber");
   xmlWriter.writeAttribute("cCID", QString::number(m_cCIDs));

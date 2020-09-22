@@ -20,6 +20,14 @@ void ObjectInfoDependencyOverridesFND::setData(
   m_data = value;
 }
 
+quint64 ObjectInfoDependencyOverridesFND::getSizeInFile() const {
+  if (m_ref.is_fcrNil()) {
+    return m_ref.getSizeInFile();
+  } else {
+    return m_ref.getSizeInFile() + m_data.getSizeInFile();
+  }
+}
+
 FileNodeChunkReference ObjectInfoDependencyOverridesFND::getRef() const {
   return m_ref;
 }
@@ -59,11 +67,11 @@ void ObjectInfoDependencyOverridesFND::serialize(QDataStream &ds) const {
   ds << m_ref;
 
   if (m_ref.is_fcrNil()) {
-            ds << m_data;
+    ds << m_data;
   } else {
     quint64 currentloc = ds.device()->pos();
     ds.device()->seek(m_ref.stp());
-            ds << m_data;
+    ds << m_data;
     ds.device()->seek(currentloc);
   }
 }

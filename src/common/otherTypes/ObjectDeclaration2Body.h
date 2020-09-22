@@ -35,6 +35,8 @@ public:
   quint8 getFReserved2() const;
   void setFReserved2(const quint8 &value);
 
+  static quint64 getSizeInFile();
+
 private:
   /**
    * @brief creates ObjectDeclaration2Body from QDataStream
@@ -56,6 +58,9 @@ private:
    * @param dbg <QDebug> string builder for the debug information
    */
   virtual void toDebugString(QDebug &dbg) const override;
+
+
+  static const quint64 sizeInFile;
 };
 
 } // namespace MSONcommon

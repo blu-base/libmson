@@ -2,13 +2,20 @@
 
 namespace MSONcommon {
 
-RevisionManifestStart6FND::RevisionManifestStart6FND() : m_revisionRole(), m_odcsDefault() {}
+RevisionManifestStart6FND::RevisionManifestStart6FND()
+    : m_revisionRole(), m_odcsDefault() {}
 
 ExtendedGUID RevisionManifestStart6FND::getRid() const { return m_rid; }
 
 void RevisionManifestStart6FND::setRid(const ExtendedGUID &value) {
   m_rid = value;
 }
+
+const quint64 RevisionManifestStart6FND::sizeInFile =
+    2 * ExtendedGUID::getSizeInFile() + sizeof(m_revisionRole) +
+    sizeof(m_odcsDefault);
+
+quint64 RevisionManifestStart6FND::getSizeInFile() const { return sizeInFile; }
 
 ExtendedGUID RevisionManifestStart6FND::getRidDependent() const {
   return m_ridDependent;
@@ -56,7 +63,8 @@ void RevisionManifestStart6FND::toDebugString(QDebug &dbg) const {
       << " odcsDefault:  " << m_odcsDefault << '\n';
 }
 
-void RevisionManifestStart6FND::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
+void RevisionManifestStart6FND::writeLowLevelXml(
+    QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("RevisionManifestStart6FND");
 
   xmlWriter.writeAttribute("revisionRole", QString::number(m_revisionRole));

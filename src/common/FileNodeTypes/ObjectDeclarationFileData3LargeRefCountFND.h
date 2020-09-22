@@ -37,6 +37,8 @@ public:
   StringInStorageBuffer Extension() const;
   void setExtension(const StringInStorageBuffer &Extension);
 
+  virtual quint64 getSizeInFile() const override;
+
 private:
   virtual void deserialize(QDataStream &ds) override;
   virtual void serialize(QDataStream &ds) const override;

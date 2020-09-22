@@ -61,6 +61,22 @@ void FileNodeListFragment::setNextFragment(
   m_nextFragment = nextFragment;
 }
 
+quint64 FileNodeListFragment::getSizeInFile() const {
+  quint64 size = m_fnlheader.getSizeInFile();
+
+  /// \todo use std::accumulate
+  for (const auto &entry : m_rgFileNodes) {
+    size += entry->getSizeInFile();
+  }
+
+  size += paddingLength();
+
+  size += m_ref.getSizeInFile();
+  size += sizeof(footer_magic_id);
+
+  return size;
+}
+
 void FileNodeListFragment::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("FileNodeListFragment");
   xmlWriter.writeAttribute("fileNodeListID",
@@ -129,11 +145,11 @@ void FileNodeListFragment::deserialize(QDataStream &ds) {
         fileNodeCount--;
       } else {
         /// \todo When ChunkTerminator found, is there really no filenode left?
-//        qWarning() << "ChunkTerminatorFND found";
+        //        qWarning() << "ChunkTerminatorFND found";
         break;
       }
     } else {
-//      qWarning() << "FileNodeListFragment ended early";
+      //      qWarning() << "FileNodeListFragment ended early";
       break;
     }
 
@@ -157,7 +173,6 @@ void FileNodeListFragment::deserialize(QDataStream &ds) {
   //  m_paddingLength = m_ref.cb() - 36 - listSize ;
   m_paddingLength = m_ref.stp() + m_ref.cb() - ds.device()->pos() - 20;
 
-
   // Skip to end. Ignore ChunkTerminatorFND
   ds.device()->seek(m_ref.stp() + m_ref.cb() - 20);
 
@@ -168,9 +183,9 @@ void FileNodeListFragment::deserialize(QDataStream &ds) {
   quint64 temp;
   ds >> temp;
   if (temp != footer_magic_id) {
-//    qWarning() << "FileNodeListFragment footer invalid";
+    //    qWarning() << "FileNodeListFragment footer invalid";
   }
-//  qInfo() << "m_paddingLength" << qStringHex(m_paddingLength, 16);
+  //  qInfo() << "m_paddingLength" << qStringHex(m_paddingLength, 16);
   ds.device()->seek(origLocation);
 }
 

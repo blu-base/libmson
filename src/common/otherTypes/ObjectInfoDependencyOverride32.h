@@ -30,6 +30,8 @@ public:
   quint32 cRef() const;
   void setCRef(const quint32 &cRef);
 
+  static quint64 getSizeInFile() { return sizeInFile; }
+
 private:
   /**
    * @brief creates ObjectInfoDependencyOverride32 from QDataStream
@@ -54,6 +56,8 @@ private:
    * @param dbg <QDebug> string builder for the debug information
    */
   virtual void toDebugString(QDebug &dbg) const override;
+
+  static const quint64 sizeInFile = CompactID::getSizeInFile() + sizeof(m_cRef);
 };
 
 } // namespace MSONcommon

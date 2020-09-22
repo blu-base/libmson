@@ -49,11 +49,14 @@ void ObjectDeclarationWithRefCount2FNDX::setPropSet(
   m_blob = value;
 }
 
+quint64 ObjectDeclarationWithRefCount2FNDX::getSizeInFile() const {
+  return m_objectRef.getSizeInFile() + m_body.getSizeInFile() + sizeof(m_cRef);
+}
+
 void ObjectDeclarationWithRefCount2FNDX::deserialize(QDataStream &ds) {
   ds >> m_objectRef;
   ds >> m_body;
   ds >> m_cRef;
-
 
   m_blob = ObjectSpaceObjectPropSet(ds, m_objectRef);
 }

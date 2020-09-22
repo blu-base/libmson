@@ -46,6 +46,10 @@ void ObjectDeclaration2RefCountFND::setBlobRef(
   m_blobRef = value;
 }
 
+quint64 ObjectDeclaration2RefCountFND::getSizeInFile() const {
+  return m_blobRef.getSizeInFile() + m_body.getSizeInFile() + sizeof(m_cRef);
+}
+
 void ObjectDeclaration2RefCountFND::deserialize(QDataStream &ds) {
   ds >> m_blobRef;
 
@@ -82,4 +86,7 @@ void ObjectDeclaration2RefCountFND::writeLowLevelXml(
 
   xmlWriter.writeEndElement();
 }
+
+
+
 } // namespace MSONcommon

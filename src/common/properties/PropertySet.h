@@ -45,6 +45,8 @@ public:
  std::vector<std::shared_ptr<IPropertyType>> rgData() const;
   void setRgData(const std::vector<std::shared_ptr<IPropertyType>> &rgData);
 
+  quint64 getSizeInFile() const;
+
 private:
   virtual void deserialize(QDataStream &ds) override;
   virtual void serialize(QDataStream &ds) const override;

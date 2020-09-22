@@ -65,8 +65,12 @@ private:
   quint32 bnNewestWritten;
   quint32 reservedHeaderTailLength;
 
+  static const quint64 sizeInFile = 1024;
+
 public:
   MSONHeader();
+
+  static quint64 getSizeInFile();
 
 private:
   virtual void deserialize(QDataStream &ds) override;

@@ -45,6 +45,8 @@ public:
   bool OsidStream_isNotPresent() const;
   void setOsidStreamPresence(const OsidStreamPresence &osidStreamPresence);
 
+  static quint64 getSizeInFile() { return sizeInFile; }
+
 private:
   /**
    * @brief creates ObjectSpaceObjectStreamHeader from QDataStream
@@ -69,6 +71,8 @@ private:
    * @param dbg <QDebug> string builder for the debug information
    */
   virtual void toDebugString(QDebug &dbg) const override;
+
+  static const quint64 sizeInFile = 4;
 };
 
 } // namespace MSONcommon

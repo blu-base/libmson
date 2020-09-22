@@ -35,6 +35,8 @@ public:
   ObjectInfoDependencyOverrideData getData() const;
   void setData(const ObjectInfoDependencyOverrideData &value);
 
+  virtual quint64 getSizeInFile() const override;
+
 private:
   virtual void deserialize(QDataStream &ds) override;
   virtual void serialize(QDataStream &ds) const override;
