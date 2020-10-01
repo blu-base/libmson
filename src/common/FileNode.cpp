@@ -95,6 +95,9 @@ void MSONcommon::FileNode::deserialize(QDataStream &ds) {
   ds.setByteOrder(QDataStream::LittleEndian);
   stp = ds.device()->pos();
   //  qDebug() << "FileNode stp: "<< qStringHex(stp, 16);
+  if (ds.device()->bytesAvailable() < 4) {
+    qFatal("Reached end of file stream while parsing FileNode");
+  }
   quint32 temp;
   ds >> temp;
 

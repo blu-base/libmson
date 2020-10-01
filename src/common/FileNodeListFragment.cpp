@@ -118,7 +118,14 @@ void FileNodeListFragment::deserialize(QDataStream &ds) {
   //          << " size: " << qStringHex(m_ref.cb(), 16);
   quint64 origLocation = ds.device()->pos();
 
+  if(ds.device()->size() < (qint64)m_ref.stp()) {
+    qFatal("Reached end of file stream. Could not parse FileNodeListFragment");
+  }
   ds.device()->seek(m_ref.stp());
+
+  if(ds.device()->bytesAvailable() < (qint64)m_ref.cb()) {
+    qFatal("Reached end of file stream. Cannot parse next FileNodeListFragment.");
+  }
 
   ds >> m_fnlheader;
 

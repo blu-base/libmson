@@ -41,7 +41,7 @@ private:
 
   virtual void toDebugString(QDebug &dbg) const override;
 
-  static const quint64 sizeInFile = 12;
+  static const quint64 sizeInFile = 16;
 };
 
 } // namespace MSONcommon

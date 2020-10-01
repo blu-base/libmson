@@ -2,11 +2,16 @@
 #include "helper/Helper.h"
 namespace MSONcommon {
 void FreeChunkListFragment::deserialize(QDataStream &ds) {
+  if (ds.device()->bytesAvailable() < m_size) {
+    qWarning() << "Error: could not parse FreeChunkListFragment, would reach end of file stream before being able to finish.";
+    return;
+  }
   ds >> crc;
   ds >> fcrNextChunk;
 
   quint64 chunksToRead = m_size / 16 - 1;
 
+  if (ds.device())
   for (size_t i{0}; i < chunksToRead; i++) {
     std::shared_ptr<FileChunkReference64> temp = std::make_shared<FileChunkReference64>();
     ds >> *temp;

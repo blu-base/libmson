@@ -260,6 +260,10 @@ void RevisionStoreFileHeader::deserialize(QDataStream &ds) {
     ds.setByteOrder(QDataStream::LittleEndian);
   }
 
+  if (ds.device()->bytesAvailable() < 0x400) {
+    qFatal("File size insufficient to be OneNote file.");
+  }
+
   ds >> guidFileType;
   ds >> guidFile;
   ds >> guidLegacyFileVersion;

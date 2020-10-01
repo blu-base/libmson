@@ -99,7 +99,7 @@ void RevisionStoreFile::deserialize(QDataStream &ds) {
     ds.setByteOrder(QDataStream::LittleEndian);
   }
 
-  if (ds.device()->size() >= 1024) {
+  if (ds.device()->bytesAvailable() >= 1024) {
 
     m_header = std::make_shared<RevisionStoreFileHeader>();
     ds >> *m_header;

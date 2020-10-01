@@ -87,6 +87,9 @@ void MSONcommon::FileNodeListHeader::deserialize(QDataStream &ds) {
     ds.setByteOrder(QDataStream::LittleEndian);
   }
 
+  if (ds.device()->bytesAvailable() < (qint64)sizeInFile) {
+    qFatal("Reached end of stream. Could not parse FileNodeListFragmentHeader");
+  }
   // skipping uintMagic
   ds.skipRawData(8);
   ds >> m_fileNodeListID;

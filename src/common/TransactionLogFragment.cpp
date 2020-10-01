@@ -19,14 +19,32 @@ quint64 TransactionLogFragment::getSizeInFile() const {
 
 void TransactionLogFragment::deserialize(QDataStream &ds) {
   quint64 startLocation = ds.device()->pos();
-  quint64 num_entries = (m_size - 12) / 8;
+
+  if (ds.device()->bytesAvailable() < m_size) {
+
+    qWarning() << "Error while parsing TransactionLogFragment: would reach end of "
+               << "file stream before finished parsing. \n"
+               << "Bytes available: " << ds.device()->bytesAvailable() << '\n'
+               << "Bytes requested: " << m_size;
+    return;
+  }
+
+  if( m_size  < nextFragment.getSizeInFile() ) {
+    qWarning() << "Error: could not parse TransactionLogFragment. Specified size of TransactionLogFragment insufficient.";
+    return;
+  }
+
+  quint64 num_entries = (m_size - nextFragment.getSizeInFile()) /
+                        TransactionEntry::getSizeInFile();
 
   for (size_t i{0}; i < num_entries; i++) {
     std::shared_ptr<TransactionEntry> entry =
         std::make_shared<TransactionEntry>();
+
     ds >> *entry;
     sizeTable.push_back(entry);
   }
+
   ds.device()->seek(startLocation + m_size - 12);
   ds >> nextFragment;
 }
