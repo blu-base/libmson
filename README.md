@@ -16,6 +16,8 @@ If you are looking for working OneNote parsers go to:
 * Qt 5.12+ libraries
 * CMake
 
+likely will require `libmspack` as well in near future (used to unpack `.onepkg` files)
+
 ## Compiling
 
 from the root directory of this repository run:
@@ -38,9 +40,28 @@ Right now, the xml format represents the revision store file's structure. Curren
 
 
 ## Contributing
-Any comments and contributions are welcome!
+Any comments and contributions are welcome! Just open an issue, or drop me an email.
+
+If you run into any issues while trying to parse a file, consider to open an issue in which the respective file is submitted. That way i can figure out which part of the code is the likely culprit.
+
+
+## TODO
+
+* Make parsing more robust when encountering errors/ fail safely - study other libraries to extract pattern.
+* Develop an API which can be used as public Facade masking all of the RevisionStoreFile components
+* Create an XmlWriter which builds an xml file according to MS-ONE
+* Object spaces, and maps for GUID/ExtendedGUIDs are not yet created
+* Develop a DocumentBuilder/DocumentWriter to write own .one files to further analyze the file format
+* TransactionLogFragment parsing is buggy. Sometimes parsing has to end before the given number of TransactionEntries can be parsed.
+* SOLID principles are not considered enough. Most classes contain functionality which is a mixture of file operations, data structure and string writer.
+* No graph implemented which describes the relationships between components, such as FileNodeList->FileNodeListFragment->FileNode, or Notebook->Page->Outline
+* Regarding drawings, the algorithm in which points of a Stroke are serialized is yet not clear to me
+* Deduct serialized format of Shapes
+* Analyze Audio/Video embedded into File
 
 
 ## Disclaimer
 
-This project is neither related nor endorsed by Microsoft in any way. The author does not have any affiliation with Microsoft.
+This project is neither related nor endorsed by Microsoft in any way. The author does not have any affiliation with Microsoft. Reverse engineered content which is not specified in MS-ONESTORE is done by 'clean room reverse engineering' only, mostly with code found in this project. Third party software binaries have NOT been analyzed (or disassembled). Only .one, .onetoc2, and .onepkg files have been used to deduct unspecified information. This also means validity of the finding cannot be garuanteed.
+
+Third party projects from which functionality has been derived are listed in LICENSE.3rdparty.md.
