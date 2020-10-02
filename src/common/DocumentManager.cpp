@@ -1,4 +1,5 @@
 #include "DocumentManager.h"
+
 namespace MSONcommon {
 
 QMap<QUuid, std::shared_ptr<RevisionStoreFile>> DocumentManager::docs;
@@ -21,11 +22,11 @@ QUuid MSONcommon::DocumentManager::parseDocument(QDataStream &ds) {
 
     // go back to the start and add pointer
     ds.device()->seek(0);
-    std::shared_ptr<RevisionStoreFile> newDoc = std::make_shared<RevisionStoreFile>();
+    std::shared_ptr<RevisionStoreFile> newDoc =
+        std::make_shared<RevisionStoreFile>();
     docs.insert(guid, newDoc);
 
     ds >> *newDoc;
-
 
   } else {
     qWarning() << "ERROR: Stream not readable" << '\n';
@@ -34,7 +35,7 @@ QUuid MSONcommon::DocumentManager::parseDocument(QDataStream &ds) {
   return guid;
 }
 
-QUuid MSONcommon::DocumentManager::parseDocument(const QString& fileName) {
+QUuid MSONcommon::DocumentManager::parseDocument(const QString &fileName) {
   QFile file(fileName);
 
   bool couldopen = file.open(QIODevice::ReadOnly);
@@ -52,14 +53,16 @@ QUuid MSONcommon::DocumentManager::parseDocument(const QString& fileName) {
   return newDocId;
 }
 
-void MSONcommon::DocumentManager::addDocument(std::shared_ptr<RevisionStoreFile> doc) {
+void MSONcommon::DocumentManager::addDocument(
+    std::shared_ptr<RevisionStoreFile> doc) {
 
   docs.insert(doc->getHeader()->getGuidFile(), doc);
 }
 
 QUuid MSONcommon::DocumentManager::createDocument() {
 
-  std::shared_ptr<RevisionStoreFile> newDoc = std::make_shared<RevisionStoreFile>();
+  std::shared_ptr<RevisionStoreFile> newDoc =
+      std::make_shared<RevisionStoreFile>();
 
   QUuid newDocId = newDoc->getHeader()->getGuidFile();
 
@@ -68,8 +71,8 @@ QUuid MSONcommon::DocumentManager::createDocument() {
   return newDocId;
 }
 
-//QList<QUuid>
-//MSONcommon::DocumentManager::parseDirectory(QDir dir,
+// QList<QUuid>
+// MSONcommon::DocumentManager::parseDirectory(QDir dir,
 //                                            const bool parse_subdirs) {
 //  QList<QUuid> newDocs{};
 
@@ -130,7 +133,7 @@ QUuid MSONcommon::DocumentManager::getDocumentID(QDataStream &ds) {
   ds.device()->seek(0);
 
   QUuid id = nullptr;
-  if (ds.device()->bytesAvailable() > 16) {
+  if (ds.device()->bytesAvailable() > 32) {
     ds.skipRawData(16);
     ds >> id;
   }
@@ -140,7 +143,8 @@ QUuid MSONcommon::DocumentManager::getDocumentID(QDataStream &ds) {
   return id;
 }
 
-QList<std::shared_ptr<RevisionStoreFile>> MSONcommon::DocumentManager::getDocuments() {
+QList<std::shared_ptr<RevisionStoreFile>>
+MSONcommon::DocumentManager::getDocuments() {
   return docs.values();
 }
 

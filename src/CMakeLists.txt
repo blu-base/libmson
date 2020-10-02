@@ -149,6 +149,7 @@ common/DocumentManager.cpp
 
 
     common/helper/Helper.cpp
+    common/helper/CrcAlgorithms.cpp
     )
 
   set (MSONcommon_PART_HEADERS

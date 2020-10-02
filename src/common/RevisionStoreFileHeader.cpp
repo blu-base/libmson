@@ -6,6 +6,9 @@
 #include "commonTypes/FileChunkReference32.h"
 #include "commonTypes/FileChunkReference64x32.h"
 #include "commonTypes/IFileChunkReference.h"
+
+#include "helper/CrcAlgorithms.h"
+
 #include <QDataStream>
 #include <QDebug>
 
@@ -234,6 +237,13 @@ void RevisionStoreFileHeader::serialize(QDataStream &ds) const {
   ds << fNeedsGarbageCollect;
   ds << fHasNoEmbeddedFileObjects;
   ds << guidAncestor;
+
+  /// \todo get the fileName from somewhere to compute final crcName. Might be done as post process
+  ///
+  /// QString fileName;
+  /// ds <<  MSONcommon::Crc32::computeCrcName(fileName);
+  ///
+  /// \todo Maybe crcName should be computed elsewhere to keep it between saves
   ds << crcName;
   ds << fcrHashedChunkList;
   ds << fcrTransactionLog;
