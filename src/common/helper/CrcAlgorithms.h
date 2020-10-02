@@ -46,8 +46,6 @@ public:
   /// \brief CRC32 algorithm according to RFC3309
   ///
   ///
-
-
   static quint32 computeCRC(const QByteArray &obj,
                             const quint32 crcStart = 0xFFFFFFFF);
   static bool validateCRC(const QByteArray &obj, const quint32 crc);

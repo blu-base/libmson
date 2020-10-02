@@ -103,7 +103,6 @@ std::array<quint32, 256> Crc32::cache = {
     0xb40bbe37, 0xc30c8ea1, 0x5a05df1b, 0x2d02ef8d,
 };
 
-
 quint32 Crc32::computeCRC(const QByteArray &obj, const quint32 crcStart) {
   quint32 crc32 = crcStart;
 
@@ -119,6 +118,15 @@ quint32 Crc32::computeCRC(const QByteArray &obj, const quint32 crcStart) {
 
 bool Crc32::validateCRC(const QByteArray &obj, const quint32 crc) {
   return crc == computeCRC(obj);
+}
+
+quint32 Crc32::computeCrcName(const QString &fileName) {
+  QByteArray bytes(fileName.length() * 2 + 2, '\0');
+  QDataStream ds(&bytes, QIODevice::WriteOnly);
+  ds.writeRawData(reinterpret_cast<const char *>(fileName.utf16()),
+                  fileName.length() * 2);
+
+  return computeCRC(bytes);
 }
 
 } // namespace MSONcommon
