@@ -40,39 +40,6 @@ private:
   std::list<RevisionStoreChunk> m_chunks;
 };
 
-enum class RevisionStoreChunkType {
-
-};
-
-class RevisionStoreChunk {
-private:
-  qint64 m_initialStp;
-
-  std::shared_ptr<Chunkable> m_chunkable;
-
-  std::weak_ptr<RevisionStoreFile> m_parent;
-
-public:
-  RevisionStoreChunk(std::shared_ptr<Chunkable> chunkable,
-                     const RevisionStoreChunkType chunktype,
-                     const qint64 initialLocationInFile,
-                     std::weak_ptr<RevisionStoreFile> parent);
-
-  std::shared_ptr<Chunkable> getChunk();
-
-  RevisionStoreChunkType getType();
-
-  qint64 stp();
-  qint64 size();
-};
-
-template <RevisionStoreChunkType ChunkType> class Chunkable {
-public:
-  virtual qint64 getSize() const = 0;
-  template<>
-  virtual RevisionStoreChunkType getType() { return ChunkType; }
-};
-
 } // namespace libmson
 
 #endif // REVISIONSTOREFILE2_H
