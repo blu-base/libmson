@@ -156,7 +156,7 @@ common/DocumentManager.cpp
     common/RevisionStoreFile2.cpp
 
 
-    common/chunks/RevisionStoreChunk.cpp
+    common/RevisionStoreChunk.cpp
 
     )
 
