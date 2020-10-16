@@ -150,6 +150,14 @@ common/DocumentManager.cpp
 
     common/helper/Helper.cpp
     common/helper/CrcAlgorithms.cpp
+
+
+
+    common/RevisionStoreFile2.cpp
+
+
+    common/chunks/RevisionStoreChunk.cpp
+
     )
 
   set (MSONcommon_PART_HEADERS
@@ -158,6 +166,7 @@ common/DocumentManager.cpp
     common/FileNodeTypes/IFileNodeType.h
     common/properties/IPropertyType.h
     common/properties/IProperty.h
+    common/chunks/Chunkable.h
     )
 
 add_library(MSONcommon SHARED ${MSONcommon_PART_SRCS})
