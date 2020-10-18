@@ -150,14 +150,6 @@ common/DocumentManager.cpp
 
     common/helper/Helper.cpp
     common/helper/CrcAlgorithms.cpp
-
-
-
-    common/RevisionStoreFile2.cpp
-
-
-    common/RevisionStoreChunk.cpp
-
     )
 
   set (MSONcommon_PART_HEADERS
@@ -166,7 +158,6 @@ common/DocumentManager.cpp
     common/FileNodeTypes/IFileNodeType.h
     common/properties/IPropertyType.h
     common/properties/IProperty.h
-    common/chunks/Chunkable.h
     )
 
 add_library(MSONcommon SHARED ${MSONcommon_PART_SRCS})
@@ -186,3 +177,44 @@ target_link_libraries(
   )
 
 install(TARGETS MSONcommon DESTINATION ${PLUGIN_INSTALL_DIR}/)
+
+
+
+########### libmson test library ###############
+set (libmson_PART_SRCS
+
+    common/RevisionStoreFile2.cpp
+    common/RevisionStoreChunk.cpp
+    common/chunks/RevisionStoreFileHeader.cpp
+    common/chunks/FreeChunkListFragment.cpp
+    common/chunks/FreeChunk.cpp
+    )
+
+  set (libmson_PART_HEADERS
+    common/chunks/Chunkable.h
+    )
+
+add_library(libmson SHARED ${libmson_PART_SRCS})
+
+target_link_libraries(
+    libmson
+    Qt5::Core
+    )
+
+  target_include_directories(
+      libmson PUBLIC
+      # Headers used from source/build location:
+      "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
+      # Headers used from the installed location:
+      "$<INSTALL_INTERFACE:include>"
+  )
+
+install(TARGETS libmson DESTINATION ${PLUGIN_INSTALL_DIR}/)
+
+
+
+
+
+
+
+

@@ -50,6 +50,7 @@ public:
                             const quint32 crcStart = 0xFFFFFFFF);
   static bool validateCRC(const QByteArray &obj, const quint32 crc);
 
+  /// \brief computes RevisionStoreFileHeader's crcName from a fileName (non-null-terminated).
   static quint32 computeCrcName(const QString& fileName);
 };
 

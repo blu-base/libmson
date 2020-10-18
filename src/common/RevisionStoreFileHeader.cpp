@@ -14,6 +14,8 @@
 
 #include "helper/Helper.h"
 
+
+/// \todo RevisionStoreFileHeader make input values const
 namespace MSONcommon {
 
 static const QUuid v_guidFileType_One("{7b5c52e4-d88c-4da7-aeb1-5378d02996d3}");
@@ -32,7 +34,7 @@ RevisionStoreFileHeader::RevisionStoreFileHeader()
       ffvOldestReader{0x0000002A},
       fcrLegacyFreeChunkList{FileChunkReference32()},
       fcrLegacyTransactionLog{FileChunkReference32(FCR_INITTYPE::FCRNIL)},
-      cTransactionsInLog{1}, cbLegacyExpectedFileLength{0}, rgbPlaceholder{0},
+      cTransactionsInLog{1}, cbLegacyExpectedFileLength{0x400}, rgbPlaceholder{0},
       fcrLegacyFileNodeListRoot{FileChunkReference32(FCR_INITTYPE::FCRNIL)},
       cbLegacyFreeSpaceInFreeChunkList{0}, fNeedsDefrag{0}, fRepairedFile{0},
       fNeedsGarbageCollect{0}, fHasNoEmbeddedFileObjects{0},

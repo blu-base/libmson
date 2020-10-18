@@ -9,9 +9,11 @@ namespace MSONcommon {
 
 class FileChunkReference64 : public IFileChunkReference<quint64, quint64> {
 private:
-    static const quint64 sizeInFile = 16;
+  static const quint64 sizeInFile = 16;
+
 public:
   FileChunkReference64() = default;
+  FileChunkReference64(const quint64 &stp, const quint64 &cb);
   FileChunkReference64(FCR_INITTYPE inittype);
 
   virtual ~FileChunkReference64() = default;

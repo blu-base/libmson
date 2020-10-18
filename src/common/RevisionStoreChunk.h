@@ -1,18 +1,14 @@
-#ifndef REVISIONSTORECHUNK_H
-#define REVISIONSTORECHUNK_H
+#ifndef REVISIONSTORECHUNK2_H
+#define REVISIONSTORECHUNK2_H
 
 #include <QtCore/qglobal.h>
 
 #include <memory>
 
-class Chunkable;
-class RevisionStoreFile;
+#include "chunks/Chunkable.h"
+#include "RevisionStoreFile2.h"
 
 namespace libmson {
-
-enum class RevisionStoreChunkType {
-
-};
 
 class RevisionStoreChunk {
 private:
@@ -20,22 +16,19 @@ private:
 
   std::shared_ptr<Chunkable> m_chunkable;
 
-  std::weak_ptr<RevisionStoreFile> m_parent;
-
 public:
   RevisionStoreChunk(std::shared_ptr<Chunkable> chunkable,
-                     const RevisionStoreChunkType chunktype,
-                     const qint64 initialLocationInFile,
-                     std::weak_ptr<RevisionStoreFile> parent);
+                     const quint64 initialLocationInFile);
 
   std::shared_ptr<Chunkable> getChunk();
 
   RevisionStoreChunkType getType();
 
-  qint64 stp();
-  qint64 size();
+  quint64 getInitialStp() const;
+
+  quint64 cb() { return m_chunkable->cb(); };
 };
 
 } // namespace libmson
 
-#endif // REVISIONSTORECHUNK_H
+#endif // REVISIONSTORECHUNK2_H

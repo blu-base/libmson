@@ -4,6 +4,13 @@
 
 namespace MSONcommon {
 
+FileChunkReference64::FileChunkReference64(const quint64& stp, const quint64& cb)
+  : IFileChunkReference<quint64, quint64>()
+{
+  setStp(stp);
+  setCb(cb);
+}
+
 FileChunkReference64::FileChunkReference64(FCR_INITTYPE inittype) {
   switch (inittype) {
   case FCR_INITTYPE::FCRNIL:
