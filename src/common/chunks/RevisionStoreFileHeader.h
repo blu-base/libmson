@@ -32,10 +32,10 @@ public:
       const quint8 fNeedsDefrag, const quint8 fRepairedFile,
       const quint8 fNeedsGarbageCollect, const quint8 fHasNoEmbeddedFileObjects,
       const QUuid &guidAncestor, const quint32 crcName,
-      std::weak_ptr<RevisionStoreChunk> fcrHashedChunkList,
-      std::weak_ptr<RevisionStoreChunk> fcrTransactionLog,
-      std::weak_ptr<RevisionStoreChunk> fcrFileNodeListRoot,
-      std::weak_ptr<RevisionStoreChunk> fcrFreeChunkList,
+      std::weak_ptr<RevisionStoreChunkContainer> fcrHashedChunkList,
+      std::weak_ptr<RevisionStoreChunkContainer> fcrTransactionLog,
+      std::weak_ptr<RevisionStoreChunkContainer> fcrFileNodeListRoot,
+      std::weak_ptr<RevisionStoreChunkContainer> fcrFreeChunkList,
       const quint64 cbExpectedFileLength,
       const quint64 cbFreeSpaceInFreeChunkList, const QUuid &guidFileVersion,
       const quint64 nFileVersionGeneration,
@@ -60,7 +60,7 @@ public:
 
   // Chunkable interface
 public:
-  virtual qint64 cb() const override { return sizeInFile; }
+  virtual quint64 cb() const override { return sizeInFile; }
   virtual RevisionStoreChunkType getType() const override {
     return RevisionStoreChunkType::RevistionStoreFileHeader;
   };
@@ -82,10 +82,10 @@ private:
   quint8 fHasNoEmbeddedFileObjects;
   QUuid guidAncestor;
   quint32 crcName;
-  std::weak_ptr<RevisionStoreChunk> fcrHashedChunkList;
-  std::weak_ptr<RevisionStoreChunk> fcrTransactionLog;
-  std::weak_ptr<RevisionStoreChunk> fcrFileNodeListRoot;
-  std::weak_ptr<RevisionStoreChunk> fcrFreeChunkList;
+  std::weak_ptr<RevisionStoreChunkContainer> fcrHashedChunkList;
+  std::weak_ptr<RevisionStoreChunkContainer> fcrTransactionLog;
+  std::weak_ptr<RevisionStoreChunkContainer> fcrFileNodeListRoot;
+  std::weak_ptr<RevisionStoreChunkContainer> fcrFreeChunkList;
   quint64 cbExpectedFileLength;
   quint64 cbFreeSpaceInFreeChunkList;
   QUuid guidFileVersion;
@@ -97,7 +97,7 @@ private:
   quint32 bnOldestWritten;
   quint32 bnNewestWritten;
 
-  static const quint64 sizeInFile = 0x400;
+  static const constexpr quint64 sizeInFile = 0x400;
 
 
   static const QUuid v_guidFileType_One;
@@ -156,17 +156,17 @@ public:
   quint32 getCrcName() const;
   void setCrcName(const quint32 value);
 
-  std::weak_ptr<RevisionStoreChunk> getFcrHashedChunkList();
-  void setFcrHashedChunkList(std::weak_ptr<RevisionStoreChunk> value);
+  std::weak_ptr<RevisionStoreChunkContainer> getFcrHashedChunkList();
+  void setFcrHashedChunkList(std::weak_ptr<RevisionStoreChunkContainer> value);
 
-  std::weak_ptr<RevisionStoreChunk> getFcrTransactionLog();
-  void setFcrTransactionLog(std::weak_ptr<RevisionStoreChunk> value);
+  std::weak_ptr<RevisionStoreChunkContainer> getFcrTransactionLog();
+  void setFcrTransactionLog(std::weak_ptr<RevisionStoreChunkContainer> value);
 
-  std::weak_ptr<RevisionStoreChunk> getFcrFileNodeListRoot();
-  void setFcrFileNodeListRoot(std::weak_ptr<RevisionStoreChunk> value);
+  std::weak_ptr<RevisionStoreChunkContainer> getFcrFileNodeListRoot();
+  void setFcrFileNodeListRoot(std::weak_ptr<RevisionStoreChunkContainer> value);
 
-  std::weak_ptr<RevisionStoreChunk> getFcrFreeChunkList();
-  void setFcrFreeChunkList(std::weak_ptr<RevisionStoreChunk> value);
+  std::weak_ptr<RevisionStoreChunkContainer> getFcrFreeChunkList();
+  void setFcrFreeChunkList(std::weak_ptr<RevisionStoreChunkContainer> value);
 
   quint64 getCbExpectedFileLength() const;
   void setCbExpectedFileLength(const quint64 value);

@@ -17,9 +17,9 @@ class FreeChunkListFragment : public Chunkable {
 private:
   quint32 m_crc;
 
-  std::weak_ptr<RevisionStoreChunk> m_fcrNextFragment;
+  std::weak_ptr<RevisionStoreChunkContainer> m_fcrNextFragment;
 
-  std::vector<std::weak_ptr<RevisionStoreChunk>> m_fcrFreeChunks;
+  std::vector<std::weak_ptr<RevisionStoreChunkContainer>> m_fcrFreeChunks;
 
   static const qint64 minSizeInFile = 16;
 
@@ -30,16 +30,16 @@ public:
   quint32 getCrc() const;
   void setCrc(const quint32 value);
 
-  std::weak_ptr<RevisionStoreChunk> getFcrNextFragment();
-  void setFcrNextFragment(std::weak_ptr<RevisionStoreChunk> value);
+  std::weak_ptr<RevisionStoreChunkContainer> getFcrNextFragment();
+  void setFcrNextFragment(std::weak_ptr<RevisionStoreChunkContainer> value);
 
-  std::vector<std::weak_ptr<RevisionStoreChunk>> fcrFreeChunks() const;
-  std::vector<std::weak_ptr<RevisionStoreChunk>> &getFcrFreeChunks();
+  std::vector<std::weak_ptr<RevisionStoreChunkContainer>> fcrFreeChunks() const;
+  std::vector<std::weak_ptr<RevisionStoreChunkContainer>> &getFcrFreeChunks();
   void
-  setFcrFreeChunks(const std::vector<std::weak_ptr<RevisionStoreChunk>> &value);
+  setFcrFreeChunks(const std::vector<std::weak_ptr<RevisionStoreChunkContainer>> &value);
 
   // Chunkable interface
-  virtual qint64 cb() const override;
+  virtual quint64 cb() const override;
   virtual RevisionStoreChunkType getType() const override;
 };
 

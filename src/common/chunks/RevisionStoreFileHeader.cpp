@@ -22,10 +22,10 @@ RevisionStoreFileHeader::RevisionStoreFileHeader()
       ffvOldestReader{0x0000002A}, cTransactionsInLog{1}, rgbPlaceholder{0},
       fNeedsDefrag{0}, fRepairedFile{0}, fNeedsGarbageCollect{0},
       fHasNoEmbeddedFileObjects{0}, guidAncestor{QUuid()}, crcName{0},
-      fcrHashedChunkList{std::weak_ptr<RevisionStoreChunk>()},
-      fcrTransactionLog{std::weak_ptr<RevisionStoreChunk>()},
-      fcrFileNodeListRoot{std::weak_ptr<RevisionStoreChunk>()},
-      fcrFreeChunkList{std::weak_ptr<RevisionStoreChunk>()},
+      fcrHashedChunkList{std::weak_ptr<RevisionStoreChunkContainer>()},
+      fcrTransactionLog{std::weak_ptr<RevisionStoreChunkContainer>()},
+      fcrFileNodeListRoot{std::weak_ptr<RevisionStoreChunkContainer>()},
+      fcrFreeChunkList{std::weak_ptr<RevisionStoreChunkContainer>()},
       cbExpectedFileLength{0x400}, cbFreeSpaceInFreeChunkList{0},
       guidFileVersion{QUuid()}, nFileVersionGeneration{},
       guidDenyReadFileVersion{QUuid()}, grfDebugLogFlags{0}, bnCreated{0},
@@ -39,10 +39,10 @@ RevisionStoreFileHeader::RevisionStoreFileHeader(
     const quint8 fNeedsDefrag, const quint8 fRepairedFile,
     const quint8 fNeedsGarbageCollect, const quint8 fHasNoEmbeddedFileObjects,
     const QUuid &guidAncestor, const quint32 crcName,
-    std::weak_ptr<RevisionStoreChunk> fcrHashedChunkList,
-    std::weak_ptr<RevisionStoreChunk> fcrTransactionLog,
-    std::weak_ptr<RevisionStoreChunk> fcrFileNodeListRoot,
-    std::weak_ptr<RevisionStoreChunk> fcrFreeChunkList,
+    std::weak_ptr<RevisionStoreChunkContainer> fcrHashedChunkList,
+    std::weak_ptr<RevisionStoreChunkContainer> fcrTransactionLog,
+    std::weak_ptr<RevisionStoreChunkContainer> fcrFileNodeListRoot,
+    std::weak_ptr<RevisionStoreChunkContainer> fcrFreeChunkList,
     const quint64 cbExpectedFileLength,
     const quint64 cbFreeSpaceInFreeChunkList, const QUuid &guidFileVersion,
     const quint64 nFileVersionGeneration, const QUuid &guidDenyReadFileVersion,
@@ -94,10 +94,10 @@ RevisionStoreFileHeader::RevisionStoreFileHeader(
       fRepairedFile(fRepairedFile), fNeedsGarbageCollect(fNeedsGarbageCollect),
       fHasNoEmbeddedFileObjects(fHasNoEmbeddedFileObjects),
       guidAncestor(guidAncestor), crcName(crcName),
-      fcrHashedChunkList(std::weak_ptr<RevisionStoreChunk>()),
-      fcrTransactionLog(std::weak_ptr<RevisionStoreChunk>()),
-      fcrFileNodeListRoot(std::weak_ptr<RevisionStoreChunk>()),
-      fcrFreeChunkList(std::weak_ptr<RevisionStoreChunk>()),
+      fcrHashedChunkList(std::weak_ptr<RevisionStoreChunkContainer>()),
+      fcrTransactionLog(std::weak_ptr<RevisionStoreChunkContainer>()),
+      fcrFileNodeListRoot(std::weak_ptr<RevisionStoreChunkContainer>()),
+      fcrFreeChunkList(std::weak_ptr<RevisionStoreChunkContainer>()),
       cbExpectedFileLength(cbExpectedFileLength),
       cbFreeSpaceInFreeChunkList(cbFreeSpaceInFreeChunkList),
       guidFileVersion(guidFileVersion),
@@ -215,45 +215,45 @@ void RevisionStoreFileHeader::setCrcName(const quint32 value) {
   crcName = value;
 }
 
-std::weak_ptr<RevisionStoreChunk>
+std::weak_ptr<RevisionStoreChunkContainer>
 RevisionStoreFileHeader::getFcrHashedChunkList() {
   return fcrHashedChunkList;
 }
 
 void RevisionStoreFileHeader::setFcrHashedChunkList(
-    std::weak_ptr<RevisionStoreChunk> value) {
+    std::weak_ptr<RevisionStoreChunkContainer> value) {
   fcrHashedChunkList = value;
 }
 
-std::weak_ptr<RevisionStoreChunk>
+std::weak_ptr<RevisionStoreChunkContainer>
 RevisionStoreFileHeader::getFcrTransactionLog() {
   return fcrTransactionLog;
 }
 
 void RevisionStoreFileHeader::setFcrTransactionLog(
-    std::weak_ptr<RevisionStoreChunk> value) {
+    std::weak_ptr<RevisionStoreChunkContainer> value) {
 
   fcrTransactionLog = value;
 }
 
-std::weak_ptr<RevisionStoreChunk>
+std::weak_ptr<RevisionStoreChunkContainer>
 RevisionStoreFileHeader::getFcrFileNodeListRoot() {
   return fcrFileNodeListRoot;
 }
 
 void RevisionStoreFileHeader::setFcrFileNodeListRoot(
-    std::weak_ptr<RevisionStoreChunk> value) {
+    std::weak_ptr<RevisionStoreChunkContainer> value) {
 
   fcrFileNodeListRoot = value;
 }
 
-std::weak_ptr<RevisionStoreChunk>
+std::weak_ptr<RevisionStoreChunkContainer>
 RevisionStoreFileHeader::getFcrFreeChunkList() {
   return fcrFreeChunkList;
 }
 
 void RevisionStoreFileHeader::setFcrFreeChunkList(
-    std::weak_ptr<RevisionStoreChunk> value) {
+    std::weak_ptr<RevisionStoreChunkContainer> value) {
   fcrFreeChunkList = value;
 }
 

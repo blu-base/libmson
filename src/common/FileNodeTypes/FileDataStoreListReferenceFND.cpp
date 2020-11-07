@@ -15,7 +15,7 @@ FileNodeChunkReference FileDataStoreListReferenceFND::getRef() const {
 }
 
 void FileDataStoreListReferenceFND::setRef(
-    const FileNodeChunkReference &value) {
+    const MSONcommon::FileNodeChunkReference &value) {
   m_ref = value;
 }
 

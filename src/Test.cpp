@@ -153,34 +153,34 @@ int main(int argc, char *argv[]) {
 
   mson.open(entry);
 
-  auto fclf = std::make_shared<libmson::FreeChunkListFragment>(4 * 16);
-  auto rsc_fclf = std::make_shared<libmson::RevisionStoreChunk>(fclf, 0x400);
+//  auto fclf = std::make_shared<libmson::FreeChunkListFragment>(4 * 16);
+//  auto rsc_fclf = std::make_shared<libmson::RevisionStoreChunk>(fclf, 0x400,4*16);
 
-  auto fc1 = std::make_shared<libmson::FreeChunk>(0x100);
-  auto fc2 = std::make_shared<libmson::FreeChunk>(0x200);
-  auto fc3 = std::make_shared<libmson::FreeChunk>(0x300);
+//  auto fc1 = std::make_shared<libmson::FreeChunk>(0x100);
+//  auto fc2 = std::make_shared<libmson::FreeChunk>(0x200);
+//  auto fc3 = std::make_shared<libmson::FreeChunk>(0x300);
 
-  auto rsc_fc1 = std::make_shared<libmson::RevisionStoreChunk>(fc1, 0x400);
-  auto rsc_fc2 = std::make_shared<libmson::RevisionStoreChunk>(fc2, 0x500);
-  auto rsc_fc3 = std::make_shared<libmson::RevisionStoreChunk>(fc3, 0x600);
+//  auto rsc_fc1 = std::make_shared<libmson::RevisionStoreChunk>(fc1, 0x400,0x100);
+//  auto rsc_fc2 = std::make_shared<libmson::RevisionStoreChunk>(fc2, 0x500,0x200);
+//  auto rsc_fc3 = std::make_shared<libmson::RevisionStoreChunk>(fc3, 0x600,0x300);
 
-  std::static_pointer_cast<libmson::FreeChunkListFragment>(
-      rsc_fclf.get()->getChunk())
-      ->setFcrFreeChunks({rsc_fc1, rsc_fc2, rsc_fc3});
+//  std::static_pointer_cast<libmson::FreeChunkListFragment>(
+//      rsc_fclf.get()->getChunk())
+//      ->setFcrFreeChunks({rsc_fc1, rsc_fc2, rsc_fc3});
 
 //  const std::vector<std::weak_ptr<libmson::RevisionStoreChunk>> fclf_chunks{
 //      rsc_fc1, rsc_fc2, rsc_fc3};
 
 //  fclf->setFcrFreeChunks(fclf_chunks);
 
-  mson.getChunks().emplace_back(rsc_fclf);
-  mson.getChunks().emplace_back(rsc_fc1);
-  mson.getChunks().emplace_back(rsc_fc2);
-  mson.getChunks().emplace_back(rsc_fc3);
+//  mson.getChunks().emplace_back(rsc_fclf);
+//  mson.getChunks().emplace_back(rsc_fc1);
+//  mson.getChunks().emplace_back(rsc_fc2);
+//  mson.getChunks().emplace_back(rsc_fc3);
 
-  std::static_pointer_cast<libmson::RevisionStoreFileHeader>(
-      mson.getChunks().begin()->get()->getChunk())
-      ->setFcrFreeChunkList(rsc_fclf);
+//  std::static_pointer_cast<libmson::RevisionStoreFileHeader>(
+//      mson.getChunks().begin()->get()->getChunk())
+//      ->setFcrFreeChunkList(rsc_fclf);
 
   // libmson::FreeChunk;
 

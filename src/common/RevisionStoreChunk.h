@@ -10,21 +10,23 @@
 
 namespace libmson {
 
-class RevisionStoreChunk {
+class RevisionStoreChunkContainer {
 private:
-  qint64 m_initialStp;
+  const quint64 m_initialStp;
+  const quint64 m_initialCb;
 
   std::shared_ptr<Chunkable> m_chunkable;
 
 public:
-  RevisionStoreChunk(std::shared_ptr<Chunkable> chunkable,
-                     const quint64 initialLocationInFile);
+  RevisionStoreChunkContainer(std::shared_ptr<Chunkable> chunkable,
+                     const quint64 initialLocationInFile, const quint64 initialCb);
 
-  std::shared_ptr<Chunkable> getChunk();
+  std::shared_ptr<Chunkable> getContent();
 
   RevisionStoreChunkType getType();
 
   quint64 getInitialStp() const;
+  quint64 getInitialCb() const;
 
   quint64 cb() { return m_chunkable->cb(); };
 };

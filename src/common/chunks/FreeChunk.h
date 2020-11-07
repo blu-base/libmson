@@ -20,7 +20,7 @@ public:
   void setSize(const quint64 size);
 
   // Chunkable interface
-  virtual qint64 cb() const override;
+  virtual quint64 cb() const override;
   virtual RevisionStoreChunkType getType() const override;
 };
 

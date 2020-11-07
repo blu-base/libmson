@@ -12,9 +12,9 @@ namespace MSONcommon {
 
 class FileDataStoreListReferenceFND : public IFileNodeType {
 private:
-  FileNodeChunkReference m_ref;
+  MSONcommon::FileNodeChunkReference m_ref;
 
-  FileNodeListFragment m_StoreList;
+  MSONcommon::FileNodeListFragment m_StoreList;
 
 public:
   FileDataStoreListReferenceFND(FNCR_STP_FORMAT stpFormat,
@@ -22,8 +22,8 @@ public:
   FileDataStoreListReferenceFND(quint8 stpFormat, quint8 cbFormat);
   virtual ~FileDataStoreListReferenceFND() = default;
 
-  FileNodeChunkReference getRef() const;
-  void setRef(const FileNodeChunkReference &value);
+  MSONcommon::FileNodeChunkReference getRef() const;
+  void setRef(const MSONcommon::FileNodeChunkReference &value);
 
   virtual quint64 getSizeInFile() const override;
 

@@ -7,9 +7,8 @@ namespace libmson {
 
 enum class RevisionStoreChunkType {
   RevistionStoreFileHeader,
-  FileNodeListFragmentHeader,
+  FileNodeListFragment,
   FileNode,
-  FileNodeListFragmentFooter,
   FreeChunkListFragment,
   FreeChunk,
   TransactionLogFragment,
@@ -23,7 +22,7 @@ enum class RevisionStoreChunkType {
 
 class Chunkable {
 public:
-  virtual qint64 cb() const = 0;
+  virtual quint64 cb() const = 0;
   virtual RevisionStoreChunkType getType() const = 0;
 };
 

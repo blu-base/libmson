@@ -1,11 +1,10 @@
 #ifndef FILENODELISTFRAGMENT_H
 #define FILENODELISTFRAGMENT_H
 
+#include "FileNode.h"
+#include "IRevisionStoreFileObject.h"
 #include <QtCore/qglobal.h>
 
-#include "IRevisionStoreFileObject.h"
-
-#include "FileNode.h"
 #include "FileNodeListHeader.h"
 #include "commonTypes/FileChunkReference32.h"
 #include "commonTypes/FileChunkReference64.h"
@@ -23,7 +22,8 @@ private:
 
   FileNodeListHeader m_fnlheader;
 
-  std::vector<std::shared_ptr<FileNode>> m_rgFileNodes;
+
+  std::vector<std::shared_ptr<MSONcommon::FileNode>> m_rgFileNodes;
 
   quint64 m_paddingLength;
 
@@ -52,9 +52,9 @@ public:
   FileNodeListHeader getFnlheader() const;
   void setFnlheader(const FileNodeListHeader &fnlheader);
 
-  std::vector<std::shared_ptr<FileNode>> rgFileNodes() const;
-  void
-  setRgFileNodes(const std::vector<std::shared_ptr<FileNode>> &rgFileNodes);
+  std::vector<std::shared_ptr<MSONcommon::FileNode>> rgFileNodes() const;
+  void setRgFileNodes(
+      const std::vector<std::shared_ptr<MSONcommon::FileNode>> &rgFileNodes);
 
   quint64 paddingLength() const;
   void setPaddingLength(const quint64 &paddingLength);

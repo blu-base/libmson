@@ -187,11 +187,11 @@ void RootFileNodeList::setFcrFileNodeListRoot(
 void RootFileNodeList::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("RootFileNodeList");
 
-  //  xmlWriter.writeStartElement("fileNodeListFragments");
-  //  for (const auto& entry : m_fileNodeListFragments) {
-  //    xmlWriter << entry;
-  //  }
-  //  xmlWriter.writeEndElement();
+    xmlWriter.writeStartElement("fileNodeListFragments");
+    for (const auto& entry : m_fileNodeListFragments) {
+      xmlWriter << *entry;
+    }
+    xmlWriter.writeEndElement();
 
   xmlWriter.writeStartElement("objectSpaceManifestRoot");
   xmlWriter.writeCharacters(std::dynamic_pointer_cast<ObjectSpaceManifestRootFND>(
