@@ -1,6 +1,9 @@
 
 ########## libmson library with public API #####################################
 set (libmson_PART_SRCS
+  Notebook.cpp
+  Section.cpp
+  Page.cpp
 )
 
 set (libmson_PART_HEADERS
@@ -10,7 +13,6 @@ add_library(libmson SHARED ${libmson_PART_SRCS})
 
 target_link_libraries(
     libmson
-    Qt5::Core
     )
 
   target_include_directories(

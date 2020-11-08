@@ -2,8 +2,8 @@ Although this library is provided with a LGPL v2.1 license, it has been created
 by using significant amounts of code of the following projects.
 
 * Qt Open Source Edition - 5.15
-* OfficeDev / [Interop-TestSuites][2]
-* pablospe / [cmake-example-library][3]
+* OfficeDev / [Interop-TestSuites][1]
+* pablospe / [cmake-example-library][2]
 
 
 # Qt Open Source Edition - 5.15
