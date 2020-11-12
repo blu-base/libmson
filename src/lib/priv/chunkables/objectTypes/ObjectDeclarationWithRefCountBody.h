@@ -3,11 +3,11 @@
 
 #include <QtCore/qglobal.h>
 
-#include "../IStreamable.h"
-#include "../commonTypes/CompactID.h"
+#include "../../IStreamable.h"
+#include "../../commonTypes/CompactID.h"
 
-namespace libmson{
-namespace priv{
+namespace libmson {
+namespace priv {
 
 class ObjectDeclarationWithRefCountBody : public IStreamable {
 private:
@@ -58,16 +58,16 @@ private:
 public:
   ObjectDeclarationWithRefCountBody();
 
-  void generateXml(QXmlStreamWriter &xmlWriter) const;
+  void generateXml(QXmlStreamWriter& xmlWriter) const;
 
   CompactID getOid() const;
-  void setOid(const CompactID &value);
+  void setOid(const CompactID& value);
 
   quint8 getJci() const;
-  void setJci(const quint8 &value);
+  void setJci(const quint8& value);
 
   quint8 getOdc() const;
-  void setOdc(const quint8 &value);
+  void setOdc(const quint8& value);
 
   bool getFHasOidReferences() const;
   void setFHasOidReferences(bool value);
@@ -84,20 +84,16 @@ private:
    * @param ds <QDataStream> containing the deserializable
    * ObjectDeclarationWithRefCountBody
    */
-  virtual void deserialize(QDataStream &ds) override;
+  virtual void deserialize(QDataStream& ds) override;
   /**
    * @brief creates byte stream from ObjectDeclarationWithRefCountBody object
    * @param ds <QDataStream> is the output stream to which the serialized
    * ObjectDeclarationWithRefCountBody is send
    */
-  virtual void serialize(QDataStream &ds) const override;
-
-
-
-
+  virtual void serialize(QDataStream& ds) const override;
 };
 
-} //namespace priv
+} // namespace priv
 } // namespace libmson
 
 #endif // OBJECTDECLARATIONWITHREFCOUNTBODY_H

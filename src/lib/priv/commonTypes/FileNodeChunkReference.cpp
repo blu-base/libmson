@@ -1,28 +1,34 @@
 #include "FileNodeChunkReference.h"
-#include "../helper/Helper.h"
+#include "../utils/Helper.h"
 
 
 namespace libmson {
 namespace priv {
 
-FileNodeChunkReference::FileNodeChunkReference(FNCR_STP_FORMAT stpFormat,
-                                               FNCR_CB_FORMAT cbFormat)
-    : IFileChunkReference<quint64, quint64>() {
+FileNodeChunkReference::FileNodeChunkReference(
+    FNCR_STP_FORMAT stpFormat, FNCR_CB_FORMAT cbFormat)
+    : IFileChunkReference<quint64, quint64>()
+{
 
   m_stpFormat = stpFormat;
-  m_cbFormat = cbFormat;
+  m_cbFormat  = cbFormat;
 }
 
-FileNodeChunkReference::FileNodeChunkReference(quint8 stpFormat,
-                                               quint8 cbFormat)
-    : FileNodeChunkReference(static_cast<FNCR_STP_FORMAT>(stpFormat),
-                             static_cast<FNCR_CB_FORMAT>(cbFormat)) {}
+FileNodeChunkReference::FileNodeChunkReference(
+    quint8 stpFormat, quint8 cbFormat)
+    : FileNodeChunkReference(
+          static_cast<FNCR_STP_FORMAT>(stpFormat),
+          static_cast<FNCR_CB_FORMAT>(cbFormat))
+{
+}
 
-bool FileNodeChunkReference::is_fcrZero() const {
+bool FileNodeChunkReference::is_fcrZero() const
+{
   return m_stp == 0 && m_cb == 0;
 }
 
-bool FileNodeChunkReference::is_fcrNil() const {
+bool FileNodeChunkReference::is_fcrNil() const
+{
 
   bool m_stp_nil = false;
 
@@ -42,12 +48,14 @@ bool FileNodeChunkReference::is_fcrNil() const {
   return m_stp_nil && m_cb == 0;
 }
 
-void FileNodeChunkReference::set_fcrZero() {
+void FileNodeChunkReference::set_fcrZero()
+{
   m_stp = 0;
-  m_cb = 0;
+  m_cb  = 0;
 }
 
-void FileNodeChunkReference::set_fcrNil() {
+void FileNodeChunkReference::set_fcrNil()
+{
   switch (m_stpFormat) {
   case FNCR_STP_FORMAT::UNCOMPRESED_8BYTE:
     m_stp = UINT64_MAX;
@@ -64,7 +72,8 @@ void FileNodeChunkReference::set_fcrNil() {
   m_cb = 0;
 }
 
-quint64 FileNodeChunkReference::stp() const {
+quint64 FileNodeChunkReference::stp() const
+{
 
   switch (m_stpFormat) {
   case FNCR_STP_FORMAT::UNCOMPRESED_8BYTE:
@@ -80,7 +89,8 @@ quint64 FileNodeChunkReference::stp() const {
   }
 }
 
-void FileNodeChunkReference::setStp(const quint64 &stp) {
+void FileNodeChunkReference::setStp(const quint64& stp)
+{
   switch (m_stpFormat) {
   case FNCR_STP_FORMAT::UNCOMPRESED_8BYTE:
     m_stp = stp;
@@ -97,7 +107,8 @@ void FileNodeChunkReference::setStp(const quint64 &stp) {
   }
 }
 
-quint64 FileNodeChunkReference::cb() const {
+quint64 FileNodeChunkReference::cb() const
+{
 
   switch (m_cbFormat) {
   case FNCR_CB_FORMAT::UNCOMPRESED_8BYTE:
@@ -113,7 +124,8 @@ quint64 FileNodeChunkReference::cb() const {
   }
 }
 
-void FileNodeChunkReference::setCb(const quint64 &cb) {
+void FileNodeChunkReference::setCb(const quint64& cb)
+{
   switch (m_cbFormat) {
   case FNCR_CB_FORMAT::UNCOMPRESED_8BYTE:
     m_cb = cb;
@@ -130,53 +142,57 @@ void FileNodeChunkReference::setCb(const quint64 &cb) {
   }
 }
 
-void FileNodeChunkReference::writeLowLevelXml(
-    QXmlStreamWriter &xmlWriter) const {
-  xmlWriter.writeStartElement("FileNodeChunkReference");
+// void FileNodeChunkReference::writeLowLevelXml(QXmlStreamWriter& xmlWriter)
+// const
+//{
+//  xmlWriter.writeStartElement("FileNodeChunkReference");
 
-  switch (m_stpFormat) {
-  case FNCR_STP_FORMAT::UNCOMPRESED_8BYTE:
-    xmlWriter.writeAttribute("stpFormat", "UNCOMPRESED_8BYTE");
-    break;
-  case FNCR_STP_FORMAT::UNCOMPRESED_4BYTE:
-    xmlWriter.writeAttribute("stpFormat", "UNCOMPRESED_4BYTE");
-    break;
-  case FNCR_STP_FORMAT::COMPRESSED_4BYTE:
-    xmlWriter.writeAttribute("stpFormat", "COMPRESSED_4BYTE");
-    break;
-  case FNCR_STP_FORMAT::COMPRESSED_2BYTE:
-    xmlWriter.writeAttribute("stpFormat", "COMPRESSED_2BYTE");
-    break;
-  }
+//  switch (m_stpFormat) {
+//  case FNCR_STP_FORMAT::UNCOMPRESED_8BYTE:
+//    xmlWriter.writeAttribute("stpFormat", "UNCOMPRESED_8BYTE");
+//    break;
+//  case FNCR_STP_FORMAT::UNCOMPRESED_4BYTE:
+//    xmlWriter.writeAttribute("stpFormat", "UNCOMPRESED_4BYTE");
+//    break;
+//  case FNCR_STP_FORMAT::COMPRESSED_4BYTE:
+//    xmlWriter.writeAttribute("stpFormat", "COMPRESSED_4BYTE");
+//    break;
+//  case FNCR_STP_FORMAT::COMPRESSED_2BYTE:
+//    xmlWriter.writeAttribute("stpFormat", "COMPRESSED_2BYTE");
+//    break;
+//  }
 
-  switch (m_cbFormat) {
-  case FNCR_CB_FORMAT::UNCOMPRESED_8BYTE:
-    xmlWriter.writeAttribute("cbFormat", "UNCOMPRESED_8BYTE");
-    break;
-  case FNCR_CB_FORMAT::UNCOMPRESED_4BYTE:
-    xmlWriter.writeAttribute("cbFormat", "UNCOMPRESED_4BYTE");
-    break;
-  case FNCR_CB_FORMAT::COMPRESSED_1BYTE:
-    xmlWriter.writeAttribute("cbFormat", "COMPRESSED_1BYTE");
-    break;
-  case FNCR_CB_FORMAT::COMPRESSED_2BYTE:
-    xmlWriter.writeAttribute("cbFormat", "COMPRESSED_2BYTE");
-    break;
-  }
+//  switch (m_cbFormat) {
+//  case FNCR_CB_FORMAT::UNCOMPRESED_8BYTE:
+//    xmlWriter.writeAttribute("cbFormat", "UNCOMPRESED_8BYTE");
+//    break;
+//  case FNCR_CB_FORMAT::UNCOMPRESED_4BYTE:
+//    xmlWriter.writeAttribute("cbFormat", "UNCOMPRESED_4BYTE");
+//    break;
+//  case FNCR_CB_FORMAT::COMPRESSED_1BYTE:
+//    xmlWriter.writeAttribute("cbFormat", "COMPRESSED_1BYTE");
+//    break;
+//  case FNCR_CB_FORMAT::COMPRESSED_2BYTE:
+//    xmlWriter.writeAttribute("cbFormat", "COMPRESSED_2BYTE");
+//    break;
+//  }
 
-  if (this->is_fcrNil()) {
-    xmlWriter.writeAttribute("fcrNil", "true");
-  } else if (this->is_fcrZero()) {
-    xmlWriter.writeAttribute("fcrZero", "true");
-  } else {
-    xmlWriter.writeAttribute("stp", qStringHex(stp(), 16));
-    xmlWriter.writeAttribute("cb", qStringHex(cb(), 16));
-  }
+//  if (this->is_fcrNil()) {
+//    xmlWriter.writeAttribute("fcrNil", "true");
+//  }
+//  else if (this->is_fcrZero()) {
+//    xmlWriter.writeAttribute("fcrZero", "true");
+//  }
+//  else {
+//    xmlWriter.writeAttribute("stp", qStringHex(stp(), 16));
+//    xmlWriter.writeAttribute("cb", qStringHex(cb(), 16));
+//  }
 
-  xmlWriter.writeEndElement();
-}
+//  xmlWriter.writeEndElement();
+//}
 
-void FileNodeChunkReference::deserialize(QDataStream &ds) {
+void FileNodeChunkReference::deserialize(QDataStream& ds)
+{
 
   switch (m_stpFormat) {
   case FNCR_STP_FORMAT::UNCOMPRESED_8BYTE: {
@@ -223,17 +239,20 @@ void FileNodeChunkReference::deserialize(QDataStream &ds) {
   }
 }
 
-bool FileNodeChunkReference::isSTPcompressed() {
+bool FileNodeChunkReference::isSTPcompressed()
+{
   return m_stpFormat == FNCR_STP_FORMAT::COMPRESSED_4BYTE ||
          m_stpFormat == FNCR_STP_FORMAT::COMPRESSED_2BYTE;
 }
 
-bool FileNodeChunkReference::isCBcompressed() {
+bool FileNodeChunkReference::isCBcompressed()
+{
   return m_cbFormat == FNCR_CB_FORMAT::COMPRESSED_2BYTE ||
          m_cbFormat == FNCR_CB_FORMAT::COMPRESSED_1BYTE;
 }
 
-quint64 FileNodeChunkReference::getSizeInFile() const {
+quint64 FileNodeChunkReference::getSizeInFile() const
+{
   quint64 sizeInFile = 0;
 
   switch (m_stpFormat) {
@@ -269,7 +288,46 @@ quint64 FileNodeChunkReference::getSizeInFile() const {
   return sizeInFile;
 }
 
-void FileNodeChunkReference::serialize(QDataStream &ds) const {
+quint64 FileNodeChunkReference::getSizeInFile(
+    FNCR_STP_FORMAT stpFormat, FNCR_CB_FORMAT cbFormat)
+{
+  quint64 sizeInFile = 0;
+
+  switch (stpFormat) {
+  case FNCR_STP_FORMAT::UNCOMPRESED_8BYTE:
+    sizeInFile += 8;
+    break;
+
+  case FNCR_STP_FORMAT::UNCOMPRESED_4BYTE:
+  case FNCR_STP_FORMAT::COMPRESSED_4BYTE:
+    sizeInFile += 4;
+    break;
+
+  case FNCR_STP_FORMAT::COMPRESSED_2BYTE:
+    sizeInFile += 2;
+    break;
+  }
+
+  switch (cbFormat) {
+  case FNCR_CB_FORMAT::UNCOMPRESED_8BYTE:
+    sizeInFile += 8;
+    break;
+  case FNCR_CB_FORMAT::UNCOMPRESED_4BYTE:
+    sizeInFile += 4;
+    break;
+  case FNCR_CB_FORMAT::COMPRESSED_1BYTE:
+    sizeInFile += 1;
+    break;
+  case FNCR_CB_FORMAT::COMPRESSED_2BYTE:
+    sizeInFile += 2;
+    break;
+  }
+
+  return sizeInFile;
+}
+
+void FileNodeChunkReference::serialize(QDataStream& ds) const
+{
 
   switch (m_stpFormat) {
   case FNCR_STP_FORMAT::UNCOMPRESED_8BYTE:
@@ -302,20 +360,24 @@ void FileNodeChunkReference::serialize(QDataStream &ds) const {
   }
 }
 
-void FileNodeChunkReference::toDebugString(QDebug &dbg) const {
-  dbg.noquote();
-  dbg << "FileNodeChunkReference(";
-  if (is_fcrNil()) {
-    dbg << "fcrNil";
-  } else if (is_fcrZero()) {
-    dbg << "fcrZero";
-  } else {
-    dbg << "stp: " << qStringHex(stp(), 16) << ", cb: " << qStringHex(cb(), 16);
-  };
+// void FileNodeChunkReference::toDebugString(QDebug& dbg) const
+//{
+//  dbg.noquote();
+//  dbg << "FileNodeChunkReference(";
+//  if (is_fcrNil()) {
+//    dbg << "fcrNil";
+//  }
+//  else if (is_fcrZero()) {
+//    dbg << "fcrZero";
+//  }
+//  else {
+//    dbg << "stp: " << qStringHex(stp(), 16) << ", cb: " << qStringHex(cb(),
+//    16);
+//  };
 
-  dbg << ", stp/cb format: " << static_cast<quint8>(m_stpFormat) << "/"
-      << static_cast<quint8>(m_cbFormat) << ")";
-}
+//  dbg << ", stp/cb format: " << static_cast<quint8>(m_stpFormat) << "/" <<
+//  static_cast<quint8>(m_cbFormat) << ")";
+//}
 
 } // namespace priv
 } // namespace libmson

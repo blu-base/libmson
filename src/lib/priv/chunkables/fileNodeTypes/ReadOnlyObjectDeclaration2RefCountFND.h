@@ -5,50 +5,41 @@
 #include "ObjectDeclaration2RefCountFND.h"
 #include <QtCore/qglobal.h>
 
-namespace libmson{
-namespace priv{
+namespace libmson {
+namespace priv {
 
 class ReadOnlyObjectDeclaration2RefCountFND : public IFileNodeType {
 private:
-  FNCR_STP_FORMAT m_stpFormat;
-  FNCR_CB_FORMAT m_cbFormat;
   ObjectDeclaration2RefCountFND m_base;
 
   QByteArray m_md5hash;
 
 public:
-  ReadOnlyObjectDeclaration2RefCountFND(FNCR_STP_FORMAT stpFormat,
-                                        FNCR_CB_FORMAT cbFormat);
-
-  ReadOnlyObjectDeclaration2RefCountFND(quint8 stpFormat, quint8 cbFormat);
+  ReadOnlyObjectDeclaration2RefCountFND(RSChunkContainer_WPtr_t parentFileNode);
   virtual ~ReadOnlyObjectDeclaration2RefCountFND() = default;
 
-  FileNodeChunkReference ref() const;
-  void setRef(const FileNodeChunkReference &ref);
   ObjectDeclaration2RefCountFND getBase() const;
-  void setBase(const ObjectDeclaration2RefCountFND &value);
+  void setBase(const ObjectDeclaration2RefCountFND& value);
 
   QByteArray getMd5hash() const;
-  void setMd5hash(const QByteArray &value);
+  void setMd5hash(const QByteArray& value);
 
-  FNCR_CB_FORMAT getCbFormat() const;
+  RSChunkContainer_WPtr_t getBlobRef() const;
 
-  FNCR_STP_FORMAT getStpFormat() const;
+  ObjectDeclaration2Body getBody() const;
+
+  std::shared_ptr<ObjectSpaceObjectPropSet> getPropSet();
 
   virtual quint64 getSizeInFile() const override;
 
+  friend class RevisionStoreFileParser;
+  friend class RevisionStoreFileWriter;
+
 private:
-  virtual void deserialize(QDataStream &ds) override;
-  virtual void serialize(QDataStream &ds) const override;
-
-
-
-
-
   static const quint64 md5HashSize = 16;
 };
 
-} //namespace priv
+} // namespace priv
 } // namespace libmson
 
 #endif // READONLYOBJECTDECLARATION2REFCOUNTFND_H

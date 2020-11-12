@@ -6,8 +6,8 @@
 #include "../../commonTypes/FileNodeChunkReference.h"
 #include "IFileNodeType.h"
 
-namespace libmson{
-namespace priv{
+namespace libmson {
+namespace priv {
 /**
  * @brief specifies the reference to a revision manifest list for the current
  * object space
@@ -23,30 +23,23 @@ private:
    * structure in the revision manifest list.
    * @var ref
    */
-  FileNodeChunkReference m_ref;
+  RSChunkContainer_WPtr_t m_ref;
 
 public:
-  RevisionManifestListReferenceFND(FNCR_STP_FORMAT stpFormat,
-                                   FNCR_CB_FORMAT cbFormat);
-  RevisionManifestListReferenceFND(quint8 stpFormat, quint8 cbFormat);
-
+  RevisionManifestListReferenceFND(RSChunkContainer_WPtr_t parentFileNode);
   ~RevisionManifestListReferenceFND() = default;
 
-  FileNodeChunkReference getRef() const;
-  void setRef(const FileNodeChunkReference &value);
+  RSChunkContainer_WPtr_t getRef() const;
+  void setRef(const RSChunkContainer_WPtr_t value);
+
+
+  friend class RevisionStoreFileParser;
+  friend class RevisionStoreFileWriter;
 
   virtual quint64 getSizeInFile() const override;
-
-private:
-  virtual void deserialize(QDataStream &ds) override;
-  virtual void serialize(QDataStream &ds) const override;
-
-
-
-
 };
 
-} //namespace priv
+} // namespace priv
 } // namespace libmson
 
 #endif // REVISIONMANIFESTLISTREFERENCEFND_H

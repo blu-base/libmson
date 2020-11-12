@@ -104,13 +104,13 @@ RevisionStoreFile::RevisionStoreFile() {}
 //  m_ds >> header->ffvNewestWriterVersion;
 //  m_ds >> header->ffvOldestReader;
 
-//  MSONcommon::FileChunkReference32 fcrLegacyFreeChunkList;
+//  FileChunkReference32 fcrLegacyFreeChunkList;
 //  m_ds >> fcrLegacyFreeChunkList;
 //  if (!fcrLegacyFreeChunkList.is_fcrZero()) {
 //    qWarning("fcrLegacyFreeChunkList of the RevisionStoreFileHeader is invalid.");
 //  }
 
-//  MSONcommon::FileChunkReference32 fcrLegacyTransactionLog;
+//  FileChunkReference32 fcrLegacyTransactionLog;
 //  m_ds >> fcrLegacyTransactionLog;
 //  if (!fcrLegacyTransactionLog.is_fcrNil()) {
 //    qWarning("fcrLegacyTransactionLog of the RevisionStoreFileHeader is invalid.");
@@ -127,7 +127,7 @@ RevisionStoreFile::RevisionStoreFile() {}
 
 //  m_ds >> header->rgbPlaceholder;
 
-//  MSONcommon::FileChunkReference32 fcrLegacyFileNodeListRoot;
+//  FileChunkReference32 fcrLegacyFileNodeListRoot;
 //  m_ds >> fcrLegacyFileNodeListRoot;
 //  if (!fcrLegacyFileNodeListRoot.is_fcrNil()) {
 //    qWarning("fcrLegacyFileNodeListRoot of the RevisionStoreFileHeader is invalid.");
@@ -147,7 +147,7 @@ RevisionStoreFile::RevisionStoreFile() {}
 //  m_ds >> header->guidAncestor;
 //  m_ds >> header->crcName;
 
-//  MSONcommon::FileChunkReference64x32 fcrHashedChunkList;
+//  FileChunkReference64x32 fcrHashedChunkList;
 //  m_ds >> fcrHashedChunkList;
 
 //  if (!fcrHashedChunkList.is_fcrNil() && !fcrHashedChunkList.is_fcrZero()) {
@@ -159,12 +159,12 @@ RevisionStoreFile::RevisionStoreFile() {}
 //    //    m_chunks.push_back(headerChunk);
 //  }
 
-//  MSONcommon::FileChunkReference64x32 fcrTransactionLog;
+//  FileChunkReference64x32 fcrTransactionLog;
 //  m_ds >> fcrTransactionLog;
 //  if (!fcrTransactionLog.is_fcrNil() && !fcrTransactionLog.is_fcrZero()) {
 //  }
 
-//  MSONcommon::FileChunkReference64x32 fcrFileNodeListRoot;
+//  FileChunkReference64x32 fcrFileNodeListRoot;
 //  m_ds >> fcrFileNodeListRoot;
 //  if (!fcrFileNodeListRoot.is_fcrNil() && !fcrFileNodeListRoot.is_fcrZero()) {
 
@@ -176,7 +176,7 @@ RevisionStoreFile::RevisionStoreFile() {}
 //    header->fcrFileNodeListRoot = fileNodeListRootChunk;
 //  }
 
-//  MSONcommon::FileChunkReference64x32 fcrFreeChunkList;
+//  FileChunkReference64x32 fcrFreeChunkList;
 //  m_ds >> fcrFreeChunkList;
 //  if (!fcrFreeChunkList.is_fcrNil() && !fcrFreeChunkList.is_fcrZero()) {
 
@@ -196,13 +196,13 @@ RevisionStoreFile::RevisionStoreFile() {}
 //  m_ds >> header->guidDenyReadFileVersion;
 //  m_ds >> header->grfDebugLogFlags;
 
-//  MSONcommon::FileChunkReference64x32 fcrDebugLog;
+//  FileChunkReference64x32 fcrDebugLog;
 //  m_ds >> fcrDebugLog;
 //  if (!fcrDebugLog.is_fcrZero()) {
 //    qWarning("fcrLegacyFreeChunkList of the RevisionStoreFileHeader is invalid.");
 //  }
 
-//  MSONcommon::FileChunkReference64x32 fcrAllocVerificationFreeChunkList;
+//  FileChunkReference64x32 fcrAllocVerificationFreeChunkList;
 //  m_ds >> fcrAllocVerificationFreeChunkList;
 //  if (!fcrAllocVerificationFreeChunkList.is_fcrZero()) {
 //    qWarning("fcrLegacyFreeChunkList of the RevisionStoreFileHeader is invalid.");
@@ -246,7 +246,7 @@ RevisionStoreFile::RevisionStoreFile() {}
 
 //  // Updating the header;
 //  header->cbExpectedFileLength = totalFileSize;
-//  header->crcName              = MSONcommon::Crc32::computeCrcName(m_fileName);
+//  header->crcName              = Crc32::computeCrcName(m_fileName);
 //  /// \todo update cTransactionsInLog
 
 //  ds << header->guidFileType;
@@ -259,9 +259,9 @@ RevisionStoreFile::RevisionStoreFile() {}
 //  ds << header->ffvOldestReader;
 
 //  // fcrLegacyFreeChunkList
-//  ds << MSONcommon::FileChunkReference32(MSONcommon::FCR_INITTYPE::FCRZERO);
+//  ds << FileChunkReference32(FCR_INITTYPE::FCRZERO);
 //  // fcrLegacyTransactionLog
-//  ds << MSONcommon::FileChunkReference32(MSONcommon::FCR_INITTYPE::FCRNIL);
+//  ds << FileChunkReference32(FCR_INITTYPE::FCRNIL);
 
 //  ds << header->cTransactionsInLog;
 
@@ -271,7 +271,7 @@ RevisionStoreFile::RevisionStoreFile() {}
 //  ds << header->rgbPlaceholder;
 
 //  // fcrLegacyFileNodeListRoot
-//  ds << MSONcommon::FileChunkReference32(MSONcommon::FCR_INITTYPE::FCRNIL);
+//  ds << FileChunkReference32(FCR_INITTYPE::FCRNIL);
 
 //  quint32 cbLegacyFreeSpaceInFreeChunkList = 0u;
 //  ds << cbLegacyFreeSpaceInFreeChunkList;
@@ -303,10 +303,10 @@ RevisionStoreFile::RevisionStoreFile() {}
 //  ds << header->grfDebugLogFlags;
 
 //  // fcrDebugLog
-//  ds << MSONcommon::FileChunkReference64x32(MSONcommon::FCR_INITTYPE::FCRZERO);
+//  ds << FileChunkReference64x32(FCR_INITTYPE::FCRZERO);
 
 //  // fcrAllocVerificationFreeChunkList
-//  ds << MSONcommon::FileChunkReference64x32(MSONcommon::FCR_INITTYPE::FCRZERO);
+//  ds << FileChunkReference64x32(FCR_INITTYPE::FCRZERO);
 
 //  ds << header->bnCreated;
 //  ds << header->bnLastWroteToThisFile;
@@ -468,12 +468,12 @@ RevisionStoreFile::RevisionStoreFile() {}
 
 //    auto fnc = deserializeFileNode(ds, ds.device()->pos(), fnlfc);
 
-//    MSONcommon::FileNodeTypeID fileNodeID =
+//    FileNodeTypeID fileNodeID =
 //        std::static_pointer_cast<libmson::FileNode>(fnc->getChunk())->getFileNodeTypeID();
 
 //    if (static_cast<quint16>(fileNodeID) != 0) {
 //      fnlf->m_fileNodes.push_back(fnc);
-//      if (fileNodeID != MSONcommon::FileNodeTypeID::ChunkTerminatorFND) {
+//      if (fileNodeID != FileNodeTypeID::ChunkTerminatorFND) {
 //        fileNodeCount--;
 //      }
 //      else {
@@ -501,7 +501,7 @@ RevisionStoreFile::RevisionStoreFile() {}
 //  ds.device()->seek(stp + cb - 20);
 
 //  // footer
-//  MSONcommon::FileChunkReference64x32 nextFragment;
+//  FileChunkReference64x32 nextFragment;
 //  ds >> nextFragment;
 //  if (!nextFragment.is_fcrNil() && !nextFragment.is_fcrZero()) {
 //    auto nextFnlf = std::make_shared<RevisionStoreChunkContainer>(
@@ -576,12 +576,12 @@ RevisionStoreFile::RevisionStoreFile() {}
 
 //    auto fnc = deserializeFileNode(ds, ds.device()->pos(), chunk);
 
-//    MSONcommon::FileNodeTypeID fileNodeID =
+//    FileNodeTypeID fileNodeID =
 //        std::static_pointer_cast<libmson::FileNode>(fnc->getChunk())->getFileNodeTypeID();
 
 //    if (static_cast<quint16>(fileNodeID) != 0) {
 //      fnlf->m_fileNodes.push_back(fnc);
-//      if (fileNodeID != MSONcommon::FileNodeTypeID::ChunkTerminatorFND) {
+//      if (fileNodeID != FileNodeTypeID::ChunkTerminatorFND) {
 //        fileNodeCount--;
 //      }
 //      else {
@@ -609,7 +609,7 @@ RevisionStoreFile::RevisionStoreFile() {}
 //  ds.device()->seek(stp + cb - 20);
 
 //  // footer
-//  MSONcommon::FileChunkReference64x32 nextFragment;
+//  FileChunkReference64x32 nextFragment;
 //  ds >> nextFragment;
 //  if (!nextFragment.is_fcrNil() && !nextFragment.is_fcrZero()) {
 //    auto nextFnlf = std::make_shared<RevisionStoreChunkContainer>(
@@ -680,125 +680,125 @@ RevisionStoreFile::RevisionStoreFile() {}
 //  fn->fileNodeID   = (temp >> libmson::FileNode::shiftFileNodeID) & libmson::FileNode::maskFileNodeID;
 
 //  switch (fn->getFileNodeTypeID()) {
-//  case MSONcommon::FileNodeTypeID::ChunkTerminatorFND:
-//    fn->fnt = std::make_shared<MSONcommon::ChunkTerminatorFND>();
+//  case FileNodeTypeID::ChunkTerminatorFND:
+//    fn->fnt = std::make_shared<ChunkTerminatorFND>();
 //    break;
-//  case MSONcommon::FileNodeTypeID::DataSignatureGroupDefinitionFND:
-//    fn->fnt = std::make_shared<MSONcommon::DataSignatureGroupDefinitionFND>();
+//  case FileNodeTypeID::DataSignatureGroupDefinitionFND:
+//    fn->fnt = std::make_shared<DataSignatureGroupDefinitionFND>();
 //    break;
-//    //  case MSONcommon::FileNodeTypeID::FileDataStoreListReferenceFND:
+//    //  case FileNodeTypeID::FileDataStoreListReferenceFND:
 //    //    fn->fnt =
-//    //    std::make_shared<MSONcommon::FileDataStoreListReferenceFND>(fn->stpFormat,
+//    //    std::make_shared<FileDataStoreListReferenceFND>(fn->stpFormat,
 //    //    fn->cbFormat); break;
-//    //  case MSONcommon::FileNodeTypeID::FileDataStoreObjectReferenceFND:
+//    //  case FileNodeTypeID::FileDataStoreObjectReferenceFND:
 //    //    fn->fnt =
-//    //        std::make_shared<MSONcommon::FileDataStoreObjectReferenceFND>(fn->stpFormat,
+//    //        std::make_shared<FileDataStoreObjectReferenceFND>(fn->stpFormat,
 //    //        fn->cbFormat);
 //    //    break;
-//  case MSONcommon::FileNodeTypeID::GlobalIdTableEndFNDX:
-//    fn->fnt = std::make_shared<MSONcommon::GlobalIdTableEndFNDX>();
+//  case FileNodeTypeID::GlobalIdTableEndFNDX:
+//    fn->fnt = std::make_shared<GlobalIdTableEndFNDX>();
 //    break;
-//  case MSONcommon::FileNodeTypeID::GlobalIdTableEntry2FNDX:
-//    fn->fnt = std::make_shared<MSONcommon::GlobalIdTableEntry2FNDX>();
+//  case FileNodeTypeID::GlobalIdTableEntry2FNDX:
+//    fn->fnt = std::make_shared<GlobalIdTableEntry2FNDX>();
 //    break;
-//  case MSONcommon::FileNodeTypeID::GlobalIdTableEntry3FNDX:
-//    fn->fnt = std::make_shared<MSONcommon::GlobalIdTableEntry3FNDX>();
+//  case FileNodeTypeID::GlobalIdTableEntry3FNDX:
+//    fn->fnt = std::make_shared<GlobalIdTableEntry3FNDX>();
 //    break;
-//  case MSONcommon::FileNodeTypeID::GlobalIdTableEntryFNDX:
-//    fn->fnt = std::make_shared<MSONcommon::GlobalIdTableEntryFNDX>();
+//  case FileNodeTypeID::GlobalIdTableEntryFNDX:
+//    fn->fnt = std::make_shared<GlobalIdTableEntryFNDX>();
 //    break;
-//  case MSONcommon::FileNodeTypeID::GlobalIdTableStart2FND:
-//    fn->fnt = std::make_shared<MSONcommon::GlobalIdTableStart2FND>();
+//  case FileNodeTypeID::GlobalIdTableStart2FND:
+//    fn->fnt = std::make_shared<GlobalIdTableStart2FND>();
 //    break;
-//  case MSONcommon::FileNodeTypeID::GlobalIdTableStartFNDX:
-//    fn->fnt = std::make_shared<MSONcommon::GlobalIdTableStartFNDX>();
+//  case FileNodeTypeID::GlobalIdTableStartFNDX:
+//    fn->fnt = std::make_shared<GlobalIdTableStartFNDX>();
 //    break;
-//  case MSONcommon::FileNodeTypeID::HashedChunkDescriptor2FND:
-//    fn->fnt = std::make_shared<MSONcommon::HashedChunkDescriptor2FND>(fn->stpFormat, fn->cbFormat);
+//  case FileNodeTypeID::HashedChunkDescriptor2FND:
+//    fn->fnt = std::make_shared<HashedChunkDescriptor2FND>(fn->stpFormat, fn->cbFormat);
 //    break;
-//  case MSONcommon::FileNodeTypeID::ObjectDataEncryptionKeyV2FNDX:
-//    fn->fnt = std::make_shared<MSONcommon::ObjectDataEncryptionKeyV2FNDX>(fn->stpFormat, fn->cbFormat);
+//  case FileNodeTypeID::ObjectDataEncryptionKeyV2FNDX:
+//    fn->fnt = std::make_shared<ObjectDataEncryptionKeyV2FNDX>(fn->stpFormat, fn->cbFormat);
 //    break;
-//  case MSONcommon::FileNodeTypeID::ObjectDeclaration2LargeRefCountFND:
-//    fn->fnt = std::make_shared<MSONcommon::ObjectDeclaration2LargeRefCountFND>(fn->stpFormat, fn->cbFormat);
+//  case FileNodeTypeID::ObjectDeclaration2LargeRefCountFND:
+//    fn->fnt = std::make_shared<ObjectDeclaration2LargeRefCountFND>(fn->stpFormat, fn->cbFormat);
 //    break;
-//  case MSONcommon::FileNodeTypeID::ObjectDeclaration2RefCountFND:
-//    fn->fnt = std::make_shared<MSONcommon::ObjectDeclaration2RefCountFND>(fn->stpFormat, fn->cbFormat);
+//  case FileNodeTypeID::ObjectDeclaration2RefCountFND:
+//    fn->fnt = std::make_shared<ObjectDeclaration2RefCountFND>(fn->stpFormat, fn->cbFormat);
 //    break;
-//  case MSONcommon::FileNodeTypeID::ObjectDeclarationFileData3LargeRefCountFND:
-//    fn->fnt = std::make_shared<MSONcommon::ObjectDeclarationFileData3LargeRefCountFND>();
+//  case FileNodeTypeID::ObjectDeclarationFileData3LargeRefCountFND:
+//    fn->fnt = std::make_shared<ObjectDeclarationFileData3LargeRefCountFND>();
 //    break;
-//  case MSONcommon::FileNodeTypeID::ObjectDeclarationFileData3RefCountFND:
-//    fn->fnt = std::make_shared<MSONcommon::ObjectDeclarationFileData3RefCountFND>();
+//  case FileNodeTypeID::ObjectDeclarationFileData3RefCountFND:
+//    fn->fnt = std::make_shared<ObjectDeclarationFileData3RefCountFND>();
 //    break;
-//  case MSONcommon::FileNodeTypeID::ObjectDeclarationWithRefCount2FNDX:
-//    fn->fnt = std::make_shared<MSONcommon::ObjectDeclarationWithRefCount2FNDX>(fn->stpFormat, fn->cbFormat);
+//  case FileNodeTypeID::ObjectDeclarationWithRefCount2FNDX:
+//    fn->fnt = std::make_shared<ObjectDeclarationWithRefCount2FNDX>(fn->stpFormat, fn->cbFormat);
 //    break;
-//  case MSONcommon::FileNodeTypeID::ObjectDeclarationWithRefCountFNDX:
-//    fn->fnt = std::make_shared<MSONcommon::ObjectDeclarationWithRefCountFNDX>(fn->stpFormat, fn->cbFormat);
+//  case FileNodeTypeID::ObjectDeclarationWithRefCountFNDX:
+//    fn->fnt = std::make_shared<ObjectDeclarationWithRefCountFNDX>(fn->stpFormat, fn->cbFormat);
 //    break;
-//  case MSONcommon::FileNodeTypeID::ObjectGroupEndFND:
-//    fn->fnt = std::make_shared<MSONcommon::ObjectGroupEndFND>();
+//  case FileNodeTypeID::ObjectGroupEndFND:
+//    fn->fnt = std::make_shared<ObjectGroupEndFND>();
 //    break;
-//  case MSONcommon::FileNodeTypeID::ObjectGroupListReferenceFND:
-//    fn->fnt = std::make_shared<MSONcommon::ObjectGroupListReferenceFND>(fn->stpFormat, fn->cbFormat);
+//  case FileNodeTypeID::ObjectGroupListReferenceFND:
+//    fn->fnt = std::make_shared<ObjectGroupListReferenceFND>(fn->stpFormat, fn->cbFormat);
 //    break;
-//  case MSONcommon::FileNodeTypeID::ObjectGroupStartFND:
-//    fn->fnt = std::make_shared<MSONcommon::ObjectGroupStartFND>();
+//  case FileNodeTypeID::ObjectGroupStartFND:
+//    fn->fnt = std::make_shared<ObjectGroupStartFND>();
 //    break;
-//  case MSONcommon::FileNodeTypeID::ObjectInfoDependencyOverridesFND:
-//    fn->fnt = std::make_shared<MSONcommon::ObjectInfoDependencyOverridesFND>(fn->stpFormat, fn->cbFormat);
+//  case FileNodeTypeID::ObjectInfoDependencyOverridesFND:
+//    fn->fnt = std::make_shared<ObjectInfoDependencyOverridesFND>(fn->stpFormat, fn->cbFormat);
 //    break;
-//  case MSONcommon::FileNodeTypeID::ObjectRevisionWithRefCount2FNDX:
-//    fn->fnt = std::make_shared<MSONcommon::ObjectRevisionWithRefCount2FNDX>(fn->stpFormat, fn->cbFormat);
+//  case FileNodeTypeID::ObjectRevisionWithRefCount2FNDX:
+//    fn->fnt = std::make_shared<ObjectRevisionWithRefCount2FNDX>(fn->stpFormat, fn->cbFormat);
 //    break;
-//  case MSONcommon::FileNodeTypeID::ObjectRevisionWithRefCountFNDX:
-//    fn->fnt = std::make_shared<MSONcommon::ObjectRevisionWithRefCountFNDX>(fn->stpFormat, fn->cbFormat);
+//  case FileNodeTypeID::ObjectRevisionWithRefCountFNDX:
+//    fn->fnt = std::make_shared<ObjectRevisionWithRefCountFNDX>(fn->stpFormat, fn->cbFormat);
 //    break;
-//  case MSONcommon::FileNodeTypeID::ObjectSpaceManifestListReferenceFND:
-//    fn->fnt = std::make_shared<MSONcommon::ObjectSpaceManifestListReferenceFND>(fn->stpFormat, fn->cbFormat);
+//  case FileNodeTypeID::ObjectSpaceManifestListReferenceFND:
+//    fn->fnt = std::make_shared<ObjectSpaceManifestListReferenceFND>(fn->stpFormat, fn->cbFormat);
 //    break;
-//  case MSONcommon::FileNodeTypeID::ObjectSpaceManifestListStartFND:
-//    fn->fnt = std::make_shared<MSONcommon::ObjectSpaceManifestListStartFND>();
+//  case FileNodeTypeID::ObjectSpaceManifestListStartFND:
+//    fn->fnt = std::make_shared<ObjectSpaceManifestListStartFND>();
 //    break;
-//  case MSONcommon::FileNodeTypeID::ObjectSpaceManifestRootFND:
-//    fn->fnt = std::make_shared<MSONcommon::ObjectSpaceManifestRootFND>();
+//  case FileNodeTypeID::ObjectSpaceManifestRootFND:
+//    fn->fnt = std::make_shared<ObjectSpaceManifestRootFND>();
 //    break;
-//  case MSONcommon::FileNodeTypeID::ReadOnlyObjectDeclaration2LargeRefCountFND:
-//    fn->fnt = std::make_shared<MSONcommon::ReadOnlyObjectDeclaration2LargeRefCountFND>(fn->stpFormat, fn->cbFormat);
+//  case FileNodeTypeID::ReadOnlyObjectDeclaration2LargeRefCountFND:
+//    fn->fnt = std::make_shared<ReadOnlyObjectDeclaration2LargeRefCountFND>(fn->stpFormat, fn->cbFormat);
 //    break;
-//  case MSONcommon::FileNodeTypeID::ReadOnlyObjectDeclaration2RefCountFND:
-//    fn->fnt = std::make_shared<MSONcommon::ReadOnlyObjectDeclaration2RefCountFND>(fn->stpFormat, fn->cbFormat);
+//  case FileNodeTypeID::ReadOnlyObjectDeclaration2RefCountFND:
+//    fn->fnt = std::make_shared<ReadOnlyObjectDeclaration2RefCountFND>(fn->stpFormat, fn->cbFormat);
 //    break;
-//  case MSONcommon::FileNodeTypeID::RevisionManifestEndFND:
-//    fn->fnt = std::make_shared<MSONcommon::RevisionManifestEndFND>();
+//  case FileNodeTypeID::RevisionManifestEndFND:
+//    fn->fnt = std::make_shared<RevisionManifestEndFND>();
 //    break;
-//  case MSONcommon::FileNodeTypeID::RevisionManifestListReferenceFND:
-//    fn->fnt = std::make_shared<MSONcommon::RevisionManifestListReferenceFND>(fn->stpFormat, fn->cbFormat);
+//  case FileNodeTypeID::RevisionManifestListReferenceFND:
+//    fn->fnt = std::make_shared<RevisionManifestListReferenceFND>(fn->stpFormat, fn->cbFormat);
 //    break;
-//  case MSONcommon::FileNodeTypeID::RevisionManifestListStartFND:
-//    fn->fnt = std::make_shared<MSONcommon::RevisionManifestListStartFND>();
+//  case FileNodeTypeID::RevisionManifestListStartFND:
+//    fn->fnt = std::make_shared<RevisionManifestListStartFND>();
 //    break;
-//  case MSONcommon::FileNodeTypeID::RevisionManifestStart4FND:
-//    fn->fnt = std::make_shared<MSONcommon::RevisionManifestStart4FND>();
+//  case FileNodeTypeID::RevisionManifestStart4FND:
+//    fn->fnt = std::make_shared<RevisionManifestStart4FND>();
 //    break;
-//  case MSONcommon::FileNodeTypeID::RevisionManifestStart6FND:
-//    fn->fnt = std::make_shared<MSONcommon::RevisionManifestStart6FND>();
+//  case FileNodeTypeID::RevisionManifestStart6FND:
+//    fn->fnt = std::make_shared<RevisionManifestStart6FND>();
 //    break;
-//  case MSONcommon::FileNodeTypeID::RevisionManifestStart7FND:
-//    fn->fnt = std::make_shared<MSONcommon::RevisionManifestStart7FND>();
+//  case FileNodeTypeID::RevisionManifestStart7FND:
+//    fn->fnt = std::make_shared<RevisionManifestStart7FND>();
 //    break;
-//  case MSONcommon::FileNodeTypeID::RevisionRoleAndContextDeclarationFND:
-//    fn->fnt = std::make_shared<MSONcommon::RevisionRoleAndContextDeclarationFND>();
+//  case FileNodeTypeID::RevisionRoleAndContextDeclarationFND:
+//    fn->fnt = std::make_shared<RevisionRoleAndContextDeclarationFND>();
 //    break;
-//  case MSONcommon::FileNodeTypeID::RevisionRoleDeclarationFND:
-//    fn->fnt = std::make_shared<MSONcommon::RevisionRoleDeclarationFND>();
+//  case FileNodeTypeID::RevisionRoleDeclarationFND:
+//    fn->fnt = std::make_shared<RevisionRoleDeclarationFND>();
 //    break;
-//  case MSONcommon::FileNodeTypeID::RootObjectReference2FNDX:
-//    fn->fnt = std::make_shared<MSONcommon::RootObjectReference2FNDX>();
+//  case FileNodeTypeID::RootObjectReference2FNDX:
+//    fn->fnt = std::make_shared<RootObjectReference2FNDX>();
 //    break;
-//  case MSONcommon::FileNodeTypeID::RootObjectReference3FND:
-//    fn->fnt = std::make_shared<MSONcommon::RootObjectReference3FND>();
+//  case FileNodeTypeID::RootObjectReference3FND:
+//    fn->fnt = std::make_shared<RootObjectReference3FND>();
 //    break;
 
 //  default:

@@ -3,29 +3,29 @@
 
 #include <QtCore/qglobal.h>
 
-#include <QDataStream>
-#include <QDebug>
-#include <QXmlStreamWriter>
+#include "../RevisionStoreChunkContainer.h"
 
-#include "../../IStreamable.h"
-
-namespace libmson{
-namespace priv{
+namespace libmson {
+namespace priv {
 /**
  * @class IFileNodeType
  * @brief The abstract class for the Data contained in FileNodes
  *
  */
-class IFileNodeType : public IStreamable {
+class IFileNodeType {
 protected:
-  IFileNodeType() = default;
+  IFileNodeType(RSChunkContainer_WPtr_t parentFileNode);
   virtual ~IFileNodeType() = default;
+
+  /// parent FileNode object. Used to compute getSizeInFile for some
+  /// FileNodeTypes.
+  RSChunkContainer_WPtr_t m_parent;
 
 public:
   virtual quint64 getSizeInFile() const = 0;
 };
 
-} //namespace priv
+} // namespace priv
 } // namespace libmson
 
 #endif // IFILENODETYPE_H

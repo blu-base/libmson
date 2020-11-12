@@ -6,7 +6,8 @@
 
 #include <array>
 
-namespace MSONcommon {
+namespace libmson {
+namespace priv {
 
 class MsoCrc32 {
 private:
@@ -51,6 +52,7 @@ public:
   static quint32 computeCrcName(const QString& fileName);
 };
 
-} // namespace MSONcommon
+} // namespace priv
+} // namespace libmson
 
 #endif // CRCALGORITHMS_H

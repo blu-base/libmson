@@ -1,6 +1,7 @@
 #ifndef FILEDATASTOREOBJECT_H
 #define FILEDATASTOREOBJECT_H
 
+#include "Chunkable.h"
 #include <QtCore/qglobal.h>
 #include <cstdlib>
 
@@ -8,12 +9,13 @@
 #include <QXmlStreamWriter>
 
 #include "../IStreamable.h"
-#include "../commonTypes/FileNodeChunkReference.h"
 
 namespace libmson {
 namespace priv {
 
-class FileDataStoreObject : public IStreamable {
+class FileDataStoreObject
+    : public Chunkable
+    , public IStreamable {
 private:
   /**
    * @brief MUST be {BDE316E7-2665-4511-A4C4-8D4D0B7A9EAC}.
@@ -56,7 +58,6 @@ private:
 
 public:
   FileDataStoreObject();
-  FileDataStoreObject(QDataStream& ds, const FileNodeChunkReference& ref);
 
   QUuid guidHeader() const;
   void setGuidHeader(const QUuid& guidHeader);
@@ -71,6 +72,10 @@ public:
   void setGuidFooter(const QUuid& guidFooter);
 
   quint64 getSizeInFile() const;
+
+  // Chunkable interface
+  virtual quint64 cb() const override;
+  virtual RevisionStoreChunkType getType() const override;
 
 private:
   /**

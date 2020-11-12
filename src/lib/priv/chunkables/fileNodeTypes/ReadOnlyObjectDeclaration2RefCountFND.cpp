@@ -1,16 +1,54 @@
 #include "ReadOnlyObjectDeclaration2RefCountFND.h"
 
-#include "../commonTypes/FileNodeChunkReference.h"
 
-namespace libmson{
-namespace priv{
+namespace libmson {
+namespace priv {
 
-FNCR_CB_FORMAT ReadOnlyObjectDeclaration2RefCountFND::getCbFormat() const {
-  return m_cbFormat;
+
+ReadOnlyObjectDeclaration2RefCountFND::ReadOnlyObjectDeclaration2RefCountFND(
+    RSChunkContainer_WPtr_t parentFileNode)
+    : IFileNodeType(parentFileNode), m_base(parentFileNode)
+{
 }
 
-FNCR_STP_FORMAT ReadOnlyObjectDeclaration2RefCountFND::getStpFormat() const {
-  return m_stpFormat;
+
+ObjectDeclaration2RefCountFND
+ReadOnlyObjectDeclaration2RefCountFND::getBase() const
+{
+  return m_base;
+}
+
+void ReadOnlyObjectDeclaration2RefCountFND::setBase(
+    const ObjectDeclaration2RefCountFND& value)
+{
+  m_base = value;
+}
+
+QByteArray ReadOnlyObjectDeclaration2RefCountFND::getMd5hash() const
+{
+  return m_md5hash;
+}
+
+void ReadOnlyObjectDeclaration2RefCountFND::setMd5hash(const QByteArray& value)
+{
+  m_md5hash = value;
+}
+
+RSChunkContainer_WPtr_t
+ReadOnlyObjectDeclaration2RefCountFND::getBlobRef() const
+{
+  return m_base.getBlobRef();
+}
+
+ObjectDeclaration2Body ReadOnlyObjectDeclaration2RefCountFND::getBody() const
+{
+  return m_base.getBody();
+}
+
+std::shared_ptr<ObjectSpaceObjectPropSet>
+ReadOnlyObjectDeclaration2RefCountFND::getPropSet()
+{
+  return m_base.getPropSet();
 }
 
 quint64 ReadOnlyObjectDeclaration2RefCountFND::getSizeInFile() const
@@ -18,72 +56,43 @@ quint64 ReadOnlyObjectDeclaration2RefCountFND::getSizeInFile() const
   return md5HashSize + m_base.getSizeInFile();
 }
 
-ReadOnlyObjectDeclaration2RefCountFND::ReadOnlyObjectDeclaration2RefCountFND(
-    FNCR_STP_FORMAT stpFormat, FNCR_CB_FORMAT cbFormat)
-    : m_stpFormat(stpFormat), m_cbFormat(cbFormat),
-      m_base(stpFormat, cbFormat) {}
+// void ReadOnlyObjectDeclaration2RefCountFND::deserialize(QDataStream &ds) {
 
-ReadOnlyObjectDeclaration2RefCountFND::ReadOnlyObjectDeclaration2RefCountFND(
-    quint8 stpFormat, quint8 cbFormat)
-    : m_stpFormat(static_cast<FNCR_STP_FORMAT>(stpFormat)),
-      m_cbFormat(static_cast<FNCR_CB_FORMAT>(cbFormat)),
-      m_base(stpFormat, cbFormat) {}
+//  m_base = ObjectDeclaration2RefCountFND(m_stpFormat, m_cbFormat);
+//  ds >> m_base;
 
+//  m_md5hash = ds.device()->read(md5HashSize);
+//}
 
-ObjectDeclaration2RefCountFND
-ReadOnlyObjectDeclaration2RefCountFND::getBase() const {
-  return m_base;
-}
+// void ReadOnlyObjectDeclaration2RefCountFND::serialize(QDataStream &ds) const
+// {
 
-void ReadOnlyObjectDeclaration2RefCountFND::setBase(
-    const ObjectDeclaration2RefCountFND &value) {
-  m_base = value;
-}
+//  ds << m_base;
+//  ds << m_md5hash;
+//}
 
-QByteArray ReadOnlyObjectDeclaration2RefCountFND::getMd5hash() const {
-  return m_md5hash;
-}
+// void ReadOnlyObjectDeclaration2RefCountFND::toDebugString(QDebug &dbg) const
+// {
 
-void ReadOnlyObjectDeclaration2RefCountFND::setMd5hash(
-    const QByteArray &value) {
-  m_md5hash = value;
-}
+//  dbg << " ReadOnlyObjectDeclaration2RefCountFND\n"
+//      << " Base:\n"
+//      << m_base << '\n'
+//      << " md5hash: " << m_md5hash.toHex() << '\n';
+//}
 
-void ReadOnlyObjectDeclaration2RefCountFND::deserialize(QDataStream &ds) {
+// void ReadOnlyObjectDeclaration2RefCountFND::writeLowLevelXml(
+//    QXmlStreamWriter &xmlWriter) const {
 
-  m_base = ObjectDeclaration2RefCountFND(m_stpFormat, m_cbFormat);
-  ds >> m_base;
+//  xmlWriter.writeStartElement("ReadOnlyObjectDeclaration2RefCountFND");
 
-  m_md5hash = ds.device()->read(md5HashSize);
-}
+//  xmlWriter << m_base;
 
-void ReadOnlyObjectDeclaration2RefCountFND::serialize(QDataStream &ds) const {
+//  xmlWriter.writeStartElement("md5hash");
+//  xmlWriter.writeCharacters(m_md5hash.toHex());
+//  xmlWriter.writeEndElement();
 
-  ds << m_base;
-  ds << m_md5hash;
-}
+//  xmlWriter.writeEndElement();
+//}
 
-void ReadOnlyObjectDeclaration2RefCountFND::toDebugString(QDebug &dbg) const {
-
-  dbg << " ReadOnlyObjectDeclaration2RefCountFND\n"
-      << " Base:\n"
-      << m_base << '\n'
-      << " md5hash: " << m_md5hash.toHex() << '\n';
-}
-
-void ReadOnlyObjectDeclaration2RefCountFND::writeLowLevelXml(
-    QXmlStreamWriter &xmlWriter) const {
-
-  xmlWriter.writeStartElement("ReadOnlyObjectDeclaration2RefCountFND");
-
-  xmlWriter << m_base;
-
-  xmlWriter.writeStartElement("md5hash");
-  xmlWriter.writeCharacters(m_md5hash.toHex());
-  xmlWriter.writeEndElement();
-
-  xmlWriter.writeEndElement();
-}
-
-} //namespace priv
+} // namespace priv
 } // namespace libmson

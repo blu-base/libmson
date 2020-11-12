@@ -4,11 +4,10 @@
 #include <QtCore/qglobal.h>
 
 #include "../../commonTypes/ExtendedGUID.h"
-#include "../../commonTypes/FileNodeChunkReference.h"
 #include "IFileNodeType.h"
 
-namespace libmson{
-namespace priv{
+namespace libmson {
+namespace priv {
 /**
  * @brief specifies the reference to an object space manifest list
  * @class ObjectSpaceManifestListReferenceFND
@@ -26,7 +25,7 @@ private:
    * @brief specifies the location and size of the first FileNodeListFragment
    * @var ref
    */
-  FileNodeChunkReference m_ref;
+  RSChunkContainer_WPtr_t m_ref;
 
   /**
    * @brief specifies the identity of the ObjectSpaceManifestList
@@ -39,30 +38,22 @@ private:
   ExtendedGUID m_gosid;
 
 public:
-  ObjectSpaceManifestListReferenceFND(FNCR_STP_FORMAT stpFormat,
-                                      FNCR_CB_FORMAT cbFormat);
-  ObjectSpaceManifestListReferenceFND(quint8 stpFormat, quint8 cbFormat);
-
+  ObjectSpaceManifestListReferenceFND(RSChunkContainer_WPtr_t parentFileNode);
   virtual ~ObjectSpaceManifestListReferenceFND() = default;
 
-  FileNodeChunkReference getRef() const;
-  void setRef(const FileNodeChunkReference &value);
+  RSChunkContainer_WPtr_t getRef() const;
+  void setRef(const RSChunkContainer_WPtr_t value);
 
   ExtendedGUID getGosid() const;
-  void setGosid(const ExtendedGUID &value);
+  void setGosid(const ExtendedGUID& value);
+
+  friend class RevisionStoreFileParser;
+  friend class RevisionStoreFileWriter;
 
   virtual quint64 getSizeInFile() const override;
-
-private:
-  virtual void deserialize(QDataStream &ds) override;
-  virtual void serialize(QDataStream &ds) const override;
-
-
-
-
 };
 
-} //namespace priv
+} // namespace priv
 } // namespace libmson
 
 #endif // OBJECTSPACEMANIFESTLISTREFERENCEFND_H

@@ -1,65 +1,73 @@
 #include "ObjectSpaceManifestListReferenceFND.h"
-#include <QDataStream>
-#include <QDebug>
 
-#include "../commonTypes/FileNodeChunkReference.h"
+#include "../FileNode.h"
 
-namespace libmson{
-namespace priv{
+namespace libmson {
+namespace priv {
 
 ObjectSpaceManifestListReferenceFND::ObjectSpaceManifestListReferenceFND(
-    FNCR_STP_FORMAT stpFormat, FNCR_CB_FORMAT cbFormat)
-    : m_ref{FileNodeChunkReference(stpFormat, cbFormat)} {}
-ObjectSpaceManifestListReferenceFND::ObjectSpaceManifestListReferenceFND(
-    quint8 stpFormat, quint8 cbFormat)
-    : m_ref{FileNodeChunkReference(stpFormat, cbFormat)} {}
+    RSChunkContainer_WPtr_t parentFileNode)
+    : IFileNodeType(parentFileNode)
+{
+}
 
-ExtendedGUID ObjectSpaceManifestListReferenceFND::getGosid() const {
+
+ExtendedGUID ObjectSpaceManifestListReferenceFND::getGosid() const
+{
   return m_gosid;
 }
 
-void ObjectSpaceManifestListReferenceFND::setGosid(const ExtendedGUID &value) {
+void ObjectSpaceManifestListReferenceFND::setGosid(const ExtendedGUID& value)
+{
   m_gosid = value;
 }
 
-quint64 ObjectSpaceManifestListReferenceFND::getSizeInFile() const {
-  return m_ref.getSizeInFile() + ExtendedGUID::getSizeInFile();
+quint64 ObjectSpaceManifestListReferenceFND::getSizeInFile() const
+{
+  return std::static_pointer_cast<FileNode>(m_parent.lock()->getContent())
+             ->getFileNodeChunkReferenceSize() +
+         ExtendedGUID::getSizeInFile();
 }
 
-void ObjectSpaceManifestListReferenceFND::deserialize(QDataStream &ds) {
-  ds >> m_ref;
-  ds >> m_gosid;
-}
+// void ObjectSpaceManifestListReferenceFND::deserialize(QDataStream& ds)
+//{
+//  ds >> m_ref;
+//  ds >> m_gosid;
+//}
 
-void ObjectSpaceManifestListReferenceFND::serialize(QDataStream &ds) const {
-  ds << m_ref;
-  ds << m_gosid;
-}
+// void ObjectSpaceManifestListReferenceFND::serialize(QDataStream& ds) const
+//{
+//  ds << m_ref;
+//  ds << m_gosid;
+//}
 
-void ObjectSpaceManifestListReferenceFND::toDebugString(QDebug &dbg) const {
-  dbg << " ObjectSpaceManifestListReferenceFND:\n"
-      << " ref:   " << m_ref << '\n'
-      << " gosid: " << m_gosid << '\n';
-}
+// void ObjectSpaceManifestListReferenceFND::toDebugString(QDebug& dbg) const
+//{
+//  dbg << " ObjectSpaceManifestListReferenceFND:\n"
+//      << " ref:   " << m_ref << '\n'
+//      << " gosid: " << m_gosid << '\n';
+//}
 
-FileNodeChunkReference ObjectSpaceManifestListReferenceFND::getRef() const {
+RSChunkContainer_WPtr_t ObjectSpaceManifestListReferenceFND::getRef() const
+{
   return m_ref;
 }
 
 void ObjectSpaceManifestListReferenceFND::setRef(
-    const FileNodeChunkReference &value) {
+    const RSChunkContainer_WPtr_t value)
+{
   m_ref = value;
 }
 
-void ObjectSpaceManifestListReferenceFND::writeLowLevelXml(
-    QXmlStreamWriter &xmlWriter) const {
-  xmlWriter.writeStartElement("ObjectSpaceManifestListReferenceFND");
-  xmlWriter << m_ref;
+// void ObjectSpaceManifestListReferenceFND::writeLowLevelXml(
+//    QXmlStreamWriter &xmlWriter) const {
+//  xmlWriter.writeStartElement("ObjectSpaceManifestListReferenceFND");
+//  xmlWriter << m_ref;
 
-  xmlWriter << m_gosid;
+//  xmlWriter << m_gosid;
 
-  xmlWriter.writeEndElement();
-}
+//  xmlWriter.writeEndElement();
+//}
 
-} //namespace priv
+} // namespace priv
 } // namespace libmson

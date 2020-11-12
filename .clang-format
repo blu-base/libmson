@@ -6,12 +6,12 @@ AlignConsecutiveDeclarations: 'false'
 AlignTrailingComments: 'true'
 BreakBeforeBraces: Stroustrup
 BreakInheritanceList: BeforeComma
-ColumnLimit: '120'
+ColumnLimit: '80'
 CompactNamespaces: 'false'
 FixNamespaceComments: 'true'
 IndentWidth: '2'
 Language: Cpp
-MaxEmptyLinesToKeep: '3'
+MaxEmptyLinesToKeep: '2'
 NamespaceIndentation: None
 PointerAlignment: Left
 SortUsingDeclarations: 'true'

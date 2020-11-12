@@ -2,16 +2,21 @@
 
 #include "Helper.h"
 
-namespace MSONcommon {
+#include <QByteArray>
+#include <QDataStream>
+
+namespace libmson {
+namespace priv {
 
 // MsoCrc32
 const quint32 MsoCrc32::polynomial = 0x4F;
 const quint32 MsoCrc32::initialVal = 0xFFFF;
-bool MsoCrc32::cacheInitialized = false;
+bool MsoCrc32::cacheInitialized    = false;
 
 std::array<quint32, 256> MsoCrc32::cache;
 
-void MsoCrc32::initializeCache() {
+void MsoCrc32::initializeCache()
+{
   if (cacheInitialized) {
     return;
   }
@@ -24,7 +29,8 @@ void MsoCrc32::initializeCache() {
       if (value & 0x80000000) {
         value <<= 1;
         value ^= polynomial;
-      } else {
+      }
+      else {
         value <<= 1;
       }
       value &= initialVal;
@@ -35,11 +41,12 @@ void MsoCrc32::initializeCache() {
   cacheInitialized = true;
 }
 
-quint32 MsoCrc32::computeCRC(const QByteArray &obj, const quint32 crcStart) {
+quint32 MsoCrc32::computeCRC(const QByteArray& obj, const quint32 crcStart)
+{
   initializeCache();
 
   quint32 crcValue = crcStart;
-  for (const auto &byte : obj) {
+  for (const auto& byte : obj) {
     quint32 index = crcValue >> 24;
     index ^= byte;
 
@@ -50,7 +57,8 @@ quint32 MsoCrc32::computeCRC(const QByteArray &obj, const quint32 crcStart) {
   return crcValue;
 }
 
-bool MsoCrc32::validateCRC(const QByteArray &obj, const quint32 crc) {
+bool MsoCrc32::validateCRC(const QByteArray& obj, const quint32 crc)
+{
   return crc == computeCRC(obj, 0);
 }
 
@@ -103,11 +111,12 @@ std::array<quint32, 256> Crc32::cache = {
     0xb40bbe37, 0xc30c8ea1, 0x5a05df1b, 0x2d02ef8d,
 };
 
-quint32 Crc32::computeCRC(const QByteArray &obj, const quint32 crcStart) {
+quint32 Crc32::computeCRC(const QByteArray& obj, const quint32 crcStart)
+{
   quint32 crc32 = crcStart;
 
   /// \todo check if std::accumulate would be more suited here
-  for (const char &byte : obj) {
+  for (const char& byte : obj) {
     crc32 = (crc32 >> 8) ^ cache[(crc32 ^ byte) & 0xFF];
   }
 
@@ -116,17 +125,20 @@ quint32 Crc32::computeCRC(const QByteArray &obj, const quint32 crcStart) {
   return crc32;
 }
 
-bool Crc32::validateCRC(const QByteArray &obj, const quint32 crc) {
+bool Crc32::validateCRC(const QByteArray& obj, const quint32 crc)
+{
   return crc == computeCRC(obj);
 }
 
-quint32 Crc32::computeCrcName(const QString &fileName) {
+quint32 Crc32::computeCrcName(const QString& fileName)
+{
   QByteArray bytes(fileName.length() * 2 + 2, '\0');
   QDataStream ds(&bytes, QIODevice::WriteOnly);
-  ds.writeRawData(reinterpret_cast<const char *>(fileName.utf16()),
-                  fileName.length() * 2);
+  ds.writeRawData(
+      reinterpret_cast<const char*>(fileName.utf16()), fileName.length() * 2);
 
   return computeCRC(bytes);
 }
 
-} // namespace MSONcommon
+} // namespace priv
+} // namespace libmson

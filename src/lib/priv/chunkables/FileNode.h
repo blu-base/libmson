@@ -8,6 +8,7 @@
 #include "Chunkable.h"
 #include "RevisionStoreChunkContainer.h"
 
+#include "../commonTypes/FileNodeChunkReference.h"
 #include "fileNodeTypes/IFileNodeType.h"
 
 namespace libmson {
@@ -53,6 +54,7 @@ enum class FileNodeTypeID : quint16 {
   ReadOnlyObjectDeclaration2RefCountFND      = 0x0C4,
   ReadOnlyObjectDeclaration2LargeRefCountFND = 0x0C5,
   ChunkTerminatorFND                         = 0x0FF,
+  NullFnd                                    = 0x0,
   InvalidFND                                 = 0xFFF,
 };
 
@@ -69,7 +71,7 @@ private:
 
   quint8 baseType;
 
-  quint8 reserved;
+  //  quint8 reserved;
 
   std::shared_ptr<IFileNodeType> fnt;
 
@@ -84,9 +86,11 @@ public:
   void setFileNodeSize(const quint16& value);
 
   quint8 getStpFormat() const;
+  FNCR_STP_FORMAT getStpFormatEnum() const;
   void setStpFormat(const quint8& value);
 
   quint8 getCbFormat() const;
+  FNCR_CB_FORMAT getCbFormatEnum() const;
   void setCbFormat(const quint8& value);
 
   quint8 getBaseType() const;
@@ -95,11 +99,18 @@ public:
   void setFileNodeType(const std::shared_ptr<IFileNodeType>& value);
   std::shared_ptr<IFileNodeType> getFnt() const;
 
+
+  quint8 getFileNodeChunkReferenceSize();
+
   RSChunkContainer_WPtr_t getParent();
 
   // Chunkable interface
   virtual quint64 cb() const override;
   virtual RevisionStoreChunkType getType() const override;
+
+
+  friend class RevisionStoreFileWriter;
+  friend class RevisionStoreFileParser;
 
 private:
   /**
@@ -121,11 +132,8 @@ private:
   static constexpr const quint32 shiftFileNodeSize = 10;
   static constexpr const quint32 shiftFileNodeID   = 0;
 
-  static constexpr const quint32 minSizeInFile = 4;
-
-  friend class RevisionStoreFileParser;
+  static constexpr const quint16 minSizeInFile = 4;
 };
-
 
 
 } // namespace priv

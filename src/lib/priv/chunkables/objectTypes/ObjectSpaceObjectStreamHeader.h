@@ -4,10 +4,10 @@
 #include <QXmlStreamWriter>
 #include <QtCore/qglobal.h>
 
-#include "../IStreamable.h"
+#include "../../IStreamable.h"
 
-namespace libmson{
-namespace priv{
+namespace libmson {
+namespace priv {
 
 class ObjectSpaceObjectStreamHeader : public IStreamable {
 private:
@@ -17,34 +17,34 @@ private:
 
 public:
   enum class OsidStreamPresence : bool {
-    Present = false,
+    Present    = false,
     NotPresent = true,
   };
 
   enum class ExtendedStreamPresence : bool {
-    Present = true,
+    Present    = true,
     NotPresent = false,
   };
 
   ObjectSpaceObjectStreamHeader();
   ObjectSpaceObjectStreamHeader(
-      const OsidStreamPresence &osidStreamPresence,
-      const ExtendedStreamPresence &extendedStreamPresence);
+      const OsidStreamPresence& osidStreamPresence,
+      const ExtendedStreamPresence& extendedStreamPresence);
   ObjectSpaceObjectStreamHeader(
-      const quint32 &count, const OsidStreamPresence &osidStreamPresence,
-      const ExtendedStreamPresence &extendedStreamPresence);
+      const quint32& count, const OsidStreamPresence& osidStreamPresence,
+      const ExtendedStreamPresence& extendedStreamPresence);
 
   quint32 count() const;
-  void setCount(const quint32 &count);
+  void setCount(const quint32& count);
 
   bool incrementCount();
   bool decrementCount();
 
   bool ExtendedStream_isPresent() const;
   void setExtendedStreamsPresence(
-      const ExtendedStreamPresence &extendedStreamPresence);
+      const ExtendedStreamPresence& extendedStreamPresence);
   bool OsidStream_isNotPresent() const;
-  void setOsidStreamPresence(const OsidStreamPresence &osidStreamPresence);
+  void setOsidStreamPresence(const OsidStreamPresence& osidStreamPresence);
 
   static quint64 getSizeInFile() { return sizeInFile; }
 
@@ -57,21 +57,19 @@ private:
    * Note, that only 4GB of an FileDataStoreObject can be parsed because an
    * limitation of QByteArray
    */
-  virtual void deserialize(QDataStream &ds) override;
+  virtual void deserialize(QDataStream& ds) override;
   /**
    * @brief creates byte stream from ObjectSpaceObjectStreamHeader object
    * @param ds <QDataStream> is the output stream to which the serialized
    * ObjectSpaceObjectStreamHeader is send
    */
-  virtual void serialize(QDataStream &ds) const override;
-
-
+  virtual void serialize(QDataStream& ds) const override;
 
 
   static const quint64 sizeInFile = 4;
 };
 
-} //namespace priv
+} // namespace priv
 } // namespace libmson
 
 #endif // OBJECTSPACEOBJECTSTREAMHEADER_H

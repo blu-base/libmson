@@ -20,6 +20,7 @@ namespace priv {
 
 class RevisionStoreFileHeader : public Chunkable {
 
+  friend class RevisionStoreFileWriter;
   friend class RevisionStoreFileParser;
 
 
@@ -27,47 +28,34 @@ public:
   RevisionStoreFileHeader();
 
   RevisionStoreFileHeader(
-      const QUuid &guidFileType, const QUuid &guidFile,
-      const quint32 ffvLastWriterVersion, const quint32 ffvOldestWriterVersion,
-      const quint32 ffvNewestWriterVersion, const quint32 ffvOldestReader,
-      const quint32 cTransactionsInLog, const quint64 rgbPlaceholder,
-      const quint8 fNeedsDefrag, const quint8 fRepairedFile,
-      const quint8 fNeedsGarbageCollect, const quint8 fHasNoEmbeddedFileObjects,
-      const QUuid &guidAncestor, const quint32 crcName,
-      std::weak_ptr<RevisionStoreChunkContainer> fcrHashedChunkList,
+      const QUuid& guidFileType, const QUuid& guidFile, const quint32 ffvLastWriterVersion,
+      const quint32 ffvOldestWriterVersion, const quint32 ffvNewestWriterVersion, const quint32 ffvOldestReader,
+      const quint32 cTransactionsInLog, const quint64 rgbPlaceholder, const quint8 fNeedsDefrag,
+      const quint8 fRepairedFile, const quint8 fNeedsGarbageCollect, const quint8 fHasNoEmbeddedFileObjects,
+      const QUuid& guidAncestor, const quint32 crcName, std::weak_ptr<RevisionStoreChunkContainer> fcrHashedChunkList,
       std::weak_ptr<RevisionStoreChunkContainer> fcrTransactionLog,
       std::weak_ptr<RevisionStoreChunkContainer> fcrFileNodeListRoot,
-      std::weak_ptr<RevisionStoreChunkContainer> fcrFreeChunkList,
-      const quint64 cbExpectedFileLength,
-      const quint64 cbFreeSpaceInFreeChunkList, const QUuid &guidFileVersion,
-      const quint64 nFileVersionGeneration,
-      const QUuid &guidDenyReadFileVersion, const quint32 grfDebugLogFlags,
-      const quint32 bnCreated, const quint32 bnLastWroteToThisFile,
-      const quint32 bnOldestWritten, const quint32 bnNewestWritten);
+      std::weak_ptr<RevisionStoreChunkContainer> fcrFreeChunkList, const quint64 cbExpectedFileLength,
+      const quint64 cbFreeSpaceInFreeChunkList, const QUuid& guidFileVersion, const quint64 nFileVersionGeneration,
+      const QUuid& guidDenyReadFileVersion, const quint32 grfDebugLogFlags, const quint32 bnCreated,
+      const quint32 bnLastWroteToThisFile, const quint32 bnOldestWritten, const quint32 bnNewestWritten);
 
   RevisionStoreFileHeader(
-      const QUuid &guidFileType, const QUuid &guidFile,
-      const quint32 ffvLastWriterVersion, const quint32 ffvOldestWriterVersion,
-      const quint32 ffvNewestWriterVersion, const quint32 ffvOldestReader,
-      const quint32 cTransactionsInLog, const quint64 rgbPlaceholder,
-      const quint8 fNeedsDefrag, const quint8 fRepairedFile,
-      const quint8 fNeedsGarbageCollect, const quint8 fHasNoEmbeddedFileObjects,
-      const QUuid &guidAncestor, const quint32 crcName,
-      const quint64 cbExpectedFileLength,
-      const quint64 cbFreeSpaceInFreeChunkList, const QUuid &guidFileVersion,
-      const quint64 nFileVersionGeneration,
-      const QUuid &guidDenyReadFileVersion, const quint32 grfDebugLogFlags,
-      const quint32 bnCreated, const quint32 bnLastWroteToThisFile,
-      const quint32 bnOldestWritten, const quint32 bnNewestWritten);
+      const QUuid& guidFileType, const QUuid& guidFile, const quint32 ffvLastWriterVersion,
+      const quint32 ffvOldestWriterVersion, const quint32 ffvNewestWriterVersion, const quint32 ffvOldestReader,
+      const quint32 cTransactionsInLog, const quint64 rgbPlaceholder, const quint8 fNeedsDefrag,
+      const quint8 fRepairedFile, const quint8 fNeedsGarbageCollect, const quint8 fHasNoEmbeddedFileObjects,
+      const QUuid& guidAncestor, const quint32 crcName, const quint64 cbExpectedFileLength,
+      const quint64 cbFreeSpaceInFreeChunkList, const QUuid& guidFileVersion, const quint64 nFileVersionGeneration,
+      const QUuid& guidDenyReadFileVersion, const quint32 grfDebugLogFlags, const quint32 bnCreated,
+      const quint32 bnLastWroteToThisFile, const quint32 bnOldestWritten, const quint32 bnNewestWritten);
 
   // Chunkable interface
 public:
   virtual quint64 cb() const override { return sizeInFile; }
-  virtual RevisionStoreChunkType getType() const override {
-    return RevisionStoreChunkType::RevistionStoreFileHeader;
-  };
+  virtual RevisionStoreChunkType getType() const override { return RevisionStoreChunkType::RevistionStoreFileHeader; };
 
-static const constexpr quint64 sizeInFile = 0x400;
+  static const constexpr quint64 sizeInFile = 0x400;
 
 private:
   QUuid guidFileType;
@@ -102,8 +90,6 @@ private:
   quint32 bnNewestWritten;
 
 
-
-
   static const QUuid v_guidFileType_One;
   static const QUuid v_guidFileType_OneToc2;
   static const QUuid v_guidFileFormat;
@@ -114,13 +100,13 @@ private:
 
 public:
   QUuid getGuidFileType() const;
-  void setGuidFileType(const QUuid &value);
+  void setGuidFileType(const QUuid& value);
 
   QUuid getGuidFile() const;
-  void setGuidFile(const QUuid &value);
+  void setGuidFile(const QUuid& value);
 
   QUuid getGuidLegacyFileVersion() const;
-  void setGuidLegacyFileVersion(const QUuid &value);
+  void setGuidLegacyFileVersion(const QUuid& value);
 
   QUuid getGuidFileFormat() const { return QUuid(guidFileFormat); };
 
@@ -155,7 +141,7 @@ public:
   void setFHasNoEmbeddedFileObjects(const quint8 value);
 
   QUuid getGuidAncestor() const;
-  void setGuidAncestor(const QUuid &value);
+  void setGuidAncestor(const QUuid& value);
 
   quint32 getCrcName() const;
   void setCrcName(const quint32 value);
@@ -179,13 +165,13 @@ public:
   void setCbFreeSpaceInFreeChunkList(const quint64 value);
 
   QUuid getGuidFileVersion() const;
-  void setGuidFileVersion(const QUuid &value);
+  void setGuidFileVersion(const QUuid& value);
 
   quint64 getNFileVersionGeneration() const;
   void setNFileVersionGeneration(const quint64 value);
 
   QUuid getGuidDenyReadFileVersion() const;
-  void setGuidDenyReadFileVersion(const QUuid &value);
+  void setGuidDenyReadFileVersion(const QUuid& value);
 
   quint32 getGrfDebugLogFlags() const;
   void setGrfDebugLogFlags(const quint32 value);

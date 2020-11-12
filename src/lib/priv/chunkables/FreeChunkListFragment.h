@@ -12,9 +12,6 @@ namespace libmson {
 namespace priv {
 
 class FreeChunkListFragment : public Chunkable {
-
-  friend class RevisionStoreFile;
-
 private:
   quint32 m_crc;
 
@@ -35,13 +32,16 @@ public:
   void setFcrNextFragment(std::weak_ptr<RevisionStoreChunkContainer> value);
 
   std::vector<std::weak_ptr<RevisionStoreChunkContainer>> fcrFreeChunks() const;
-  std::vector<std::weak_ptr<RevisionStoreChunkContainer>> &getFcrFreeChunks();
-  void
-  setFcrFreeChunks(const std::vector<std::weak_ptr<RevisionStoreChunkContainer>> &value);
+  std::vector<std::weak_ptr<RevisionStoreChunkContainer>>& getFcrFreeChunks();
+  void setFcrFreeChunks(
+      const std::vector<std::weak_ptr<RevisionStoreChunkContainer>>& value);
 
   // Chunkable interface
   virtual quint64 cb() const override;
   virtual RevisionStoreChunkType getType() const override;
+
+  friend class RevisionStoreFileWriter;
+  friend class RevisionStoreFileParser;
 };
 
 } // namespace priv

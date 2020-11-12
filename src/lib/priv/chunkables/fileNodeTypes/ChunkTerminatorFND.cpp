@@ -1,22 +1,18 @@
 #include "ChunkTerminatorFND.h"
 
-namespace libmson{
-namespace priv{
+namespace libmson {
+namespace priv {
 
-void ChunkTerminatorFND::deserialize(QDataStream &ds) {}
+void ChunkTerminatorFND::deserialize(QDataStream& ds) {}
 
-void ChunkTerminatorFND::serialize(QDataStream &ds) const {}
+void ChunkTerminatorFND::serialize(QDataStream& ds) const {}
 
-void ChunkTerminatorFND::toDebugString(QDebug &dbg) const {
-  dbg << "ChunkTerminatorFND.\n";
+ChunkTerminatorFND::ChunkTerminatorFND(RSChunkContainer_WPtr_t parentFileNode)
+    : IFileNodeType(parentFileNode)
+{
 }
 
-void ChunkTerminatorFND::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
-  xmlWriter.writeStartElement("ChunkTerminatorFND");
-  xmlWriter.writeEndElement();
-}
+quint64 ChunkTerminatorFND::getSizeInFile() const { return sizeInFile; }
 
-quint64 MSONcommon::ChunkTerminatorFND::getSizeInFile() const { return sizeInFile; }
-
-} //namespace priv
+} // namespace priv
 } // namespace libmson

@@ -1,13 +1,13 @@
 #ifndef OBJECTINFODEPENDENCYOVERRIDE8_H
 #define OBJECTINFODEPENDENCYOVERRIDE8_H
 
-#include "../commonTypes/CompactID.h"
+#include "../../commonTypes/CompactID.h"
 #include <QtCore/qglobal.h>
 
-#include "../IStreamable.h"
+#include "../../IStreamable.h"
 
-namespace libmson{
-namespace priv{
+namespace libmson {
+namespace priv {
 
 class ObjectInfoDependencyOverride8 : public IStreamable {
 private:
@@ -26,10 +26,10 @@ public:
   ObjectInfoDependencyOverride8() = default;
 
   CompactID oid() const;
-  void setOid(const CompactID &oid);
+  void setOid(const CompactID& oid);
 
   quint8 cRef() const;
-  void setCRef(const quint8 &cRef);
+  void setCRef(const quint8& cRef);
 
   static quint64 getSizeInFile() { return sizeInFile; }
 
@@ -42,24 +42,20 @@ private:
    * Note, that only 4GB of an ObjectInfoDependencyOverride8 can be parsed
    * because an limitation of QByteArray
    */
-  virtual void deserialize(QDataStream &ds) override;
+  virtual void deserialize(QDataStream& ds) override;
   /**
    * @brief creates byte stream from ObjectInfoDependencyOverride8 object
    * @param ds <QDataStream> is the output stream to which the serialized
    * ObjectInfoDependencyOverride8 is send
    *
    */
-  virtual void serialize(QDataStream &ds) const override;
-
-
-
-
+  virtual void serialize(QDataStream& ds) const override;
 
 
   static const quint64 sizeInFile = CompactID::getSizeInFile() + sizeof(m_cRef);
 };
 
-} //namespace priv
+} // namespace priv
 } // namespace libmson
 
 #endif // OBJECTINFODEPENDENCYOVERRIDE8_H

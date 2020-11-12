@@ -3,12 +3,13 @@
 
 #include <QtCore/qglobal.h>
 
+#include "../../IStreamable.h"
 #include "../../commonTypes/ExtendedGUID.h"
 #include "IFileNodeType.h"
 #include "RevisionManifestStart6FND.h"
 
-namespace libmson{
-namespace priv{
+namespace libmson {
+namespace priv {
 /**
  * @brief specifies the beginning of a revision manifest for a context of an
  * object space
@@ -17,7 +18,9 @@ namespace priv{
  * FileNode Type defined by [MS-ONESTORE]
  * 2.5.8 RevisionManifestStart7FND
  */
-class RevisionManifestStart7FND : public IFileNodeType {
+class RevisionManifestStart7FND
+    : public IFileNodeType
+    , public IStreamable {
 private:
   /**
    * @var base
@@ -33,26 +36,32 @@ private:
   ExtendedGUID m_gctxid;
 
 public:
-  RevisionManifestStart7FND() = default;
+  RevisionManifestStart7FND(RSChunkContainer_WPtr_t parentFileNode);
+  virtual ~RevisionManifestStart7FND() = default;
+
 
   RevisionManifestStart6FND getBase() const;
-  void setBase(const RevisionManifestStart6FND &value);
+  void setBase(const RevisionManifestStart6FND& value);
 
   ExtendedGUID getGctxid() const;
-  void setGctxid(const ExtendedGUID &value);
+  void setGctxid(const ExtendedGUID& value);
+
+  quint16 getOdcsDefault() const;
+
+  qint32 getRevisionRole() const;
+
+  ExtendedGUID getRidDependent() const;
+
+  ExtendedGUID getRid() const;
 
   virtual quint64 getSizeInFile() const override;
 
 private:
-  virtual void deserialize(QDataStream &ds) override;
-  virtual void serialize(QDataStream &ds) const override;
-
-
-
-
+  virtual void deserialize(QDataStream& ds) override;
+  virtual void serialize(QDataStream& ds) const override;
 };
 
-} //namespace priv
+} // namespace priv
 } // namespace libmson
 
 #endif // REVISIONMANIFESTSTART7FND_H

@@ -1,63 +1,29 @@
-#include "RevisionStoreChunk.h"
+#include "RevisionStoreChunkContainer.h"
 
-#include "chunks/FreeChunkListFragment.h"
-#include "chunks/RevisionStoreFileHeader.h"
+#include "FreeChunkListFragment.h"
+#include "RevisionStoreFileHeader.h"
 
 namespace libmson {
+namespace priv {
 
-RevisionStoreChunkContainer::RevisionStoreChunkContainer(std::shared_ptr<Chunkable> chunkable,
-                                       const quint64 initialLocationInFile, const quint64 initialCb)
-    : m_initialStp(initialLocationInFile), m_initialCb(initialCb), m_chunkable(chunkable) {
+bool RevisionStoreChunkContainer::isParsed() const { return m_isParsed; }
 
-  switch (chunkable->getType()) {
+void RevisionStoreChunkContainer::setIsParsed(bool value) { m_isParsed = value; }
 
-  case RevisionStoreChunkType::RevistionStoreFileHeader:
-    m_chunkable = std::make_shared<RevisionStoreFileHeader>();
-    break;
-  case RevisionStoreChunkType::FileNodeListFragment:
-    break;
-  case RevisionStoreChunkType::FileNode:
-    break;
-  case RevisionStoreChunkType::FreeChunkListFragment:
-    m_chunkable = std::make_shared<FreeChunkListFragment>();
-    break;
-  case RevisionStoreChunkType::FreeChunk:
-    break;
-  case RevisionStoreChunkType::TransactionLogFragment:
-    break;
-  case RevisionStoreChunkType::FileDataStoreObject:
-    break;
-  case RevisionStoreChunkType::ObjectSpaceObjectPropSet:
-    break;
-  case RevisionStoreChunkType::ObjectInfoDependencyOverrideData:
-    break;
-  case RevisionStoreChunkType::EncryptedFragment:
-    break;
-  case RevisionStoreChunkType::Invalid:
-  default:
-    qFatal("Failed to initialize invalid RevisionStoreChunkType.");
-  }
-}
-
-std::shared_ptr<Chunkable> RevisionStoreChunkContainer::getContent()
+RevisionStoreChunkContainer::RevisionStoreChunkContainer(
+    std::shared_ptr<Chunkable> chunkable, const quint64 initialLocationInFile, const quint64 initialCb)
+    : m_initialStp(initialLocationInFile), m_initialCb(initialCb), m_chunkable(chunkable), m_isParsed(false)
 {
-  return m_chunkable;
 }
 
-RevisionStoreChunkType RevisionStoreChunkContainer::getType()
-{
-  return m_chunkable->getType();
-}
+std::shared_ptr<Chunkable> RevisionStoreChunkContainer::getContent() { return m_chunkable; }
 
-quint64 RevisionStoreChunkContainer::getInitialStp() const
-{
-  return m_initialStp;
-}
+RevisionStoreChunkType RevisionStoreChunkContainer::getType() { return m_chunkable->getType(); }
 
-quint64 RevisionStoreChunkContainer::getInitialCb() const
-{
-  return m_initialCb;
-}
+quint64 RevisionStoreChunkContainer::getInitialStp() const { return m_initialStp; }
+
+quint64 RevisionStoreChunkContainer::getInitialCb() const { return m_initialCb; }
 
 
+} // namespace priv
 } // namespace libmson

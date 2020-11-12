@@ -168,19 +168,23 @@ int main(int argc, char* argv[])
 
   QDataStream input(&mson_file);
 
-  std::shared_ptr<libmson::priv::RevisionStoreFile> mson = libmson::priv::RevisionStoreFileParser(input).parse();
+  auto fileParser = libmson::priv::RevisionStoreFileParser(input);
+
+  std::shared_ptr<libmson::priv::RevisionStoreFile> mson = fileParser.parse();
 
 
   //  auto fclf = std::make_shared<libmson::FreeChunkListFragment>(4 * 16);
-  //  auto rsc_fclf = std::make_shared<libmson::RevisionStoreChunk>(fclf, 0x400,4*16);
+  //  auto rsc_fclf = std::make_shared<libmson::RevisionStoreChunk>(fclf,
+  //  0x400,4*16);
 
   //  auto fc1 = std::make_shared<libmson::FreeChunk>(0x100);
   //  auto fc2 = std::make_shared<libmson::FreeChunk>(0x200);
   //  auto fc3 = std::make_shared<libmson::FreeChunk>(0x300);
 
-  //  auto rsc_fc1 = std::make_shared<libmson::RevisionStoreChunk>(fc1, 0x400,0x100);
-  //  auto rsc_fc2 = std::make_shared<libmson::RevisionStoreChunk>(fc2, 0x500,0x200);
-  //  auto rsc_fc3 = std::make_shared<libmson::RevisionStoreChunk>(fc3, 0x600,0x300);
+  //  auto rsc_fc1 = std::make_shared<libmson::RevisionStoreChunk>(fc1,
+  //  0x400,0x100); auto rsc_fc2 =
+  //  std::make_shared<libmson::RevisionStoreChunk>(fc2, 0x500,0x200); auto
+  //  rsc_fc3 = std::make_shared<libmson::RevisionStoreChunk>(fc3, 0x600,0x300);
 
   //  std::static_pointer_cast<libmson::FreeChunkListFragment>(
   //      rsc_fclf.get()->getChunk())

@@ -1,25 +1,26 @@
 #include "PropertyID.h"
 
 #include "../commonTypes/Enums.h"
-#include "../helper/Helper.h"
+#include "../utils/Helper.h"
 
 #include <QDataStream>
 #include <QDebug>
 
-namespace libmson{
-namespace priv{
+namespace libmson {
+namespace priv {
 
 PropertyIDs PropertyID::id() const { return m_id; }
 
-void PropertyID::setId(const PropertyIDs &id) { m_id = id; }
+void PropertyID::setId(const PropertyIDs& id) { m_id = id; }
 
 PropertyIDType PropertyID::type() const { return m_type; }
 
-void PropertyID::setType(const PropertyIDType &type) { m_type = type; }
+void PropertyID::setType(const PropertyIDType& type) { m_type = type; }
 
 quint32 PropertyID::value() const { return m_value; }
 
-QString PropertyID::idToString(const PropertyIDs &val) {
+QString PropertyID::idToString(const PropertyIDs& val)
+{
   QString m_id_string;
   switch (val) {
   case PropertyIDs::LayoutTightLayout:
@@ -516,7 +517,8 @@ QString PropertyID::idToString(const PropertyIDs &val) {
   return m_id_string;
 }
 
-QString PropertyID::typeToString(const PropertyIDType &val) {
+QString PropertyID::typeToString(const PropertyIDType& val)
+{
   QString m_type_string;
   switch (val) {
   case PropertyIDType::None:
@@ -577,44 +579,53 @@ QString PropertyID::typeToString(const PropertyIDType &val) {
   return m_type_string;
 }
 
-int PropertyID::boolValue() const {
+int PropertyID::boolValue() const
+{
   if (m_type == PropertyIDType::Bool) {
     return m_boolValue;
-  } else {
+  }
+  else {
     return -1;
   }
 }
 
-void PropertyID::setBoolValue(bool boolValue) {
+void PropertyID::setBoolValue(bool boolValue)
+{
   if (m_type == PropertyIDType::Bool) {
     m_boolValue = boolValue;
-  } else {
+  }
+  else {
     m_boolValue = false;
   }
 }
 
-void PropertyID::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
-  xmlWriter.writeStartElement("PropertyID");
+// void PropertyID::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
+//  xmlWriter.writeStartElement("PropertyID");
 
-  xmlWriter.writeAttribute("Value", qStringHex(m_value, 8));
+//  xmlWriter.writeAttribute("Value", qStringHex(m_value, 8));
 
-  xmlWriter.writeAttribute("ID", idToString(m_id));
+//  xmlWriter.writeAttribute("ID", idToString(m_id));
 
-  xmlWriter.writeAttribute("Type", typeToString(m_type));
+//  xmlWriter.writeAttribute("Type", typeToString(m_type));
 
-  xmlWriter.writeAttribute("boolValue", m_boolValue ? "True" : "False");
+//  xmlWriter.writeAttribute("boolValue", m_boolValue ? "True" : "False");
 
-  xmlWriter.writeEndElement();
-}
+//  xmlWriter.writeEndElement();
+//}
 
 PropertyID::PropertyID()
     : m_value(), m_id(PropertyIDs::None), m_type(PropertyIDType::None),
-      m_boolValue(false) {}
+      m_boolValue(false)
+{
+}
 
-PropertyID::PropertyID(const PropertyIDs &id, const PropertyIDType &type)
-    : m_value(), m_id(id), m_type(type), m_boolValue(false) {}
+PropertyID::PropertyID(const PropertyIDs& id, const PropertyIDType& type)
+    : m_value(), m_id(id), m_type(type), m_boolValue(false)
+{
+}
 
-void PropertyID::deserialize(QDataStream &ds) {
+void PropertyID::deserialize(QDataStream& ds)
+{
   ds >> m_value;
 
   m_boolValue = m_value << 31;
@@ -633,21 +644,23 @@ void PropertyID::deserialize(QDataStream &ds) {
   }
 }
 
-void PropertyID::serialize(QDataStream &ds) const {
+void PropertyID::serialize(QDataStream& ds) const
+{
   quint32 temp{};
 
   temp += m_boolValue << 31;
   if (m_type != PropertyIDType::InvalidType && m_id != PropertyIDs::None) {
     temp += static_cast<quint32>(m_type) << 26;
     temp += static_cast<quint32>(m_id);
-  } else {
+  }
+  else {
     qWarning() << "Trying to write invalid PropertyID.";
   }
 
   ds << temp;
 }
 
-void PropertyID::toDebugString(QDebug &dbg) const {}
+// void PropertyID::toDebugString(QDebug &dbg) const {}
 
-} //namespace priv
+} // namespace priv
 } // namespace libmson

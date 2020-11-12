@@ -3,52 +3,47 @@
 
 #include <QtCore/qglobal.h>
 
-#include "../../commonTypes/FileNodeChunkReference.h"
-#include "../../objectTypes/ObjectDeclarationWithRefCountBody.h"
-#include "../../objectTypes/ObjectSpaceObjectPropSet.h"
+#include "../ObjectSpaceObjectPropSet.h"
+#include "../objectTypes/ObjectDeclarationWithRefCountBody.h"
 #include "IFileNodeType.h"
 
-namespace libmson{
-namespace priv{
+namespace libmson {
+namespace priv {
 
 class ObjectDeclarationWithRefCount2FNDX : public IFileNodeType {
 private:
-  FileNodeChunkReference m_objectRef;
+  RSChunkContainer_WPtr_t m_objectRef;
   ObjectDeclarationWithRefCountBody m_body;
   quint32 m_cRef;
 
   ObjectSpaceObjectPropSet m_blob;
 
 public:
-  ObjectDeclarationWithRefCount2FNDX(FNCR_STP_FORMAT stpFormat,
-                                     FNCR_CB_FORMAT cbFormat);
-  ObjectDeclarationWithRefCount2FNDX(quint8 stpFormat, quint8 cbFormat);
+  ObjectDeclarationWithRefCount2FNDX(RSChunkContainer_WPtr_t parentFileNode);
   virtual ~ObjectDeclarationWithRefCount2FNDX() = default;
 
-  FileNodeChunkReference getObjectRef() const;
-  void setObjectRef(const FileNodeChunkReference &value);
+  RSChunkContainer_WPtr_t getObjectRef() const;
+  void setObjectRef(const RSChunkContainer_WPtr_t& value);
 
   ObjectDeclarationWithRefCountBody getBody() const;
-  void setBody(const ObjectDeclarationWithRefCountBody &value);
+  void setBody(const ObjectDeclarationWithRefCountBody& value);
 
   quint32 getCRef() const;
-  void setCRef(const quint32 &value);
+  void setCRef(const quint32& value);
 
-  ObjectSpaceObjectPropSet getPropSet() const;
-  void setPropSet(const ObjectSpaceObjectPropSet &value);
+  std::shared_ptr<ObjectSpaceObjectPropSet> getPropSet() const;
 
   virtual quint64 getSizeInFile() const override;
 
-private:
-  virtual void deserialize(QDataStream &ds) override;
-  virtual void serialize(QDataStream &ds) const override;
+  friend class RevisionStoreFileParser;
+  friend class RevisionStoreFileWriter;
 
-
-
-
+  // private:
+  //  virtual void deserialize(QDataStream& ds) override;
+  //  virtual void serialize(QDataStream& ds) const override;
 };
 
-} //namespace priv
+} // namespace priv
 } // namespace libmson
 
 #endif // OBJECTDECLARATIONWITHREFCOUNT2FNDX_H

@@ -1,28 +1,28 @@
 #ifndef GLOBALIDTABLEENDFNDX_H
 #define GLOBALIDTABLEENDFNDX_H
 
+#include "../../IStreamable.h"
 #include "IFileNodeType.h"
 #include <QtCore/qglobal.h>
 
-namespace libmson{
-namespace priv{
+namespace libmson {
+namespace priv {
 
-class GlobalIdTableEndFNDX : public IFileNodeType {
+class GlobalIdTableEndFNDX
+    : public IFileNodeType
+    , public IStreamable {
 public:
-  GlobalIdTableEndFNDX() = default;
+  GlobalIdTableEndFNDX(RSChunkContainer_WPtr_t parentFileNode);
+  virtual ~GlobalIdTableEndFNDX() = default;
 
   virtual quint64 getSizeInFile() const override;
 
 private:
-  virtual void deserialize(QDataStream &ds) override;
-  virtual void serialize(QDataStream &ds) const override;
-
-
-
-
+  virtual void deserialize(QDataStream& ds) override;
+  virtual void serialize(QDataStream& ds) const override;
 };
 
-} //namespace priv
+} // namespace priv
 } // namespace libmson
 
 #endif // GLOBALIDTABLEENDFNDX_H

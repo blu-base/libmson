@@ -12,15 +12,13 @@
 namespace libmson {
 namespace priv {
 
-typedef std::shared_ptr<RevisionStoreChunkContainer> RSChunkContainer_SPtr_t;
-typedef std::weak_ptr<RevisionStoreChunkContainer> RSChunkContainer_WPtr_t;
-
 class RevisionStoreFileWriter {
 private:
   std::shared_ptr<RevisionStoreFile> m_revStoreFile;
 
 public:
-  RevisionStoreFileWriter(std::shared_ptr<RevisionStoreFile>& revisionStoreFile);
+  RevisionStoreFileWriter(
+      std::shared_ptr<RevisionStoreFile>& revisionStoreFile);
 
   bool write(QDataStream& ds);
 
@@ -28,21 +26,29 @@ private:
   bool writeChunk(QDataStream& ds, RSChunkContainer_SPtr_t chunk);
 
   // Chunk writers
-  bool writeRevisionStoreFileHeader(QDataStream& ds, RSChunkContainer_SPtr_t& fileNode);
-  bool writeFileNode(QDataStream& ds, RSChunkContainer_SPtr_t& fileNode);
-  bool writeFileNodeListFragment(QDataStream& ds, RSChunkContainer_SPtr_t& fileNodeListFragment);
-  bool writeFreeChunkListFragment(QDataStream& ds, RSChunkContainer_SPtr_t freeChunklistFragment);
-  bool writeFreeChunk(QDataStream& ds, RSChunkContainer_SPtr_t freeChunk);
-  bool writeTransactionLogFragment(QDataStream& ds, RSChunkContainer_SPtr_t transactionLogFragment);
-  bool writeFileDataStoreObject(QDataStream& ds, RSChunkContainer_SPtr_t fileDataStoreObject);
-  bool writeObjectSpaceObjectPropSet(QDataStream& ds, RSChunkContainer_SPtr_t objectSpaceObjectPropSet);
-  bool writeObjectInfoDependencyOverrideData(QDataStream& ds, RSChunkContainer_SPtr_t objectInfoDependencyOverrideData);
-  bool writeEncryptedFragment(QDataStream& ds, RSChunkContainer_SPtr_t encryptedFragment);
+  bool writeRevisionStoreFileHeader(
+      QDataStream& ds, RSChunkContainer_SPtr_t& fileNode);
+  //  bool writeFileNode(QDataStream& ds, RSChunkContainer_SPtr_t& fileNode);
+  //  bool writeFileNodeListFragment(QDataStream& ds, RSChunkContainer_SPtr_t&
+  //  fileNodeListFragment); bool writeFreeChunkListFragment(QDataStream& ds,
+  //  RSChunkContainer_SPtr_t freeChunklistFragment); bool
+  //  writeFreeChunk(QDataStream& ds, RSChunkContainer_SPtr_t freeChunk); bool
+  //  writeTransactionLogFragment(QDataStream& ds, RSChunkContainer_SPtr_t
+  //  transactionLogFragment); bool writeFileDataStoreObject(QDataStream& ds,
+  //  RSChunkContainer_SPtr_t fileDataStoreObject); bool
+  //  writeObjectSpaceObjectPropSet(QDataStream& ds, RSChunkContainer_SPtr_t
+  //  objectSpaceObjectPropSet); bool
+  //  writeObjectInfoDependencyOverrideData(QDataStream& ds,
+  //  RSChunkContainer_SPtr_t objectInfoDependencyOverrideData); bool
+  //  writeEncryptedFragment(QDataStream& ds, RSChunkContainer_SPtr_t
+  //  encryptedFragment);
 
   // write utilities
   quint64 stpFromChunk(RSChunkContainer_WPtr_t& chunk);
 
-  quint64 stpTillIterator(const std::list<RSChunkContainer_SPtr_t>& list, const RSChunkContainer_WPtr_t& chunk);
+  quint64 stpTillIterator(
+      const std::list<RSChunkContainer_SPtr_t>& list,
+      const RSChunkContainer_WPtr_t& chunk);
 
   FileChunkReference64x32 getFcr64x32FromChunk(RSChunkContainer_WPtr_t& chunk);
 

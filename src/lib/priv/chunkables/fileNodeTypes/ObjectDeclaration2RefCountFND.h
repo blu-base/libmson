@@ -3,52 +3,49 @@
 
 #include <QtCore/qglobal.h>
 
-#include "../../commonTypes/FileNodeChunkReference.h"
-#include "../../objectTypes/ObjectDeclaration2Body.h"
-#include "../../objectTypes/ObjectSpaceObjectPropSet.h"
+#include "../objectTypes/ObjectDeclaration2Body.h"
+//#include "../../objectTypes/ObjectSpaceObjectPropSet.h"
 #include "IFileNodeType.h"
 
-namespace libmson{
-namespace priv{
+#include "../ObjectSpaceObjectPropSet.h"
+#include "../RevisionStoreChunkContainer.h"
+
+namespace libmson {
+namespace priv {
 
 class ObjectDeclaration2RefCountFND : public IFileNodeType {
 private:
-  FileNodeChunkReference m_blobRef;
+  RSChunkContainer_WPtr_t m_blobRef;
+
   ObjectDeclaration2Body m_body;
   quint8 m_cRef;
 
-  ObjectSpaceObjectPropSet m_blob;
+
+  //  ObjectSpaceObjectPropSet m_blob;
 
 public:
-  ObjectDeclaration2RefCountFND(FNCR_STP_FORMAT stpFormat,
-                                FNCR_CB_FORMAT cbFormat);
-  ObjectDeclaration2RefCountFND(quint8 stpFormat, quint8 cbFormat);
-  ~ObjectDeclaration2RefCountFND() = default;
+  ObjectDeclaration2RefCountFND(RSChunkContainer_WPtr_t parentFileNode);
+  virtual ~ObjectDeclaration2RefCountFND() = default;
 
-  FileNodeChunkReference getBlobRef() const;
-  void setBlobRef(const FileNodeChunkReference &value);
+  RSChunkContainer_WPtr_t getBlobRef() const;
+  void setBlobRef(const RSChunkContainer_WPtr_t& value);
 
   ObjectDeclaration2Body getBody() const;
-  void setBody(const ObjectDeclaration2Body &value);
-
-  ObjectSpaceObjectPropSet getPropSet() const;
-  void setPropSet(const ObjectSpaceObjectPropSet &value);
+  void setBody(const ObjectDeclaration2Body& value);
 
   quint8 getCRef() const;
-  void setCRef(const quint8 &value);
+  void setCRef(const quint8& value);
+
+  std::shared_ptr<ObjectSpaceObjectPropSet> getPropSet();
+  //  void setPropSet(const ObjectSpaceObjectPropSet& value);
 
   virtual quint64 getSizeInFile() const override;
 
-private:
-  virtual void deserialize(QDataStream &ds) override;
-  virtual void serialize(QDataStream &ds) const override;
-
-
-
-
+  friend class RevisionStoreFileParser;
+  friend class RevisionStoreFileWriter;
 };
 
-} //namespace priv
+} // namespace priv
 } // namespace libmson
 
 #endif // OBJECTDECLARATION2REFCOUNTFND_H

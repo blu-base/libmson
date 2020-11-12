@@ -1,73 +1,86 @@
 #include "JCID.h"
-#include "../helper/Helper.h"
+#include "../utils/Helper.h"
 
 #include <QDataStream>
 #include <QDebug>
 #include <QString>
 
-namespace libmson{
-namespace priv{
+namespace libmson {
+namespace priv {
 
-quint16 JCID::index() const {
+quint16 JCID::index() const
+{
   return (m_value >> JCID_shiftValue) & JCID_relmaskValue;
 }
 
-void JCID::setIndex(const quint16 &index) {
+void JCID::setIndex(const quint16& index)
+{
   m_value = (m_value & JCID_imaskValue) +
             (static_cast<quint32>(index) << JCID_shiftValue);
 }
 
-bool JCID::IsBinary() const {
+bool JCID::IsBinary() const
+{
   return (m_value >> JCID_shiftIsBinary) & JCID_relmaskIsBinary;
 }
 
-void JCID::setIsBinary(bool IsBinary) {
+void JCID::setIsBinary(bool IsBinary)
+{
   m_value = (m_value & JCID_imaskIsBinary) +
             (static_cast<quint32>(IsBinary) << JCID_shiftIsBinary);
   ;
 }
 
-bool JCID::IsPropertySet() const {
+bool JCID::IsPropertySet() const
+{
   return (m_value >> JCID_shiftIsPropertySet) & JCID_relmaskIsPropertySet;
 }
 
-void JCID::setIsPropertySet(bool IsPropertySet) {
+void JCID::setIsPropertySet(bool IsPropertySet)
+{
   m_value = (m_value & JCID_imaskIsPropertySet) +
             (static_cast<quint32>(IsPropertySet) << JCID_shiftIsPropertySet);
   ;
 }
 
-bool JCID::IsGraphNode() const {
+bool JCID::IsGraphNode() const
+{
   return (m_value >> JCID_shiftIsGraphNode) & JCID_relmaskIsGraphNode;
 }
 
-void JCID::setIsGraphNode(bool IsGraphNode) {
+void JCID::setIsGraphNode(bool IsGraphNode)
+{
   m_value = (m_value & JCID_imaskIsGraphNode) +
             (static_cast<quint32>(IsGraphNode) << JCID_shiftIsGraphNode);
   ;
 }
 
-bool JCID::IsFileData() const {
+bool JCID::IsFileData() const
+{
   return (m_value >> JCID_shiftIsFileData) & JCID_relmaskIsFileData;
 }
 
-void JCID::setIsFileData(bool IsFileData) {
+void JCID::setIsFileData(bool IsFileData)
+{
   m_value = (m_value & JCID_imaskIsFileData) +
             (static_cast<quint32>(IsFileData) << JCID_shiftIsFileData);
   ;
 }
 
-bool JCID::IsReadOnly() const {
+bool JCID::IsReadOnly() const
+{
   return (m_value >> JCID_shiftIsReadOnly) & JCID_relmaskIsReadOnly;
 }
 
-void JCID::setIsReadOnly(bool IsReadOnly) {
+void JCID::setIsReadOnly(bool IsReadOnly)
+{
   m_value = (m_value & JCID_imaskIsReadOnly) +
             (static_cast<quint32>(IsReadOnly) << JCID_shiftIsReadOnly);
   ;
 }
 
-JCIDs JCID::type() const {
+JCIDs JCID::type() const
+{
   return static_cast<JCIDs>(m_value);
 
   //    switch (m_value) {
@@ -129,7 +142,8 @@ JCIDs JCID::type() const {
   //    }
 }
 
-QString JCID::typeToString() const {
+QString JCID::typeToString() const
+{
 
   switch (type()) {
   case JCIDs::jcidReadOnlyPersistablePropertyContainerForAuthor:
@@ -199,39 +213,38 @@ QString JCID::typeToString() const {
   }
 }
 
-quint64 JCID::getSizeInFile()
-{
-  return sizeInFile;
-}
-
-void JCID::deserialize(QDataStream &ds) { ds >> m_value; }
-
-void JCID::serialize(QDataStream &ds) const { ds << m_value; }
-
-void JCID::toDebugString(QDebug &dbg) const {
-  dbg << " JCID: index: " << qStringHex(index(), 4)
-      << " m_IsBinary: " << IsBinary() << '\n'
-      << " m_IsPropertySet: " << IsPropertySet() << '\n'
-      << " m_IsGraphNode: " << IsGraphNode() << '\n'
-      << " m_IsFileData: " << IsFileData() << '\n'
-      << " m_IsReadOnly: " << IsReadOnly() << '\n';
-}
-
 JCID::JCID() : m_value() {}
 
-void JCID::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
-  xmlWriter.writeStartElement("JCID");
-  xmlWriter.writeAttribute("type", typeToString());
-  xmlWriter.writeAttribute("value", qStringHex(m_value, 8));
-  xmlWriter.writeAttribute("index", qStringHex(index(), 4));
-  xmlWriter.writeAttribute("isBinary", IsBinary() ? "true" : "false");
-  xmlWriter.writeAttribute("IsPropertySet", IsPropertySet() ? "true" : "false");
-  xmlWriter.writeAttribute("IsGraphNode", IsGraphNode() ? "true" : "false");
-  xmlWriter.writeAttribute("IsFileData", IsFileData() ? "true" : "false");
-  xmlWriter.writeAttribute("IsReadOnly", IsReadOnly() ? "true" : "false");
+quint64 JCID::getSizeInFile() { return sizeInFile; }
 
-  xmlWriter.writeEndElement();
-}
+void JCID::deserialize(QDataStream& ds) { ds >> m_value; }
 
-} //namespace priv
+void JCID::serialize(QDataStream& ds) const { ds << m_value; }
+
+
+// void JCID::toDebugString(QDebug &dbg) const {
+//  dbg << " JCID: index: " << qStringHex(index(), 4)
+//      << " m_IsBinary: " << IsBinary() << '\n'
+//      << " m_IsPropertySet: " << IsPropertySet() << '\n'
+//      << " m_IsGraphNode: " << IsGraphNode() << '\n'
+//      << " m_IsFileData: " << IsFileData() << '\n'
+//      << " m_IsReadOnly: " << IsReadOnly() << '\n';
+//}
+
+// void JCID::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
+//  xmlWriter.writeStartElement("JCID");
+//  xmlWriter.writeAttribute("type", typeToString());
+//  xmlWriter.writeAttribute("value", qStringHex(m_value, 8));
+//  xmlWriter.writeAttribute("index", qStringHex(index(), 4));
+//  xmlWriter.writeAttribute("isBinary", IsBinary() ? "true" : "false");
+//  xmlWriter.writeAttribute("IsPropertySet", IsPropertySet() ? "true" :
+//  "false"); xmlWriter.writeAttribute("IsGraphNode", IsGraphNode() ? "true" :
+//  "false"); xmlWriter.writeAttribute("IsFileData", IsFileData() ? "true" :
+//  "false"); xmlWriter.writeAttribute("IsReadOnly", IsReadOnly() ? "true" :
+//  "false");
+
+//  xmlWriter.writeEndElement();
+//}
+
+} // namespace priv
 } // namespace libmson

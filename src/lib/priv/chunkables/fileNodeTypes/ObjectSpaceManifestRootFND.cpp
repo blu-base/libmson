@@ -1,41 +1,52 @@
 #include "ObjectSpaceManifestRootFND.h"
 
-namespace libmson{
-namespace priv{
+namespace libmson {
+namespace priv {
 
-ExtendedGUID ObjectSpaceManifestRootFND::getGosidRoot() const {
+ObjectSpaceManifestRootFND::ObjectSpaceManifestRootFND(
+    RSChunkContainer_WPtr_t parentFileNode)
+    : IFileNodeType(parentFileNode)
+{
+}
+
+ExtendedGUID ObjectSpaceManifestRootFND::getGosidRoot() const
+{
   return m_gosidRoot;
 }
 
-void ObjectSpaceManifestRootFND::setGosidRoot(const ExtendedGUID &value) {
+void ObjectSpaceManifestRootFND::setGosidRoot(const ExtendedGUID& value)
+{
   m_gosidRoot = value;
 }
 
-quint64 ObjectSpaceManifestRootFND::getSizeInFile() const {
+quint64 ObjectSpaceManifestRootFND::getSizeInFile() const
+{
   return ExtendedGUID::getSizeInFile();
 }
 
-void ObjectSpaceManifestRootFND::deserialize(QDataStream &ds) {
+void ObjectSpaceManifestRootFND::deserialize(QDataStream& ds)
+{
   ds >> m_gosidRoot;
 }
 
-void ObjectSpaceManifestRootFND::serialize(QDataStream &ds) const {
+void ObjectSpaceManifestRootFND::serialize(QDataStream& ds) const
+{
   ds << m_gosidRoot;
 }
 
-void ObjectSpaceManifestRootFND::toDebugString(QDebug &dbg) const {
-  dbg << " ObjectSpaceManifestRootFND:\n"
-      << " gosidRoot: " << m_gosidRoot << '\n';
-}
+// void ObjectSpaceManifestRootFND::toDebugString(QDebug &dbg) const {
+//  dbg << " ObjectSpaceManifestRootFND:\n"
+//      << " gosidRoot: " << m_gosidRoot << '\n';
+//}
 
-void ObjectSpaceManifestRootFND::writeLowLevelXml(
-    QXmlStreamWriter &xmlWriter) const {
-  xmlWriter.writeStartElement("ObjectSpaceManifestRootFND");
+// void ObjectSpaceManifestRootFND::writeLowLevelXml(
+//    QXmlStreamWriter &xmlWriter) const {
+//  xmlWriter.writeStartElement("ObjectSpaceManifestRootFND");
 
-  xmlWriter << m_gosidRoot;
+//  xmlWriter << m_gosidRoot;
 
-  xmlWriter.writeEndElement();
-}
+//  xmlWriter.writeEndElement();
+//}
 
-} //namespace priv
+} // namespace priv
 } // namespace libmson

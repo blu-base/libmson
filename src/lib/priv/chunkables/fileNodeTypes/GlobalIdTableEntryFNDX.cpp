@@ -1,46 +1,53 @@
 #include "GlobalIdTableEntryFNDX.h"
 
-namespace libmson{
-namespace priv{
-GlobalIdTableEntryFNDX::GlobalIdTableEntryFNDX() : m_index{0} {}
+namespace libmson {
+namespace priv {
+GlobalIdTableEntryFNDX::GlobalIdTableEntryFNDX(
+    RSChunkContainer_WPtr_t parentFileNode)
+    : IFileNodeType(parentFileNode), m_index{0}
+{
+}
 
 QUuid GlobalIdTableEntryFNDX::getGuid() const { return m_guid; }
 
-void GlobalIdTableEntryFNDX::setGuid(const QUuid &value) { m_guid = value; }
+void GlobalIdTableEntryFNDX::setGuid(const QUuid& value) { m_guid = value; }
 
 quint32 GlobalIdTableEntryFNDX::getIndex() const { return m_index; }
 
-void GlobalIdTableEntryFNDX::setIndex(const quint32 &value) { m_index = value; }
+void GlobalIdTableEntryFNDX::setIndex(const quint32& value) { m_index = value; }
 
-void GlobalIdTableEntryFNDX::deserialize(QDataStream &ds) {
+void GlobalIdTableEntryFNDX::deserialize(QDataStream& ds)
+{
   ds >> m_index;
   ds >> m_guid;
 }
 
-void GlobalIdTableEntryFNDX::serialize(QDataStream &ds) const {
+void GlobalIdTableEntryFNDX::serialize(QDataStream& ds) const
+{
   ds << m_index;
   ds << m_guid;
 }
 
-void GlobalIdTableEntryFNDX::toDebugString(QDebug &dbg) const {
-  dbg << " GlobalIdTableEntryFNDX: \n"
-      << " Index: " << m_index << '\n'
-      << " GUID:  " << m_guid << '\n';
-}
+// void GlobalIdTableEntryFNDX::toDebugString(QDebug &dbg) const {
+//  dbg << " GlobalIdTableEntryFNDX: \n"
+//      << " Index: " << m_index << '\n'
+//      << " GUID:  " << m_guid << '\n';
+//}
 
-void GlobalIdTableEntryFNDX::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
-  xmlWriter.writeStartElement("GlobalIdTableEntryFNDX");
-  xmlWriter.writeAttribute("index", QString::number(m_index));
+// void GlobalIdTableEntryFNDX::writeLowLevelXml(QXmlStreamWriter &xmlWriter)
+// const {
+//  xmlWriter.writeStartElement("GlobalIdTableEntryFNDX");
+//  xmlWriter.writeAttribute("index", QString::number(m_index));
 
-  xmlWriter.writeStartElement("guid");
-  xmlWriter.writeCharacters(m_guid.toString());
-  xmlWriter.writeEndElement();
+//  xmlWriter.writeStartElement("guid");
+//  xmlWriter.writeCharacters(m_guid.toString());
+//  xmlWriter.writeEndElement();
 
-  xmlWriter.writeEndElement();
-}
+//  xmlWriter.writeEndElement();
+//}
 
 quint64 GlobalIdTableEntryFNDX::getSizeInFile() const { return sizeInFile; }
 
 
-} //namespace priv
+} // namespace priv
 } // namespace libmson

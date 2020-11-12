@@ -3,17 +3,17 @@
 
 #include <QtCore/qglobal.h>
 
-#include <QXmlStreamWriter>
+#include "Chunkable.h"
 
-#include "ObjectInfoDependencyOverride32.h"
-#include "ObjectInfoDependencyOverride8.h"
+#include "objectTypes/ObjectInfoDependencyOverride32.h"
+#include "objectTypes/ObjectInfoDependencyOverride8.h"
 
 #include "../IStreamable.h"
 
-namespace libmson{
-namespace priv{
+namespace libmson {
+namespace priv {
 
-class ObjectInfoDependencyOverrideData : public IStreamable {
+class ObjectInfoDependencyOverrideData : public IStreamable, public Chunkable {
 private:
   /**
    * @brief number of elements in m_Overrides1.
@@ -44,23 +44,30 @@ public:
   ObjectInfoDependencyOverrideData();
 
   quint32 c8BitOverrides() const;
-  void setC8BitOverrides(const quint32 &c8BitOverrides);
+  void setC8BitOverrides(const quint32& c8BitOverrides);
 
   quint32 c32BitOverrides() const;
-  void setC32BitOverrides(const quint32 &c32BitOverrides);
+  void setC32BitOverrides(const quint32& c32BitOverrides);
 
   quint32 crc() const;
-  void setCrc(const quint32 &crc);
+  void setCrc(const quint32& crc);
 
   std::vector<ObjectInfoDependencyOverride8> Overrides1() const;
   void
-  setOverrides1(const std::vector<ObjectInfoDependencyOverride8> &Overrides1);
+  setOverrides1(const std::vector<ObjectInfoDependencyOverride8>& Overrides1);
 
   std::vector<ObjectInfoDependencyOverride32> Overrides2() const;
   void
-  setOverrides2(const std::vector<ObjectInfoDependencyOverride32> &Overrides2);
+  setOverrides2(const std::vector<ObjectInfoDependencyOverride32>& Overrides2);
 
   quint64 getSizeInFile() const;
+
+  friend class RevisionStoreFileWriter;
+  friend class RevisionStoreFileParser;
+
+  // Chunkable interface
+  virtual quint64 cb() const override;
+  virtual RevisionStoreChunkType getType() const override;
 
 private:
   /**
@@ -71,7 +78,7 @@ private:
    * Note, that only 4GB of an ObjectInfoDependencyOverrideData can be parsed
    * because an limitation of QByteArray
    */
-  virtual void deserialize(QDataStream &ds) override;
+  virtual void deserialize(QDataStream& ds) override;
   /**
    * @brief creates byte stream from ObjectInfoDependencyOverrideData object
    * @param ds <QDataStream> is the output stream to which the serialized
@@ -79,13 +86,15 @@ private:
    *
 
    */
-  virtual void serialize(QDataStream &ds) const override;
+  virtual void serialize(QDataStream& ds) const override;
 
 
   static const quint64 sizeInFileBase;
+
+
 };
 
-} //namespace priv
+} // namespace priv
 } // namespace libmson
 
 #endif // OBJECTINFODEPENDENCYOVERRIDEDATA_H

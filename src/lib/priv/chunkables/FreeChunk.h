@@ -10,8 +10,6 @@ namespace priv {
 /// This chunk represents an empty section of given size within the
 /// RevisionStoreFile
 class FreeChunk : public Chunkable {
-  friend class RevisionStoreFile;
-
 private:
   quint64 m_size;
 
@@ -23,6 +21,9 @@ public:
   // Chunkable interface
   virtual quint64 cb() const override;
   virtual RevisionStoreChunkType getType() const override;
+
+  friend class RevisionStoreFileWriter;
+  friend class RevisionStoreFileParser;
 };
 
 } // namespace priv

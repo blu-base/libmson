@@ -1,28 +1,28 @@
 #ifndef REVISIONMANIFESTENDFND_H
 #define REVISIONMANIFESTENDFND_H
 
+#include "../../IStreamable.h"
 #include "IFileNodeType.h"
 #include <QtCore/qglobal.h>
 
-namespace libmson{
-namespace priv{
+namespace libmson {
+namespace priv {
 
-class RevisionManifestEndFND : public IFileNodeType {
+class RevisionManifestEndFND
+    : public IFileNodeType
+    , public IStreamable {
 public:
-  RevisionManifestEndFND() = default;
+  RevisionManifestEndFND(RSChunkContainer_WPtr_t parentFileNode);
+  virtual ~RevisionManifestEndFND() = default;
 
   virtual quint64 getSizeInFile() const override { return 0; }
 
 private:
-  virtual void deserialize(QDataStream &ds) override;
-  virtual void serialize(QDataStream &ds) const override;
-
-
-
-
+  virtual void deserialize(QDataStream& ds) override;
+  virtual void serialize(QDataStream& ds) const override;
 };
 
-} //namespace priv
+} // namespace priv
 } // namespace libmson
 
 #endif // REVISIONMANIFESTENDFND_H

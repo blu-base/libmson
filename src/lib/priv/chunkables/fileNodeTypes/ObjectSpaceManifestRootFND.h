@@ -3,12 +3,12 @@
 
 #include <QtCore/qglobal.h>
 
+#include "../../IStreamable.h"
+#include "../../commonTypes/ExtendedGUID.h"
 #include "IFileNodeType.h"
 
-#include "../../commonTypes/ExtendedGUID.h"
-
-namespace libmson{
-namespace priv{
+namespace libmson {
+namespace priv {
 /**
  * @brief specifies the root object space
  * @class ObjectSpaceManifestRootFND
@@ -20,7 +20,9 @@ namespace priv{
  *
  * It must be in the root file node list
  */
-class ObjectSpaceManifestRootFND : public IFileNodeType {
+class ObjectSpaceManifestRootFND
+    : public IFileNodeType
+    , public IStreamable {
 private:
   /**
    * @brief specifies the identity of the root object space
@@ -32,24 +34,20 @@ private:
   ExtendedGUID m_gosidRoot;
 
 public:
-  ObjectSpaceManifestRootFND() = default;
+  ObjectSpaceManifestRootFND(RSChunkContainer_WPtr_t parentFileNode);
   virtual ~ObjectSpaceManifestRootFND() = default;
 
   ExtendedGUID getGosidRoot() const;
-  void setGosidRoot(const ExtendedGUID &value);
+  void setGosidRoot(const ExtendedGUID& value);
 
   virtual quint64 getSizeInFile() const override;
 
 private:
-  virtual void deserialize(QDataStream &ds) override;
-  virtual void serialize(QDataStream &ds) const override;
-
-
-
-
+  virtual void deserialize(QDataStream& ds) override;
+  virtual void serialize(QDataStream& ds) const override;
 };
 
-} //namespace priv
+} // namespace priv
 } // namespace libmson
 
 #endif // OBJECTSPACEMANIFESTROOTFND_H

@@ -3,7 +3,8 @@
 
 #include <QtCore/qglobal.h>
 
-namespace MSONcommon {
+namespace libmson {
+    namespace priv {
 
 
 
@@ -35,6 +36,7 @@ EASTEUROPE_CHARSET = 238,
 OEM_CHARSET = 255,
 };
 
-} // namespace MSONcommon
+} // namespace priv
+} // namespace libmson
 
 #endif // ENUMS_H

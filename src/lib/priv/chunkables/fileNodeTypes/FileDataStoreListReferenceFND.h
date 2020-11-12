@@ -3,42 +3,36 @@
 
 #include <QtCore/qglobal.h>
 
-#include "../FileNodeListFragment.h"
-#include "../commonTypes/FileNodeChunkReference.h"
-
 #include "IFileNodeType.h"
 
-namespace libmson{
-namespace priv{
+#include "../FileNodeListFragment.h"
+#include "../RevisionStoreChunkContainer.h"
+
+namespace libmson {
+namespace priv {
 
 class FileDataStoreListReferenceFND : public IFileNodeType {
 private:
-  MSONcommon::FileNodeChunkReference m_ref;
+  RSChunkContainer_WPtr_t m_ref;
 
-  MSONcommon::FileNodeListFragment m_StoreList;
+  //  FileNodeListFragment m_StoreList;
 
 public:
-  FileDataStoreListReferenceFND(FNCR_STP_FORMAT stpFormat,
-                                FNCR_CB_FORMAT cbFormat);
-  FileDataStoreListReferenceFND(quint8 stpFormat, quint8 cbFormat);
+  FileDataStoreListReferenceFND(RSChunkContainer_WPtr_t parentFileNode);
   virtual ~FileDataStoreListReferenceFND() = default;
 
-  MSONcommon::FileNodeChunkReference getRef() const;
-  void setRef(const MSONcommon::FileNodeChunkReference &value);
+  RSChunkContainer_WPtr_t getRef() const;
+  void setRef(const RSChunkContainer_WPtr_t& value);
+
+  std::shared_ptr<FileNodeListFragment> getStoreList();
+
+  friend class RevisionStoreFileParser;
+  friend class RevisionStoreFileWriter;
 
   virtual quint64 getSizeInFile() const override;
-
-private:
-  virtual void deserialize(QDataStream &ds) override;
-  virtual void serialize(QDataStream &ds) const override;
-
-
-
-
-
 };
 
-} //namespace priv
+} // namespace priv
 } // namespace libmson
 
 #endif // FILEDATASTORELISTREFERENCEFND_H

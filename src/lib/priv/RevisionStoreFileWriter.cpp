@@ -14,7 +14,8 @@ namespace libmson {
 namespace priv {
 
 
-RevisionStoreFileWriter::RevisionStoreFileWriter(std::shared_ptr<RevisionStoreFile>& revisionStoreFile)
+RevisionStoreFileWriter::RevisionStoreFileWriter(
+    std::shared_ptr<RevisionStoreFile>& revisionStoreFile)
     : m_revStoreFile(revisionStoreFile)
 {
 }
@@ -42,7 +43,8 @@ bool RevisionStoreFileWriter::write(QDataStream& ds)
   return true;
 }
 
-bool RevisionStoreFileWriter::writeChunk(QDataStream& ds, RSChunkContainer_SPtr_t chunk)
+bool RevisionStoreFileWriter::writeChunk(
+    QDataStream& ds, RSChunkContainer_SPtr_t chunk)
 {
   switch (chunk->getType()) {
 
@@ -50,13 +52,17 @@ bool RevisionStoreFileWriter::writeChunk(QDataStream& ds, RSChunkContainer_SPtr_
     qWarning("Trying to write another header mid-stream");
     break;
   case RevisionStoreChunkType::FileNodeListFragment:
-    return writeFileNodeListFragment(ds, chunk);
+    //    return writeFileNodeListFragment(ds, chunk);
+    break;
   case RevisionStoreChunkType::FileNode:
-    return writeFileNode(ds, chunk);
+    //    return writeFileNode(ds, chunk);
+    break;
   case RevisionStoreChunkType::FreeChunkListFragment:
-    return writeFreeChunkListFragment(ds, chunk);
+    //    return writeFreeChunkListFragment(ds, chunk);
+    break;
   case RevisionStoreChunkType::FreeChunk:
-    return writeFreeChunk(ds, chunk);
+    //    return writeFreeChunk(ds, chunk);
+    break;
   case RevisionStoreChunkType::TransactionLogFragment:
     break;
   case RevisionStoreChunkType::FileDataStoreObject:
@@ -65,7 +71,7 @@ bool RevisionStoreFileWriter::writeChunk(QDataStream& ds, RSChunkContainer_SPtr_
     break;
   case RevisionStoreChunkType::ObjectInfoDependencyOverrideData:
     break;
-  case RevisionStoreChunkType::EncryptedFragment:
+  case RevisionStoreChunkType::EncryptedData:
     break;
   case RevisionStoreChunkType::Invalid:
   default:
@@ -73,6 +79,12 @@ bool RevisionStoreFileWriter::writeChunk(QDataStream& ds, RSChunkContainer_SPtr_
   }
 
   return true;
+}
+
+bool RevisionStoreFileWriter::writeRevisionStoreFileHeader(
+    QDataStream& ds, RSChunkContainer_SPtr_t& fileNode)
+{
+  return false;
 }
 
 quint64 RevisionStoreFileWriter::stpFromChunk(RSChunkContainer_WPtr_t& chunk)
@@ -86,16 +98,19 @@ quint64 RevisionStoreFileWriter::stpFromChunk(RSChunkContainer_WPtr_t& chunk)
     // if chunk is a FileNode, we must first sum up to the parent
     // FileNodeListFragment
     if (lchunk->getType() == RevisionStoreChunkType::FileNode) {
-      quint64 stp                    = 0;
-      auto fileNodeListFragmentChunk = std::static_pointer_cast<FileNode>(lchunk->getContent())->getParent();
+      quint64 stp = 0;
+      auto fileNodeListFragmentChunk =
+          std::static_pointer_cast<FileNode>(lchunk->getContent())->getParent();
 
-      quint64 subtotal = stpTillIterator(m_revStoreFile->chunks(), fileNodeListFragmentChunk);
+      quint64 subtotal =
+          stpTillIterator(m_revStoreFile->chunks(), fileNodeListFragmentChunk);
 
       // now summing up within the FileNodeListFragment
       stp += FileNodeListFragment::headerSize;
 
       subtotal += stpTillIterator(
-          std::static_pointer_cast<FileNodeListFragment>(fileNodeListFragmentChunk.lock()->getContent())
+          std::static_pointer_cast<FileNodeListFragment>(
+              fileNodeListFragmentChunk.lock()->getContent())
               ->getFileNodes(),
           lchunk);
 
@@ -113,7 +128,8 @@ quint64 RevisionStoreFileWriter::stpFromChunk(RSChunkContainer_WPtr_t& chunk)
 }
 
 quint64 RevisionStoreFileWriter::stpTillIterator(
-    const std::list<std::shared_ptr<RevisionStoreChunkContainer>>& list, const RSChunkContainer_WPtr_t& chunk)
+    const std::list<std::shared_ptr<RevisionStoreChunkContainer>>& list,
+    const RSChunkContainer_WPtr_t& chunk)
 {
   if (chunk.expired()) {
     return UINT64_MAX;
@@ -123,13 +139,16 @@ quint64 RevisionStoreFileWriter::stpTillIterator(
 
     auto it = std::find(list.begin(), list.end(), lchunk);
 
-    auto addCb = [](quint64 a, std::shared_ptr<RevisionStoreChunkContainer> b) { return std::move(a) + b->cb(); };
+    auto addCb = [](quint64 a, std::shared_ptr<RevisionStoreChunkContainer> b) {
+      return std::move(a) + b->cb();
+    };
 
     return std::accumulate(list.begin(), it, 0, addCb);
   }
 }
 
-FileChunkReference64x32 RevisionStoreFileWriter::getFcr64x32FromChunk(RSChunkContainer_WPtr_t& chunk)
+FileChunkReference64x32
+RevisionStoreFileWriter::getFcr64x32FromChunk(RSChunkContainer_WPtr_t& chunk)
 {
   if (chunk.expired()) {
     return FileChunkReference64x32(FCR_INIT::NIL);
@@ -141,7 +160,8 @@ FileChunkReference64x32 RevisionStoreFileWriter::getFcr64x32FromChunk(RSChunkCon
   }
 }
 
-FileChunkReference64 RevisionStoreFileWriter::getFcr64FromChunk(RSChunkContainer_WPtr_t& chunk)
+FileChunkReference64
+RevisionStoreFileWriter::getFcr64FromChunk(RSChunkContainer_WPtr_t& chunk)
 {
   if (chunk.expired()) {
     return FileChunkReference64(FCR_INIT::NIL);

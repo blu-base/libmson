@@ -3,30 +3,36 @@
 # sets LIBMSON_PRIV_UTILS_PART_SRCS and LIBMSON_PRIV_UTILS_PART_HEADERS
 add_subdirectory(utils)
 
+# sets LIBMSON_PRIV_COMMONTYPES_PART_SRCS and LIBMSON_PRIV_COMMONTYPES_PART_HEADERS
+add_subdirectory(commonTypes)
+
+
 # sets LIBMSON_PRIV_CHUNKABLES_PART_SRCS and LIBMSON_PRIV_CHUNKABLES_PART_HEADERS
 add_subdirectory(chunkables)
 
 
 
-set (LIBMSON_PRIV_PART_SRCS
-    ${LIBMSON_PRIV_CHUNKABLES_PART_SRCS}
-    ${LIBMSON_PRIV_UTILS_PART_SRCS}
-    RevisionStoreFileWriter.h
-    RevisionStoreFileWriter.cpp
-    RevisionStoreFileParser.h
-    RevisionStoreFileParser.cpp
-    RevisionStoreFile.h
-    RevisionStoreFile.cpp
-    RevisionStoreFileManipulator.h
-    RevisionStoreFileManipulator.cpp
 
-    IStreamable.cpp
+FILE (GLOB_RECURSE LIBMSON_PRIV_PART_SRCS *.cpp
     )
+#  set (LIBMSON_PRIV_PART_SRCS
+#    ${LIBMSON_PRIV_COMMONTYPES_PART_SRCS}
+#    ${LIBMSON_PRIV_CHUNKABLES_PART_SRCS}
+#    ${LIBMSON_PRIV_UTILS_PART_SRCS}
+#    RevisionStoreFileWriter.h
+#    RevisionStoreFileWriter.cpp
+#    RevisionStoreFileParser.h
+#    RevisionStoreFileParser.cpp
+#    RevisionStoreFile.h
+#    RevisionStoreFile.cpp
+#    RevisionStoreFileManipulator.h
+#    RevisionStoreFileManipulator.cpp
 
-  set (LIBMSON_PRIV_PART_HEADERS
-      IStreamable.h
-      ${LIBMSON_PRIV_CHUNKABLES_PART_HEADERS}
-      ${LIBMSON_PRIV_UTILS_PART_HEADERS}
+#    IStreamable.cpp
+#    )
+
+  FILE (GLOB_RECURSE LIBMSON_PRIV_PART_HEADERS
+    *.h
     )
 
 add_library(libmson_priv SHARED ${LIBMSON_PRIV_PART_SRCS} ${LIBMSON_PRIV_PART_HEADERS})
@@ -65,7 +71,7 @@ target_include_directories(
 #   - headers can be included by C++ code `#include <foo/foo.h>`
 install(
     TARGETS              libmson_priv
-    EXPORT               "${TARGETS_EXPORT_NAME}"
+
     LIBRARY DESTINATION  "${CMAKE_INSTALL_LIBDIR}"
     ARCHIVE DESTINATION  "${CMAKE_INSTALL_LIBDIR}"
     RUNTIME DESTINATION  "${CMAKE_INSTALL_BINDIR}"

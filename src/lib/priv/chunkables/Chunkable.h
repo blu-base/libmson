@@ -2,9 +2,8 @@
 #define CHUNKABLE_H
 
 #include <QtCore/qglobal.h>
-
 namespace libmson {
-    namespace priv {
+namespace priv {
 
 enum class RevisionStoreChunkType {
   RevistionStoreFileHeader,
@@ -16,14 +15,15 @@ enum class RevisionStoreChunkType {
   FileDataStoreObject,
   ObjectSpaceObjectPropSet,
   ObjectInfoDependencyOverrideData,
-  EncryptedFragment,
+
+  EncryptedData,
 
   Invalid
 };
 
 class Chunkable {
 public:
-  virtual quint64 cb() const = 0;
+  virtual quint64 cb() const                     = 0;
   virtual RevisionStoreChunkType getType() const = 0;
 };
 

@@ -1,43 +1,44 @@
 #include "FileDataStoreObjectReferenceFND.h"
 
-namespace libmson{
-namespace priv{
-FileDataStoreObjectReferenceFND::FileDataStoreObjectReferenceFND(
-    FNCR_STP_FORMAT stpFormat, FNCR_CB_FORMAT cbFormat)
-    : m_ref(stpFormat, cbFormat) {}
+#include "../FileNode.h"
 
+namespace libmson {
+namespace priv {
 FileDataStoreObjectReferenceFND::FileDataStoreObjectReferenceFND(
-    quint8 stpFormat, quint8 cbFormat)
-    : m_ref(stpFormat, cbFormat) {}
-
-FileNodeChunkReference FileDataStoreObjectReferenceFND::getRef() const {
-  return m_ref;
+    RSChunkContainer_WPtr_t parentFileNode)
+    : IFileNodeType(parentFileNode)
+{
 }
 
-void FileDataStoreObjectReferenceFND::setRef(
-    const FileNodeChunkReference &value) {
-  m_ref = value;
+RSChunkContainer_WPtr_t FileDataStoreObjectReferenceFND::getBlobRef() const
+{
+  return m_blobRef;
 }
 
-QUuid FileDataStoreObjectReferenceFND::getGuidReference() const {
+void FileDataStoreObjectReferenceFND::setBlobRef(
+    const RSChunkContainer_WPtr_t& value)
+{
+  m_blobRef = value;
+}
+
+QUuid FileDataStoreObjectReferenceFND::getGuidReference() const
+{
   return m_guidReference;
 }
 
-void FileDataStoreObjectReferenceFND::setGuidReference(const QUuid &value) {
+void FileDataStoreObjectReferenceFND::setGuidReference(const QUuid& value)
+{
   m_guidReference = value;
 }
 
-FileDataStoreObject
-FileDataStoreObjectReferenceFND::getFileDataStoreObject() const {
-  return m_blob;
+std::shared_ptr<FileDataStoreObject>
+FileDataStoreObjectReferenceFND::getFileDataStoreObject()
+{
+  return std::static_pointer_cast<FileDataStoreObject>(
+      m_blobRef.lock()->getContent());
 }
 
-void FileDataStoreObjectReferenceFND::setFileDataStoreObject(
-    const FileDataStoreObject &value) {
-  m_blob = value;
-}
-
-void FileDataStoreObjectReferenceFND::deserialize(QDataStream &ds) {
+/*void FileDataStoreObjectReferenceFND::deserialize(QDataStream &ds) {
   ds >> m_ref;
   ds >> m_guidReference;
 
@@ -67,11 +68,14 @@ void FileDataStoreObjectReferenceFND::writeLowLevelXml(
   xmlWriter << m_blob;
 
   xmlWriter.writeEndElement();
+}*/
+
+quint64 FileDataStoreObjectReferenceFND::getSizeInFile() const
+{
+  return std::static_pointer_cast<FileNode>(m_parent.lock()->getContent())
+             ->getFileNodeChunkReferenceSize() +
+         sizeOfGUID;
 }
 
-quint64 MSONcommon::FileDataStoreObjectReferenceFND::getSizeInFile() const {
-  return m_ref.getSizeInFile() + sizeOfGUID;
-}
-
-} //namespace priv
+} // namespace priv
 } // namespace libmson

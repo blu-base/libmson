@@ -4,17 +4,16 @@
 #include <QtCore/qglobal.h>
 
 #include "../../commonTypes/CompactID.h"
-#include "../../commonTypes/FileNodeChunkReference.h"
-#include "../../objectTypes/ObjectSpaceObjectPropSet.h"
+#include "../ObjectSpaceObjectPropSet.h"
 
 #include "IFileNodeType.h"
 
-namespace libmson{
-namespace priv{
+namespace libmson {
+namespace priv {
 
 class ObjectRevisionWithRefCount2FNDX : public IFileNodeType {
 private:
-  FileNodeChunkReference m_ref;
+  RSChunkContainer_WPtr_t m_ref;
 
   CompactID m_oid;
 
@@ -23,18 +22,15 @@ private:
 
   quint32 m_cRef;
 
-  ObjectSpaceObjectPropSet m_blob;
-
 public:
-  ObjectRevisionWithRefCount2FNDX(FNCR_STP_FORMAT stpFormat,
-                                  FNCR_CB_FORMAT cbFormat);
-  ObjectRevisionWithRefCount2FNDX(quint8 stpFormat, quint8 cbFormat);
+  ObjectRevisionWithRefCount2FNDX(RSChunkContainer_WPtr_t parentFileNode);
+  virtual ~ObjectRevisionWithRefCount2FNDX() = default;
 
-  FileNodeChunkReference getRef() const;
-  void setRef(const FileNodeChunkReference &value);
+  RSChunkContainer_WPtr_t getRef() const;
+  void setRef(const RSChunkContainer_WPtr_t value);
 
   CompactID getOid() const;
-  void setOid(const CompactID &value);
+  void setOid(const CompactID& value);
 
   bool getFHasOidReferences() const;
   void setFHasOidReferences(bool value);
@@ -43,25 +39,24 @@ public:
   void setFHasOsidReferences(bool value);
 
   quint32 getCRef() const;
-  void setCRef(const quint32 &value);
+  void setCRef(const quint32& value);
 
-  ObjectSpaceObjectPropSet getPropSet() const;
-  void setPropSet(const ObjectSpaceObjectPropSet &value);
+  std::shared_ptr<ObjectSpaceObjectPropSet> getPropSet() const;
 
   virtual quint64 getSizeInFile() const override;
 
+  friend class RevisionStoreFileParser;
+  friend class RevisionStoreFileWriter;
+
 private:
-  virtual void deserialize(QDataStream &ds) override;
-  virtual void serialize(QDataStream &ds) const override;
-
-
-
+  //  virtual void deserialize(QDataStream& ds) override;
+  //  virtual void serialize(QDataStream& ds) const override;
 
 
   static const quint64 sizeInFileBase = 12;
 };
 
-} //namespace priv
+} // namespace priv
 } // namespace libmson
 
 #endif // OBJECTREVISIONWITHREFCOUNT2FNDX_H

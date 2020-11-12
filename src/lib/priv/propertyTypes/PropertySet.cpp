@@ -13,43 +13,48 @@
 #include "PropertyType_PropertySet.h"
 #include "PropertyType_TwoBytesOfData.h"
 
-#include "../helper/Helper.h"
+#include "../utils/Helper.h"
 
-#include "../simpleTypes/BodyTextAlignment.h"
-#include "../simpleTypes/ColorRef.h"
-#include "../simpleTypes/FileTime.h"
-#include "../simpleTypes/LCID.h"
-#include "../simpleTypes/LayoutAlignment.h"
-#include "../simpleTypes/ListMSAAIndex.h"
-#include "../simpleTypes/NoteTagShape.h"
-#include "../simpleTypes/PageSize.h"
-#include "../simpleTypes/Time32.h"
+//#include "../simpleTypes/BodyTextAlignment.h"
+//#include "../simpleTypes/ColorRef.h"
+//#include "../simpleTypes/FileTime.h"
+//#include "../simpleTypes/LCID.h"
+//#include "../simpleTypes/LayoutAlignment.h"
+//#include "../simpleTypes/ListMSAAIndex.h"
+//#include "../simpleTypes/NoteTagShape.h"
+//#include "../simpleTypes/PageSize.h"
+//#include "../simpleTypes/Time32.h"
 
-namespace libmson{
-namespace priv{
+namespace libmson {
+namespace priv {
 
 quint16 PropertySet::cProperties() const { return m_cProperties; }
 
-void PropertySet::setCProperties(const quint16 &cProperties) {
+void PropertySet::setCProperties(const quint16& cProperties)
+{
   m_cProperties = cProperties;
 }
 
 std::vector<PropertyID> PropertySet::rgPrids() const { return m_rgPrids; }
 
-void PropertySet::setRgPrids(const std::vector<PropertyID> &rgPrids) {
+void PropertySet::setRgPrids(const std::vector<PropertyID>& rgPrids)
+{
   m_rgPrids = rgPrids;
 }
 
-std::vector<std::shared_ptr<IPropertyType>> PropertySet::rgData() const {
+std::vector<std::shared_ptr<IPropertyType>> PropertySet::rgData() const
+{
   return m_rgData;
 }
 
 void PropertySet::setRgData(
-    const std::vector<std::shared_ptr<IPropertyType>> &rgData) {
+    const std::vector<std::shared_ptr<IPropertyType>>& rgData)
+{
   m_rgData = rgData;
 }
 
-quint64 PropertySet::getSizeInFile() const {
+quint64 PropertySet::getSizeInFile() const
+{
 
   // compute m_rgData size
   quint64 dataSize = 0;
@@ -63,7 +68,8 @@ quint64 PropertySet::getSizeInFile() const {
 }
 
 /// \todo implement propertyset
-void PropertySet::deserialize(QDataStream &ds) {
+void PropertySet::deserialize(QDataStream& ds)
+{
 
   quint64 curLocation = ds.device()->pos();
   ds >> m_cProperties;
@@ -74,7 +80,7 @@ void PropertySet::deserialize(QDataStream &ds) {
     m_rgPrids.push_back(prid);
   }
 
-  for (const auto &propID : m_rgPrids) {
+  for (const auto& propID : m_rgPrids) {
     quint64 curLocation = ds.device()->pos();
 
     std::shared_ptr<IPropertyType> prop;
@@ -143,23 +149,25 @@ void PropertySet::deserialize(QDataStream &ds) {
   }
 }
 
-void PropertySet::serialize(QDataStream &ds) const {
+void PropertySet::serialize(QDataStream& ds) const
+{
 
   ds << m_cProperties;
 
-  for (const auto &propid : m_rgPrids) {
+  for (const auto& propid : m_rgPrids) {
     ds << propid;
   }
 
-  for (const auto &prop : m_rgData) {
+  for (const auto& prop : m_rgData) {
     ds << *prop;
   }
 }
 
-void PropertySet::toDebugString(QDebug &dbg) const {}
+// void PropertySet::toDebugString(QDebug &dbg) const {}
 
 PropertySet::PropertySet() : m_cProperties{} {}
 
+/*
 /// \todo utf16 and utf8 might end prematurely because \0 terminator found
 void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
   xmlWriter.writeStartElement("PropertySet");
@@ -2172,6 +2180,7 @@ void PropertySet::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
 
   xmlWriter.writeEndElement(); // PropertySet
 }
+*/
 
-} //namespace priv
+} // namespace priv
 } // namespace libmson

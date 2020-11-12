@@ -1,54 +1,45 @@
 #ifndef OBJECTDECLARATION2LARGEREFCOUNTFND_H
 #define OBJECTDECLARATION2LARGEREFCOUNTFND_H
 
-#include "../../commonTypes/FileNodeChunkReference.h"
-#include "../../objectTypes/ObjectDeclaration2Body.h"
-#include "../../objectTypes/ObjectSpaceObjectPropSet.h"
+
 #include "IFileNodeType.h"
 #include <QtCore/qglobal.h>
 
-namespace libmson{
-namespace priv{
+#include "../ObjectSpaceObjectPropSet.h"
+#include "../RevisionStoreChunkContainer.h"
+#include "../objectTypes/ObjectDeclaration2Body.h"
+
+namespace libmson {
+namespace priv {
 
 class ObjectDeclaration2LargeRefCountFND : public IFileNodeType {
 private:
-  FileNodeChunkReference m_blobRef;
+  RSChunkContainer_WPtr_t m_blobRef;
   ObjectDeclaration2Body m_body;
   quint32 m_cRef;
 
-  ObjectSpaceObjectPropSet m_blob;
-
 public:
-  ObjectDeclaration2LargeRefCountFND(FNCR_STP_FORMAT stpFormat,
-                                     FNCR_CB_FORMAT cbFormat);
-
-  ObjectDeclaration2LargeRefCountFND(quint8 stpFormat, quint8 cbFormat);
+  ObjectDeclaration2LargeRefCountFND(RSChunkContainer_WPtr_t parentFileNode);
   virtual ~ObjectDeclaration2LargeRefCountFND() = default;
 
-  FileNodeChunkReference blobRef() const;
-  void setBlobRef(const FileNodeChunkReference &blobRef);
+  RSChunkContainer_WPtr_t getBlobRef() const;
+  void setBlobRef(const RSChunkContainer_WPtr_t& blobRef);
 
-  ObjectDeclaration2Body body() const;
-  void setBody(const ObjectDeclaration2Body &body);
+  ObjectDeclaration2Body getBody() const;
+  void setBody(const ObjectDeclaration2Body& body);
 
-  quint32 cRef() const;
-  void setCRef(const quint32 &cRef);
+  quint32 getCRef() const;
+  void setCRef(const quint32& cRef);
 
-  ObjectSpaceObjectPropSet getPropSet() const;
-  void setPropSet(const ObjectSpaceObjectPropSet &value);
+  std::shared_ptr<ObjectSpaceObjectPropSet> getPropSet();
 
   virtual quint64 getSizeInFile() const override;
 
-private:
-  virtual void deserialize(QDataStream &ds) override;
-  virtual void serialize(QDataStream &ds) const override;
-
-
-
-
+  friend class RevisionStoreFileParser;
+  friend class RevisionStoreFileWriter;
 };
 
-} //namespace priv
+} // namespace priv
 } // namespace libmson
 
 #endif // OBJECTDECLARATION2LARGEREFCOUNTFND_H

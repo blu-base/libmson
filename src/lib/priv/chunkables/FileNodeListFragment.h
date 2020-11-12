@@ -36,10 +36,11 @@ public:
   virtual quint64 cb() const override;
   virtual RevisionStoreChunkType getType() const override;
 
-  friend class RevisionStoreFile;
-
   static const quint32 minSizeInFile = 36;
   static const quint32 headerSize    = 16;
+
+  friend class RevisionStoreFileWriter;
+  friend class RevisionStoreFileParser;
 
 private:
   static constexpr const quint64 header_magic_id = 0xA4567AB1F5F7F4C4;

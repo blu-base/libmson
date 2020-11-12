@@ -13,10 +13,7 @@
 
 #include <QUuid>
 
-#include "common/DocumentManager.h"
-
-#include "common/RevisionStoreFile.h"
-
+#include "../../lib/priv/RevisionStoreFile.h"
 
 
 #include "RSFtoXml.h"
@@ -146,35 +143,33 @@ int main(int argc, char* argv[])
     return 1;
   }
 
-  MSONcommon::DocumentManager manager{};
-
   for (const auto& entry : files) {
 
     QFileInfo file(entry);
 
     QString outputPath;
-    QString baseFileName = file.fileName().left(file.fileName().lastIndexOf('.'));
+    QString baseFileName =
+        file.fileName().left(file.fileName().lastIndexOf('.'));
 
 
-    QUuid guid = manager.parseDocument(entry);
+    //    QUuid guid = manager.parseDocument(entry);
 
-    if (outputSet) {
-      outputPath = parser.value(output);
-    }
-    else {
+    //    if (outputSet) {
+    //      outputPath = parser.value(output);
+    //    }
+    //    else {
 
-      if (entry.contains("/")) {
-        outputPath = entry.left(entry.lastIndexOf("/"));
-      }
-      else {
-        outputPath = ".";
-      }
-    }
+    //      if (entry.contains("/")) {
+    //        outputPath = entry.left(entry.lastIndexOf("/"));
+    //      }
+    //      else {
+    //        outputPath = ".";
+    //      }
+    //    }
 
 
-
-    manager.generateXml(guid, outputPath + "/" + baseFileName + ".xml");
-    manager.removeDocument(guid);
+    //    manager.generateXml(guid, outputPath + "/" + baseFileName + ".xml");
+    //    manager.removeDocument(guid);
   }
 
   return 0;

@@ -10,16 +10,20 @@
 namespace libmson {
 namespace priv {
 
+
 class RevisionStoreChunkContainer {
 private:
   const quint64 m_initialStp;
-  const quint64 m_initialCb;
+  quint64 m_initialCb;
 
   std::shared_ptr<Chunkable> m_chunkable;
 
+  bool m_isParsed = false;
+
 public:
-  RevisionStoreChunkContainer(std::shared_ptr<Chunkable> chunkable,
-                     const quint64 initialLocationInFile, const quint64 initialCb);
+  RevisionStoreChunkContainer(
+      std::shared_ptr<Chunkable> chunkable, const quint64 initialLocationInFile,
+      const quint64 initialCb);
 
   std::shared_ptr<Chunkable> getContent();
 
@@ -29,6 +33,11 @@ public:
   quint64 getInitialCb() const;
 
   quint64 cb() { return m_chunkable->cb(); };
+
+  bool isParsed() const;
+  void setIsParsed(bool value);
+
+  friend class RevisionStoreFileParser;
 };
 
 typedef std::shared_ptr<RevisionStoreChunkContainer> RSChunkContainer_SPtr_t;

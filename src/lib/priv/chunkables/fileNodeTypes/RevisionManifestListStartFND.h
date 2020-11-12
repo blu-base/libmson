@@ -3,12 +3,12 @@
 
 #include <QtCore/qglobal.h>
 
+#include "../../IStreamable.h"
+#include "../../commonTypes/ExtendedGUID.h"
 #include "IFileNodeType.h"
 
-#include "../../commonTypes/ExtendedGUID.h"
-
-namespace libmson{
-namespace priv{
+namespace libmson {
+namespace priv {
 /**
  * @brief specifies the beginning of a revision manifest list
  * @class RevisionManifestListStartFND
@@ -16,7 +16,9 @@ namespace priv{
  * FileNode Type defined by [MS-ONESTORE]
  * 2.5.5 RevisionManifestListStartFND
  */
-class RevisionManifestListStartFND : public IFileNodeType {
+class RevisionManifestListStartFND
+    : public IFileNodeType
+    , public IStreamable {
 private:
   /**
    * @brief gosid
@@ -33,26 +35,23 @@ private:
   quint32 m_nInstance;
 
 public:
-  RevisionManifestListStartFND();
+  RevisionManifestListStartFND(RSChunkContainer_WPtr_t parentFileNode);
+  virtual ~RevisionManifestListStartFND() = default;
 
   ExtendedGUID getGosid() const;
-  void setGosid(const ExtendedGUID &value);
+  void setGosid(const ExtendedGUID& value);
 
   quint32 getNInstance() const;
-  void setNInstance(const quint32 &value);
+  void setNInstance(const quint32& value);
 
   virtual quint64 getSizeInFile() const override;
 
 private:
-  virtual void deserialize(QDataStream &ds) override;
-  virtual void serialize(QDataStream &ds) const override;
-
-
-
-
+  virtual void deserialize(QDataStream& ds) override;
+  virtual void serialize(QDataStream& ds) const override;
 };
 
-} //namespace priv
+} // namespace priv
 } // namespace libmson
 
 #endif // REVISIONMANIFESTLISTSTARTFND_H
