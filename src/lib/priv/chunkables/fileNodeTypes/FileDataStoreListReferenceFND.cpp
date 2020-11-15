@@ -6,18 +6,19 @@ namespace libmson {
 namespace priv {
 
 FileDataStoreListReferenceFND::FileDataStoreListReferenceFND(
-    RSChunkContainer_WPtr_t parentFileNode)
+    FileNode_WPtr_t parentFileNode)
     : IFileNodeType(parentFileNode)
 {
 }
 
 
-RSChunkContainer_WPtr_t FileDataStoreListReferenceFND::getRef() const
+FileNodeListFragment_WPtr_t FileDataStoreListReferenceFND::getRef() const
 {
   return m_ref;
 }
 
-void FileDataStoreListReferenceFND::setRef(const RSChunkContainer_WPtr_t& value)
+void FileDataStoreListReferenceFND::setRef(
+    const FileNodeListFragment_WPtr_t value)
 {
   m_ref = value;
 }
@@ -51,8 +52,7 @@ void FileDataStoreListReferenceFND::setRef(const RSChunkContainer_WPtr_t& value)
 
 quint64 FileDataStoreListReferenceFND::getSizeInFile() const
 {
-  return std::static_pointer_cast<FileNode>(m_parent.lock()->getContent())
-      ->getFileNodeChunkReferenceSize();
+  return m_parent.lock()->getFileNodeChunkReferenceSize();
 }
 
 } // namespace priv

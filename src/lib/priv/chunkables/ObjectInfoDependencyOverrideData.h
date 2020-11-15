@@ -13,7 +13,9 @@
 namespace libmson {
 namespace priv {
 
-class ObjectInfoDependencyOverrideData : public IStreamable, public Chunkable {
+class ObjectInfoDependencyOverrideData
+    : public IStreamable
+    , public Chunkable {
 private:
   /**
    * @brief number of elements in m_Overrides1.
@@ -41,7 +43,8 @@ private:
   std::vector<ObjectInfoDependencyOverride32> m_Overrides2;
 
 public:
-  ObjectInfoDependencyOverrideData();
+  ObjectInfoDependencyOverrideData(
+      const quint64 initialStp = 0, const quint64 initialCb = 0);
 
   quint32 c8BitOverrides() const;
   void setC8BitOverrides(const quint32& c8BitOverrides);
@@ -65,11 +68,11 @@ public:
   friend class RevisionStoreFileWriter;
   friend class RevisionStoreFileParser;
 
+
+private:
   // Chunkable interface
   virtual quint64 cb() const override;
   virtual RevisionStoreChunkType getType() const override;
-
-private:
   /**
    * @brief creates ObjectInfoDependencyOverrideData from QDataStream
    * @param ds <QDataStream> containing the deserializable
@@ -90,9 +93,12 @@ private:
 
 
   static const quint64 sizeInFileBase;
-
-
 };
+
+typedef std::shared_ptr<ObjectInfoDependencyOverrideData>
+    ObjectInfoDependencyOverrideData_SPtr_t;
+typedef std::weak_ptr<ObjectInfoDependencyOverrideData>
+    ObjectInfoDependencyOverrideData_WPtr_t;
 
 } // namespace priv
 } // namespace libmson

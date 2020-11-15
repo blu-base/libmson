@@ -22,8 +22,7 @@ private:
   StringInStorageBuffer m_Extension;
 
 public:
-  ObjectDeclarationFileData3LargeRefCountFND(
-      RSChunkContainer_WPtr_t parentFileNode);
+  ObjectDeclarationFileData3LargeRefCountFND(FileNode_WPtr_t parentFileNode);
   virtual ~ObjectDeclarationFileData3LargeRefCountFND() = default;
 
   CompactID oid() const;

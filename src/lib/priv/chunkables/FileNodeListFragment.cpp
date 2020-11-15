@@ -4,23 +4,38 @@
 namespace libmson {
 namespace priv {
 
-FileNodeListFragment::FileNodeListFragment() : m_fileNodeListID(), m_nFragmentSequence(0), m_paddingLength(0) {}
+FileNodeListFragment::FileNodeListFragment(
+    const quint64 initialStp, const quint64 initialCb)
+    : Chunkable(initialStp, initialCb), m_fileNodeListID(),
+      m_nFragmentSequence(0), m_paddingLength(0)
+{
+}
 
-std::list<std::shared_ptr<RevisionStoreChunkContainer>>& FileNodeListFragment::fileNodes() { return m_fileNodes; }
-
-std::list<std::shared_ptr<RevisionStoreChunkContainer>> FileNodeListFragment::getFileNodes() const
+std::list<FileNode_SPtr_t>& FileNodeListFragment::fileNodes()
 {
   return m_fileNodes;
 }
 
-void FileNodeListFragment::setFileNodes(const std::list<std::shared_ptr<RevisionStoreChunkContainer>>& fileNodes)
+std::list<FileNode_SPtr_t> FileNodeListFragment::getFileNodes() const
+{
+  return m_fileNodes;
+}
+
+void FileNodeListFragment::setFileNodes(
+    const std::list<FileNode_SPtr_t>& fileNodes)
 {
   m_fileNodes = fileNodes;
 }
 
-RSChunkContainer_WPtr_t FileNodeListFragment::getNextFragment() { return m_nextFragment; }
+FileNodeListFragment_WPtr_t FileNodeListFragment::getNextFragment()
+{
+  return m_nextFragment;
+}
 
-void FileNodeListFragment::setNextFragment(RSChunkContainer_WPtr_t chunk) { m_nextFragment = chunk; }
+void FileNodeListFragment::setNextFragment(FileNodeListFragment_WPtr_t chunk)
+{
+  m_nextFragment = chunk;
+}
 
 quint64 FileNodeListFragment::cb() const
 {
@@ -34,13 +49,19 @@ quint64 FileNodeListFragment::cb() const
   }
   else {
 
-    auto addCb = [](quint64 a, std::shared_ptr<RevisionStoreChunkContainer> b) { return std::move(a) + b->cb(); };
+    auto addCb = [](quint64 a, const FileNode_SPtr_t& b) {
+      return std::move(a) + b->getSizeInFile();
+    };
 
-    return minSizeInFile + m_paddingLength + std::accumulate(m_fileNodes.begin(), m_fileNodes.end(), 0, addCb);
+    return minSizeInFile + m_paddingLength +
+           std::accumulate(m_fileNodes.begin(), m_fileNodes.end(), 0, addCb);
   }
 }
 
-RevisionStoreChunkType FileNodeListFragment::getType() const { return RevisionStoreChunkType::FileNodeListFragment; }
+RevisionStoreChunkType FileNodeListFragment::getType() const
+{
+  return RevisionStoreChunkType::FileNodeListFragment;
+}
 
 } // namespace priv
 } // namespace libmson

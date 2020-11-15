@@ -15,7 +15,7 @@ private:
   quint8 m_reserved;
 
 public:
-  GlobalIdTableStartFNDX(RSChunkContainer_WPtr_t parentFileNode);
+  GlobalIdTableStartFNDX(FileNode_WPtr_t parentFileNode);
   virtual ~GlobalIdTableStartFNDX() = default;
 
   quint8 getReserved() const;

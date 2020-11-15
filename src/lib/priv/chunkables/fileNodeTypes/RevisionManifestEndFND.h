@@ -12,14 +12,15 @@ class RevisionManifestEndFND
     : public IFileNodeType
     , public IStreamable {
 public:
-  RevisionManifestEndFND(RSChunkContainer_WPtr_t parentFileNode);
+  RevisionManifestEndFND(FileNode_WPtr_t parentFileNode)
+      : IFileNodeType(parentFileNode){};
   virtual ~RevisionManifestEndFND() = default;
 
   virtual quint64 getSizeInFile() const override { return 0; }
 
 private:
-  virtual void deserialize(QDataStream& ds) override;
-  virtual void serialize(QDataStream& ds) const override;
+  virtual void deserialize(QDataStream& ds) override{};
+  virtual void serialize(QDataStream& ds) const override{};
 };
 
 } // namespace priv

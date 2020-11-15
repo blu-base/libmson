@@ -6,7 +6,7 @@ namespace libmson {
 namespace priv {
 
 ObjectSpaceManifestListReferenceFND::ObjectSpaceManifestListReferenceFND(
-    RSChunkContainer_WPtr_t parentFileNode)
+    FileNode_WPtr_t parentFileNode)
     : IFileNodeType(parentFileNode)
 {
 }
@@ -24,8 +24,7 @@ void ObjectSpaceManifestListReferenceFND::setGosid(const ExtendedGUID& value)
 
 quint64 ObjectSpaceManifestListReferenceFND::getSizeInFile() const
 {
-  return std::static_pointer_cast<FileNode>(m_parent.lock()->getContent())
-             ->getFileNodeChunkReferenceSize() +
+  return m_parent.lock()->getFileNodeChunkReferenceSize() +
          ExtendedGUID::getSizeInFile();
 }
 
@@ -48,13 +47,13 @@ quint64 ObjectSpaceManifestListReferenceFND::getSizeInFile() const
 //      << " gosid: " << m_gosid << '\n';
 //}
 
-RSChunkContainer_WPtr_t ObjectSpaceManifestListReferenceFND::getRef() const
+FileNodeListFragment_WPtr_t ObjectSpaceManifestListReferenceFND::getRef() const
 {
   return m_ref;
 }
 
 void ObjectSpaceManifestListReferenceFND::setRef(
-    const RSChunkContainer_WPtr_t value)
+    const FileNodeListFragment_WPtr_t value)
 {
   m_ref = value;
 }

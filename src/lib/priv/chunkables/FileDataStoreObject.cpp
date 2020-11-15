@@ -9,33 +9,35 @@
 namespace libmson {
 namespace priv {
 
-FileDataStoreObject::FileDataStoreObject()
-    : m_cbLength(), m_unused(), m_reserved(), m_padding()
+FileDataStoreObject::FileDataStoreObject(
+    const quint64 initialStp, const quint64 initialCb)
+    : Chunkable(initialStp, initialCb), m_cbLength(), m_unused(), m_reserved(),
+      m_padding()
 {
 }
 
-QUuid FileDataStoreObject::guidHeader() const { return m_guidHeader; }
+QUuid FileDataStoreObject::getGuidHeader() const { return m_guidHeader; }
 
 void FileDataStoreObject::setGuidHeader(const QUuid& guidHeader)
 {
   m_guidHeader = guidHeader;
 }
 
-quint64 FileDataStoreObject::cbLength() const { return m_cbLength; }
+quint64 FileDataStoreObject::getCbLength() const { return m_cbLength; }
 
 void FileDataStoreObject::setCbLength(const quint64& cbLength)
 {
   m_cbLength = cbLength;
 }
 
-QByteArray FileDataStoreObject::FileData() const { return m_FileData; }
+QByteArray FileDataStoreObject::getFileData() const { return m_FileData; }
 
 void FileDataStoreObject::setFileData(const QByteArray& FileData)
 {
   m_FileData = FileData;
 }
 
-QUuid FileDataStoreObject::guidFooter() const { return m_guidFooter; }
+QUuid FileDataStoreObject::getGuidFooter() const { return m_guidFooter; }
 
 void FileDataStoreObject::setGuidFooter(const QUuid& guidFooter)
 {

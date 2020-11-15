@@ -22,7 +22,7 @@ private:
   StringInStorageBuffer m_Extension;
 
 public:
-  ObjectDeclarationFileData3RefCountFND(RSChunkContainer_WPtr_t parentNode);
+  ObjectDeclarationFileData3RefCountFND(FileNode_WPtr_t parentNode);
   virtual ~ObjectDeclarationFileData3RefCountFND() = default;
 
   CompactID oid() const;

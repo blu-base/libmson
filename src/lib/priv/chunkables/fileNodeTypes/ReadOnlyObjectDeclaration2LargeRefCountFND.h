@@ -16,11 +16,10 @@ private:
   QByteArray m_md5hash;
 
 public:
-  ReadOnlyObjectDeclaration2LargeRefCountFND(
-      RSChunkContainer_WPtr_t parentFileNode);
+  ReadOnlyObjectDeclaration2LargeRefCountFND(FileNode_WPtr_t parentFileNode);
   virtual ~ReadOnlyObjectDeclaration2LargeRefCountFND() = default;
 
-  RSChunkContainer_WPtr_t getBlobRef() const;
+  ObjectSpaceObjectPropSet_WPtr_t getBlobRef() const;
 
   ObjectDeclaration2Body getBody() const;
 
@@ -29,8 +28,6 @@ public:
 
   QByteArray getMd5hash() const;
   void setMd5hash(const QByteArray& value);
-
-  std::shared_ptr<ObjectSpaceObjectPropSet> getPropSet();
 
   virtual quint64 getSizeInFile() const override;
 

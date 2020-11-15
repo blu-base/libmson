@@ -4,7 +4,7 @@ namespace libmson {
 namespace priv {
 
 RevisionManifestListStartFND::RevisionManifestListStartFND(
-    RSChunkContainer_WPtr_t parentFileNode)
+    FileNode_WPtr_t parentFileNode)
     : IFileNodeType(parentFileNode), m_nInstance()
 {
 }

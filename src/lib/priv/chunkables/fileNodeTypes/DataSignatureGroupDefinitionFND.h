@@ -5,7 +5,6 @@
 
 #include "../../IStreamable.h"
 #include "../../commonTypes/ExtendedGUID.h"
-#include "../RevisionStoreChunkContainer.h"
 #include "IFileNodeType.h"
 
 namespace libmson {
@@ -18,7 +17,7 @@ private:
   ExtendedGUID m_dataSignatureGroup;
 
 public:
-  DataSignatureGroupDefinitionFND(RSChunkContainer_WPtr_t parentFileNode);
+  DataSignatureGroupDefinitionFND(FileNode_WPtr_t parentFileNode);
   virtual ~DataSignatureGroupDefinitionFND() = default;
 
   ExtendedGUID dataSignatureGroup() const;

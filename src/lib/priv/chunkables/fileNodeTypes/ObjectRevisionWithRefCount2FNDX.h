@@ -13,7 +13,7 @@ namespace priv {
 
 class ObjectRevisionWithRefCount2FNDX : public IFileNodeType {
 private:
-  RSChunkContainer_WPtr_t m_ref;
+  ObjectSpaceObjectPropSet_WPtr_t m_ref;
 
   CompactID m_oid;
 
@@ -23,11 +23,11 @@ private:
   quint32 m_cRef;
 
 public:
-  ObjectRevisionWithRefCount2FNDX(RSChunkContainer_WPtr_t parentFileNode);
+  ObjectRevisionWithRefCount2FNDX(FileNode_WPtr_t parentFileNode);
   virtual ~ObjectRevisionWithRefCount2FNDX() = default;
 
-  RSChunkContainer_WPtr_t getRef() const;
-  void setRef(const RSChunkContainer_WPtr_t value);
+  ObjectSpaceObjectPropSet_WPtr_t getRef() const;
+  void setRef(const ObjectSpaceObjectPropSet_WPtr_t value);
 
   CompactID getOid() const;
   void setOid(const CompactID& value);
@@ -41,7 +41,6 @@ public:
   quint32 getCRef() const;
   void setCRef(const quint32& value);
 
-  std::shared_ptr<ObjectSpaceObjectPropSet> getPropSet() const;
 
   virtual quint64 getSizeInFile() const override;
 

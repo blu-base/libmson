@@ -18,7 +18,7 @@ private:
   quint32 m_RootRole;
 
 public:
-  RootObjectReference2FNDX(RSChunkContainer_WPtr_t parentFileNode);
+  RootObjectReference2FNDX(FileNode_WPtr_t parentFileNode);
   virtual ~RootObjectReference2FNDX() = default;
 
 

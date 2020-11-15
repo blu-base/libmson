@@ -6,43 +6,50 @@
 #include <memory>
 
 #include "Chunkable.h"
-#include "RevisionStoreChunkContainer.h"
+#include "FreeChunk.h"
 
 namespace libmson {
 namespace priv {
+
+class FreeChunkListFragment;
+
+typedef std::shared_ptr<FreeChunkListFragment> FreeChunkListFragment_SPtr_t;
+typedef std::weak_ptr<FreeChunkListFragment> FreeChunkListFragment_WPtr_t;
 
 class FreeChunkListFragment : public Chunkable {
 private:
   quint32 m_crc;
 
-  std::weak_ptr<RevisionStoreChunkContainer> m_fcrNextFragment;
+  FreeChunkListFragment_WPtr_t m_fcrNextFragment;
 
-  std::vector<std::weak_ptr<RevisionStoreChunkContainer>> m_fcrFreeChunks;
+  std::vector<FreeChunk_WPtr_t> m_fcrFreeChunks;
 
   static const qint64 minSizeInFile = 16;
 
 public:
-  FreeChunkListFragment();
-  FreeChunkListFragment(const quint64 size);
+  FreeChunkListFragment(
+      const quint64 initialStp = 0, const quint64 initialCb = 0);
 
   quint32 getCrc() const;
   void setCrc(const quint32 value);
 
-  std::weak_ptr<RevisionStoreChunkContainer> getFcrNextFragment();
-  void setFcrNextFragment(std::weak_ptr<RevisionStoreChunkContainer> value);
+  FreeChunkListFragment_WPtr_t getFcrNextFragment();
+  void setFcrNextFragment(FreeChunkListFragment_WPtr_t value);
 
-  std::vector<std::weak_ptr<RevisionStoreChunkContainer>> fcrFreeChunks() const;
-  std::vector<std::weak_ptr<RevisionStoreChunkContainer>>& getFcrFreeChunks();
-  void setFcrFreeChunks(
-      const std::vector<std::weak_ptr<RevisionStoreChunkContainer>>& value);
+  std::vector<FreeChunk_WPtr_t> fcrFreeChunks() const;
+  std::vector<FreeChunk_WPtr_t>& getFcrFreeChunks();
+  void setFcrFreeChunks(const std::vector<FreeChunk_WPtr_t>& value);
 
-  // Chunkable interface
-  virtual quint64 cb() const override;
-  virtual RevisionStoreChunkType getType() const override;
 
   friend class RevisionStoreFileWriter;
   friend class RevisionStoreFileParser;
+
+private:
+  // Chunkable interface
+  virtual quint64 cb() const override;
+  virtual RevisionStoreChunkType getType() const override;
 };
+
 
 } // namespace priv
 } // namespace libmson

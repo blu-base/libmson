@@ -29,7 +29,10 @@ class FileNodeChunkReference : public IFileChunkReference<quint64, quint64> {
 
 public:
   FileNodeChunkReference(FNCR_STP_FORMAT stpFormat, FNCR_CB_FORMAT cbFormat);
+  FileNodeChunkReference(
+      FNCR_STP_FORMAT stpFormat, FNCR_CB_FORMAT cbFormat, FCR_INIT inittype);
   FileNodeChunkReference(quint8 stpFormat, quint8 cbFormat);
+  FileNodeChunkReference(quint8 stpFormat, quint8 cbFormat, FCR_INIT inittype);
 
   virtual ~FileNodeChunkReference() = default;
 
@@ -48,7 +51,8 @@ public:
   quint64 getSizeInFile() const;
 
 
-  static quint64 getSizeInFile(FNCR_STP_FORMAT stpFormat, FNCR_CB_FORMAT cbFormat);
+  static quint64
+  getSizeInFile(FNCR_STP_FORMAT stpFormat, FNCR_CB_FORMAT cbFormat);
 
 private:
   virtual void deserialize(QDataStream& ds) override;

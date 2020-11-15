@@ -16,7 +16,7 @@ private:
   ExtendedGUID m_oid;
 
 public:
-  ObjectGroupStartFND(RSChunkContainer_WPtr_t parentFileNode);
+  ObjectGroupStartFND(FileNode_WPtr_t parentFileNode);
   virtual ~ObjectGroupStartFND() = default;
 
   ExtendedGUID oid() const;

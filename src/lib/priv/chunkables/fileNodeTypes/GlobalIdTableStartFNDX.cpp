@@ -2,8 +2,7 @@
 
 namespace libmson {
 namespace priv {
-GlobalIdTableStartFNDX::GlobalIdTableStartFNDX(
-    RSChunkContainer_WPtr_t parentFileNode)
+GlobalIdTableStartFNDX::GlobalIdTableStartFNDX(FileNode_WPtr_t parentFileNode)
     : IFileNodeType(parentFileNode), m_reserved{0}
 {
 }
@@ -21,10 +20,6 @@ void GlobalIdTableStartFNDX::serialize(QDataStream& ds) const
 {
   ds << m_reserved;
 }
-
-// void GlobalIdTableStartFNDX::toDebugString(QDebug &dbg) const {
-//  dbg << " GlobalIdTableStartFNDX: reserved: " << m_reserved << '\n';
-//}
 
 // void GlobalIdTableStartFNDX::writeLowLevelXml(
 //    QXmlStreamWriter &xmlWriter) const {

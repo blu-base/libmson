@@ -1,12 +1,14 @@
 #include "FileNode.h"
 
-#include "../commonTypes/FileNodeChunkReference.h"
+#include "fileNodeTypes/IFileNodeType.h"
 
 namespace libmson {
 namespace priv {
 
-FileNode::FileNode(RSChunkContainer_WPtr_t parent_fileNodeListFragment)
-    : m_parent(parent_fileNodeListFragment),
+FileNode::FileNode(
+    std::weak_ptr<FileNodeListFragment> parent, const quint64 initialStp,
+    const quint64 initialCb)
+    : Chunkable(initialStp, initialCb), m_parent(parent),
       fileNodeID(static_cast<quint16>(FileNodeTypeID::InvalidFND)),
       fileNodeSize(minSizeInFile),
       stpFormat(static_cast<quint8>(FNCR_STP_FORMAT::UNCOMPRESED_8BYTE)),
@@ -15,7 +17,7 @@ FileNode::FileNode(RSChunkContainer_WPtr_t parent_fileNodeListFragment)
 {
 }
 
-RSChunkContainer_WPtr_t FileNode::getParent() { return m_parent; }
+std::weak_ptr<FileNodeListFragment> FileNode::getParent() { return m_parent; }
 
 quint64 FileNode::cb() const { return minSizeInFile + fnt->getSizeInFile(); }
 
@@ -58,6 +60,13 @@ void FileNode::setCbFormat(const quint8& value) { cbFormat = value; }
 quint8 FileNode::getBaseType() const { return baseType; }
 
 void FileNode::setBaseType(const quint8& value) { baseType = value; }
+
+void FileNode::setFileNodeType(const std::shared_ptr<IFileNodeType>& value)
+{
+  fnt = value;
+}
+
+std::shared_ptr<IFileNodeType> FileNode::getFnt() const { return fnt; }
 
 quint8 FileNode::getFileNodeChunkReferenceSize()
 {

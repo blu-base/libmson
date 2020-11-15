@@ -1,18 +1,23 @@
 #ifndef FILENODE_H
 #define FILENODE_H
 
+#include "../commonTypes/FileNodeChunkReference.h"
+#include "Chunkable.h"
 #include <QtCore/qglobal.h>
 
-#include <memory>
-
-#include "Chunkable.h"
-#include "RevisionStoreChunkContainer.h"
-
-#include "../commonTypes/FileNodeChunkReference.h"
-#include "fileNodeTypes/IFileNodeType.h"
 
 namespace libmson {
 namespace priv {
+
+class FileNode;
+
+typedef std::shared_ptr<FileNode> FileNode_SPtr_t;
+typedef std::weak_ptr<FileNode> FileNode_WPtr_t;
+
+class FileNodeListFragment;
+
+
+class IFileNodeType;
 
 enum class FileNodeTypeID : quint16 {
   ObjectSpaceManifestRootFND                 = 0x004,
@@ -58,10 +63,11 @@ enum class FileNodeTypeID : quint16 {
   InvalidFND                                 = 0xFFF,
 };
 
+
 class FileNode : public Chunkable {
 
 private:
-  RSChunkContainer_WPtr_t m_parent;
+  std::weak_ptr<FileNodeListFragment> m_parent;
 
   quint16 fileNodeID;
   quint16 fileNodeSize;
@@ -75,8 +81,11 @@ private:
 
   std::shared_ptr<IFileNodeType> fnt;
 
+
 public:
-  FileNode(RSChunkContainer_WPtr_t parent_fileNodeListFragment);
+  FileNode(
+      std::weak_ptr<FileNodeListFragment> parent, const quint64 initialStp = 0,
+      const quint64 initialCb = 0);
 
   quint16 getFileNodeID() const;
   void setFileNodeID(const quint16& value);
@@ -102,38 +111,38 @@ public:
 
   quint8 getFileNodeChunkReferenceSize();
 
-  RSChunkContainer_WPtr_t getParent();
-
-  // Chunkable interface
-  virtual quint64 cb() const override;
-  virtual RevisionStoreChunkType getType() const override;
+  std::weak_ptr<FileNodeListFragment> getParent();
 
 
   friend class RevisionStoreFileWriter;
   friend class RevisionStoreFileParser;
 
 private:
-  /**
-   * @brief maskReserved
-   *
-   * masks and shifts for parsing filenode
-   */
-  static constexpr const quint32 maskReserved     = 0x1;
-  static constexpr const quint32 maskBaseType     = 0xF;
-  static constexpr const quint32 maskCbFormat     = 0x3;
-  static constexpr const quint32 maskStpFormat    = 0x3;
-  static constexpr const quint32 maskFileNodeSize = 0x1FFF;
-  static constexpr const quint32 maskFileNodeID   = 0x3FF;
+  // Chunkable interface
+  virtual quint64 cb() const override;
+  virtual RevisionStoreChunkType getType() const override;
 
-  static constexpr const quint32 shiftReserved     = 31;
-  static constexpr const quint32 shiftBaseType     = 27;
-  static constexpr const quint32 shiftCbFormat     = 25;
-  static constexpr const quint32 shiftStpFormat    = 23;
-  static constexpr const quint32 shiftFileNodeSize = 10;
-  static constexpr const quint32 shiftFileNodeID   = 0;
-
+private:
   static constexpr const quint16 minSizeInFile = 4;
 };
+
+
+// masks and shifts for parsing filenode
+/// \todo determine wether such global variables are the best place for magic
+/// numbers
+static constexpr const quint32 fNmaskReserved     = 0x1;
+static constexpr const quint32 fNmaskBaseType     = 0xF;
+static constexpr const quint32 fNmaskCbFormat     = 0x3;
+static constexpr const quint32 fNmaskStpFormat    = 0x3;
+static constexpr const quint32 fNmaskFileNodeSize = 0x1FFF;
+static constexpr const quint32 fNmaskFileNodeID   = 0x3FF;
+
+static constexpr const quint32 fNshiftReserved     = 31;
+static constexpr const quint32 fNshiftBaseType     = 27;
+static constexpr const quint32 fNshiftCbFormat     = 25;
+static constexpr const quint32 fNshiftStpFormat    = 23;
+static constexpr const quint32 fNshiftFileNodeSize = 10;
+static constexpr const quint32 fNshiftFileNodeID   = 0;
 
 
 } // namespace priv

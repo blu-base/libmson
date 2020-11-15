@@ -3,45 +3,39 @@
 namespace libmson {
 namespace priv {
 
-FreeChunkListFragment::FreeChunkListFragment() {}
-
-FreeChunkListFragment::FreeChunkListFragment(const quint64 size)
+FreeChunkListFragment::FreeChunkListFragment(
+    const quint64 initialStp, const quint64 initialCb)
+    : Chunkable(initialStp, initialCb), m_crc()
 {
-  if (size > minSizeInFile) {
-    m_fcrFreeChunks.resize((size - minSizeInFile) / 16u);
-  }
 }
 
 quint32 FreeChunkListFragment::getCrc() const { return m_crc; }
 
 void FreeChunkListFragment::setCrc(const quint32 value) { m_crc = value; }
 
-std::weak_ptr<RevisionStoreChunkContainer>
-FreeChunkListFragment::getFcrNextFragment()
+FreeChunkListFragment_WPtr_t FreeChunkListFragment::getFcrNextFragment()
 {
   return m_fcrNextFragment;
 }
 
 void FreeChunkListFragment::setFcrNextFragment(
-    std::weak_ptr<RevisionStoreChunkContainer> value)
+    FreeChunkListFragment_WPtr_t value)
 {
   m_fcrNextFragment = value;
 }
 
-std::vector<std::weak_ptr<RevisionStoreChunkContainer>>
-FreeChunkListFragment::fcrFreeChunks() const
+std::vector<FreeChunk_WPtr_t> FreeChunkListFragment::fcrFreeChunks() const
 {
   return m_fcrFreeChunks;
 }
 
-std::vector<std::weak_ptr<RevisionStoreChunkContainer>>&
-FreeChunkListFragment::getFcrFreeChunks()
+std::vector<FreeChunk_WPtr_t>& FreeChunkListFragment::getFcrFreeChunks()
 {
   return m_fcrFreeChunks;
 }
 
 void FreeChunkListFragment::setFcrFreeChunks(
-    const std::vector<std::weak_ptr<RevisionStoreChunkContainer>>& value)
+    const std::vector<FreeChunk_WPtr_t>& value)
 {
   m_fcrFreeChunks = value;
 }

@@ -5,12 +5,16 @@
 #include <vector>
 
 #include "../IStreamable.h"
-#include "RevisionStoreChunkContainer.h"
+#include "Chunkable.h"
 
 namespace libmson {
 namespace priv {
 
 class TransactionEntry;
+
+class TransactionLogFragment;
+typedef std::shared_ptr<TransactionLogFragment> TransactionLogFragment_SPtr_t;
+typedef std::weak_ptr<TransactionLogFragment> TransactionLogFragment_WPtr_t;
 
 class TransactionLogFragment : public Chunkable {
 private:
@@ -24,26 +28,32 @@ private:
    */
   std::vector<std::shared_ptr<TransactionEntry>> sizeTable;
 
-  RSChunkContainer_WPtr_t nextFragment;
+  TransactionLogFragment_WPtr_t nextFragment;
+
+
+  quint8 m_paddingLength;
 
 public:
-  TransactionLogFragment();
+  TransactionLogFragment(
+      const quint64 initialStp = 0, const quint64 initialCb = 0);
   virtual ~TransactionLogFragment() = default;
 
   std::vector<std::shared_ptr<TransactionEntry>> getSizeTable() const;
   void
   setSizeTable(const std::vector<std::shared_ptr<TransactionEntry>>& value);
 
-  RSChunkContainer_WPtr_t getNextFragment() const;
-  void setNextFragment(const RSChunkContainer_WPtr_t value);
+  TransactionLogFragment_WPtr_t getNextFragment() const;
+  void setNextFragment(const TransactionLogFragment_WPtr_t value);
 
-  quint64 getSizeInFile() const;
+
+  quint8 getPaddingLength() const;
+  void setPaddingLength(const quint8& paddingLength);
 
   friend class RevisionStoreFileWriter;
   friend class RevisionStoreFileParser;
 
 
-  // Chunkable interface
+private:
   virtual quint64 cb() const override;
   virtual RevisionStoreChunkType getType() const override;
 };
@@ -65,6 +75,7 @@ public:
   bool isZero() const;
 
   static quint64 getSizeInFile() { return sizeInFile; }
+
 
 private:
   virtual void serialize(QDataStream& ds) const override;

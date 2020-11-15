@@ -3,7 +3,7 @@
 namespace libmson {
 namespace priv {
 
-ObjectGroupStartFND::ObjectGroupStartFND(RSChunkContainer_WPtr_t parentFileNode)
+ObjectGroupStartFND::ObjectGroupStartFND(FileNode_WPtr_t parentFileNode)
     : IFileNodeType(parentFileNode), m_oid(ExtendedGUID())
 {
 }

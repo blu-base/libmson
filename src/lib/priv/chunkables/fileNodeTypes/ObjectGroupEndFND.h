@@ -11,14 +11,15 @@ class ObjectGroupEndFND
     : public IFileNodeType
     , public IStreamable {
 public:
-  ObjectGroupEndFND(RSChunkContainer_WPtr_t parentFileNode);
+  ObjectGroupEndFND(FileNode_WPtr_t parentFileNode)
+      : IFileNodeType(parentFileNode){};
   virtual ~ObjectGroupEndFND() = default;
 
   virtual quint64 getSizeInFile() const override { return 0; }
 
 private:
-  virtual void deserialize(QDataStream& ds) override;
-  virtual void serialize(QDataStream& ds) const override;
+  virtual void deserialize(QDataStream& ds) override{};
+  virtual void serialize(QDataStream& ds) const override{};
 };
 
 } // namespace priv

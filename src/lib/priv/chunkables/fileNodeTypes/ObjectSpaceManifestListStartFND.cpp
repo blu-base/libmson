@@ -4,7 +4,7 @@ namespace libmson {
 namespace priv {
 
 ObjectSpaceManifestListStartFND::ObjectSpaceManifestListStartFND(
-    RSChunkContainer_WPtr_t parentFileNode)
+    FileNode_WPtr_t parentFileNode)
     : IFileNodeType(parentFileNode)
 {
 }
@@ -30,11 +30,6 @@ void ObjectSpaceManifestListStartFND::serialize(QDataStream& ds) const
 {
   ds << m_gosid;
 }
-
-// void ObjectSpaceManifestListStartFND::toDebugString(QDebug& dbg) const
-//{
-//  dbg << " ObjectSpaceManifestListStartFND: gosid: " << m_gosid << '\n';
-//}
 
 // void ObjectSpaceManifestListStartFND::writeLowLevelXml(
 //    QXmlStreamWriter& xmlWriter) const

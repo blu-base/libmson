@@ -16,7 +16,7 @@ private:
   quint32 m_iIndexMapTo;
 
 public:
-  GlobalIdTableEntry2FNDX(RSChunkContainer_WPtr_t parentFileNode);
+  GlobalIdTableEntry2FNDX(FileNode_WPtr_t parentFileNode);
   virtual ~GlobalIdTableEntry2FNDX() = default;
 
   quint32 getIIndexMapTo() const;

@@ -12,14 +12,15 @@ class GlobalIdTableEndFNDX
     : public IFileNodeType
     , public IStreamable {
 public:
-  GlobalIdTableEndFNDX(RSChunkContainer_WPtr_t parentFileNode);
+  GlobalIdTableEndFNDX(FileNode_WPtr_t parentFileNode)
+      : IFileNodeType(parentFileNode){};
   virtual ~GlobalIdTableEndFNDX() = default;
 
-  virtual quint64 getSizeInFile() const override;
+  virtual quint64 getSizeInFile() const override { return 0; };
 
 private:
-  virtual void deserialize(QDataStream& ds) override;
-  virtual void serialize(QDataStream& ds) const override;
+  virtual void deserialize(QDataStream& ds) override{};
+  virtual void serialize(QDataStream& ds) const override{};
 };
 
 } // namespace priv

@@ -7,11 +7,24 @@ namespace priv {
 
 FileNodeChunkReference::FileNodeChunkReference(
     FNCR_STP_FORMAT stpFormat, FNCR_CB_FORMAT cbFormat)
-    : IFileChunkReference<quint64, quint64>()
+    : IFileChunkReference<quint64, quint64>(), m_stpFormat(stpFormat),
+      m_cbFormat(cbFormat)
 {
+}
 
-  m_stpFormat = stpFormat;
-  m_cbFormat  = cbFormat;
+FileNodeChunkReference::FileNodeChunkReference(
+    FNCR_STP_FORMAT stpFormat, FNCR_CB_FORMAT cbFormat, FCR_INIT inittype)
+    : IFileChunkReference<quint64, quint64>(), m_stpFormat(stpFormat),
+      m_cbFormat(cbFormat)
+{
+  switch (inittype) {
+  case FCR_INIT::NIL:
+    this->set_fcrNil();
+    break;
+  case FCR_INIT::ZERO:
+    this->set_fcrZero();
+    break;
+  }
 }
 
 FileNodeChunkReference::FileNodeChunkReference(
@@ -19,6 +32,14 @@ FileNodeChunkReference::FileNodeChunkReference(
     : FileNodeChunkReference(
           static_cast<FNCR_STP_FORMAT>(stpFormat),
           static_cast<FNCR_CB_FORMAT>(cbFormat))
+{
+}
+
+FileNodeChunkReference::FileNodeChunkReference(
+    quint8 stpFormat, quint8 cbFormat, FCR_INIT inittype)
+    : FileNodeChunkReference(
+          static_cast<FNCR_STP_FORMAT>(stpFormat),
+          static_cast<FNCR_CB_FORMAT>(cbFormat), inittype)
 {
 }
 

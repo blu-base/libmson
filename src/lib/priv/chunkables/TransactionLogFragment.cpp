@@ -4,101 +4,13 @@
 namespace libmson {
 namespace priv {
 
-TransactionLogFragment::TransactionLogFragment() {}
 
-RSChunkContainer_WPtr_t TransactionLogFragment::getNextFragment() const
+TransactionLogFragment::TransactionLogFragment(
+    const quint64 initialStp, const quint64 initialCb)
+    : Chunkable(initialStp, initialCb), nextFragment(), m_paddingLength()
 {
-  return nextFragment;
 }
 
-void TransactionLogFragment::setNextFragment(
-    const RSChunkContainer_WPtr_t value)
-{
-  nextFragment = value;
-}
-
-quint64 TransactionLogFragment::getSizeInFile() const
-{
-  return sizeTable.size() * TransactionEntry::getSizeInFile() +
-         FileChunkReference64x32::getSizeInFile();
-}
-
-// void TransactionLogFragment::deserialize(QDataStream &ds) {
-//  quint64 startLocation = ds.device()->pos();
-
-//  if (ds.device()->bytesAvailable() < m_size) {
-
-//    qWarning() << "Error while parsing TransactionLogFragment: would reach end
-//    of "
-//               << "file stream before finished parsing. \n"
-//               << "Bytes available: " << ds.device()->bytesAvailable() << '\n'
-//               << "Bytes requested: " << m_size;
-//    return;
-//  }
-
-//  if( m_size  < nextFragment.getSizeInFile() ) {
-//    qWarning() << "Error: could not parse TransactionLogFragment. Specified
-//    size of TransactionLogFragment insufficient."; return;
-//  }
-
-//  quint64 num_entries = (m_size - nextFragment.getSizeInFile()) /
-//                        TransactionEntry::getSizeInFile();
-
-//  for (size_t i{0}; i < num_entries; i++) {
-//    std::shared_ptr<TransactionEntry> entry =
-//        std::make_shared<TransactionEntry>();
-
-//    ds >> *entry;
-//    sizeTable.push_back(entry);
-//  }
-
-//  ds.device()->seek(startLocation + m_size - 12);
-//  ds >> nextFragment;
-//}
-
-// void TransactionLogFragment::serialize(QDataStream &ds) const {
-//  qDebug() << "TransactionLogFragment:  Reading at pos in file: "
-//           << qStringHex(ds.device()->pos(), 16);
-//  for (const auto &te : sizeTable) {
-//    ds << *te;
-//  }
-//  ds << nextFragment;
-
-//  qDebug() << "TransactionLogFragment: Finished at pos in file: "
-//           << qStringHex(ds.device()->pos(), 16);
-//}
-
-// void TransactionLogFragment::toDebugString(QDebug &dbg) const {
-//  dbg << "TransactionLogFragment: size: "
-//      << QString("0x%1").arg(m_size, 16, 16, QLatin1Char('0')) << '\n'
-//      << " nextFragment: " << nextFragment << '\n';
-//  for (const auto &te : sizeTable) {
-//    dbg << *te;
-//  }
-//}
-
-// void TransactionLogFragment::writeLowLevelXml(
-//    QXmlStreamWriter &xmlWriter) const {
-//  xmlWriter.writeStartElement("TransactionLogFragment");
-
-//  xmlWriter.writeStartElement("size");
-//  xmlWriter.writeCharacters(qStringHex(m_size, 16));
-//  xmlWriter.writeEndElement();
-
-//  xmlWriter.writeStartElement("nextFragment");
-//  xmlWriter << nextFragment;
-//  xmlWriter.writeEndElement();
-
-//  xmlWriter.writeStartElement("sizeTable");
-//  for (const auto &entry : sizeTable) {
-//    if (!entry->isZero()) {
-//      xmlWriter << *entry;
-//    }
-//  }
-//  xmlWriter.writeEndElement();
-
-//  xmlWriter.writeEndElement();
-//}
 
 std::vector<std::shared_ptr<TransactionEntry>>
 TransactionLogFragment::getSizeTable() const
@@ -112,7 +24,34 @@ void TransactionLogFragment::setSizeTable(
   sizeTable = value;
 }
 
-quint64 TransactionLogFragment::cb() const { return getSizeInFile(); }
+
+TransactionLogFragment_WPtr_t TransactionLogFragment::getNextFragment() const
+{
+  return nextFragment;
+}
+
+void TransactionLogFragment::setNextFragment(
+    const TransactionLogFragment_WPtr_t value)
+{
+  nextFragment = value;
+}
+
+quint8 TransactionLogFragment::getPaddingLength() const
+{
+  return m_paddingLength;
+}
+
+void TransactionLogFragment::setPaddingLength(const quint8& paddingLength)
+{
+  m_paddingLength = paddingLength;
+}
+
+
+quint64 TransactionLogFragment::cb() const
+{
+  return sizeTable.size() * TransactionEntry::getSizeInFile() +
+         FileChunkReference64x32::getSizeInFile() + m_paddingLength;
+}
 
 RevisionStoreChunkType TransactionLogFragment::getType() const
 {
@@ -121,6 +60,7 @@ RevisionStoreChunkType TransactionLogFragment::getType() const
 
 
 // #############################################################################
+
 
 TransactionEntry::TransactionEntry() : srcID{}, TransactionEntrySwitch{} {}
 

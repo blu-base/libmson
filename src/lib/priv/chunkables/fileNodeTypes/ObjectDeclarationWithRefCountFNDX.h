@@ -3,6 +3,7 @@
 
 #include <QtCore/qglobal.h>
 
+#include "../Chunkable.h"
 #include "../ObjectSpaceObjectPropSet.h"
 #include "../objectTypes/ObjectDeclarationWithRefCountBody.h"
 
@@ -13,25 +14,22 @@ namespace priv {
 
 class ObjectDeclarationWithRefCountFNDX : public IFileNodeType {
 private:
-  RSChunkContainer_WPtr_t m_objectRef;
+  ObjectSpaceObjectPropSet_WPtr_t m_objectRef;
   ObjectDeclarationWithRefCountBody m_body;
   quint8 m_cRef;
 
 public:
-  ObjectDeclarationWithRefCountFNDX(RSChunkContainer_WPtr_t parentFileNode);
+  ObjectDeclarationWithRefCountFNDX(FileNode_WPtr_t parentFileNode);
   virtual ~ObjectDeclarationWithRefCountFNDX() = default;
 
-  RSChunkContainer_WPtr_t getObjectRef() const;
-  void setObjectRef(const RSChunkContainer_WPtr_t& value);
+  ObjectSpaceObjectPropSet_WPtr_t getObjectRef() const;
+  void setObjectRef(const ObjectSpaceObjectPropSet_WPtr_t& value);
 
   ObjectDeclarationWithRefCountBody getBody() const;
   void setBody(const ObjectDeclarationWithRefCountBody& value);
 
   quint8 getCRef() const;
   void setCRef(const quint8& value);
-
-  std::shared_ptr<ObjectSpaceObjectPropSet> getPropSet();
-
 
   virtual quint64 getSizeInFile() const override;
 

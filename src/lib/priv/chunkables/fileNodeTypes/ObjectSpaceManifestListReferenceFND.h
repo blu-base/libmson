@@ -4,6 +4,7 @@
 #include <QtCore/qglobal.h>
 
 #include "../../commonTypes/ExtendedGUID.h"
+#include "../FileNodeListFragment.h"
 #include "IFileNodeType.h"
 
 namespace libmson {
@@ -25,7 +26,7 @@ private:
    * @brief specifies the location and size of the first FileNodeListFragment
    * @var ref
    */
-  RSChunkContainer_WPtr_t m_ref;
+  FileNodeListFragment_WPtr_t m_ref;
 
   /**
    * @brief specifies the identity of the ObjectSpaceManifestList
@@ -38,11 +39,11 @@ private:
   ExtendedGUID m_gosid;
 
 public:
-  ObjectSpaceManifestListReferenceFND(RSChunkContainer_WPtr_t parentFileNode);
+  ObjectSpaceManifestListReferenceFND(FileNode_WPtr_t parentFileNode);
   virtual ~ObjectSpaceManifestListReferenceFND() = default;
 
-  RSChunkContainer_WPtr_t getRef() const;
-  void setRef(const RSChunkContainer_WPtr_t value);
+  FileNodeListFragment_WPtr_t getRef() const;
+  void setRef(const FileNodeListFragment_WPtr_t value);
 
   ExtendedGUID getGosid() const;
   void setGosid(const ExtendedGUID& value);

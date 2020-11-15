@@ -7,26 +7,19 @@
 namespace libmson {
 namespace priv {
 ObjectDataEncryptionKeyV2FNDX::ObjectDataEncryptionKeyV2FNDX(
-    RSChunkContainer_WPtr_t parentFileNode)
+    FileNode_WPtr_t parentFileNode)
     : IFileNodeType(parentFileNode)
 {
 }
 
-std::shared_ptr<EncryptedData>
-ObjectDataEncryptionKeyV2FNDX::getEncryptionData() const
-{
-  return std::static_pointer_cast<EncryptedData>(
-      m_blobRef.lock()->getContent());
-}
 
-
-RSChunkContainer_WPtr_t ObjectDataEncryptionKeyV2FNDX::getBlobRef() const
+EncryptedData_WPtr_t ObjectDataEncryptionKeyV2FNDX::getBlobRef() const
 {
   return m_blobRef;
 }
 
 void ObjectDataEncryptionKeyV2FNDX::setBlobRef(
-    const RSChunkContainer_WPtr_t& value)
+    const EncryptedData_WPtr_t& value)
 {
   m_blobRef = value;
 }
@@ -87,8 +80,7 @@ void ObjectDataEncryptionKeyV2FNDX::setBlobRef(
 
 quint64 ObjectDataEncryptionKeyV2FNDX::getSizeInFile() const
 {
-  return std::static_pointer_cast<FileNode>(m_parent.lock()->getContent())
-      ->getFileNodeChunkReferenceSize();
+  return m_parent.lock()->getFileNodeChunkReferenceSize();
 }
 
 } // namespace priv

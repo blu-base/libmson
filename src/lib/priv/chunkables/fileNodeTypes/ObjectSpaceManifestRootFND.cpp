@@ -4,7 +4,7 @@ namespace libmson {
 namespace priv {
 
 ObjectSpaceManifestRootFND::ObjectSpaceManifestRootFND(
-    RSChunkContainer_WPtr_t parentFileNode)
+    FileNode_WPtr_t parentFileNode)
     : IFileNodeType(parentFileNode)
 {
 }

@@ -5,8 +5,10 @@
 namespace libmson {
 namespace priv {
 
-ObjectInfoDependencyOverrideData::ObjectInfoDependencyOverrideData()
-    : m_c8BitOverrides(), m_c32BitOverrides(), m_crc()
+ObjectInfoDependencyOverrideData::ObjectInfoDependencyOverrideData(
+    const quint64 initialStp, const quint64 initialCb)
+    : Chunkable(initialStp, initialCb), m_c8BitOverrides(), m_c32BitOverrides(),
+      m_crc()
 {
 }
 

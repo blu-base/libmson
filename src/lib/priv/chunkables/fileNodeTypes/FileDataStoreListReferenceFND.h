@@ -3,26 +3,25 @@
 
 #include <QtCore/qglobal.h>
 
+#include "../FileNodeListFragment.h"
 #include "IFileNodeType.h"
 
-#include "../FileNodeListFragment.h"
-#include "../RevisionStoreChunkContainer.h"
 
 namespace libmson {
 namespace priv {
 
 class FileDataStoreListReferenceFND : public IFileNodeType {
 private:
-  RSChunkContainer_WPtr_t m_ref;
+  FileNodeListFragment_WPtr_t m_ref;
 
   //  FileNodeListFragment m_StoreList;
 
 public:
-  FileDataStoreListReferenceFND(RSChunkContainer_WPtr_t parentFileNode);
+  FileDataStoreListReferenceFND(FileNode_WPtr_t parentFileNode);
   virtual ~FileDataStoreListReferenceFND() = default;
 
-  RSChunkContainer_WPtr_t getRef() const;
-  void setRef(const RSChunkContainer_WPtr_t& value);
+  FileNodeListFragment_WPtr_t getRef() const;
+  void setRef(const FileNodeListFragment_WPtr_t value);
 
   std::shared_ptr<FileNodeListFragment> getStoreList();
 

@@ -5,7 +5,7 @@ namespace libmson {
 namespace priv {
 
 ObjectInfoDependencyOverridesFND::ObjectInfoDependencyOverridesFND(
-    RSChunkContainer_WPtr_t parentFileNode)
+    FileNode_WPtr_t parentFileNode)
     : IFileNodeType(parentFileNode)
 {
 }
@@ -19,28 +19,32 @@ ObjectInfoDependencyOverridesFND::getData() const
 void ObjectInfoDependencyOverridesFND::setData(
     const ObjectInfoDependencyOverrideData& value)
 {
-  m_data = value;
+  /// \todo figure out how to deal with ObjectInfoDependencyOverridesFND
+  qWarning(
+      "Trying to set ObjectInfoDependencyOverrideData, which is unimplemented");
+  //  m_data = value;
 }
 
-void ObjectInfoDependencyOverridesFND::setData(RSChunkContainer_WPtr_t remote)
+void ObjectInfoDependencyOverridesFND::setData(
+    ObjectInfoDependencyOverrideData_WPtr_t remote)
 {
   m_ref = remote;
 }
 
 quint64 ObjectInfoDependencyOverridesFND::getSizeInFile() const
 {
-  return std::static_pointer_cast<FileNode>(m_parent.lock()->getContent())
-             ->getFileNodeChunkReferenceSize() +
+  return m_parent.lock()->getFileNodeChunkReferenceSize() +
          m_data.getSizeInFile();
 }
 
-RSChunkContainer_WPtr_t ObjectInfoDependencyOverridesFND::getRef() const
+ObjectInfoDependencyOverrideData_WPtr_t
+ObjectInfoDependencyOverridesFND::getRef() const
 {
   return m_ref;
 }
 
 void ObjectInfoDependencyOverridesFND::setRef(
-    const RSChunkContainer_WPtr_t value)
+    const ObjectInfoDependencyOverrideData_WPtr_t value)
 {
   m_ref = value;
 }

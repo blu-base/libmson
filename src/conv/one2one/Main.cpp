@@ -23,7 +23,6 @@
 #include "../../lib/priv/chunkables/Chunkable.h"
 #include "../../lib/priv/chunkables/FreeChunk.h"
 #include "../../lib/priv/chunkables/FreeChunkListFragment.h"
-#include "../../lib/priv/chunkables/RevisionStoreChunkContainer.h"
 #include "../../lib/priv/chunkables/RevisionStoreFileHeader.h"
 
 static const QStringList onenotefileextensions{"*.one", "*.onetoc2"};
@@ -168,7 +167,8 @@ int main(int argc, char* argv[])
 
   QDataStream input(&mson_file);
 
-  auto fileParser = libmson::priv::RevisionStoreFileParser(input);
+  auto fileParser =
+      libmson::priv::RevisionStoreFileParser(input, baseFileName + ".one");
 
   std::shared_ptr<libmson::priv::RevisionStoreFile> mson = fileParser.parse();
 
@@ -209,7 +209,8 @@ int main(int argc, char* argv[])
   QFile msonOut(entry + ".new");
   msonOut.open(QIODevice::WriteOnly);
   QDataStream outStream(&msonOut);
-  libmson::priv::RevisionStoreFileWriter(mson).write(outStream);
+  auto writer = libmson::priv::RevisionStoreFileWriter(mson);
+  writer.write(outStream);
 
   if (outputSet) {
     outputPath = parser.value(output);

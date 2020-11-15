@@ -67,7 +67,7 @@ private:
   quint16 m_odcsDefault;
 
 public:
-  RevisionManifestStart4FND(RSChunkContainer_WPtr_t parentFileNode);
+  RevisionManifestStart4FND(FileNode_WPtr_t parentFileNode);
   virtual ~RevisionManifestStart4FND() = default;
 
 

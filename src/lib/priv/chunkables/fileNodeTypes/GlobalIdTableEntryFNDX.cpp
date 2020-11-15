@@ -2,8 +2,7 @@
 
 namespace libmson {
 namespace priv {
-GlobalIdTableEntryFNDX::GlobalIdTableEntryFNDX(
-    RSChunkContainer_WPtr_t parentFileNode)
+GlobalIdTableEntryFNDX::GlobalIdTableEntryFNDX(FileNode_WPtr_t parentFileNode)
     : IFileNodeType(parentFileNode), m_index{0}
 {
 }

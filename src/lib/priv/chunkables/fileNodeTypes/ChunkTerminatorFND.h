@@ -12,17 +12,16 @@ class ChunkTerminatorFND
     : public IFileNodeType
     , public IStreamable {
 public:
-  ChunkTerminatorFND(RSChunkContainer_WPtr_t parentFileNode);
+  ChunkTerminatorFND(FileNode_WPtr_t parentFileNode)
+      : IFileNodeType(parentFileNode){};
   virtual ~ChunkTerminatorFND() = default;
 
-  virtual quint64 getSizeInFile() const override;
+  virtual quint64 getSizeInFile() const override { return 0; };
 
-
-  static const quint64 sizeInFile = 0;
 
 private:
-  virtual void deserialize(QDataStream& ds) override;
-  virtual void serialize(QDataStream& ds) const override;
+  virtual void deserialize(QDataStream& ds) override{};
+  virtual void serialize(QDataStream& ds) const override{};
 };
 
 } // namespace priv

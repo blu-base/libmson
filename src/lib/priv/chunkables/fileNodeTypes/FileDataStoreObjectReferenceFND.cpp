@@ -5,18 +5,18 @@
 namespace libmson {
 namespace priv {
 FileDataStoreObjectReferenceFND::FileDataStoreObjectReferenceFND(
-    RSChunkContainer_WPtr_t parentFileNode)
+    FileNode_WPtr_t parentFileNode)
     : IFileNodeType(parentFileNode)
 {
 }
 
-RSChunkContainer_WPtr_t FileDataStoreObjectReferenceFND::getBlobRef() const
+FileDataStoreObject_WPtr_t FileDataStoreObjectReferenceFND::getBlobRef() const
 {
   return m_blobRef;
 }
 
 void FileDataStoreObjectReferenceFND::setBlobRef(
-    const RSChunkContainer_WPtr_t& value)
+    const FileDataStoreObject_WPtr_t& value)
 {
   m_blobRef = value;
 }
@@ -31,12 +31,6 @@ void FileDataStoreObjectReferenceFND::setGuidReference(const QUuid& value)
   m_guidReference = value;
 }
 
-std::shared_ptr<FileDataStoreObject>
-FileDataStoreObjectReferenceFND::getFileDataStoreObject()
-{
-  return std::static_pointer_cast<FileDataStoreObject>(
-      m_blobRef.lock()->getContent());
-}
 
 /*void FileDataStoreObjectReferenceFND::deserialize(QDataStream &ds) {
   ds >> m_ref;
@@ -72,9 +66,7 @@ void FileDataStoreObjectReferenceFND::writeLowLevelXml(
 
 quint64 FileDataStoreObjectReferenceFND::getSizeInFile() const
 {
-  return std::static_pointer_cast<FileNode>(m_parent.lock()->getContent())
-             ->getFileNodeChunkReferenceSize() +
-         sizeOfGUID;
+  return m_parent.lock()->getFileNodeChunkReferenceSize() + sizeOfGUID;
 }
 
 } // namespace priv

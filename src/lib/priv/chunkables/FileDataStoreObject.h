@@ -57,27 +57,29 @@ private:
   QUuid m_guidFooter;
 
 public:
-  FileDataStoreObject();
+  FileDataStoreObject(
+      const quint64 initialStp = 0, const quint64 initialCb = 0);
 
-  QUuid guidHeader() const;
+  QUuid getGuidHeader() const;
   void setGuidHeader(const QUuid& guidHeader);
 
-  quint64 cbLength() const;
+  quint64 getCbLength() const;
   void setCbLength(const quint64& cbLength);
 
-  QByteArray FileData() const;
+  QByteArray getFileData() const;
   void setFileData(const QByteArray& FileData);
 
-  QUuid guidFooter() const;
+  QUuid getGuidFooter() const;
   void setGuidFooter(const QUuid& guidFooter);
 
   quint64 getSizeInFile() const;
 
+
+private:
   // Chunkable interface
   virtual quint64 cb() const override;
   virtual RevisionStoreChunkType getType() const override;
 
-private:
   /**
    * @brief creates IProperty from QDataStream
    * @param ds <QDataStream> containing the deserializable IProperty
@@ -98,6 +100,9 @@ private:
   static const quint64 guidSizeInFile = 16;
   static const quint64 sizeInFileBase;
 };
+
+typedef std::shared_ptr<FileDataStoreObject> FileDataStoreObject_SPtr_t;
+typedef std::weak_ptr<FileDataStoreObject> FileDataStoreObject_WPtr_t;
 
 } // namespace priv
 } // namespace libmson

@@ -4,6 +4,8 @@
 #include <QtCore/qglobal.h>
 
 #include "../../commonTypes/ExtendedGUID.h"
+#include "../Chunkable.h"
+#include "../FileNodeListFragment.h"
 #include "IFileNodeType.h"
 
 namespace libmson {
@@ -11,17 +13,17 @@ namespace priv {
 
 class ObjectGroupListReferenceFND : public IFileNodeType {
 private:
-  RSChunkContainer_WPtr_t m_ref;
+  FileNodeListFragment_WPtr_t m_ref;
   ExtendedGUID m_ObjectGroupID;
 
 public:
-  ObjectGroupListReferenceFND(RSChunkContainer_WPtr_t parentFileNode);
+  ObjectGroupListReferenceFND(FileNode_WPtr_t parentFileNode);
   virtual ~ObjectGroupListReferenceFND() = default;
 
-  RSChunkContainer_WPtr_t getRef() const;
-  void setRef(const RSChunkContainer_WPtr_t& ref);
+  FileNodeListFragment_WPtr_t getRef() const;
+  void setRef(const FileNodeListFragment_WPtr_t& ref);
 
-  ExtendedGUID objectGroupID() const;
+  ExtendedGUID getObjectGroupID() const;
   void setObjectGroupID(const ExtendedGUID& objectGroupID);
 
   virtual quint64 getSizeInFile() const override;

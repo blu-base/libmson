@@ -1,13 +1,12 @@
 #include "ObjectRevisionWithRefCountFNDX.h"
 
-#include "../../utils/Helper.h"
 #include "../FileNode.h"
 
 namespace libmson {
 namespace priv {
 
 ObjectRevisionWithRefCountFNDX::ObjectRevisionWithRefCountFNDX(
-    RSChunkContainer_WPtr_t parentFileNode)
+    FileNode_WPtr_t parentFileNode)
     : IFileNodeType(parentFileNode), m_fHasOidReferences(false),
       m_fHasOsidReferences(false), m_cRef(0)
 {
@@ -47,29 +46,21 @@ void ObjectRevisionWithRefCountFNDX::setOid(const CompactID& value)
   m_oid = value;
 }
 
-RSChunkContainer_WPtr_t ObjectRevisionWithRefCountFNDX::getRef() const
+ObjectSpaceObjectPropSet_WPtr_t ObjectRevisionWithRefCountFNDX::getRef() const
 {
   return m_ref;
 }
 
-void ObjectRevisionWithRefCountFNDX::setRef(const RSChunkContainer_WPtr_t value)
+void ObjectRevisionWithRefCountFNDX::setRef(
+    const ObjectSpaceObjectPropSet_WPtr_t value)
 {
   m_ref = value;
 }
 
-std::shared_ptr<ObjectSpaceObjectPropSet>
-ObjectRevisionWithRefCountFNDX::getPropSet() const
-{
-  return std::static_pointer_cast<ObjectSpaceObjectPropSet>(
-      m_ref.lock()->getContent());
-}
-
-
 quint64 ObjectRevisionWithRefCountFNDX::getSizeInFile() const
 {
-  return std::static_pointer_cast<FileNode>(m_parent.lock()->getContent())
-             ->getFileNodeChunkReferenceSize() +
-         sizeInFileBase;
+
+  return m_parent.lock()->getFileNodeChunkReferenceSize() + sizeInFileBase;
 }
 
 // void ObjectRevisionWithRefCountFNDX::deserialize(QDataStream &ds) {

@@ -3,8 +3,7 @@
 namespace libmson {
 namespace priv {
 
-RootObjectReference3FND::RootObjectReference3FND(
-    RSChunkContainer_WPtr_t parentFileNode)
+RootObjectReference3FND::RootObjectReference3FND(FileNode_WPtr_t parentFileNode)
     : IFileNodeType(parentFileNode), m_RootRole(0)
 {
 }

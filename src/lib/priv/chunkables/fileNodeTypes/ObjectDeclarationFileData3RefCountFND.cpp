@@ -4,6 +4,12 @@
 namespace libmson {
 namespace priv {
 
+ObjectDeclarationFileData3RefCountFND::ObjectDeclarationFileData3RefCountFND(
+    FileNode_WPtr_t parentFileNode)
+    : IFileNodeType(parentFileNode), m_cRef(0)
+{
+}
+
 CompactID ObjectDeclarationFileData3RefCountFND::oid() const { return m_oid; }
 
 void ObjectDeclarationFileData3RefCountFND::setOid(const CompactID& oid)
@@ -54,12 +60,6 @@ quint64 ObjectDeclarationFileData3RefCountFND::getSizeInFile() const
          m_FileDataReference.getSizeInFile() + m_Extension.getSizeInFile();
 }
 
-
-ObjectDeclarationFileData3RefCountFND::ObjectDeclarationFileData3RefCountFND(
-    RSChunkContainer_WPtr_t parentFileNode)
-    : IFileNodeType(parentFileNode), m_cRef(0)
-{
-}
 
 void ObjectDeclarationFileData3RefCountFND::deserialize(QDataStream& ds)
 {

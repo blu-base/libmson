@@ -3,6 +3,13 @@
 
 namespace libmson {
 namespace priv {
+
+ObjectDeclarationFileData3LargeRefCountFND::
+    ObjectDeclarationFileData3LargeRefCountFND(FileNode_WPtr_t parentFileNode)
+    : IFileNodeType(parentFileNode), m_cRef()
+{
+}
+
 CompactID ObjectDeclarationFileData3LargeRefCountFND::oid() const
 {
   return m_oid;
@@ -60,12 +67,6 @@ quint64 ObjectDeclarationFileData3LargeRefCountFND::getSizeInFile() const
          m_FileDataReference.getSizeInFile() + m_Extension.getSizeInFile();
 }
 
-ObjectDeclarationFileData3LargeRefCountFND::
-    ObjectDeclarationFileData3LargeRefCountFND(
-        RSChunkContainer_WPtr_t parentFileNode)
-    : IFileNodeType(parentFileNode), m_cRef()
-{
-}
 
 void ObjectDeclarationFileData3LargeRefCountFND::deserialize(QDataStream& ds)
 {

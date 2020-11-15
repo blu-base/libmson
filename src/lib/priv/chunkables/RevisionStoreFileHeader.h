@@ -11,9 +11,11 @@
 #include "../commonTypes/FileChunkReference32.h"
 #include "../commonTypes/FileChunkReference64x32.h"
 
-#include "RevisionStoreChunkContainer.h"
+#include "Chunkable.h"
 
-class RevisionStoreChunk;
+#include "FileNodeListFragment.h"
+#include "FreeChunkListFragment.h"
+#include "TransactionLogFragment.h"
 
 namespace libmson {
 namespace priv {
@@ -25,37 +27,52 @@ class RevisionStoreFileHeader : public Chunkable {
 
 
 public:
-  RevisionStoreFileHeader();
+  RevisionStoreFileHeader(
+      const quint64 initialStp = 0, const quint64 initialCb = 0);
 
   RevisionStoreFileHeader(
-      const QUuid& guidFileType, const QUuid& guidFile, const quint32 ffvLastWriterVersion,
-      const quint32 ffvOldestWriterVersion, const quint32 ffvNewestWriterVersion, const quint32 ffvOldestReader,
-      const quint32 cTransactionsInLog, const quint64 rgbPlaceholder, const quint8 fNeedsDefrag,
-      const quint8 fRepairedFile, const quint8 fNeedsGarbageCollect, const quint8 fHasNoEmbeddedFileObjects,
-      const QUuid& guidAncestor, const quint32 crcName, std::weak_ptr<RevisionStoreChunkContainer> fcrHashedChunkList,
-      std::weak_ptr<RevisionStoreChunkContainer> fcrTransactionLog,
-      std::weak_ptr<RevisionStoreChunkContainer> fcrFileNodeListRoot,
-      std::weak_ptr<RevisionStoreChunkContainer> fcrFreeChunkList, const quint64 cbExpectedFileLength,
-      const quint64 cbFreeSpaceInFreeChunkList, const QUuid& guidFileVersion, const quint64 nFileVersionGeneration,
-      const QUuid& guidDenyReadFileVersion, const quint32 grfDebugLogFlags, const quint32 bnCreated,
-      const quint32 bnLastWroteToThisFile, const quint32 bnOldestWritten, const quint32 bnNewestWritten);
+      const QUuid& guidFileType, const QUuid& guidFile,
+      const quint32 ffvLastWriterVersion, const quint32 ffvOldestWriterVersion,
+      const quint32 ffvNewestWriterVersion, const quint32 ffvOldestReader,
+      const quint32 cTransactionsInLog, const quint64 rgbPlaceholder,
+      const quint8 fNeedsDefrag, const quint8 fRepairedFile,
+      const quint8 fNeedsGarbageCollect, const quint8 fHasNoEmbeddedFileObjects,
+      const QUuid& guidAncestor, const quint32 crcName,
+      FileNodeListFragment_WPtr_t fcrHashedChunkList,
+      TransactionLogFragment_WPtr_t fcrTransactionLog,
+      FileNodeListFragment_WPtr_t fcrFileNodeListRoot,
+      FreeChunkListFragment_WPtr_t fcrFreeChunkList,
+      const quint64 cbExpectedFileLength,
+      const quint64 cbFreeSpaceInFreeChunkList, const QUuid& guidFileVersion,
+      const quint64 nFileVersionGeneration,
+      const QUuid& guidDenyReadFileVersion, const quint32 grfDebugLogFlags,
+      const quint32 bnCreated, const quint32 bnLastWroteToThisFile,
+      const quint32 bnOldestWritten, const quint32 bnNewestWritten);
 
   RevisionStoreFileHeader(
-      const QUuid& guidFileType, const QUuid& guidFile, const quint32 ffvLastWriterVersion,
-      const quint32 ffvOldestWriterVersion, const quint32 ffvNewestWriterVersion, const quint32 ffvOldestReader,
-      const quint32 cTransactionsInLog, const quint64 rgbPlaceholder, const quint8 fNeedsDefrag,
-      const quint8 fRepairedFile, const quint8 fNeedsGarbageCollect, const quint8 fHasNoEmbeddedFileObjects,
-      const QUuid& guidAncestor, const quint32 crcName, const quint64 cbExpectedFileLength,
-      const quint64 cbFreeSpaceInFreeChunkList, const QUuid& guidFileVersion, const quint64 nFileVersionGeneration,
-      const QUuid& guidDenyReadFileVersion, const quint32 grfDebugLogFlags, const quint32 bnCreated,
-      const quint32 bnLastWroteToThisFile, const quint32 bnOldestWritten, const quint32 bnNewestWritten);
-
-  // Chunkable interface
-public:
-  virtual quint64 cb() const override { return sizeInFile; }
-  virtual RevisionStoreChunkType getType() const override { return RevisionStoreChunkType::RevistionStoreFileHeader; };
+      const QUuid& guidFileType, const QUuid& guidFile,
+      const quint32 ffvLastWriterVersion, const quint32 ffvOldestWriterVersion,
+      const quint32 ffvNewestWriterVersion, const quint32 ffvOldestReader,
+      const quint32 cTransactionsInLog, const quint64 rgbPlaceholder,
+      const quint8 fNeedsDefrag, const quint8 fRepairedFile,
+      const quint8 fNeedsGarbageCollect, const quint8 fHasNoEmbeddedFileObjects,
+      const QUuid& guidAncestor, const quint32 crcName,
+      const quint64 cbExpectedFileLength,
+      const quint64 cbFreeSpaceInFreeChunkList, const QUuid& guidFileVersion,
+      const quint64 nFileVersionGeneration,
+      const QUuid& guidDenyReadFileVersion, const quint32 grfDebugLogFlags,
+      const quint32 bnCreated, const quint32 bnLastWroteToThisFile,
+      const quint32 bnOldestWritten, const quint32 bnNewestWritten);
 
   static const constexpr quint64 sizeInFile = 0x400;
+
+private:
+  // Chunkable interface
+  virtual quint64 cb() const override { return sizeInFile; }
+  virtual RevisionStoreChunkType getType() const override
+  {
+    return RevisionStoreChunkType::RevisionStoreFileHeader;
+  };
 
 private:
   QUuid guidFileType;
@@ -74,10 +91,10 @@ private:
   quint8 fHasNoEmbeddedFileObjects;
   QUuid guidAncestor;
   quint32 crcName;
-  std::weak_ptr<RevisionStoreChunkContainer> fcrHashedChunkList;
-  std::weak_ptr<RevisionStoreChunkContainer> fcrTransactionLog;
-  std::weak_ptr<RevisionStoreChunkContainer> fcrFileNodeListRoot;
-  std::weak_ptr<RevisionStoreChunkContainer> fcrFreeChunkList;
+  FileNodeListFragment_WPtr_t fcrHashedChunkList;
+  TransactionLogFragment_WPtr_t fcrTransactionLog;
+  FileNodeListFragment_WPtr_t fcrFileNodeListRoot;
+  FreeChunkListFragment_WPtr_t fcrFreeChunkList;
   quint64 cbExpectedFileLength;
   quint64 cbFreeSpaceInFreeChunkList;
   QUuid guidFileVersion;
@@ -146,17 +163,17 @@ public:
   quint32 getCrcName() const;
   void setCrcName(const quint32 value);
 
-  std::weak_ptr<RevisionStoreChunkContainer> getFcrHashedChunkList();
-  void setFcrHashedChunkList(std::weak_ptr<RevisionStoreChunkContainer> value);
+  FileNodeListFragment_WPtr_t getFcrHashedChunkList();
+  void setFcrHashedChunkList(FileNodeListFragment_WPtr_t value);
 
-  std::weak_ptr<RevisionStoreChunkContainer> getFcrTransactionLog();
-  void setFcrTransactionLog(std::weak_ptr<RevisionStoreChunkContainer> value);
+  TransactionLogFragment_WPtr_t getFcrTransactionLog();
+  void setFcrTransactionLog(TransactionLogFragment_WPtr_t value);
 
-  std::weak_ptr<RevisionStoreChunkContainer> getFcrFileNodeListRoot();
-  void setFcrFileNodeListRoot(std::weak_ptr<RevisionStoreChunkContainer> value);
+  FileNodeListFragment_WPtr_t getFcrFileNodeListRoot();
+  void setFcrFileNodeListRoot(FileNodeListFragment_WPtr_t value);
 
-  std::weak_ptr<RevisionStoreChunkContainer> getFcrFreeChunkList();
-  void setFcrFreeChunkList(std::weak_ptr<RevisionStoreChunkContainer> value);
+  FreeChunkListFragment_WPtr_t getFcrFreeChunkList();
+  void setFcrFreeChunkList(FreeChunkListFragment_WPtr_t value);
 
   quint64 getCbExpectedFileLength() const;
   void setCbExpectedFileLength(const quint64 value);
@@ -188,6 +205,10 @@ public:
   quint32 getBnNewestWritten() const;
   void setBnNewestWritten(const quint32 value);
 };
+
+
+typedef std::shared_ptr<RevisionStoreFileHeader> RevisionStoreFileHeader_SPtr_t;
+typedef std::weak_ptr<RevisionStoreFileHeader> RevisionStoreFileHeader_WPtr_t;
 
 } // namespace priv
 } // namespace libmson

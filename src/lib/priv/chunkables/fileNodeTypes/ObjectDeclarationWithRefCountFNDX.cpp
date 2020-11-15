@@ -7,19 +7,20 @@ namespace libmson {
 namespace priv {
 
 ObjectDeclarationWithRefCountFNDX::ObjectDeclarationWithRefCountFNDX(
-    RSChunkContainer_WPtr_t parentFileNode)
+    FileNode_WPtr_t parentFileNode)
     : IFileNodeType(parentFileNode), m_cRef{}
 {
 }
 
 
-RSChunkContainer_WPtr_t ObjectDeclarationWithRefCountFNDX::getObjectRef() const
+ObjectSpaceObjectPropSet_WPtr_t
+ObjectDeclarationWithRefCountFNDX::getObjectRef() const
 {
   return m_objectRef;
 }
 
 void ObjectDeclarationWithRefCountFNDX::setObjectRef(
-    const RSChunkContainer_WPtr_t& value)
+    const ObjectSpaceObjectPropSet_WPtr_t& value)
 {
   m_objectRef = value;
 }
@@ -43,18 +44,9 @@ void ObjectDeclarationWithRefCountFNDX::setCRef(const quint8& value)
   m_cRef = value;
 }
 
-std::shared_ptr<ObjectSpaceObjectPropSet>
-ObjectDeclarationWithRefCountFNDX::getPropSet()
-{
-  return std::static_pointer_cast<ObjectSpaceObjectPropSet>(
-      m_objectRef.lock()->getContent());
-}
-
-
 quint64 ObjectDeclarationWithRefCountFNDX::getSizeInFile() const
 {
-  return std::static_pointer_cast<FileNode>(m_parent.lock()->getContent())
-             ->getFileNodeChunkReferenceSize() +
+  return m_parent.lock()->getFileNodeChunkReferenceSize() +
          m_body.getSizeInFile() + sizeof(m_cRef);
 }
 

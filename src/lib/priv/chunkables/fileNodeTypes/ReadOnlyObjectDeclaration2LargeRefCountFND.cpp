@@ -5,13 +5,12 @@ namespace priv {
 
 
 ReadOnlyObjectDeclaration2LargeRefCountFND::
-    ReadOnlyObjectDeclaration2LargeRefCountFND(
-        RSChunkContainer_WPtr_t parentFileNode)
+    ReadOnlyObjectDeclaration2LargeRefCountFND(FileNode_WPtr_t parentFileNode)
     : IFileNodeType(parentFileNode), m_base(parentFileNode)
 {
 }
 
-RSChunkContainer_WPtr_t
+ObjectSpaceObjectPropSet_WPtr_t
 ReadOnlyObjectDeclaration2LargeRefCountFND::getBlobRef() const
 {
   return m_base.getBlobRef();
@@ -45,12 +44,6 @@ void ReadOnlyObjectDeclaration2LargeRefCountFND::setMd5hash(
     const QByteArray& value)
 {
   m_md5hash = value;
-}
-
-std::shared_ptr<ObjectSpaceObjectPropSet>
-ReadOnlyObjectDeclaration2LargeRefCountFND::getPropSet()
-{
-  return m_base.getPropSet();
 }
 
 quint64 ReadOnlyObjectDeclaration2LargeRefCountFND::getSizeInFile() const

@@ -35,7 +35,7 @@ private:
   quint32 m_nInstance;
 
 public:
-  RevisionManifestListStartFND(RSChunkContainer_WPtr_t parentFileNode);
+  RevisionManifestListStartFND(FileNode_WPtr_t parentFileNode);
   virtual ~RevisionManifestListStartFND() = default;
 
   ExtendedGUID getGosid() const;

@@ -6,13 +6,13 @@ namespace libmson {
 namespace priv {
 
 ObjectGroupListReferenceFND::ObjectGroupListReferenceFND(
-    RSChunkContainer_WPtr_t parentFileNode)
+    FileNode_WPtr_t parentFileNode)
     : IFileNodeType(parentFileNode)
 {
 }
 
 
-ExtendedGUID ObjectGroupListReferenceFND::objectGroupID() const
+ExtendedGUID ObjectGroupListReferenceFND::getObjectGroupID() const
 {
   return m_ObjectGroupID;
 }
@@ -25,17 +25,16 @@ void ObjectGroupListReferenceFND::setObjectGroupID(
 
 quint64 ObjectGroupListReferenceFND::getSizeInFile() const
 {
-  return std::static_pointer_cast<FileNode>(m_parent.lock()->getContent())
-             ->getFileNodeChunkReferenceSize() +
+  return m_parent.lock()->getFileNodeChunkReferenceSize() +
          ExtendedGUID::getSizeInFile();
 }
 
-RSChunkContainer_WPtr_t ObjectGroupListReferenceFND::getRef() const
+FileNodeListFragment_WPtr_t ObjectGroupListReferenceFND::getRef() const
 {
   return m_ref;
 }
 
-void ObjectGroupListReferenceFND::setRef(const RSChunkContainer_WPtr_t& ref)
+void ObjectGroupListReferenceFND::setRef(const FileNodeListFragment_WPtr_t& ref)
 {
   m_ref = ref;
 }

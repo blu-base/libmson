@@ -5,19 +5,19 @@
 namespace libmson {
 namespace priv {
 HashedChunkDescriptor2FND::HashedChunkDescriptor2FND(
-    RSChunkContainer_WPtr_t parentFileNode)
+    FileNode_WPtr_t parentFileNode)
     : IFileNodeType(parentFileNode)
 {
 }
 
 
-RSChunkContainer_WPtr_t HashedChunkDescriptor2FND::BlobRef() const
+ObjectSpaceObjectPropSet_WPtr_t HashedChunkDescriptor2FND::getBlobRef() const
 {
   return m_blobRef;
 }
 
 void HashedChunkDescriptor2FND::setBlobRef(
-    const RSChunkContainer_WPtr_t BlobRef)
+    const ObjectSpaceObjectPropSet_WPtr_t BlobRef)
 {
   m_blobRef = BlobRef;
 }
@@ -29,12 +29,6 @@ void HashedChunkDescriptor2FND::setGuidHash(const QByteArray& guidHash)
   m_guidHash = guidHash;
 }
 
-std::shared_ptr<ObjectSpaceObjectPropSet>
-HashedChunkDescriptor2FND::getPropSet()
-{
-  return std::static_pointer_cast<ObjectSpaceObjectPropSet>(
-      m_blobRef.lock()->getContent());
-}
 
 // void HashedChunkDescriptor2FND::deserialize(QDataStream &ds) {
 //  ds >> m_BlobRef;
@@ -72,9 +66,7 @@ HashedChunkDescriptor2FND::getPropSet()
 
 quint64 HashedChunkDescriptor2FND::getSizeInFile() const
 {
-  return std::static_pointer_cast<FileNode>(m_parent.lock()->getContent())
-             ->getFileNodeChunkReferenceSize() +
-         guidHashWidth;
+  return m_parent.lock()->getFileNodeChunkReferenceSize() + guidHashWidth;
 }
 
 } // namespace priv

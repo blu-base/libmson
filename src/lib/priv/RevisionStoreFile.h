@@ -10,7 +10,18 @@
 #include <QDataStream>
 
 #include "chunkables/Chunkable.h"
-#include "chunkables/RevisionStoreChunkContainer.h"
+
+#include "chunkables/EncryptedData.h"
+#include "chunkables/FileDataStoreObject.h"
+#include "chunkables/FileNode.h"
+#include "chunkables/FileNodeListFragment.h"
+#include "chunkables/FreeChunk.h"
+#include "chunkables/FreeChunkListFragment.h"
+#include "chunkables/ObjectInfoDependencyOverrideData.h"
+#include "chunkables/ObjectSpaceObjectPropSet.h"
+#include "chunkables/RevisionStoreFileHeader.h"
+#include "chunkables/TransactionLogFragment.h"
+
 #include "commonTypes/FileChunkReference32.h"
 #include "commonTypes/FileChunkReference64.h"
 #include "commonTypes/FileChunkReference64x32.h"
@@ -25,10 +36,10 @@ namespace priv {
 
 class RevisionStoreFile {
 public:
-  RevisionStoreFile();
+  RevisionStoreFile() = default;
 
-  std::list<RSChunkContainer_SPtr_t> getChunks() const { return m_chunks; };
-  std::list<RSChunkContainer_SPtr_t>& chunks() { return m_chunks; };
+  std::list<Chunkable_SPtr_t> getChunks() const { return m_chunks; };
+  std::list<Chunkable_SPtr_t>& chunks() { return m_chunks; };
 
 
   /// returns the ExtendedGUID stored in the ObjectSpaceManifestRootFND of the
@@ -44,20 +55,20 @@ private:
   QString m_fileName;
 
   QDataStream m_ds;
-  std::list<RSChunkContainer_SPtr_t> m_chunks;
-  std::map<quint32, RSChunkContainer_WPtr_t> m_fileNodeListFragments;
+  std::list<Chunkable_SPtr_t> m_chunks;
+  std::map<quint32, FileNodeListFragment_WPtr_t> m_fileNodeListFragments;
 
-  std::vector<RSChunkContainer_WPtr_t> m_rootFileNodeList;
-  std::vector<RSChunkContainer_WPtr_t> m_transactionLogs;
-  std::vector<RSChunkContainer_WPtr_t> m_hashedChunkListFragments;
+  std::vector<FileNodeListFragment_WPtr_t> m_rootFileNodeList;
+  std::vector<TransactionLogFragment_WPtr_t> m_transactionLogs;
+  std::vector<FileNodeListFragment_WPtr_t> m_hashedChunkListFragments;
 
-  RSChunkContainer_WPtr_t m_objectSpaceManifestRoot;
-  std::vector<std::vector<RSChunkContainer_WPtr_t>> m_objectSpaceManifests;
+  Chunkable_WPtr_t m_objectSpaceManifestRoot;
+  std::vector<FileNodeListFragment_WPtr_t> m_objectSpaceManifests;
   //  std::vector<std::shared_ptr<ObjectSpaceManifestList>>
   //      m_objectSpaceManifestList;
 
 
-  RSChunkContainer_WPtr_t m_fileDataStoreListReference;
+  FileNode_WPtr_t m_fileDataStoreListReference;
 
   QMap<quint32, quint32> m_fileNodeCountMapping;
 };

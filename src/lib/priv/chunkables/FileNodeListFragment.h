@@ -4,37 +4,39 @@
 #include "Chunkable.h"
 #include <QtCore/qglobal.h>
 #include <list>
-#include <memory>
 
-#include "RevisionStoreChunkContainer.h"
+#include "Chunkable.h"
+#include "FileNode.h"
 
 namespace libmson {
 namespace priv {
+
+class FileNodeListFragment;
+typedef std::shared_ptr<FileNodeListFragment> FileNodeListFragment_SPtr_t;
+typedef std::weak_ptr<FileNodeListFragment> FileNodeListFragment_WPtr_t;
 
 class FileNodeListFragment : public Chunkable {
 private:
   quint32 m_fileNodeListID;
   quint32 m_nFragmentSequence;
 
-  std::list<RSChunkContainer_SPtr_t> m_fileNodes;
+  std::list<FileNode_SPtr_t> m_fileNodes;
 
   quint64 m_paddingLength;
-  std::weak_ptr<RevisionStoreChunkContainer> m_nextFragment;
+  FileNodeListFragment_WPtr_t m_nextFragment;
 
 public:
-  FileNodeListFragment();
+  FileNodeListFragment(
+      const quint64 initialStp = 0, const quint64 initialCb = 0);
 
-  std::list<RSChunkContainer_SPtr_t>& fileNodes();
-  std::list<RSChunkContainer_SPtr_t> getFileNodes() const;
+  std::list<FileNode_SPtr_t>& fileNodes();
+  std::list<FileNode_SPtr_t> getFileNodes() const;
 
-  void setFileNodes(const std::list<RSChunkContainer_SPtr_t>& fileNodes);
+  void setFileNodes(const std::list<FileNode_SPtr_t>& fileNodes);
 
-  RSChunkContainer_WPtr_t getNextFragment();
-  void setNextFragment(RSChunkContainer_WPtr_t chunk);
+  FileNodeListFragment_WPtr_t getNextFragment();
+  void setNextFragment(FileNodeListFragment_WPtr_t chunk);
 
-  // Chunkable interface
-  virtual quint64 cb() const override;
-  virtual RevisionStoreChunkType getType() const override;
 
   static const quint32 minSizeInFile = 36;
   static const quint32 headerSize    = 16;
@@ -43,11 +45,16 @@ public:
   friend class RevisionStoreFileParser;
 
 private:
+  // Chunkable interface
+  virtual quint64 cb() const override;
+  virtual RevisionStoreChunkType getType() const override;
+
   static constexpr const quint64 header_magic_id = 0xA4567AB1F5F7F4C4;
   static constexpr const quint64 footer_magic_id = 0x8BC215C38233BA4B;
 
   // member functions
 };
+
 
 } // namespace priv
 } // namespace libmson

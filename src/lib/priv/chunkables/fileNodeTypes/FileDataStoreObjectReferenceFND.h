@@ -3,8 +3,8 @@
 
 #include <QtCore/qglobal.h>
 
+#include "../Chunkable.h"
 #include "../FileDataStoreObject.h"
-#include "../RevisionStoreChunkContainer.h"
 #include "IFileNodeType.h"
 #include <QUuid>
 
@@ -14,23 +14,20 @@ namespace priv {
 
 class FileDataStoreObjectReferenceFND : public IFileNodeType {
 private:
-  RSChunkContainer_WPtr_t m_blobRef;
+  FileDataStoreObject_WPtr_t m_blobRef;
   QUuid m_guidReference;
 
   //  FileDataStoreObject m_blob;
 
 public:
-  FileDataStoreObjectReferenceFND(RSChunkContainer_WPtr_t parentFileNode);
+  FileDataStoreObjectReferenceFND(FileNode_WPtr_t parentFileNode);
   virtual ~FileDataStoreObjectReferenceFND() = default;
 
-  RSChunkContainer_WPtr_t getBlobRef() const;
-  void setBlobRef(const RSChunkContainer_WPtr_t& value);
+  FileDataStoreObject_WPtr_t getBlobRef() const;
+  void setBlobRef(const FileDataStoreObject_WPtr_t& value);
 
   QUuid getGuidReference() const;
   void setGuidReference(const QUuid& value);
-
-  std::shared_ptr<FileDataStoreObject> getFileDataStoreObject();
-
 
   virtual quint64 getSizeInFile() const override;
 
