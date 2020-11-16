@@ -25,7 +25,7 @@ public:
   ObjectSpaceObjectPropSet_WPtr_t getBlobRef() const;
   void setBlobRef(const ObjectSpaceObjectPropSet_WPtr_t BlobRef);
 
-  QByteArray guidHash() const;
+  QByteArray getGuidHash() const;
   void setGuidHash(const QByteArray& guidHash);
 
   virtual quint64 getSizeInFile() const override;

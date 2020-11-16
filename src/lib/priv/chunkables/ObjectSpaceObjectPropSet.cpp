@@ -68,14 +68,37 @@ void ObjectSpaceObjectPropSet::setBody(const PropertySet& body)
 
 quint64 ObjectSpaceObjectPropSet::getPaddingLength() const
 {
-  return m_paddingLength;
+
+  quint8 modulo = unPaddedCb() % 8;
+
+  if (modulo > 0) {
+    return 8 - modulo;
+  }
+
+  return 0;
+}
+
+quint64 ObjectSpaceObjectPropSet::unPaddedCb() const
+{
+  quint32 size = m_OIDs.getSizeInFile();
+
+  if (m_OIDs.header().OsidStream_isNotPresent() == false) {
+    size += m_OSIDs.getSizeInFile();
+
+
+    if (m_OSIDs.header().ExtendedStream_isPresent() == true) {
+      size += m_ContextIDs.getSizeInFile();
+    }
+  }
+
+  size += m_body.getSizeInFile();
+
+  return size;
 }
 
 quint64 libmson::priv::ObjectSpaceObjectPropSet::cb() const
 {
-  return m_OIDs.getSizeInFile() + m_OSIDs.getSizeInFile() +
-         m_ContextIDs.getSizeInFile() + m_body.getSizeInFile() +
-         m_paddingLength;
+  return unPaddedCb() + getPaddingLength();
 }
 
 libmson::priv::RevisionStoreChunkType

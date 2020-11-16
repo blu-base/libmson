@@ -11,7 +11,9 @@ namespace priv {
 
 class ReadOnlyObjectDeclaration2LargeRefCountFND : public IFileNodeType {
 private:
-  ObjectDeclaration2LargeRefCountFND m_base;
+  ObjectSpaceObjectPropSet_WPtr_t m_blobRef;
+  ObjectDeclaration2Body m_body;
+  quint32 m_cRef;
 
   QByteArray m_md5hash;
 
@@ -19,12 +21,14 @@ public:
   ReadOnlyObjectDeclaration2LargeRefCountFND(FileNode_WPtr_t parentFileNode);
   virtual ~ReadOnlyObjectDeclaration2LargeRefCountFND() = default;
 
-  ObjectSpaceObjectPropSet_WPtr_t getBlobRef() const;
+  ObjectSpaceObjectPropSet_WPtr_t getBlobRef();
+  void setBlobRef(const ObjectSpaceObjectPropSet_WPtr_t& blobRef);
 
   ObjectDeclaration2Body getBody() const;
+  void setBody(const ObjectDeclaration2Body& body);
 
-  ObjectDeclaration2LargeRefCountFND getBase() const;
-  void setBase(const ObjectDeclaration2LargeRefCountFND& value);
+  quint32 getCRef() const;
+  void setCRef(const quint32& cRef);
 
   QByteArray getMd5hash() const;
   void setMd5hash(const QByteArray& value);

@@ -35,8 +35,7 @@ quint64 ObjectDeclaration2LargeRefCountFND::getSizeInFile() const
          ObjectDeclaration2Body::getSizeInFile() + 4;
 }
 
-ObjectSpaceObjectPropSet_WPtr_t
-ObjectDeclaration2LargeRefCountFND::getBlobRef() const
+ObjectSpaceObjectPropSet_WPtr_t ObjectDeclaration2LargeRefCountFND::getBlobRef()
 {
   return m_blobRef;
 }

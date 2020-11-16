@@ -21,7 +21,7 @@ public:
   ObjectDeclaration2LargeRefCountFND(FileNode_WPtr_t parentFileNode);
   virtual ~ObjectDeclaration2LargeRefCountFND() = default;
 
-  ObjectSpaceObjectPropSet_WPtr_t getBlobRef() const;
+  ObjectSpaceObjectPropSet_WPtr_t getBlobRef();
   void setBlobRef(const ObjectSpaceObjectPropSet_WPtr_t& blobRef);
 
   ObjectDeclaration2Body getBody() const;

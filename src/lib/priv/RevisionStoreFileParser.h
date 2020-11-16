@@ -19,6 +19,7 @@
 #include "chunkables/ObjectSpaceObjectPropSet.h"
 #include "chunkables/RevisionStoreFileHeader.h"
 #include "chunkables/TransactionLogFragment.h"
+#include "chunkables/UnknownBlob.h"
 
 
 namespace libmson {
@@ -38,6 +39,8 @@ public:
 private:
   // parsers
 
+  void parseChunk(QDataStream& ds, Chunkable_SPtr_t chunk);
+
 
   void parseEncryptedData(QDataStream& ds, EncryptedData_WPtr_t chunk);
 
@@ -48,6 +51,8 @@ private:
 
   FileNode_SPtr_t parseFileNode(
       QDataStream& ds, const quint64 stp, FileNodeListFragment_WPtr_t parent);
+
+  FileNode_SPtr_t parseFileNode(QDataStream& ds, FileNode_SPtr_t fileNode);
 
   /// parses a fragment. Returns a RSChunkContainer_SPtr_t if there is a next
   /// Fragment specified That RSChunkContainer_SPtr_t is not inserted to any
@@ -65,6 +70,7 @@ private:
   void parseFreeChunkListFragments(
       QDataStream& ds, FreeChunkListFragment_WPtr_t firstFragment);
 
+  void parseFreeChunk(QDataStream& ds, FreeChunk_SPtr_t freeChunk);
 
   void parseObjectInfoDependencyOverrideData(
       QDataStream& ds, ObjectInfoDependencyOverrideData_SPtr_t objectInfo);
@@ -79,8 +85,25 @@ private:
   bool parseTransactionLogFragment(
       QDataStream& ds, TransactionLogFragment_SPtr_t firstFragment);
 
-  void insertChunkSorted(
-      std::list<Chunkable_SPtr_t>& chunkList, Chunkable_SPtr_t chunk);
+
+  void parseUnknownBlob(QDataStream& ds, UnknownBlob_SPtr_t unknownBlob);
+
+  /// Iterates through the list and checks whether chunk is already present at
+  /// the specified location (stp, and cb must be equal)
+  /// If it does not find an identical Chunkable in chunkList, it will return
+  /// chunk;
+  template <class Chunkably>
+  std::shared_ptr<Chunkably> preventDuplicate(
+      std::list<Chunkable_SPtr_t>& chunkList, std::shared_ptr<Chunkably> chunk);
+
+
+  /// places chunk into chunkList by checking the initial stp of the chunks
+  /// already in chunklist, will call preventDuplicate internally
+  /// if it does find a duplicate, it will return it, otherwise it will return
+  /// the specified chunk.
+  template <class Chunkably>
+  std::shared_ptr<Chunkably> insertChunkSorted(
+      std::list<Chunkable_SPtr_t>& chunkList, std::shared_ptr<Chunkably> chunk);
 };
 
 } // namespace priv

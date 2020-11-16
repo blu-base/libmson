@@ -11,16 +11,8 @@ namespace priv {
 
 FileDataStoreObject::FileDataStoreObject(
     const quint64 initialStp, const quint64 initialCb)
-    : Chunkable(initialStp, initialCb), m_cbLength(), m_unused(), m_reserved(),
-      m_padding()
+    : Chunkable(initialStp, initialCb), m_cbLength(), m_unused(), m_reserved()
 {
-}
-
-QUuid FileDataStoreObject::getGuidHeader() const { return m_guidHeader; }
-
-void FileDataStoreObject::setGuidHeader(const QUuid& guidHeader)
-{
-  m_guidHeader = guidHeader;
 }
 
 quint64 FileDataStoreObject::getCbLength() const { return m_cbLength; }
@@ -37,23 +29,15 @@ void FileDataStoreObject::setFileData(const QByteArray& FileData)
   m_FileData = FileData;
 }
 
-QUuid FileDataStoreObject::getGuidFooter() const { return m_guidFooter; }
-
-void FileDataStoreObject::setGuidFooter(const QUuid& guidFooter)
-{
-  m_guidFooter = guidFooter;
-}
-
 const quint64 FileDataStoreObject::sizeInFileBase =
     guidSizeInFile + sizeof(m_cbLength) + sizeof(m_unused) +
     sizeof(m_reserved) + guidSizeInFile;
 
-quint64 FileDataStoreObject::getSizeInFile() const
-{
-  quint64 fileDataSizeInFile = ceilToMultiple(m_cbLength, 8);
 
-  return sizeInFileBase + fileDataSizeInFile;
-}
+const QUuid
+    FileDataStoreObject ::guidFooter("{71FBA722-0F79-4A0B-BB13-899256426B24}");
+const QUuid
+    FileDataStoreObject ::guidHeader("{BDE316E7-2665-4511-A4C4-8D4D0B7A9EAC}");
 
 // void FileDataStoreObject::writeLowLevelXml(QXmlStreamWriter& xmlWriter) const
 //{
@@ -78,35 +62,64 @@ quint64 FileDataStoreObject::getSizeInFile() const
 void FileDataStoreObject::deserialize(QDataStream& ds)
 {
 
-  ds >> m_guidHeader;
+  quint64 originalPos = ds.device()->pos();
+
+
+  QUuid test;
+
+  ds >> test;
+  if (test != guidHeader) {
+    qWarning("FileDataStoreObject header is invalid.");
+  }
+
   ds >> m_cbLength;
   ds >> m_unused;
   ds >> m_reserved;
 
   /// \todo reading a large File to memory might be manipulated here
-  uint len = ceilToMultiple(m_cbLength, 8);
 
-  m_FileData = ds.device()->read(len);
 
-  ds >> m_guidFooter;
+  m_FileData = ds.device()->read(m_cbLength);
+
+  quint64 footerStart =
+      ceilToMultiple(originalPos + guidSizeInFile + 20 + m_cbLength, 8);
+  ds.device()->seek(footerStart);
+
+
+  ds >> test;
+
+  if (test != guidFooter) {
+    qWarning("FileDataStoreObject footer is invalid.");
+  }
 }
 
 void FileDataStoreObject::serialize(QDataStream& ds) const
 {
+  quint64 originalPos = ds.device()->pos();
 
-  ds << m_guidHeader;
+  ds << guidHeader;
   ds << m_cbLength;
   ds << m_unused;
   ds << m_reserved;
 
   /// \todo reading a large File to memory might be manipulated here
 
-  ds << m_FileData;
 
-  QByteArray padding;
-  ds << padding.append('\0', m_padding);
+  ds.writeRawData(m_FileData.data(), m_cbLength);
 
-  ds << m_guidFooter;
+  quint64 padStart = ds.device()->pos();
+  quint64 padEnd =
+      ceilToMultiple(originalPos + guidSizeInFile + 20 + m_cbLength, 8);
+
+  quint8 remPad = padEnd - padStart;
+
+  const quint8 zeros8{};
+  while (remPad > 0) {
+    ds << zeros8;
+    --remPad;
+  }
+
+  ds << guidFooter;
 }
 
 // void FileDataStoreObject::toDebugString(QDebug& dbg) const
@@ -118,7 +131,10 @@ void FileDataStoreObject::serialize(QDataStream& ds) const
 
 quint64 libmson::priv::FileDataStoreObject::cb() const
 {
-  return getSizeInFile();
+  quint64 fileDataSizeInFile =
+      ceilToMultiple(guidSizeInFile + 20 + m_cbLength, 8);
+
+  return fileDataSizeInFile + guidSizeInFile;
 }
 
 priv::RevisionStoreChunkType libmson::priv::FileDataStoreObject::getType() const

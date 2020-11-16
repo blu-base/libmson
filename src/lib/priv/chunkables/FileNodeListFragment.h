@@ -22,8 +22,10 @@ private:
 
   std::list<FileNode_SPtr_t> m_fileNodes;
 
-  quint64 m_paddingLength;
+  quint16 m_paddingLength;
   FileNodeListFragment_WPtr_t m_nextFragment;
+
+  QByteArray m_dormant;
 
 public:
   FileNodeListFragment(
@@ -37,9 +39,10 @@ public:
   FileNodeListFragment_WPtr_t getNextFragment();
   void setNextFragment(FileNodeListFragment_WPtr_t chunk);
 
+  static const quint32 headerSize              = 16;
+  static const quint32 footerSize              = 20;
+  static const constexpr quint32 minSizeInFile = headerSize + footerSize;
 
-  static const quint32 minSizeInFile = 36;
-  static const quint32 headerSize    = 16;
 
   friend class RevisionStoreFileWriter;
   friend class RevisionStoreFileParser;

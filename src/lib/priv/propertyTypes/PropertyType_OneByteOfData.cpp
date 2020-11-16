@@ -23,7 +23,7 @@ void PropertyType_OneByteOfData::deserialize(QDataStream& ds)
 
 void PropertyType_OneByteOfData::serialize(QDataStream& ds) const
 {
-  ds << m_data;
+  ds.writeRawData(m_data.data(), 1);
 }
 
 // void PropertyType_OneByteOfData::writeLowLevelXml(

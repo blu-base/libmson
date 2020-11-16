@@ -75,11 +75,10 @@ void ObjectSpaceObjectStreamHeader::deserialize(QDataStream& ds)
 
 void ObjectSpaceObjectStreamHeader::serialize(QDataStream& ds) const
 {
-  quint32 composed = 0;
+  quint32 composed = m_count;
 
   composed += m_OsidStreamNotPresent << 31;
   composed += m_ExtendedStreamsPresent << 30;
-  composed += m_count;
 
   ds << composed;
 }

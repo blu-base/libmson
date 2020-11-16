@@ -628,7 +628,7 @@ void PropertyID::deserialize(QDataStream& ds)
 {
   ds >> m_value;
 
-  m_boolValue = m_value << 31;
+  m_boolValue = m_value >> 31;
 
   /// \todo PropertyID structure not fully clear...
   quint32 m_id_val = m_value & 0x7FFFFFFF;
@@ -649,12 +649,15 @@ void PropertyID::serialize(QDataStream& ds) const
   quint32 temp{};
 
   temp += m_boolValue << 31;
+
+  /// \todo PropertyID uses hardcoded PropertyIDs
   if (m_type != PropertyIDType::InvalidType && m_id != PropertyIDs::None) {
-    temp += static_cast<quint32>(m_type) << 26;
     temp += static_cast<quint32>(m_id);
   }
   else {
-    qWarning() << "Trying to write invalid PropertyID.";
+    qWarning() << "Trying to write invalid or unknown PropertyID.";
+
+    temp += static_cast<quint32>(m_id);
   }
 
   ds << temp;

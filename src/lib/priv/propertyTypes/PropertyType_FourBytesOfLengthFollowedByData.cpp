@@ -43,7 +43,6 @@ void PropertyType_FourBytesOfLengthFollowedByData::deserialize(QDataStream& ds)
 {
 
   ds >> m_cb;
-
   m_data = ds.device()->read(m_cb);
 }
 
@@ -51,7 +50,7 @@ void PropertyType_FourBytesOfLengthFollowedByData::serialize(
     QDataStream& ds) const
 {
   ds << m_cb;
-  ds << m_data;
+  ds.writeRawData(m_data.data(), m_cb);
 }
 
 // void PropertyType_FourBytesOfLengthFollowedByData::toDebugString(

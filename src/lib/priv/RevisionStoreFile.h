@@ -21,6 +21,7 @@
 #include "chunkables/ObjectSpaceObjectPropSet.h"
 #include "chunkables/RevisionStoreFileHeader.h"
 #include "chunkables/TransactionLogFragment.h"
+#include "chunkables/UnknownBlob.h"
 
 #include "commonTypes/FileChunkReference32.h"
 #include "commonTypes/FileChunkReference64.h"

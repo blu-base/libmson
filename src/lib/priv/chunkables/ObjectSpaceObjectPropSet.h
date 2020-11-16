@@ -22,8 +22,6 @@ private:
 
   PropertySet m_body;
 
-  quint64 m_paddingLength;
-
 public:
   ObjectSpaceObjectPropSet(
       const quint64 initialStp = 0, const quint64 initialCb = 0);
@@ -50,6 +48,8 @@ public:
   friend class RevisionStoreFileParser;
 
 private:
+  quint64 unPaddedCb() const;
+
   // Chunkable interface
   virtual quint64 cb() const override;
   virtual RevisionStoreChunkType getType() const override;

@@ -18,11 +18,6 @@ class FileDataStoreObject
     , public IStreamable {
 private:
   /**
-   * @brief MUST be {BDE316E7-2665-4511-A4C4-8D4D0B7A9EAC}.
-   */
-  QUuid m_guidHeader;
-
-  /**
    * @brief specifies the size, in bytes, of the FileData field without padding.
    */
   quint64 m_cbLength;
@@ -45,17 +40,6 @@ private:
    */
   QByteArray m_FileData;
 
-  /**
-   * @brief number of bytes of padding added to m_FileData, to increase its size
-   * to multiple of 8 byte.
-   */
-  quint8 m_padding;
-
-  /**
-   * @brief MUST be {71FBA722-0F79-4A0B-BB13-899256426B24}.
-   */
-  QUuid m_guidFooter;
-
 public:
   FileDataStoreObject(
       const quint64 initialStp = 0, const quint64 initialCb = 0);
@@ -69,11 +53,8 @@ public:
   QByteArray getFileData() const;
   void setFileData(const QByteArray& FileData);
 
-  QUuid getGuidFooter() const;
-  void setGuidFooter(const QUuid& guidFooter);
-
-  quint64 getSizeInFile() const;
-
+  static const QUuid guidFooter;
+  static const QUuid guidHeader;
 
 private:
   // Chunkable interface

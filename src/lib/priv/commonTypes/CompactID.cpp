@@ -85,12 +85,10 @@ void CompactID::deserialize(QDataStream& ds)
 
 void CompactID::serialize(QDataStream& ds) const
 {
-  quint32 temp{};
+  quint32 raw = m_n;
+  raw += guidIndex << 8;
 
-  temp += m_n;
-  temp += guidIndex << 8;
-
-  ds << temp;
+  ds << raw;
 }
 
 bool operator==(const CompactID& lhs, const CompactID& rhs) noexcept

@@ -19,7 +19,13 @@ FileNode::FileNode(
 
 std::weak_ptr<FileNodeListFragment> FileNode::getParent() { return m_parent; }
 
-quint64 FileNode::cb() const { return minSizeInFile + fnt->getSizeInFile(); }
+quint64 FileNode::cb() const
+{
+  if (fnt != nullptr) {
+    return minSizeInFile + fnt->getSizeInFile();
+  }
+  return minSizeInFile;
+}
 
 RevisionStoreChunkType FileNode::getType() const
 {

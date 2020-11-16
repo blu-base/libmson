@@ -137,6 +137,7 @@ void IObjectSpaceObjectStream::deserialize(QDataStream& ds)
 
 void IObjectSpaceObjectStream::serialize(QDataStream& ds) const
 {
+  /// \todo update header count from contents of m_bofy
   ds << m_header;
 
   for (quint32 i{0}; i < m_header.count(); i++) {

@@ -24,7 +24,8 @@ void PropertyType_FourBytesOfData::deserialize(QDataStream& ds)
 
 void PropertyType_FourBytesOfData::serialize(QDataStream& ds) const
 {
-  ds << m_data;
+
+  ds.writeRawData(m_data.data(), 4);
 }
 
 // void PropertyType_FourBytesOfData::toDebugString(QDebug &dbg) const {}

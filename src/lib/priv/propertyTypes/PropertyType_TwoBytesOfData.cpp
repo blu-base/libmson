@@ -24,7 +24,7 @@ void PropertyType_TwoBytesOfData::deserialize(QDataStream& ds)
 
 void PropertyType_TwoBytesOfData::serialize(QDataStream& ds) const
 {
-  ds << m_data;
+  ds.writeRawData(m_data.data(), 2);
 }
 
 

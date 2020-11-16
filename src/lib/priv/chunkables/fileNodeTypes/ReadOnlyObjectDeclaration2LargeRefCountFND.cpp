@@ -6,34 +6,10 @@ namespace priv {
 
 ReadOnlyObjectDeclaration2LargeRefCountFND::
     ReadOnlyObjectDeclaration2LargeRefCountFND(FileNode_WPtr_t parentFileNode)
-    : IFileNodeType(parentFileNode), m_base(parentFileNode)
+    : IFileNodeType(parentFileNode)
 {
 }
 
-ObjectSpaceObjectPropSet_WPtr_t
-ReadOnlyObjectDeclaration2LargeRefCountFND::getBlobRef() const
-{
-  return m_base.getBlobRef();
-}
-
-ObjectDeclaration2Body
-ReadOnlyObjectDeclaration2LargeRefCountFND::getBody() const
-{
-  return m_base.getBody();
-}
-
-
-ObjectDeclaration2LargeRefCountFND
-ReadOnlyObjectDeclaration2LargeRefCountFND::getBase() const
-{
-  return m_base;
-}
-
-void ReadOnlyObjectDeclaration2LargeRefCountFND::setBase(
-    const ObjectDeclaration2LargeRefCountFND& value)
-{
-  m_base = value;
-}
 
 QByteArray ReadOnlyObjectDeclaration2LargeRefCountFND::getMd5hash() const
 {
@@ -48,7 +24,42 @@ void ReadOnlyObjectDeclaration2LargeRefCountFND::setMd5hash(
 
 quint64 ReadOnlyObjectDeclaration2LargeRefCountFND::getSizeInFile() const
 {
-  return md5HashSize + m_base.getSizeInFile();
+  return md5HashSize + m_parent.lock()->getFileNodeChunkReferenceSize() +
+         ObjectDeclaration2Body::getSizeInFile() + 4;
+}
+
+ObjectSpaceObjectPropSet_WPtr_t
+ReadOnlyObjectDeclaration2LargeRefCountFND::getBlobRef()
+{
+  return m_blobRef;
+}
+
+void ReadOnlyObjectDeclaration2LargeRefCountFND::setBlobRef(
+    const ObjectSpaceObjectPropSet_WPtr_t& blobRef)
+{
+  m_blobRef = blobRef;
+}
+
+ObjectDeclaration2Body
+ReadOnlyObjectDeclaration2LargeRefCountFND::getBody() const
+{
+  return m_body;
+}
+
+void ReadOnlyObjectDeclaration2LargeRefCountFND::setBody(
+    const ObjectDeclaration2Body& body)
+{
+  m_body = body;
+}
+
+quint32 ReadOnlyObjectDeclaration2LargeRefCountFND::getCRef() const
+{
+  return m_cRef;
+}
+
+void ReadOnlyObjectDeclaration2LargeRefCountFND::setCRef(const quint32& cRef)
+{
+  m_cRef = cRef;
 }
 
 

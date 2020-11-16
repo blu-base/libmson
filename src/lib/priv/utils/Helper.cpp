@@ -23,7 +23,7 @@ inline void copy_until(_InIt _First, _InIt _Last, _OutIt _Dest, _Pr _Pred)
 quint64 ceilToMultiple(const quint64 num, const quint64 multiple)
 {
   if (multiple == 0) {
-    return num;
+    return 0;
   }
 
   quint64 remainder = num % multiple;

@@ -22,7 +22,7 @@ public:
   ObjectDeclaration2RefCountFND(FileNode_WPtr_t parentFileNode);
   virtual ~ObjectDeclaration2RefCountFND() = default;
 
-  ObjectSpaceObjectPropSet_WPtr_t getBlobRef() const;
+  ObjectSpaceObjectPropSet_WPtr_t getBlobRef();
   void setBlobRef(const ObjectSpaceObjectPropSet_WPtr_t& value);
 
   ObjectDeclaration2Body getBody() const;

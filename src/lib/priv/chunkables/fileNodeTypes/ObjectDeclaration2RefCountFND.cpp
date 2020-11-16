@@ -31,8 +31,7 @@ void ObjectDeclaration2RefCountFND::setBody(const ObjectDeclaration2Body& value)
 }
 
 
-ObjectSpaceObjectPropSet_WPtr_t
-ObjectDeclaration2RefCountFND::getBlobRef() const
+ObjectSpaceObjectPropSet_WPtr_t ObjectDeclaration2RefCountFND::getBlobRef()
 {
   return m_blobRef;
 }
@@ -46,7 +45,7 @@ void ObjectDeclaration2RefCountFND::setBlobRef(
 quint64 ObjectDeclaration2RefCountFND::getSizeInFile() const
 {
   return m_parent.lock()->getFileNodeChunkReferenceSize() +
-         ObjectDeclaration2Body::getSizeInFile() + sizeof(m_cRef);
+         ObjectDeclaration2Body::getSizeInFile() + 1;
 }
 
 // void ObjectDeclaration2RefCountFND::serialize(QDataStream& ds) const

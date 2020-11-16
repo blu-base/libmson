@@ -20,8 +20,9 @@ enum class RevisionStoreChunkType {
   FileDataStoreObject,
   ObjectSpaceObjectPropSet,
   ObjectInfoDependencyOverrideData,
-
   EncryptedData,
+
+  UnknownBlob,
 
   Invalid
 };

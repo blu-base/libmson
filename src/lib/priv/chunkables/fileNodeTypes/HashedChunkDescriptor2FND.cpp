@@ -22,7 +22,7 @@ void HashedChunkDescriptor2FND::setBlobRef(
   m_blobRef = BlobRef;
 }
 
-QByteArray HashedChunkDescriptor2FND::guidHash() const { return m_guidHash; }
+QByteArray HashedChunkDescriptor2FND::getGuidHash() const { return m_guidHash; }
 
 void HashedChunkDescriptor2FND::setGuidHash(const QByteArray& guidHash)
 {
