@@ -16,6 +16,9 @@ class TransactionLogFragment;
 typedef std::shared_ptr<TransactionLogFragment> TransactionLogFragment_SPtr_t;
 typedef std::weak_ptr<TransactionLogFragment> TransactionLogFragment_WPtr_t;
 
+typedef std::shared_ptr<TransactionEntry> TransactionEntry_SPtr_t;
+typedef std::weak_ptr<TransactionEntry> TransactionEntry_WPtr_t;
+
 class TransactionLogFragment : public Chunkable {
 private:
   /**
@@ -26,9 +29,9 @@ private:
    * and MUST terminate with a sentinel entry with TransactionEntry.srcID set to
    * 0x00000001.
    */
-  std::vector<std::shared_ptr<TransactionEntry>> sizeTable;
+  std::vector<TransactionEntry_SPtr_t> m_sizeTable;
 
-  TransactionLogFragment_WPtr_t nextFragment;
+  TransactionLogFragment_WPtr_t m_nextFragment;
 
 
   quint8 m_paddingLength;
@@ -38,9 +41,8 @@ public:
       const quint64 initialStp = 0, const quint64 initialCb = 0);
   virtual ~TransactionLogFragment() = default;
 
-  std::vector<std::shared_ptr<TransactionEntry>> getSizeTable() const;
-  void
-  setSizeTable(const std::vector<std::shared_ptr<TransactionEntry>>& value);
+  std::vector<TransactionEntry_SPtr_t> getSizeTable() const;
+  void setSizeTable(const std::vector<TransactionEntry_SPtr_t>& value);
 
   TransactionLogFragment_WPtr_t getNextFragment() const;
   void setNextFragment(const TransactionLogFragment_WPtr_t value);

@@ -208,8 +208,11 @@ std::shared_ptr<RevisionStoreFile> RevisionStoreFileParser::parse()
   {
     /// Check file for unreferenced sections
     auto lChunks = m_file->getChunks();
-    auto it      = lChunks.begin();
-    auto prev    = it;
+
+    //    lChunks.push_front(m_file->m_header);
+
+    auto it   = lChunks.begin();
+    auto prev = it;
     it++;
     while (it != lChunks.end()) {
 
@@ -249,6 +252,8 @@ std::shared_ptr<RevisionStoreFile> RevisionStoreFileParser::parse()
       auto unknownBlob = std::make_shared<UnknownBlob>(lastEnd, diff);
 
       unknownBlob = insertChunkSorted(m_file->chunks(), unknownBlob);
+
+
       m_file->m_unkownBlobs.push_back(unknownBlob);
 
       parseUnknownBlob(m_ds, unknownBlob);
@@ -390,7 +395,7 @@ RevisionStoreFileParser::parseRevisionStoreFileHeader(QDataStream& ds)
       0u, RevisionStoreFileHeader::sizeInFile);
 
 
-  m_file->chunks().push_back(header);
+  m_file->m_header = header;
 
   ds >> header->m_guidFileType;
   ds >> header->m_guidFile;
@@ -1470,8 +1475,7 @@ bool RevisionStoreFileParser::parseTransactionLogFragment(
 
   quint32 countTransactions = 0;
 
-  auto header = std::static_pointer_cast<RevisionStoreFileHeader>(
-      *m_file->m_chunks.begin());
+  auto header = m_file->m_header;
 
 
   while (fragment != nullptr) {
@@ -1481,14 +1485,15 @@ bool RevisionStoreFileParser::parseTransactionLogFragment(
     quint64 num_entries = (firstFragment->getInitialCb() -
                            FileChunkReference64x32::getSizeInFile()) /
                           TransactionEntry::getSizeInFile();
-
+    std::vector<TransactionEntry_SPtr_t> transactionEntries;
+    transactionEntries.reserve(num_entries);
     for (size_t i{0}; i < num_entries; i++) {
-      std::shared_ptr<TransactionEntry> entry =
-          std::make_shared<TransactionEntry>();
-
+      TransactionEntry_SPtr_t entry;
       ds >> *entry;
-      fragment->sizeTable.push_back(entry);
+      transactionEntries.push_back(entry);
     }
+
+    fragment->setSizeTable(transactionEntries);
 
 
     FileChunkReference64x32 nextFragmentFCR;
@@ -1502,7 +1507,7 @@ bool RevisionStoreFileParser::parseTransactionLogFragment(
       nextTransactionLogFragmentContainer = insertChunkSorted(
           m_file->chunks(), nextTransactionLogFragmentContainer);
 
-      fragment->nextFragment = nextTransactionLogFragmentContainer;
+      fragment->m_nextFragment = nextTransactionLogFragmentContainer;
     }
 
 
@@ -1566,7 +1571,7 @@ bool RevisionStoreFileParser::parseTransactionLogFragment(
       break;
     }
 
-    fragment = fragment->nextFragment.lock();
+    fragment = fragment->m_nextFragment.lock();
   };
 
 
@@ -1633,8 +1638,8 @@ std::shared_ptr<Chunkably> RevisionStoreFileParser::insertChunkSorted(
   }
 
   // if there is no duplicate: add new chunk;
-  if (chunkList.size() < 2) {
-    chunkList.push_back(thisChunk);
+  if (chunkList.empty()) {
+    chunkList.push_back(chunk);
     return chunk;
   }
 
@@ -1650,8 +1655,8 @@ std::shared_ptr<Chunkably> RevisionStoreFileParser::insertChunkSorted(
     }
   }
 
-  // if it's at the end
-  chunkList.push_back(chunk);
+  // if it's at the end since we are reverse looping before
+  chunkList.push_front(chunk);
 
   return chunk;
 }

@@ -97,6 +97,11 @@ bool RevisionStoreFileWriter::write(QDataStream& ds)
 
   // then write the rest
 
+  if (!writeRevisionStoreFileHeader(ds, m_revStoreFile->getHeader())) {
+    return false;
+  }
+
+
   for (auto it = chunks.begin(); it != chunks.end(); ++it) {
 
     bool currentChunkWrite = writeChunk(ds, *it);
@@ -184,13 +189,13 @@ bool RevisionStoreFileWriter::writeRevisionStoreFileHeader(
   }
 
 
-  quint64 totalFileSize = 0;
+  quint64 totalFileSize = RevisionStoreFileHeader::sizeInFile;
 
   auto addCb = [](quint64 a, Chunkable_SPtr_t& b) {
     return std::move(a) + b->getSizeInFile();
   };
 
-  totalFileSize = std::accumulate(
+  totalFileSize += std::accumulate(
       m_revStoreFile->m_chunks.begin(), m_revStoreFile->m_chunks.end(), 0,
       addCb);
 
@@ -293,10 +298,12 @@ bool RevisionStoreFileWriter::writeTransactionLogFragment(
     ds.setByteOrder(QDataStream::LittleEndian);
   }
 
+  auto sizeTable = transactionLogFragment->getSizeTable();
 
-  for (const auto& entry : transactionLogFragment->getSizeTable()) {
-    ds << *entry;
-  }
+  std::for_each(
+      sizeTable.begin(), sizeTable.end(),
+      [&ds](const TransactionEntry_SPtr_t& entry) { ds << *entry; });
+
 
   ds << getFcr64x32FromChunk(
       transactionLogFragment->getNextFragment(), FCR_INIT::ZERO);
@@ -1009,7 +1016,8 @@ quint64 RevisionStoreFileWriter::stpTillIterator(
       return std::move(a) + b->getSizeInFile();
     };
 
-    return std::accumulate(list.begin(), it, 0, addCb);
+    return std::accumulate(
+        list.begin(), it, RevisionStoreFileHeader::sizeInFile, addCb);
   }
 }
 

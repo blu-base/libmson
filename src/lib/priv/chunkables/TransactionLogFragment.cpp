@@ -7,35 +7,36 @@ namespace priv {
 
 TransactionLogFragment::TransactionLogFragment(
     const quint64 initialStp, const quint64 initialCb)
-    : Chunkable(initialStp, initialCb), nextFragment(), m_paddingLength()
+    : Chunkable(initialStp, initialCb), m_sizeTable(), m_nextFragment(),
+      m_paddingLength()
 {
 }
 
 
-std::vector<std::shared_ptr<TransactionEntry>>
+std::vector<TransactionEntry_SPtr_t>
 TransactionLogFragment::getSizeTable() const
 {
-  return sizeTable;
+  return m_sizeTable;
 }
 
 void TransactionLogFragment::setSizeTable(
-    const std::vector<std::shared_ptr<TransactionEntry>>& value)
+    const std::vector<TransactionEntry_SPtr_t>& value)
 {
   m_isChanged = true;
-  sizeTable   = value;
+  m_sizeTable = value;
 }
 
 
 TransactionLogFragment_WPtr_t TransactionLogFragment::getNextFragment() const
 {
-  return nextFragment;
+  return m_nextFragment;
 }
 
 void TransactionLogFragment::setNextFragment(
     const TransactionLogFragment_WPtr_t value)
 {
-  m_isChanged  = true;
-  nextFragment = value;
+  m_isChanged    = true;
+  m_nextFragment = value;
 }
 
 quint8 TransactionLogFragment::getPaddingLength() const
@@ -52,7 +53,7 @@ void TransactionLogFragment::setPaddingLength(const quint8& paddingLength)
 
 quint64 TransactionLogFragment::cb() const
 {
-  return sizeTable.size() * TransactionEntry::getSizeInFile() +
+  return m_sizeTable.size() * TransactionEntry::getSizeInFile() +
          FileChunkReference64x32::getSizeInFile() + m_paddingLength;
 }
 
