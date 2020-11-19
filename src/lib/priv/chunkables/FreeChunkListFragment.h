@@ -36,8 +36,8 @@ public:
   FreeChunkListFragment_WPtr_t getFcrNextFragment();
   void setFcrNextFragment(FreeChunkListFragment_WPtr_t value);
 
-  std::vector<FreeChunk_WPtr_t> fcrFreeChunks() const;
-  std::vector<FreeChunk_WPtr_t>& getFcrFreeChunks();
+  std::vector<FreeChunk_WPtr_t> getFcrFreeChunks() const;
+  std::vector<FreeChunk_WPtr_t>& fcrFreeChunks();
   void setFcrFreeChunks(const std::vector<FreeChunk_WPtr_t>& value);
 
 

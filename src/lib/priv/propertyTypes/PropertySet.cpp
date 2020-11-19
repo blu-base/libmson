@@ -57,11 +57,19 @@ quint64 PropertySet::getSizeInFile() const
 {
 
   // compute m_rgData size
-  quint64 dataSize = 0;
 
-  for (const auto& entry : m_rgData) {
-    dataSize += entry->getSizeInFile();
-  }
+
+  quint64 dataSize = std::accumulate(
+      m_rgData.begin(), m_rgData.end(), 0,
+      [&](quint64 a, const std::shared_ptr<IPropertyType>& b) {
+        return a + b->getSizeInFile();
+      });
+
+
+  //  quint64 dataSize = 0;
+  //  for (const auto& entry : m_rgData) {
+  //    dataSize += entry->getSizeInFile();
+  //  }
 
   return sizeof(m_cProperties) +
          m_rgPrids.size() * PropertyID::getSizeInFile() + dataSize;
@@ -70,8 +78,6 @@ quint64 PropertySet::getSizeInFile() const
 /// \todo implement propertyset
 void PropertySet::deserialize(QDataStream& ds)
 {
-
-  quint64 curLocation = ds.device()->pos();
   ds >> m_cProperties;
 
   for (quint32 i = 0; i < m_cProperties; i++) {
@@ -81,8 +87,6 @@ void PropertySet::deserialize(QDataStream& ds)
   }
 
   for (const auto& propID : m_rgPrids) {
-    quint64 curLocation = ds.device()->pos();
-
     std::shared_ptr<IPropertyType> prop;
 
     switch (propID.type()) {

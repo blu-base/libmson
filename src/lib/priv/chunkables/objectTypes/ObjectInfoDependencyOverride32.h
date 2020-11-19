@@ -31,7 +31,9 @@ public:
   quint32 cRef() const;
   void setCRef(const quint32& cRef);
 
-  static quint64 getSizeInFile() { return sizeInFile; }
+  static quint64 getSizeInFile() { return 8; }
+
+  static const quint64 sizeInFile = 8;
 
 private:
   /**
@@ -50,9 +52,6 @@ private:
    *
    */
   virtual void serialize(QDataStream& ds) const override;
-
-
-  static const quint64 sizeInFile = CompactID::getSizeInFile() + sizeof(m_cRef);
 };
 
 } // namespace priv

@@ -45,6 +45,9 @@ private:
   bool writeObjectSpaceObjectPropSet(
       QDataStream& ds, ObjectSpaceObjectPropSet_SPtr_t propSet);
 
+  bool writeObjectSpaceObjectPropSetUnpadded(
+      QDataStream& ds, ObjectSpaceObjectPropSet_SPtr_t propSet);
+
   bool writeObjectInfoDependencyOverrideData(
       QDataStream& ds, ObjectInfoDependencyOverrideData_SPtr_t data);
 

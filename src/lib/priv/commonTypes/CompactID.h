@@ -19,7 +19,7 @@ private:
 
 public:
   CompactID();
-  CompactID(const quint8 m_n, const quint32 compactEGUID);
+  CompactID(const quint8 n, const quint32 compactEGUID);
   CompactID(const QByteArray& bytes);
   virtual ~CompactID() = default;
 

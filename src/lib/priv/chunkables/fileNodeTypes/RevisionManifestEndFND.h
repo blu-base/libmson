@@ -13,7 +13,7 @@ class RevisionManifestEndFND
     , public IStreamable {
 public:
   RevisionManifestEndFND(FileNode_WPtr_t parentFileNode)
-      : IFileNodeType(parentFileNode){};
+      : IFileNodeType(std::move(parentFileNode)){};
   virtual ~RevisionManifestEndFND() = default;
 
   virtual quint64 getSizeInFile() const override { return 0; }

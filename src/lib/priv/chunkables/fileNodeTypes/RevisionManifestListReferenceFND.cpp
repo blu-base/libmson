@@ -7,7 +7,7 @@ namespace priv {
 
 RevisionManifestListReferenceFND::RevisionManifestListReferenceFND(
     FileNode_WPtr_t parentFileNode)
-    : IFileNodeType(parentFileNode)
+    : IFileNodeType(std::move(parentFileNode))
 {
 }
 
@@ -18,7 +18,7 @@ FileNodeListFragment_WPtr_t RevisionManifestListReferenceFND::getRef() const
 }
 
 void RevisionManifestListReferenceFND::setRef(
-    const FileNodeListFragment_WPtr_t value)
+    const FileNodeListFragment_SPtr_t value)
 {
   m_ref = value;
 }

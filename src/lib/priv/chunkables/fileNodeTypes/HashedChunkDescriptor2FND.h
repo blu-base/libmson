@@ -23,7 +23,7 @@ public:
   virtual ~HashedChunkDescriptor2FND() = default;
 
   ObjectSpaceObjectPropSet_WPtr_t getBlobRef() const;
-  void setBlobRef(const ObjectSpaceObjectPropSet_WPtr_t BlobRef);
+  void setBlobRef(const ObjectSpaceObjectPropSet_SPtr_t BlobRef);
 
   QByteArray getGuidHash() const;
   void setGuidHash(const QByteArray& guidHash);

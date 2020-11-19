@@ -5,7 +5,7 @@ namespace priv {
 
 RootObjectReference2FNDX::RootObjectReference2FNDX(
     FileNode_WPtr_t parentFileNode)
-    : IFileNodeType(parentFileNode), m_RootRole(0)
+    : IFileNodeType(std::move(parentFileNode)), m_RootRole(0)
 {
 }
 

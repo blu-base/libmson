@@ -4,7 +4,7 @@ namespace libmson {
 namespace priv {
 
 RootObjectReference3FND::RootObjectReference3FND(FileNode_WPtr_t parentFileNode)
-    : IFileNodeType(parentFileNode), m_RootRole(0)
+    : IFileNodeType(std::move(parentFileNode)), m_RootRole(0)
 {
 }
 

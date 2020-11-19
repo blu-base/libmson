@@ -8,7 +8,7 @@ namespace libmson {
 namespace priv {
 ObjectDataEncryptionKeyV2FNDX::ObjectDataEncryptionKeyV2FNDX(
     FileNode_WPtr_t parentFileNode)
-    : IFileNodeType(parentFileNode)
+    : IFileNodeType(std::move(parentFileNode))
 {
 }
 

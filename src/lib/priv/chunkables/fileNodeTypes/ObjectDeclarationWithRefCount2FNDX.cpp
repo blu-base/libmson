@@ -8,7 +8,7 @@ namespace priv {
 
 ObjectDeclarationWithRefCount2FNDX::ObjectDeclarationWithRefCount2FNDX(
     FileNode_WPtr_t parentFileNode)
-    : IFileNodeType(parentFileNode), m_cRef()
+    : IFileNodeType(std::move(parentFileNode)), m_cRef()
 {
 }
 

@@ -19,7 +19,7 @@ inline void copy_until(_InIt _First, _InIt _Last, _OutIt _Dest, _Pr _Pred);
 template <class T> QString qStringHex(const T val, const quint8 width)
 
 {
-  return QString("0x%1").arg(val, width, 16, QLatin1Char('0'));
+  return QStringLiteral("0x%1").arg(val, width, 16, QLatin1Char('0'));
 }
 
 /**

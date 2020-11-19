@@ -6,7 +6,7 @@ namespace priv {
 
 ObjectDeclarationFileData3LargeRefCountFND::
     ObjectDeclarationFileData3LargeRefCountFND(FileNode_WPtr_t parentFileNode)
-    : IFileNodeType(parentFileNode), m_cRef()
+    : IFileNodeType(std::move(parentFileNode)), m_cRef()
 {
 }
 

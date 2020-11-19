@@ -6,7 +6,7 @@ namespace libmson {
 namespace priv {
 HashedChunkDescriptor2FND::HashedChunkDescriptor2FND(
     FileNode_WPtr_t parentFileNode)
-    : IFileNodeType(parentFileNode)
+    : IFileNodeType(std::move(parentFileNode))
 {
 }
 
@@ -17,7 +17,7 @@ ObjectSpaceObjectPropSet_WPtr_t HashedChunkDescriptor2FND::getBlobRef() const
 }
 
 void HashedChunkDescriptor2FND::setBlobRef(
-    const ObjectSpaceObjectPropSet_WPtr_t BlobRef)
+    const ObjectSpaceObjectPropSet_SPtr_t BlobRef)
 {
   m_blobRef = BlobRef;
 }

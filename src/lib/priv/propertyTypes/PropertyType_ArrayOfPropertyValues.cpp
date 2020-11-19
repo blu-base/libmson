@@ -42,13 +42,11 @@ void PropertyType_ArrayOfPropertyValues::setData(
 
 quint64 PropertyType_ArrayOfPropertyValues::getSizeInFile() const
 {
-  quint64 propSetSize = 0;
-
-  for (const auto& entry : m_data) {
-    propSetSize += entry.getSizeInFile();
-  }
-
-  return sizeInFileBase + propSetSize;
+  return sizeInFileBase + std::accumulate(
+                              m_data.begin(), m_data.end(), 0,
+                              [&](quint64 a, const PropertySet& entry) {
+                                return a + entry.getSizeInFile();
+                              });
 }
 
 void PropertyType_ArrayOfPropertyValues::deserialize(QDataStream& ds)

@@ -72,6 +72,9 @@ private:
   FileNode_WPtr_t m_fileDataStoreListReference;
 
   QMap<quint32, quint32> m_fileNodeCountMapping;
+
+
+  std::list<UnknownBlob_WPtr_t> m_unkownBlobs;
 };
 
 

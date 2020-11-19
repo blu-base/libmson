@@ -13,7 +13,7 @@ class GlobalIdTableEndFNDX
     , public IStreamable {
 public:
   GlobalIdTableEndFNDX(FileNode_WPtr_t parentFileNode)
-      : IFileNodeType(parentFileNode){};
+      : IFileNodeType(std::move(parentFileNode)){};
   virtual ~GlobalIdTableEndFNDX() = default;
 
   virtual quint64 getSizeInFile() const override { return 0; };

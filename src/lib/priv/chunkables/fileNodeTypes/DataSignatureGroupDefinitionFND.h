@@ -20,7 +20,7 @@ public:
   DataSignatureGroupDefinitionFND(FileNode_WPtr_t parentFileNode);
   virtual ~DataSignatureGroupDefinitionFND() = default;
 
-  ExtendedGUID dataSignatureGroup() const;
+  ExtendedGUID getDataSignatureGroup() const;
   void setDataSignatureGroup(const ExtendedGUID& DataSignatureGroup);
 
   virtual quint64 getSizeInFile() const override;

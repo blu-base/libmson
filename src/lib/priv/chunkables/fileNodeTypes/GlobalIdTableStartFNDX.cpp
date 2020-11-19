@@ -3,7 +3,7 @@
 namespace libmson {
 namespace priv {
 GlobalIdTableStartFNDX::GlobalIdTableStartFNDX(FileNode_WPtr_t parentFileNode)
-    : IFileNodeType(parentFileNode), m_reserved{0}
+    : IFileNodeType(std::move(parentFileNode)), m_reserved{0}
 {
 }
 

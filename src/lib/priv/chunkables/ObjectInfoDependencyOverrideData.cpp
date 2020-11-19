@@ -66,14 +66,13 @@ void ObjectInfoDependencyOverrideData::setOverrides2(
   m_Overrides2 = Overrides2;
 }
 
-const quint64 ObjectInfoDependencyOverrideData::sizeInFileBase =
-    sizeof(m_c8BitOverrides) + sizeof(m_c32BitOverrides) + sizeof(m_crc);
+const quint64 ObjectInfoDependencyOverrideData::sizeInFileBase = 12;
 
 quint64 ObjectInfoDependencyOverrideData::getSizeInFile() const
 {
   return sizeInFileBase +
-         m_c8BitOverrides * ObjectInfoDependencyOverride8::getSizeInFile() +
-         m_c32BitOverrides * ObjectInfoDependencyOverride32::getSizeInFile();
+         m_c8BitOverrides * ObjectInfoDependencyOverride8::sizeInFile +
+         m_c32BitOverrides * ObjectInfoDependencyOverride32::sizeInFile;
 }
 
 void ObjectInfoDependencyOverrideData::deserialize(QDataStream& ds)
@@ -89,7 +88,7 @@ void ObjectInfoDependencyOverrideData::deserialize(QDataStream& ds)
   }
 
   ObjectInfoDependencyOverride32 temp32;
-  for (size_t i{0}; i < m_c8BitOverrides; i++) {
+  for (size_t i{0}; i < m_c32BitOverrides; i++) {
     ds >> temp32;
     m_Overrides2.push_back(temp32);
   }
@@ -105,7 +104,7 @@ void ObjectInfoDependencyOverrideData::serialize(QDataStream& ds) const
     ds << m_Overrides1.at(i);
   }
 
-  for (size_t i{0}; i < m_c8BitOverrides; i++) {
+  for (size_t i{0}; i < m_c32BitOverrides; i++) {
     ds << m_Overrides2.at(i);
   }
 }

@@ -5,7 +5,8 @@ namespace priv {
 
 RevisionManifestStart6FND::RevisionManifestStart6FND(
     FileNode_WPtr_t parentFileNode)
-    : IFileNodeType(parentFileNode), m_revisionRole(), m_odcsDefault()
+    : IFileNodeType(std::move(parentFileNode)), m_revisionRole(),
+      m_odcsDefault()
 {
 }
 

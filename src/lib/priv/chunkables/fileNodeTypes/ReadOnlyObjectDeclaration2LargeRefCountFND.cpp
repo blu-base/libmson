@@ -6,7 +6,7 @@ namespace priv {
 
 ReadOnlyObjectDeclaration2LargeRefCountFND::
     ReadOnlyObjectDeclaration2LargeRefCountFND(FileNode_WPtr_t parentFileNode)
-    : IFileNodeType(parentFileNode)
+    : IFileNodeType(std::move(parentFileNode)), m_cRef()
 {
 }
 

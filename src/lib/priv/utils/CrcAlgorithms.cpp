@@ -21,17 +21,19 @@ void MsoCrc32::initializeCache()
     return;
   }
 
-  quint16 cachesize = cache.size();
 
-  for (quint8 index = 0; index < cachesize; index++) {
-    quint32 value = index << 24;
+  /// \todo likely candidate for std::transform
+  const quint16 cachesize = cache.size();
+
+  for (quint16 index = 0; index < cachesize; index++) {
+    quint32 value = index << 24u;
     for (quint32 bit = 0; bit < 8; bit++) {
-      if (value & 0x80000000) {
-        value <<= 1;
+      if ((value & 0x80000000u) != 0u) {
+        value <<= 1u;
         value ^= polynomial;
       }
       else {
-        value <<= 1;
+        value <<= 1u;
       }
       value &= initialVal;
     }
@@ -45,16 +47,11 @@ quint32 MsoCrc32::computeCRC(const QByteArray& obj, const quint32 crcStart)
 {
   initializeCache();
 
-  quint32 crcValue = crcStart;
-  for (const auto& byte : obj) {
-    quint32 index = crcValue >> 24;
-    index ^= byte;
-
-    crcValue <<= 8;
-    crcValue ^= cache.at(index);
-  }
-
-  return crcValue;
+  return std::accumulate(
+      obj.begin(), obj.end(), crcStart,
+      [](quint32 crc, const quint8 byte) noexcept {
+        return (crc << 8u) ^ cache.at((crc >> 24u) ^ byte);
+      });
 }
 
 bool MsoCrc32::validateCRC(const QByteArray& obj, const quint32 crc)
@@ -65,7 +62,7 @@ bool MsoCrc32::validateCRC(const QByteArray& obj, const quint32 crc)
 // CRC32
 const quint32 Crc32::polynomial = 0x04C11DB7;
 
-std::array<quint32, 256> Crc32::cache = {
+const std::array<quint32, 256> Crc32::cache = {
     0x00000000, 0x77073096, 0xee0e612c, 0x990951ba, 0x076dc419, 0x706af48f,
     0xe963a535, 0x9e6495a3, 0x0edb8832, 0x79dcb8a4, 0xe0d5e91e, 0x97d2d988,
     0x09b64c2b, 0x7eb17cbd, 0xe7b82d07, 0x90bf1d91, 0x1db71064, 0x6ab020f2,
@@ -113,16 +110,12 @@ std::array<quint32, 256> Crc32::cache = {
 
 quint32 Crc32::computeCRC(const QByteArray& obj, const quint32 crcStart)
 {
-  quint32 crc32 = crcStart;
-
-  /// \todo check if std::accumulate would be more suited here
-  for (const char& byte : obj) {
-    crc32 = (crc32 >> 8) ^ cache[(crc32 ^ byte) & 0xFF];
-  }
-
-  crc32 ^= 0xFFFFFFFF;
-
-  return crc32;
+  return std::accumulate(
+             obj.begin(), obj.end(), crcStart,
+             [](quint32 crc, const quint8 byte) noexcept {
+               return (crc >> 8u) ^ cache.at((crc ^ byte) & 0xFFu);
+             }) ^
+         0xFFFFFFFFu;
 }
 
 bool Crc32::validateCRC(const QByteArray& obj, const quint32 crc)

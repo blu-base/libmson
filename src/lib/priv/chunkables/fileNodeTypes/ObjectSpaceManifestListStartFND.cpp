@@ -5,7 +5,7 @@ namespace priv {
 
 ObjectSpaceManifestListStartFND::ObjectSpaceManifestListStartFND(
     FileNode_WPtr_t parentFileNode)
-    : IFileNodeType(parentFileNode)
+    : IFileNodeType(std::move(parentFileNode))
 {
 }
 

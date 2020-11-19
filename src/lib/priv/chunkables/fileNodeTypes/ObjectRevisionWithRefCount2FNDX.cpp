@@ -8,7 +8,7 @@ namespace priv {
 
 ObjectRevisionWithRefCount2FNDX::ObjectRevisionWithRefCount2FNDX(
     FileNode_WPtr_t parentFileNode)
-    : IFileNodeType(parentFileNode), m_fHasOidReferences(false),
+    : IFileNodeType(std::move(parentFileNode)), m_fHasOidReferences(false),
       m_fHasOsidReferences(false), m_cRef(0)
 {
 }

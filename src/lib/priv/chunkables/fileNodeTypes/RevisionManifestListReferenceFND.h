@@ -31,7 +31,7 @@ public:
   ~RevisionManifestListReferenceFND() = default;
 
   FileNodeListFragment_WPtr_t getRef() const;
-  void setRef(const FileNodeListFragment_WPtr_t value);
+  void setRef(const FileNodeListFragment_SPtr_t value);
 
 
   friend class RevisionStoreFileParser;

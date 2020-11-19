@@ -1,15 +1,18 @@
 #include "DataSignatureGroupDefinitionFND.h"
 
+#include <utility>
+
 namespace libmson {
 namespace priv {
 
 DataSignatureGroupDefinitionFND::DataSignatureGroupDefinitionFND(
     FileNode_WPtr_t parentFileNode)
-    : IFileNodeType(parentFileNode), m_dataSignatureGroup(ExtendedGUID())
+    : IFileNodeType(std::move(parentFileNode)),
+      m_dataSignatureGroup(ExtendedGUID())
 {
 }
 
-ExtendedGUID DataSignatureGroupDefinitionFND::dataSignatureGroup() const
+ExtendedGUID DataSignatureGroupDefinitionFND::getDataSignatureGroup() const
 {
   return m_dataSignatureGroup;
 }

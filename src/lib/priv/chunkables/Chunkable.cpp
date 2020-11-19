@@ -56,11 +56,13 @@ QString Chunkable::typeString(RevisionStoreChunkType type)
     return "ObjectInfoDependencyOverrideData";
   case RevisionStoreChunkType::EncryptedData:
     return "EncryptedData";
+  case RevisionStoreChunkType::UnknownBlob:
+    return "UnknownBlob";
   case RevisionStoreChunkType::Invalid:
     return "Invalid";
-  default:
-    return "";
   }
+
+  return "UndefinedType";
 }
 
 

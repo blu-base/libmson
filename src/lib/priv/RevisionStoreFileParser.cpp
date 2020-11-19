@@ -204,17 +204,42 @@ std::shared_ptr<RevisionStoreFile> RevisionStoreFileParser::parse()
     }
   }
 
-  /// Check file for unreferenced sections
-  auto lChunks = m_file->getChunks();
-  auto it      = lChunks.begin();
-  auto prev    = it;
-  it++;
-  while (it != lChunks.end()) {
+
+  {
+    /// Check file for unreferenced sections
+    auto lChunks = m_file->getChunks();
+    auto it      = lChunks.begin();
+    auto prev    = it;
+    it++;
+    while (it != lChunks.end()) {
+
+      quint64 lastEnd = (*prev)->getInitialStp() + (*prev)->getInitialCb();
+      quint64 start   = (*it)->getInitialStp();
+
+      quint64 diff = start - lastEnd;
+
+      if (diff != 0) {
+        qInfo().noquote() << "Found unreferenced blob at"
+                          << qStringHex(lastEnd, 16) << "of size"
+                          << qStringHex(diff, 8);
+
+        auto unknownBlob = std::make_shared<UnknownBlob>(lastEnd, diff);
+
+        unknownBlob = insertChunkSorted(m_file->chunks(), unknownBlob);
+        m_file->m_unkownBlobs.push_back(unknownBlob);
+
+
+        parseUnknownBlob(m_ds, unknownBlob);
+      }
+
+      it++;
+      prev++;
+    }
+
 
     quint64 lastEnd = (*prev)->getInitialStp() + (*prev)->getInitialCb();
-    quint64 start   = (*it)->getInitialStp();
 
-    quint64 diff = start - lastEnd;
+    quint64 diff = header->getCbExpectedFileLength() - lastEnd;
 
     if (diff != 0) {
       qInfo().noquote() << "Found unreferenced blob at"
@@ -224,31 +249,13 @@ std::shared_ptr<RevisionStoreFile> RevisionStoreFileParser::parse()
       auto unknownBlob = std::make_shared<UnknownBlob>(lastEnd, diff);
 
       unknownBlob = insertChunkSorted(m_file->chunks(), unknownBlob);
+      m_file->m_unkownBlobs.push_back(unknownBlob);
 
       parseUnknownBlob(m_ds, unknownBlob);
     }
-
-    it++;
-    prev++;
   }
 
-
-  quint64 lastEnd = (*prev)->getInitialStp() + (*prev)->getInitialCb();
-
-  quint64 diff = header->getCbExpectedFileLength() - lastEnd;
-
-  if (diff != 0) {
-    qInfo().noquote() << "Found unreferenced blob at" << qStringHex(lastEnd, 16)
-                      << "of size" << qStringHex(diff, 8);
-
-    auto unknownBlob = std::make_shared<UnknownBlob>(lastEnd, diff);
-
-    unknownBlob = insertChunkSorted(m_file->chunks(), unknownBlob);
-
-    parseUnknownBlob(m_ds, unknownBlob);
-  }
-
-
+  /*
   /// temporary check regarding intended sizes and reported sizes
   ///
   ///
@@ -259,6 +266,7 @@ std::shared_ptr<RevisionStoreFile> RevisionStoreFileParser::parse()
   }
 
   qint64 totalDiff = std::accumulate(diffs.begin(), diffs.end(), 0);
+  */
 
 
   return m_file;
@@ -926,7 +934,6 @@ FileNode_SPtr_t RevisionStoreFileParser::parseFileNode(
       ds >> currentFnt->m_body;
       ds >> currentFnt->m_cRef;
 
-
       currentFnt->setMd5hash(ds.device()->read(
           ReadOnlyObjectDeclaration2RefCountFND::md5HashSize));
 
@@ -1047,9 +1054,10 @@ FileNode_SPtr_t RevisionStoreFileParser::parseFileNode(
     }
 
     default:
+      /// \todo make an unknown blob filenode to cope with undocumented stuff
       qInfo() << "FileNodeID: " << fn->getFileNodeID();
-      qFatal("FileNode of base type 1 has a fileNodeTypeID which switches to "
-             "default. Should not happen.");
+      qWarning("FileNode of base type 1 has a fileNodeTypeID which switches to "
+               "default. Should not happen.");
     }
   }
   else if (fn->baseType == 2) {
@@ -1287,15 +1295,15 @@ RevisionStoreFileParser::parseObjectSpaceObjectPropSet(
 }
 
 FileNodeListFragment_SPtr_t RevisionStoreFileParser::parseFileNodeListFragment(
-    QDataStream& ds, FileNodeListFragment_SPtr_t chunk)
+    QDataStream& ds, FileNodeListFragment_SPtr_t fragment)
 {
-  quint64 stp = chunk->getInitialStp();
-  quint64 cb  = chunk->getInitialCb();
+  const quint64 stp = fragment->getInitialStp();
+  const quint64 cb  = fragment->getInitialCb();
 
   if (static_cast<quint64>(ds.device()->size()) < stp) {
     qFatal("Tried to read past file size.");
   }
-  ds.device()->seek(chunk->getInitialStp());
+  ds.device()->seek(fragment->getInitialStp());
 
   if (cb < FileNodeListFragment::minSizeInFile) {
     qFatal("Tried to read fileNodeListFragment with invalid size.");
@@ -1317,41 +1325,50 @@ FileNodeListFragment_SPtr_t RevisionStoreFileParser::parseFileNodeListFragment(
     qFatal("FileNodeListFragment header is invalid.");
   }
 
-  ds >> chunk->m_fileNodeListID;
-  ds >> chunk->m_nFragmentSequence;
+  ds >> fragment->m_fileNodeListID;
+  ds >> fragment->m_nFragmentSequence;
 
-  if (m_file->m_fileNodeListFragments.find(chunk->m_nFragmentSequence) !=
+  /*
+  if (m_file->m_fileNodeListFragments.find(fragment->m_nFragmentSequence) !=
       m_file->m_fileNodeListFragments.end()) {
     qWarning("FileNodeListFragment Sequence number already present(duplicate "
              "nFragmentSequence");
 
     /// \todo figure out how the requirement of strictly sequential numbered
     /// fragments applies
-    m_file->m_fileNodeListFragments.emplace(
-        chunk->m_nFragmentSequence + 0x1000, chunk);
+    //    m_file->m_fileNodeListFragments.emplace(
+    //        fragment->m_nFragmentSequence + 0x1000, fragment);
   }
   else {
 
-    m_file->m_fileNodeListFragments.emplace(chunk->m_nFragmentSequence, chunk);
+    m_file->m_fileNodeListFragments.emplace(
+        fragment->m_nFragmentSequence, fragment);
   }
-
+  */
 
   quint32 fileNodeCount = UINT32_MAX;
 
-  if (m_file->m_fileNodeCountMapping.contains(chunk->m_fileNodeListID)) {
-    fileNodeCount = m_file->m_fileNodeCountMapping[chunk->m_fileNodeListID];
+  if (m_file->m_fileNodeCountMapping.contains(fragment->m_fileNodeListID)) {
+    fileNodeCount = m_file->m_fileNodeCountMapping[fragment->m_fileNodeListID];
   }
 
   quint64 remainingBytes = cb - FileNodeListFragment::minSizeInFile;
+  //  quint64 thisStart      = stp + FileNodeListFragment::headerSize;
+  //  quint64 diff           = 0;
   do {
 
-    auto fnc = parseFileNode(ds, ds.device()->pos(), chunk);
+    auto fnc = parseFileNode(ds, ds.device()->pos(), fragment);
+
+
+    //    quint64 rep = fnc->getSizeInFile();
+    //    diff        = ds.device()->pos() - thisStart;
+    //    thisStart   = ds.device()->pos();
 
     FileNodeTypeID fileNodeID = fnc->getFileNodeTypeID();
 
 
     if (fileNodeID != FileNodeTypeID::NullFnd) {
-      chunk->m_fileNodes.push_back(fnc);
+      fragment->m_fileNodes.push_back(fnc);
       remainingBytes -= fnc->getSizeInFile();
       if (fileNodeID != FileNodeTypeID::ChunkTerminatorFND) {
         fileNodeCount--;
@@ -1372,11 +1389,11 @@ FileNodeListFragment_SPtr_t RevisionStoreFileParser::parseFileNodeListFragment(
   } while ((remainingBytes > 4) && (fileNodeCount > 0));
 
 
-  if (m_file->m_fileNodeCountMapping.contains(chunk->m_fileNodeListID)) {
-    m_file->m_fileNodeCountMapping[chunk->m_fileNodeListID] = fileNodeCount;
+  if (m_file->m_fileNodeCountMapping.contains(fragment->m_fileNodeListID)) {
+    m_file->m_fileNodeCountMapping[fragment->m_fileNodeListID] = fileNodeCount;
   }
 
-  chunk->m_paddingLength = remainingBytes;
+  fragment->m_paddingLength = remainingBytes;
 
 
   // dormant file nodes section
@@ -1394,14 +1411,14 @@ FileNodeListFragment_SPtr_t RevisionStoreFileParser::parseFileNodeListFragment(
     qFatal("FileNodeListFragment footer is invalid.");
   }
 
-  chunk->m_isParsed = true;
+  fragment->m_isParsed = true;
 
   if (!nextFragment.is_fcrNil() && !nextFragment.is_fcrZero()) {
     auto nextFnlf = std::make_shared<FileNodeListFragment>(
         nextFragment.stp(), nextFragment.cb());
 
-    nextFnlf              = insertChunkSorted(m_file->chunks(), nextFnlf);
-    chunk->m_nextFragment = nextFnlf;
+    nextFnlf                 = insertChunkSorted(m_file->chunks(), nextFnlf);
+    fragment->m_nextFragment = nextFnlf;
     return nextFnlf;
   }
 

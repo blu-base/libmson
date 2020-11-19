@@ -77,7 +77,8 @@ void FileDataStoreObject::deserialize(QDataStream& ds)
   ds >> m_reserved;
 
   /// \todo reading a large File to memory might be manipulated here
-
+  //  m_FileData = QByteArray(m_cbLength, 0x0);
+  //      .resize(m_cbLength);
 
   m_FileData = ds.device()->read(m_cbLength);
 

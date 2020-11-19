@@ -1,4 +1,7 @@
 #include "ObjectSpaceObjectPropSet.h"
+
+#include "../utils/Helper.h"
+
 namespace libmson {
 namespace priv {
 
@@ -98,7 +101,7 @@ quint64 ObjectSpaceObjectPropSet::unPaddedCb() const
 
 quint64 libmson::priv::ObjectSpaceObjectPropSet::cb() const
 {
-  return unPaddedCb() + getPaddingLength();
+  return ceilToMultiple(unPaddedCb(), 8);
 }
 
 libmson::priv::RevisionStoreChunkType

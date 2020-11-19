@@ -7,7 +7,7 @@ namespace libmson {
 namespace priv {
 ObjectDeclaration2LargeRefCountFND::ObjectDeclaration2LargeRefCountFND(
     FileNode_WPtr_t parentFileNode)
-    : IFileNodeType(parentFileNode), m_cRef(0)
+    : IFileNodeType(std::move(parentFileNode)), m_cRef(0)
 {
 }
 

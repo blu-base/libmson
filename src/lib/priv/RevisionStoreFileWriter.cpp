@@ -62,6 +62,8 @@
 #include "chunkables/fileNodeTypes/RootObjectReference2FNDX.h"
 #include "chunkables/fileNodeTypes/RootObjectReference3FND.h"
 
+#include <QCryptographicHash>
+
 
 namespace libmson {
 namespace priv {
@@ -286,6 +288,12 @@ bool RevisionStoreFileWriter::writeTransactionLogFragment(
     QDataStream& ds, TransactionLogFragment_SPtr_t transactionLogFragment)
 {
 
+  // if byte order is big endian, change to little endian
+  if (ds.byteOrder() == QDataStream::BigEndian) {
+    ds.setByteOrder(QDataStream::LittleEndian);
+  }
+
+
   for (const auto& entry : transactionLogFragment->getSizeTable()) {
     ds << *entry;
   }
@@ -305,6 +313,10 @@ bool RevisionStoreFileWriter::writeTransactionLogFragment(
 bool RevisionStoreFileWriter::writeUnknownBlob(
     QDataStream& ds, UnknownBlob_SPtr_t unknownBlob)
 {
+  // if byte order is big endian, change to little endian
+  if (ds.byteOrder() == QDataStream::BigEndian) {
+    ds.setByteOrder(QDataStream::LittleEndian);
+  }
 
 
   ds.writeRawData(unknownBlob->getBlob(), unknownBlob->getBlob().size());
@@ -315,6 +327,12 @@ bool RevisionStoreFileWriter::writeUnknownBlob(
 bool RevisionStoreFileWriter::writeFileNode(
     QDataStream& ds, FileNode_SPtr_t& fileNode)
 {
+  // if byte order is big endian, change to little endian
+  if (ds.byteOrder() == QDataStream::BigEndian) {
+    ds.setByteOrder(QDataStream::LittleEndian);
+  }
+
+
   // updating self size
   fileNode->fileNodeSize = fileNode->getSizeInFile();
 
@@ -458,7 +476,7 @@ bool RevisionStoreFileWriter::writeFileNode(
 
 
     default:
-      qInfo() << "FileNodeID: " << fileNode->getFileNodeID();
+      qDebug() << "FileNodeID: " << fileNode->getFileNodeID();
       qWarning("FileNode of base type 0 has a fileNodeTypeID which switches to "
                "default. Should not happen.");
     }
@@ -485,7 +503,20 @@ bool RevisionStoreFileWriter::writeFileNode(
           cFnd->getBlobRef(), fileNode->getStpFormatEnum(),
           fileNode->getCbFormatEnum());
 
-      ds.writeRawData(cFnd->getGuidHash().data(), cFnd->guidHashWidth);
+
+      auto propSet = cFnd->getBlobRef().lock();
+
+      auto data = std::make_unique<QByteArray>(propSet->getSizeInFile(), '\0');
+      QDataStream data_ds(data.get(), QIODevice::WriteOnly);
+      data_ds.setByteOrder(QDataStream::LittleEndian);
+      if (propSet != nullptr) {
+        writeObjectSpaceObjectPropSet(data_ds, propSet);
+      }
+
+      const QByteArray md5hash =
+          QCryptographicHash::hash(*data, QCryptographicHash::Md5);
+
+      ds.writeRawData(md5hash.data(), cFnd->guidHashWidth);
       break;
     }
     case FileNodeTypeID::ObjectDataEncryptionKeyV2FNDX: {
@@ -537,11 +568,30 @@ bool RevisionStoreFileWriter::writeFileNode(
       ds << cFnd->getBody();
       ds << cFnd->getCRef();
 
-      // #################################################################################
-      /// \todo make new md5hash
-      // #################################################################################
-      ds.writeRawData(cFnd->getMd5hash().data(), cFnd->md5HashSize);
-      break;
+      auto propSet = cFnd->getBlobRef().lock();
+
+
+      auto data = std::make_unique<QByteArray>(propSet->getSizeInFile(), '\0');
+      QDataStream data_ds(data.get(), QIODevice::WriteOnly);
+      data_ds.setByteOrder(QDataStream::LittleEndian);
+      if (propSet != nullptr) {
+        writeObjectSpaceObjectPropSet(data_ds, propSet);
+      }
+
+      /*
+      qDebug() << "\nReadOnlyObjectDeclaration2LargeRefCountFND\nData:\n"
+               << data->toHex();
+      */
+
+      const QByteArray md5hash =
+          QCryptographicHash::hash(*data, QCryptographicHash::Md5);
+
+      /*
+      qDebug() << "Original Md5 hash:\n" << cFnd->getMd5hash().toHex();
+      qDebug() << "Computed Md5 hash:\n" << md5hash.toHex();
+      */
+
+      ds.writeRawData(md5hash.data(), cFnd->md5HashSize);
     }
     case FileNodeTypeID::ReadOnlyObjectDeclaration2RefCountFND: {
       auto cFnd =
@@ -552,11 +602,30 @@ bool RevisionStoreFileWriter::writeFileNode(
           fileNode->getCbFormatEnum());
       ds << cFnd->getBody();
       ds << cFnd->getCRef();
-      // #################################################################################
-      /// \todo make new md5hash
-      // #################################################################################
 
-      ds.writeRawData(cFnd->getMd5hash().data(), cFnd->md5HashSize);
+      auto propSet = cFnd->getBlobRef().lock();
+
+      auto data = std::make_unique<QByteArray>(propSet->getSizeInFile(), '\0');
+      QDataStream data_ds(data.get(), QIODevice::WriteOnly);
+      data_ds.setByteOrder(QDataStream::LittleEndian);
+      if (propSet != nullptr) {
+        writeObjectSpaceObjectPropSet(data_ds, propSet);
+      }
+
+      /*
+      qInfo() << "\nReadOnlyObjectDeclaration2RefCountFND\nData:\n"
+              << data->toHex();
+      */
+
+      const QByteArray md5hash =
+          QCryptographicHash::hash(*data, QCryptographicHash::Md5);
+
+      /*
+      qInfo() << "Original Md5 hash:\n" << cFnd->getMd5hash().toHex();
+      qInfo() << "Computed Md5 hash:\n" << md5hash.toHex();
+      */
+
+      ds.writeRawData(md5hash.data(), cFnd->md5HashSize);
       break;
     }
     case FileNodeTypeID::ObjectDeclarationWithRefCountFNDX: {
@@ -687,6 +756,10 @@ bool RevisionStoreFileWriter::writeFileNode(
 bool RevisionStoreFileWriter::writeFileNodeListFragment(
     QDataStream& ds, FileNodeListFragment_SPtr_t& fileNodeListFragment)
 {
+  // if byte order is big endian, change to little endian
+  if (ds.byteOrder() == QDataStream::BigEndian) {
+    ds.setByteOrder(QDataStream::LittleEndian);
+  }
 
 
   ds << FileNodeListFragment::header_magic_id;
@@ -716,6 +789,10 @@ bool RevisionStoreFileWriter::writeFileNodeListFragment(
 bool RevisionStoreFileWriter::writeFreeChunkListFragment(
     QDataStream& ds, FreeChunkListFragment_SPtr_t freeChunklistFragment)
 {
+  // if byte order is big endian, change to little endian
+  if (ds.byteOrder() == QDataStream::BigEndian) {
+    ds.setByteOrder(QDataStream::LittleEndian);
+  }
 
 
   ds << getFcr64x32FromChunk(freeChunklistFragment->getFcrNextFragment());
@@ -763,6 +840,10 @@ bool RevisionStoreFileWriter::writeFreeChunk(
 bool RevisionStoreFileWriter::writeFileDataStoreObject(
     QDataStream& ds, FileDataStoreObject_SPtr_t fileDataStoreObject)
 {
+  // if byte order is big endian, change to little endian
+  if (ds.byteOrder() == QDataStream::BigEndian) {
+    ds.setByteOrder(QDataStream::LittleEndian);
+  }
 
   ds << *fileDataStoreObject;
 
@@ -772,6 +853,10 @@ bool RevisionStoreFileWriter::writeFileDataStoreObject(
 bool RevisionStoreFileWriter::writeObjectSpaceObjectPropSet(
     QDataStream& ds, ObjectSpaceObjectPropSet_SPtr_t propSet)
 {
+  // if byte order is big endian, change to little endian
+  if (ds.byteOrder() == QDataStream::BigEndian) {
+    ds.setByteOrder(QDataStream::LittleEndian);
+  }
 
   ds << propSet->getOIDs();
   if (propSet->getOIDs().header().OsidStream_isNotPresent() == false) {
@@ -795,9 +880,35 @@ bool RevisionStoreFileWriter::writeObjectSpaceObjectPropSet(
   return true;
 }
 
+bool RevisionStoreFileWriter::writeObjectSpaceObjectPropSetUnpadded(
+    QDataStream& ds, ObjectSpaceObjectPropSet_SPtr_t propSet)
+{
+  // if byte order is big endian, change to little endian
+  if (ds.byteOrder() == QDataStream::BigEndian) {
+    ds.setByteOrder(QDataStream::LittleEndian);
+  }
+
+  ds << propSet->getOIDs();
+  if (propSet->getOIDs().header().OsidStream_isNotPresent() == false) {
+    ds << propSet->getOSIDs();
+
+    if (propSet->getOSIDs().header().ExtendedStream_isPresent() == true) {
+      ds << propSet->getContextIDs();
+    }
+  }
+  ds << propSet->getBody();
+
+  return true;
+}
+
+
 bool RevisionStoreFileWriter::writeObjectInfoDependencyOverrideData(
     QDataStream& ds, ObjectInfoDependencyOverrideData_SPtr_t data)
 {
+  // if byte order is big endian, change to little endian
+  if (ds.byteOrder() == QDataStream::BigEndian) {
+    ds.setByteOrder(QDataStream::LittleEndian);
+  }
 
 
   ds << *data;
@@ -808,6 +919,11 @@ bool RevisionStoreFileWriter::writeObjectInfoDependencyOverrideData(
 bool RevisionStoreFileWriter::writeEncryptedData(
     QDataStream& ds, EncryptedData_SPtr_t encryptedData)
 {
+  // if byte order is big endian, change to little endian
+  if (ds.byteOrder() == QDataStream::BigEndian) {
+    ds.setByteOrder(QDataStream::LittleEndian);
+  }
+
   ds << encryptedData->header;
 
   ds.writeRawData(
@@ -818,42 +934,16 @@ bool RevisionStoreFileWriter::writeEncryptedData(
 }
 
 
-/// writting zeros into stream with the size of the unparsed chunk
+/// writting 0xee into stream with the size of the unparsed chunk
 bool RevisionStoreFileWriter::writeUnparsedChunk(
     QDataStream& ds, Chunkable_SPtr_t chunk)
 {
 
   quint64 size = chunk->getInitialCb();
 
-
-  //  // trying to split padding into managable sectors
-
-  //  if (size > 4096) {
-  //    const std::array<char, 4096> buffer4k{};
-  //    while (size / 4096 > 0) {
-  //      ds.writeRawData(buffer4k.data(), 4096);
-  //      size -= 4096;
-  //    }
-  //  }
-
-  //  const quint64 zeros64{};
-  //  while (size / 64 > 0) {
-  //    ds << zeros64;
-  //    size -= 64;
-  //  }
-
-  //  const quint8 zeros8{};
-  //  while (size > 0) {
-  //    ds << zeros8;
-  //    --size;
-  //  }
-
-
-  /// \todo revert writeUnparsedChunk to section writer after debugging
-  /// finished
-  const quint8 zeros8{0xee};
+  const quint8 filling{0xee};
   while (size > 0) {
-    ds << zeros8;
+    ds << filling;
     --size;
   }
 

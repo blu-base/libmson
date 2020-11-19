@@ -36,7 +36,7 @@ private:
   /// | 0x04C11DB7 | 0xFFFFFFFF | true  | true   | 0xFFFFFFFF |
   /// +------------+------------+-------+--------+------------+
   ///
-  static std::array<quint32, 256> cache;
+  static const std::array<quint32, 256> cache;
   /// CRC polynomal: 0x04C11DB7
   static const quint32 polynomial;
 
@@ -45,10 +45,12 @@ public:
   /// \brief CRC32 algorithm according to RFC3309
   ///
   ///
-  static quint32 computeCRC(const QByteArray& obj, const quint32 crcStart = 0xFFFFFFFF);
+  static quint32
+  computeCRC(const QByteArray& obj, const quint32 crcStart = 0xFFFFFFFF);
   static bool validateCRC(const QByteArray& obj, const quint32 crc);
 
-  /// \brief computes RevisionStoreFileHeader's crcName from a fileName (non-null-terminated).
+  /// \brief computes RevisionStoreFileHeader's crcName from a fileName
+  /// (non-null-terminated).
   static quint32 computeCrcName(const QString& fileName);
 };
 

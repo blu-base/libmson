@@ -5,7 +5,7 @@ namespace priv {
 
 RevisionRoleDeclarationFND::RevisionRoleDeclarationFND(
     FileNode_WPtr_t parentFileNode)
-    : IFileNodeType(parentFileNode), m_RevisionRole()
+    : IFileNodeType(std::move(parentFileNode)), m_RevisionRole()
 {
 }
 

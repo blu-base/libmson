@@ -58,8 +58,8 @@ private:
   /// Fragment specified That RSChunkContainer_SPtr_t is not inserted to any
   /// std::list<RSChunkContainer_SPtr_t>& chunkList. This has to be done by
   /// calling method.
-  FileNodeListFragment_SPtr_t
-  parseFileNodeListFragment(QDataStream& ds, FileNodeListFragment_SPtr_t chunk);
+  FileNodeListFragment_SPtr_t parseFileNodeListFragment(
+      QDataStream& ds, FileNodeListFragment_SPtr_t fragment);
 
   /// parses a fragment tree. Returns a RSChunkContainer_WPtr_t list
   std::vector<FileNodeListFragment_WPtr_t>

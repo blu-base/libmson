@@ -8,14 +8,11 @@
 #include <memory>
 
 
+#include <utility> /* to be used by FND implementations for std::move*/
+
+
 namespace libmson {
 namespace priv {
-
-// class FileNode;
-
-// typedef std::shared_ptr<FileNode> FileNode_SPtr_t;
-// typedef std::weak_ptr<FileNode> FileNode_WPtr_t;
-
 /**
  * @class IFileNodeType
  * @brief The abstract class for the Data contained in FileNodes

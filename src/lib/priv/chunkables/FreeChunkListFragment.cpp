@@ -24,12 +24,12 @@ void FreeChunkListFragment::setFcrNextFragment(
   m_fcrNextFragment = value;
 }
 
-std::vector<FreeChunk_WPtr_t> FreeChunkListFragment::fcrFreeChunks() const
+std::vector<FreeChunk_WPtr_t> FreeChunkListFragment::getFcrFreeChunks() const
 {
   return m_fcrFreeChunks;
 }
 
-std::vector<FreeChunk_WPtr_t>& FreeChunkListFragment::getFcrFreeChunks()
+std::vector<FreeChunk_WPtr_t>& FreeChunkListFragment::fcrFreeChunks()
 {
   return m_fcrFreeChunks;
 }

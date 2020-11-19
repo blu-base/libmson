@@ -26,7 +26,7 @@ void ObjectDeclaration2Body::deserialize(QDataStream& ds)
   ds >> m_oid;
   ds >> m_jcid;
 
-  quint8 temp;
+  quint8 temp{};
   ds >> temp;
   m_fHasOidReferences  = temp & 0x1;
   m_fHasOsidReferences = (temp >> 1) & 0x1;
