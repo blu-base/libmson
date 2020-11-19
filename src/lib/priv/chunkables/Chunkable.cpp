@@ -8,7 +8,8 @@ namespace priv {
 bool Chunkable::isParsed() const { return m_isParsed; }
 
 Chunkable::Chunkable(const quint64 initialStp, const quint64 initialCb)
-    : m_initialStp(initialStp), m_initialCb(initialCb), m_isParsed(false)
+    : m_initialStp(initialStp), m_initialCb(initialCb), m_cb(initialCb),
+      m_isParsed(false), m_isChanged(false)
 {
 }
 
@@ -16,19 +17,17 @@ quint64 Chunkable::getInitialStp() const { return m_initialStp; }
 
 quint64 Chunkable::getInitialCb() const { return m_initialCb; }
 
-quint64 Chunkable::getSizeInFile() const
+quint64 Chunkable::getSizeInFile()
 {
-  if (m_isParsed) {
-
-    //    qInfo() << typeString(type()) << " cb: " << getInitialCb() << "
-    //    initially"; qInfo() << typeString(type()) << " cb: " << cb();
-    return cb();
-  }
-  else {
-    //    qInfo() << typeString(type()) << " cb: " << getInitialCb() << "
-    //    initially"; qInfo() << typeString(type()) << " cb: " << cb();
+  if (!m_isParsed) {
     return m_initialCb;
   }
+
+  if (m_isChanged) {
+    m_cb = cb();
+  }
+
+  return m_cb;
 }
 
 RevisionStoreChunkType Chunkable::type() const { return getType(); }

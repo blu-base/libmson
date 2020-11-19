@@ -29,10 +29,13 @@ enum class RevisionStoreChunkType {
 
 class Chunkable {
 protected:
-  quint64 m_initialStp;
-  quint64 m_initialCb;
+  const quint64 m_initialStp;
+  const quint64 m_initialCb;
 
-  bool m_isParsed = false;
+  quint64 m_cb;
+
+  bool m_isParsed  = false;
+  bool m_isChanged = false;
 
   virtual quint64 cb() const                     = 0;
   virtual RevisionStoreChunkType getType() const = 0;
@@ -46,12 +49,16 @@ public:
   /// returns the size in number of bytes this chunk would have in a file.
   /// If the chunk has not been parsed, this function returns the m_initialCb
   /// value.
-  quint64 getSizeInFile() const;
+  /// If the chunk has been changed, it will recalculate this Chunkables size,
+  /// store it in m_cb and return it. Otherwise it will return the already
+  /// stored m_cb
+  quint64 getSizeInFile();
   RevisionStoreChunkType type() const;
   static QString typeString(RevisionStoreChunkType type);
 
 
   bool isParsed() const;
+  bool isChanged() const;
 
   friend class RevisionStoreFileParser;
 };
