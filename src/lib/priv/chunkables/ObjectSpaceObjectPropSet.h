@@ -44,7 +44,6 @@ public:
   quint64 getPaddingLength() const;
 
 
-  friend class RevisionStoreFileWriter;
   friend class RevisionStoreFileParser;
 
 private:

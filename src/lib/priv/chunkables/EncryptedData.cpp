@@ -15,7 +15,8 @@ QByteArray EncryptedData::getData() const { return m_data; }
 
 void EncryptedData::setData(const QByteArray& encryptionData)
 {
-  m_data = encryptionData;
+  m_isChanged = true;
+  m_data      = encryptionData;
 }
 
 quint64 libmson::priv::EncryptedData::cb() const

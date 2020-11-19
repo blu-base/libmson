@@ -26,8 +26,6 @@ public:
   static const quint64 footer = 0x2649294F8E198B3C;
 
   friend class RevisionStoreFileParser;
-  friend class RevisionStoreFileWriter;
-
 
   /// Edge case, where m_data.size() is 0. Only m_header and m_footer contribute
   /// in min case.

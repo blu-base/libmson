@@ -11,7 +11,11 @@ FreeChunkListFragment::FreeChunkListFragment(
 
 quint32 FreeChunkListFragment::getCrc() const { return m_crc; }
 
-void FreeChunkListFragment::setCrc(const quint32 value) { m_crc = value; }
+void FreeChunkListFragment::setCrc(const quint32 value)
+{
+  m_isChanged = true;
+  m_crc       = value;
+}
 
 FreeChunkListFragment_WPtr_t FreeChunkListFragment::getFcrNextFragment()
 {
@@ -21,6 +25,7 @@ FreeChunkListFragment_WPtr_t FreeChunkListFragment::getFcrNextFragment()
 void FreeChunkListFragment::setFcrNextFragment(
     FreeChunkListFragment_WPtr_t value)
 {
+  m_isChanged       = true;
   m_fcrNextFragment = value;
 }
 
@@ -31,12 +36,14 @@ std::vector<FreeChunk_WPtr_t> FreeChunkListFragment::getFcrFreeChunks() const
 
 std::vector<FreeChunk_WPtr_t>& FreeChunkListFragment::fcrFreeChunks()
 {
+  m_isChanged = true;
   return m_fcrFreeChunks;
 }
 
 void FreeChunkListFragment::setFcrFreeChunks(
     const std::vector<FreeChunk_WPtr_t>& value)
 {
+  m_isChanged     = true;
   m_fcrFreeChunks = value;
 }
 

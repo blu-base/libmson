@@ -3,34 +3,35 @@
 namespace libmson {
 namespace priv {
 
-const QUuid RevisionStoreFileHeader::v_guidFileType_One(
+const QUuid RevisionStoreFileHeader::guidFileType_One(
     "{7b5c52e4-d88c-4da7-aeb1-5378d02996d3}");
-const QUuid RevisionStoreFileHeader::v_guidFileType_OneToc2(
+const QUuid RevisionStoreFileHeader::guidFileType_OneToc2(
     "{43ff2fa1-efd9-4c76-9ee2-10ea5722765f}");
 
-const QUuid RevisionStoreFileHeader::v_guidFileFormat(
+const QUuid RevisionStoreFileHeader::guidFileFormat(
     "{109ADD3F-911B-49F5-A5D0-1791EDC8AED8}");
 
-const QUuid RevisionStoreFileHeader::v_guidLegacyFileVersion(
+const QUuid RevisionStoreFileHeader::guidLegacyFileVersion(
     "{00000000-0000-0000-0000-000000000000}");
 
 
 RevisionStoreFileHeader::RevisionStoreFileHeader(
     const quint64 initialStp, const quint64 initialCb)
-    : Chunkable(initialStp, initialCb), guidFileType(v_guidFileType_One),
-      guidFile(QUuid::createUuid()), ffvLastWriterVersion{0x0000002A},
-      ffvOldestWriterVersion{0x0000002A}, ffvNewestWriterVersion{0x0000002A},
-      ffvOldestReader{0x0000002A}, cTransactionsInLog{1}, rgbPlaceholder{0},
-      fNeedsDefrag{0}, fRepairedFile{0}, fNeedsGarbageCollect{0},
-      fHasNoEmbeddedFileObjects{0}, guidAncestor{QUuid()}, crcName{0},
-      fcrHashedChunkList{FileNodeListFragment_WPtr_t()},
-      fcrTransactionLog{TransactionLogFragment_WPtr_t()},
-      fcrFileNodeListRoot{FileNodeListFragment_WPtr_t()},
-      fcrFreeChunkList{FreeChunkListFragment_WPtr_t()},
-      cbExpectedFileLength{0x400}, cbFreeSpaceInFreeChunkList{0},
-      guidFileVersion{QUuid()}, nFileVersionGeneration{},
-      guidDenyReadFileVersion{QUuid()}, grfDebugLogFlags{0}, bnCreated{0},
-      bnLastWroteToThisFile{0}, bnOldestWritten{0}, bnNewestWritten{0}
+    : Chunkable(initialStp, initialCb), m_guidFileType(guidFileType_One),
+      m_guidFile(QUuid::createUuid()), m_ffvLastWriterVersion{0x0000002A},
+      m_ffvOldestWriterVersion{0x0000002A},
+      m_ffvNewestWriterVersion{0x0000002A}, m_ffvOldestReader{0x0000002A},
+      m_cTransactionsInLog{1}, m_rgbPlaceholder{0}, m_fNeedsDefrag{0},
+      m_fRepairedFile{0}, m_fNeedsGarbageCollect{0},
+      m_fHasNoEmbeddedFileObjects{0}, m_guidAncestor{QUuid()}, m_crcName{0},
+      m_fcrHashedChunkList{FileNodeListFragment_WPtr_t()},
+      m_fcrTransactionLog{TransactionLogFragment_WPtr_t()},
+      m_fcrFileNodeListRoot{FileNodeListFragment_WPtr_t()},
+      m_fcrFreeChunkList{FreeChunkListFragment_WPtr_t()},
+      m_cbExpectedFileLength{0x400}, m_cbFreeSpaceInFreeChunkList{0},
+      m_guidFileVersion{QUuid()}, m_nFileVersionGeneration{},
+      m_guidDenyReadFileVersion{QUuid()}, m_grfDebugLogFlags{0}, m_bnCreated{0},
+      m_bnLastWroteToThisFile{0}, m_bnOldestWritten{0}, m_bnNewestWritten{0}
 {
 }
 
@@ -52,27 +53,29 @@ RevisionStoreFileHeader::RevisionStoreFileHeader(
     const quint32 grfDebugLogFlags, const quint32 bnCreated,
     const quint32 bnLastWroteToThisFile, const quint32 bnOldestWritten,
     const quint32 bnNewestWritten)
-    : guidFileType(guidFileType), guidFile(guidFile),
-      ffvLastWriterVersion(ffvLastWriterVersion),
-      ffvOldestWriterVersion(ffvOldestWriterVersion),
-      ffvNewestWriterVersion(ffvNewestWriterVersion),
-      ffvOldestReader(ffvOldestReader), cTransactionsInLog(cTransactionsInLog),
-      rgbPlaceholder(rgbPlaceholder), fNeedsDefrag(fNeedsDefrag),
-      fRepairedFile(fRepairedFile), fNeedsGarbageCollect(fNeedsGarbageCollect),
-      fHasNoEmbeddedFileObjects(fHasNoEmbeddedFileObjects),
-      guidAncestor(guidAncestor), crcName(crcName),
-      fcrHashedChunkList(fcrHashedChunkList),
-      fcrTransactionLog(fcrTransactionLog),
-      fcrFileNodeListRoot(fcrFileNodeListRoot),
-      fcrFreeChunkList(fcrFreeChunkList),
-      cbExpectedFileLength(cbExpectedFileLength),
-      cbFreeSpaceInFreeChunkList(cbFreeSpaceInFreeChunkList),
-      guidFileVersion(guidFileVersion),
-      nFileVersionGeneration(nFileVersionGeneration),
-      guidDenyReadFileVersion(guidDenyReadFileVersion),
-      grfDebugLogFlags(grfDebugLogFlags), bnCreated(bnCreated),
-      bnLastWroteToThisFile(bnLastWroteToThisFile),
-      bnOldestWritten(bnOldestWritten), bnNewestWritten(bnNewestWritten)
+    : m_guidFileType(guidFileType), m_guidFile(guidFile),
+      m_ffvLastWriterVersion(ffvLastWriterVersion),
+      m_ffvOldestWriterVersion(ffvOldestWriterVersion),
+      m_ffvNewestWriterVersion(ffvNewestWriterVersion),
+      m_ffvOldestReader(ffvOldestReader),
+      m_cTransactionsInLog(cTransactionsInLog),
+      m_rgbPlaceholder(rgbPlaceholder), m_fNeedsDefrag(fNeedsDefrag),
+      m_fRepairedFile(fRepairedFile),
+      m_fNeedsGarbageCollect(fNeedsGarbageCollect),
+      m_fHasNoEmbeddedFileObjects(fHasNoEmbeddedFileObjects),
+      m_guidAncestor(guidAncestor), m_crcName(crcName),
+      m_fcrHashedChunkList(fcrHashedChunkList),
+      m_fcrTransactionLog(fcrTransactionLog),
+      m_fcrFileNodeListRoot(fcrFileNodeListRoot),
+      m_fcrFreeChunkList(fcrFreeChunkList),
+      m_cbExpectedFileLength(cbExpectedFileLength),
+      m_cbFreeSpaceInFreeChunkList(cbFreeSpaceInFreeChunkList),
+      m_guidFileVersion(guidFileVersion),
+      m_nFileVersionGeneration(nFileVersionGeneration),
+      m_guidDenyReadFileVersion(guidDenyReadFileVersion),
+      m_grfDebugLogFlags(grfDebugLogFlags), m_bnCreated(bnCreated),
+      m_bnLastWroteToThisFile(bnLastWroteToThisFile),
+      m_bnOldestWritten(bnOldestWritten), m_bnNewestWritten(bnNewestWritten)
 {
 }
 
@@ -90,87 +93,98 @@ RevisionStoreFileHeader::RevisionStoreFileHeader(
     const quint32 grfDebugLogFlags, const quint32 bnCreated,
     const quint32 bnLastWroteToThisFile, const quint32 bnOldestWritten,
     const quint32 bnNewestWritten)
-    : guidFileType(guidFileType), guidFile(guidFile),
-      ffvLastWriterVersion(ffvLastWriterVersion),
-      ffvOldestWriterVersion(ffvOldestWriterVersion),
-      ffvNewestWriterVersion(ffvNewestWriterVersion),
-      ffvOldestReader(ffvOldestReader), cTransactionsInLog(cTransactionsInLog),
-      rgbPlaceholder(rgbPlaceholder), fNeedsDefrag(fNeedsDefrag),
-      fRepairedFile(fRepairedFile), fNeedsGarbageCollect(fNeedsGarbageCollect),
-      fHasNoEmbeddedFileObjects(fHasNoEmbeddedFileObjects),
-      guidAncestor(guidAncestor), crcName(crcName),
-      fcrHashedChunkList(FileNodeListFragment_WPtr_t()),
-      fcrTransactionLog(TransactionLogFragment_WPtr_t()),
-      fcrFileNodeListRoot(FileNodeListFragment_WPtr_t()),
-      fcrFreeChunkList(FreeChunkListFragment_WPtr_t()),
-      cbExpectedFileLength(cbExpectedFileLength),
-      cbFreeSpaceInFreeChunkList(cbFreeSpaceInFreeChunkList),
-      guidFileVersion(guidFileVersion),
-      nFileVersionGeneration(nFileVersionGeneration),
-      guidDenyReadFileVersion(guidDenyReadFileVersion),
-      grfDebugLogFlags(grfDebugLogFlags), bnCreated(bnCreated),
-      bnLastWroteToThisFile(bnLastWroteToThisFile),
-      bnOldestWritten(bnOldestWritten), bnNewestWritten(bnNewestWritten)
+    : m_guidFileType(guidFileType), m_guidFile(guidFile),
+      m_ffvLastWriterVersion(ffvLastWriterVersion),
+      m_ffvOldestWriterVersion(ffvOldestWriterVersion),
+      m_ffvNewestWriterVersion(ffvNewestWriterVersion),
+      m_ffvOldestReader(ffvOldestReader),
+      m_cTransactionsInLog(cTransactionsInLog),
+      m_rgbPlaceholder(rgbPlaceholder), m_fNeedsDefrag(fNeedsDefrag),
+      m_fRepairedFile(fRepairedFile),
+      m_fNeedsGarbageCollect(fNeedsGarbageCollect),
+      m_fHasNoEmbeddedFileObjects(fHasNoEmbeddedFileObjects),
+      m_guidAncestor(guidAncestor), m_crcName(crcName),
+      m_fcrHashedChunkList(FileNodeListFragment_WPtr_t()),
+      m_fcrTransactionLog(TransactionLogFragment_WPtr_t()),
+      m_fcrFileNodeListRoot(FileNodeListFragment_WPtr_t()),
+      m_fcrFreeChunkList(FreeChunkListFragment_WPtr_t()),
+      m_cbExpectedFileLength(cbExpectedFileLength),
+      m_cbFreeSpaceInFreeChunkList(cbFreeSpaceInFreeChunkList),
+      m_guidFileVersion(guidFileVersion),
+      m_nFileVersionGeneration(nFileVersionGeneration),
+      m_guidDenyReadFileVersion(guidDenyReadFileVersion),
+      m_grfDebugLogFlags(grfDebugLogFlags), m_bnCreated(bnCreated),
+      m_bnLastWroteToThisFile(bnLastWroteToThisFile),
+      m_bnOldestWritten(bnOldestWritten), m_bnNewestWritten(bnNewestWritten)
 {
 }
 
-QUuid RevisionStoreFileHeader::getGuidFileType() const { return guidFileType; }
+QUuid RevisionStoreFileHeader::getGuidFileType() const
+{
+  return m_guidFileType;
+}
 
 void RevisionStoreFileHeader::setGuidFileType(const QUuid& value)
 {
-  guidFileType = value;
+  m_isChanged    = true;
+  m_guidFileType = value;
 }
 
-QUuid RevisionStoreFileHeader::getGuidFile() const { return guidFile; }
+QUuid RevisionStoreFileHeader::getGuidFile() const { return m_guidFile; }
 
 void RevisionStoreFileHeader::setGuidFile(const QUuid& value)
 {
-  guidFile = value;
+  m_isChanged = true;
+  m_guidFile  = value;
 }
 
 quint32 RevisionStoreFileHeader::getFfvLastWriterVersion() const
 {
-  return ffvLastWriterVersion;
+  return m_ffvLastWriterVersion;
 }
 
 void RevisionStoreFileHeader::setFfvLastWriterVersion(quint32 value)
 {
-  ffvLastWriterVersion = value;
+  m_isChanged            = true;
+  m_ffvLastWriterVersion = value;
 }
 
 quint32 RevisionStoreFileHeader::getFfvNewestWriterVersion() const
 {
-  return ffvNewestWriterVersion;
+  return m_ffvNewestWriterVersion;
 }
 
 void RevisionStoreFileHeader::setFfvNewestWriterVersion(quint32 value)
 {
-  ffvNewestWriterVersion = value;
+  m_isChanged              = true;
+  m_ffvNewestWriterVersion = value;
 }
 
 quint32 RevisionStoreFileHeader::getFfvOldestWriterVersion() const
 {
-  return ffvOldestWriterVersion;
+  return m_ffvOldestWriterVersion;
 }
 
 void RevisionStoreFileHeader::setFfvOldestWriterVersion(quint32 value)
 {
-  ffvOldestWriterVersion = value;
+  m_isChanged              = true;
+  m_ffvOldestWriterVersion = value;
 }
 
 quint32 RevisionStoreFileHeader::getFfvOldestReader() const
 {
-  return ffvOldestReader;
+  return m_ffvOldestReader;
 }
 
 void RevisionStoreFileHeader::setFfvOldestReader(quint32 value)
 {
-  ffvOldestReader = value;
+  m_isChanged       = true;
+  m_ffvOldestReader = value;
 }
 
 quint32 RevisionStoreFileHeader::getCTransactionsInLog() const
 {
-  return cTransactionsInLog;
+  return m_cTransactionsInLog;
 }
 
 /**
@@ -181,149 +195,168 @@ quint32 RevisionStoreFileHeader::getCTransactionsInLog() const
  */
 void RevisionStoreFileHeader::setCTransactionsInLog(const quint32 value)
 {
-  cTransactionsInLog = value;
+  m_isChanged          = true;
+  m_cTransactionsInLog = value;
 }
 
 quint64 RevisionStoreFileHeader::getRgbPlaceholder() const
 {
-  return rgbPlaceholder;
+  return m_rgbPlaceholder;
 }
 
 void RevisionStoreFileHeader::setRgbPlaceholder(const quint64 value)
 {
-  rgbPlaceholder = value;
+  m_isChanged      = true;
+  m_rgbPlaceholder = value;
 }
 
-quint8 RevisionStoreFileHeader::getFNeedsDefrag() const { return fNeedsDefrag; }
+quint8 RevisionStoreFileHeader::getFNeedsDefrag() const
+{
+  return m_fNeedsDefrag;
+}
 
 void RevisionStoreFileHeader::setFNeedsDefrag(const quint8 value)
 {
-  fNeedsDefrag = value;
+  m_isChanged    = true;
+  m_fNeedsDefrag = value;
 }
 
 quint8 RevisionStoreFileHeader::getFRepairedFile() const
 {
-  return fRepairedFile;
+  return m_fRepairedFile;
 }
 
 void RevisionStoreFileHeader::setFRepairedFile(const quint8 value)
 {
-  fRepairedFile = value;
+  m_isChanged     = true;
+  m_fRepairedFile = value;
 }
 
 quint8 RevisionStoreFileHeader::getFNeedsGarbageCollect() const
 {
-  return fNeedsGarbageCollect;
+  return m_fNeedsGarbageCollect;
 }
 
 void RevisionStoreFileHeader::setFNeedsGarbageCollect(const quint8 value)
 {
-  fNeedsGarbageCollect = value;
+  m_isChanged            = true;
+  m_fNeedsGarbageCollect = value;
 }
 
 quint8 RevisionStoreFileHeader::getFHasNoEmbeddedFileObjects() const
 {
-  return fHasNoEmbeddedFileObjects;
+  return m_fHasNoEmbeddedFileObjects;
 }
 
 void RevisionStoreFileHeader::setFHasNoEmbeddedFileObjects(const quint8 value)
 {
-  fHasNoEmbeddedFileObjects = value;
+  m_isChanged                 = true;
+  m_fHasNoEmbeddedFileObjects = value;
 }
 
-QUuid RevisionStoreFileHeader::getGuidAncestor() const { return guidAncestor; }
+QUuid RevisionStoreFileHeader::getGuidAncestor() const
+{
+  return m_guidAncestor;
+}
 
 void RevisionStoreFileHeader::setGuidAncestor(const QUuid& value)
 {
-  guidAncestor = value;
+  m_isChanged    = true;
+  m_guidAncestor = value;
 }
 
-quint32 RevisionStoreFileHeader::getCrcName() const { return crcName; }
+quint32 RevisionStoreFileHeader::getCrcName() const { return m_crcName; }
 
 void RevisionStoreFileHeader::setCrcName(const quint32 value)
 {
-  crcName = value;
+  m_isChanged = true;
+  m_crcName   = value;
 }
 
 FileNodeListFragment_WPtr_t RevisionStoreFileHeader::getFcrHashedChunkList()
 {
-  return fcrHashedChunkList;
+  return m_fcrHashedChunkList;
 }
 
 void RevisionStoreFileHeader::setFcrHashedChunkList(
     FileNodeListFragment_WPtr_t value)
 {
-  fcrHashedChunkList = value;
+  m_isChanged          = true;
+  m_fcrHashedChunkList = value;
 }
 
 TransactionLogFragment_WPtr_t RevisionStoreFileHeader::getFcrTransactionLog()
 {
-  return fcrTransactionLog;
+  return m_fcrTransactionLog;
 }
 
 void RevisionStoreFileHeader::setFcrTransactionLog(
     TransactionLogFragment_WPtr_t value)
 {
-
-  fcrTransactionLog = value;
+  m_isChanged         = true;
+  m_fcrTransactionLog = value;
 }
 
 FileNodeListFragment_WPtr_t RevisionStoreFileHeader::getFcrFileNodeListRoot()
 {
-  return fcrFileNodeListRoot;
+  return m_fcrFileNodeListRoot;
 }
 
 void RevisionStoreFileHeader::setFcrFileNodeListRoot(
     FileNodeListFragment_WPtr_t value)
 {
-
-  fcrFileNodeListRoot = value;
+  m_isChanged           = true;
+  m_fcrFileNodeListRoot = value;
 }
 
 FreeChunkListFragment_WPtr_t RevisionStoreFileHeader::getFcrFreeChunkList()
 {
-  return fcrFreeChunkList;
+  return m_fcrFreeChunkList;
 }
 
 void RevisionStoreFileHeader::setFcrFreeChunkList(
     FreeChunkListFragment_WPtr_t value)
 {
-  fcrFreeChunkList = value;
+  m_isChanged        = true;
+  m_fcrFreeChunkList = value;
 }
 
 quint64 RevisionStoreFileHeader::getCbExpectedFileLength() const
 {
-  return cbExpectedFileLength;
+  return m_cbExpectedFileLength;
 }
 
 void RevisionStoreFileHeader::setCbExpectedFileLength(const quint64 value)
 {
-  cbExpectedFileLength = value;
+  m_isChanged            = true;
+  m_cbExpectedFileLength = value;
 }
 
 quint64 RevisionStoreFileHeader::getCbFreeSpaceInFreeChunkList() const
 {
-  return cbFreeSpaceInFreeChunkList;
+  return m_cbFreeSpaceInFreeChunkList;
 }
 
 void RevisionStoreFileHeader::setCbFreeSpaceInFreeChunkList(const quint64 value)
 {
-  cbFreeSpaceInFreeChunkList = value;
+  m_isChanged                  = true;
+  m_cbFreeSpaceInFreeChunkList = value;
 }
 
 QUuid RevisionStoreFileHeader::getGuidFileVersion() const
 {
-  return guidFileVersion;
+  return m_guidFileVersion;
 }
 
 void RevisionStoreFileHeader::setGuidFileVersion(const QUuid& value)
 {
-  guidFileVersion = value;
+  m_isChanged       = true;
+  m_guidFileVersion = value;
 }
 
 quint64 RevisionStoreFileHeader::getNFileVersionGeneration() const
 {
-  return nFileVersionGeneration;
+  return m_nFileVersionGeneration;
 }
 
 /**
@@ -334,12 +367,13 @@ quint64 RevisionStoreFileHeader::getNFileVersionGeneration() const
  */
 void RevisionStoreFileHeader::setNFileVersionGeneration(const quint64 value)
 {
-  nFileVersionGeneration = value;
+  m_isChanged              = true;
+  m_nFileVersionGeneration = value;
 }
 
 QUuid RevisionStoreFileHeader::getGuidDenyReadFileVersion() const
 {
-  return guidDenyReadFileVersion;
+  return m_guidDenyReadFileVersion;
 }
 
 /**
@@ -350,54 +384,60 @@ QUuid RevisionStoreFileHeader::getGuidDenyReadFileVersion() const
  */
 void RevisionStoreFileHeader::setGuidDenyReadFileVersion(const QUuid& value)
 {
-  guidDenyReadFileVersion = value;
+  m_isChanged               = true;
+  m_guidDenyReadFileVersion = value;
 }
 
 quint32 RevisionStoreFileHeader::getGrfDebugLogFlags() const
 {
-  return grfDebugLogFlags;
+  return m_grfDebugLogFlags;
 }
 
 void RevisionStoreFileHeader::setGrfDebugLogFlags(const quint32 value)
 {
-  grfDebugLogFlags = value;
+  m_isChanged        = true;
+  m_grfDebugLogFlags = value;
 }
 
-quint32 RevisionStoreFileHeader::getBnCreated() const { return bnCreated; }
+quint32 RevisionStoreFileHeader::getBnCreated() const { return m_bnCreated; }
 
 void RevisionStoreFileHeader::setBnCreated(const quint32 value)
 {
-  bnCreated = value;
+  m_isChanged = true;
+  m_bnCreated = value;
 }
 
 quint32 RevisionStoreFileHeader::getBnLastWroteToThisFile() const
 {
-  return bnLastWroteToThisFile;
+  return m_bnLastWroteToThisFile;
 }
 
 void RevisionStoreFileHeader::setBnLastWroteToThisFile(const quint32 value)
 {
-  bnLastWroteToThisFile = value;
+  m_isChanged             = true;
+  m_bnLastWroteToThisFile = value;
 }
 
 quint32 RevisionStoreFileHeader::getBnOldestWritten() const
 {
-  return bnOldestWritten;
+  return m_bnOldestWritten;
 }
 
 void RevisionStoreFileHeader::setBnOldestWritten(const quint32 value)
 {
-  bnOldestWritten = value;
+  m_isChanged       = true;
+  m_bnOldestWritten = value;
 }
 
 quint32 RevisionStoreFileHeader::getBnNewestWritten() const
 {
-  return bnNewestWritten;
+  return m_bnNewestWritten;
 }
 
 void RevisionStoreFileHeader::setBnNewestWritten(const quint32 value)
 {
-  bnNewestWritten = value;
+  m_isChanged       = true;
+  m_bnNewestWritten = value;
 }
 
 } // namespace priv

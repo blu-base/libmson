@@ -21,7 +21,8 @@ TransactionLogFragment::getSizeTable() const
 void TransactionLogFragment::setSizeTable(
     const std::vector<std::shared_ptr<TransactionEntry>>& value)
 {
-  sizeTable = value;
+  m_isChanged = true;
+  sizeTable   = value;
 }
 
 
@@ -33,6 +34,7 @@ TransactionLogFragment_WPtr_t TransactionLogFragment::getNextFragment() const
 void TransactionLogFragment::setNextFragment(
     const TransactionLogFragment_WPtr_t value)
 {
+  m_isChanged  = true;
   nextFragment = value;
 }
 
@@ -43,6 +45,7 @@ quint8 TransactionLogFragment::getPaddingLength() const
 
 void TransactionLogFragment::setPaddingLength(const quint8& paddingLength)
 {
+  m_isChanged     = true;
   m_paddingLength = paddingLength;
 }
 

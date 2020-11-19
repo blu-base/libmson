@@ -22,7 +22,7 @@ namespace priv {
 
 class RevisionStoreFileHeader : public Chunkable {
 
-  friend class RevisionStoreFileWriter;
+
   friend class RevisionStoreFileParser;
 
 
@@ -64,7 +64,15 @@ public:
       const quint32 bnCreated, const quint32 bnLastWroteToThisFile,
       const quint32 bnOldestWritten, const quint32 bnNewestWritten);
 
-  static const constexpr quint64 sizeInFile = 0x400;
+  static const constexpr quint64 sizeInFile = 0x400u;
+
+  static const QUuid guidFileType_One;
+  static const QUuid guidFileType_OneToc2;
+  static const QUuid guidFileFormat;
+  static const QUuid guidLegacyFileVersion;
+
+
+  static const quint32 def_reservedHeaderTailLength = 728u;
 
 private:
   // Chunkable interface
@@ -75,45 +83,37 @@ private:
   };
 
 private:
-  QUuid guidFileType;
-  QUuid guidFile;
-  QUuid guidLegacyFileVersion;
-  QUuid guidFileFormat;
-  quint32 ffvLastWriterVersion;   // ffvLastCodeThatWroteToThisFile  // long?
-  quint32 ffvOldestWriterVersion; // ffvNewestCodeThatHasWrittenToThisFile
-  quint32 ffvNewestWriterVersion; // ffvOldestCodeThatHasWrittenToThisFile
-  quint32 ffvOldestReader;        // ffvOldestCodeThatMayReadThisFile
-  quint32 cTransactionsInLog;
-  quint64 rgbPlaceholder;
-  quint8 fNeedsDefrag;
-  quint8 fRepairedFile;
-  quint8 fNeedsGarbageCollect;
-  quint8 fHasNoEmbeddedFileObjects;
-  QUuid guidAncestor;
-  quint32 crcName;
-  FileNodeListFragment_WPtr_t fcrHashedChunkList;
-  TransactionLogFragment_WPtr_t fcrTransactionLog;
-  FileNodeListFragment_WPtr_t fcrFileNodeListRoot;
-  FreeChunkListFragment_WPtr_t fcrFreeChunkList;
-  quint64 cbExpectedFileLength;
-  quint64 cbFreeSpaceInFreeChunkList;
-  QUuid guidFileVersion;
-  quint64 nFileVersionGeneration;
-  QUuid guidDenyReadFileVersion;
-  quint32 grfDebugLogFlags;
-  quint32 bnCreated;
-  quint32 bnLastWroteToThisFile;
-  quint32 bnOldestWritten;
-  quint32 bnNewestWritten;
+  QUuid m_guidFileType;
+  QUuid m_guidFile;
+  QUuid m_guidLegacyFileVersion;
+  QUuid m_guidFileFormat;
+  quint32 m_ffvLastWriterVersion;   // ffvLastCodeThatWroteToThisFile  // long?
+  quint32 m_ffvOldestWriterVersion; // ffvNewestCodeThatHasWrittenToThisFile
+  quint32 m_ffvNewestWriterVersion; // ffvOldestCodeThatHasWrittenToThisFile
+  quint32 m_ffvOldestReader;        // ffvOldestCodeThatMayReadThisFile
+  quint32 m_cTransactionsInLog;
+  quint64 m_rgbPlaceholder;
+  quint8 m_fNeedsDefrag;
+  quint8 m_fRepairedFile;
+  quint8 m_fNeedsGarbageCollect;
+  quint8 m_fHasNoEmbeddedFileObjects;
+  QUuid m_guidAncestor;
+  quint32 m_crcName;
+  FileNodeListFragment_WPtr_t m_fcrHashedChunkList;
+  TransactionLogFragment_WPtr_t m_fcrTransactionLog;
+  FileNodeListFragment_WPtr_t m_fcrFileNodeListRoot;
+  FreeChunkListFragment_WPtr_t m_fcrFreeChunkList;
+  quint64 m_cbExpectedFileLength;
+  quint64 m_cbFreeSpaceInFreeChunkList;
+  QUuid m_guidFileVersion;
+  quint64 m_nFileVersionGeneration;
+  QUuid m_guidDenyReadFileVersion;
+  quint32 m_grfDebugLogFlags;
+  quint32 m_bnCreated;
+  quint32 m_bnLastWroteToThisFile;
+  quint32 m_bnOldestWritten;
+  quint32 m_bnNewestWritten;
 
-
-  static const QUuid v_guidFileType_One;
-  static const QUuid v_guidFileType_OneToc2;
-  static const QUuid v_guidFileFormat;
-  static const QUuid v_guidLegacyFileVersion;
-
-
-  static const quint32 def_reservedHeaderTailLength = 728;
 
 public:
   QUuid getGuidFileType() const;

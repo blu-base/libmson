@@ -41,7 +41,6 @@ public:
   void setFcrFreeChunks(const std::vector<FreeChunk_WPtr_t>& value);
 
 
-  friend class RevisionStoreFileWriter;
   friend class RevisionStoreFileParser;
 
 private:

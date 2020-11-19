@@ -44,9 +44,6 @@ public:
   FileDataStoreObject(
       const quint64 initialStp = 0, const quint64 initialCb = 0);
 
-  QUuid getGuidHeader() const;
-  void setGuidHeader(const QUuid& guidHeader);
-
   quint64 getCbLength() const;
   void setCbLength(const quint64& cbLength);
 

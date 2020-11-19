@@ -21,6 +21,7 @@ quint32 ObjectInfoDependencyOverrideData::c8BitOverrides() const
 void ObjectInfoDependencyOverrideData::setC8BitOverrides(
     const quint32& c8BitOverrides)
 {
+  m_isChanged      = true;
   m_c8BitOverrides = c8BitOverrides;
 }
 
@@ -32,6 +33,7 @@ quint32 ObjectInfoDependencyOverrideData::c32BitOverrides() const
 void ObjectInfoDependencyOverrideData::setC32BitOverrides(
     const quint32& c32BitOverrides)
 {
+  m_isChanged       = true;
   m_c32BitOverrides = c32BitOverrides;
 }
 
@@ -39,7 +41,8 @@ quint32 ObjectInfoDependencyOverrideData::crc() const { return m_crc; }
 
 void ObjectInfoDependencyOverrideData::setCrc(const quint32& crc)
 {
-  m_crc = crc;
+  m_isChanged = true;
+  m_crc       = crc;
 }
 
 std::vector<ObjectInfoDependencyOverride8>
@@ -51,6 +54,7 @@ ObjectInfoDependencyOverrideData::Overrides1() const
 void ObjectInfoDependencyOverrideData::setOverrides1(
     const std::vector<ObjectInfoDependencyOverride8>& Overrides1)
 {
+  m_isChanged  = true;
   m_Overrides1 = Overrides1;
 }
 
@@ -63,6 +67,7 @@ ObjectInfoDependencyOverrideData::Overrides2() const
 void ObjectInfoDependencyOverrideData::setOverrides2(
     const std::vector<ObjectInfoDependencyOverride32>& Overrides2)
 {
+  m_isChanged  = true;
   m_Overrides2 = Overrides2;
 }
 

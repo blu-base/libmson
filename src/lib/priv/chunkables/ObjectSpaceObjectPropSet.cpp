@@ -20,13 +20,15 @@ ObjectSpaceObjectStreamOfOIDs ObjectSpaceObjectPropSet::getOIDs() const
 
 ObjectSpaceObjectStreamOfOIDs& ObjectSpaceObjectPropSet::OIDs()
 {
+  m_isChanged = true;
   return m_OIDs;
 }
 
 void ObjectSpaceObjectPropSet::setOIDs(
     const ObjectSpaceObjectStreamOfOIDs& OIDs)
 {
-  m_OIDs = OIDs;
+  m_isChanged = true;
+  m_OIDs      = OIDs;
 }
 
 ObjectSpaceObjectStreamOfOSIDs ObjectSpaceObjectPropSet::getOSIDs() const
@@ -36,13 +38,15 @@ ObjectSpaceObjectStreamOfOSIDs ObjectSpaceObjectPropSet::getOSIDs() const
 
 ObjectSpaceObjectStreamOfOSIDs& ObjectSpaceObjectPropSet::OSIDs()
 {
+  m_isChanged = true;
   return m_OSIDs;
 }
 
 void ObjectSpaceObjectPropSet::setOSIDs(
     const ObjectSpaceObjectStreamOfOSIDs& OSIDs)
 {
-  m_OSIDs = OSIDs;
+  m_isChanged = true;
+  m_OSIDs     = OSIDs;
 }
 
 ObjectSpaceObjectStreamOfContextIDs
@@ -59,6 +63,7 @@ ObjectSpaceObjectStreamOfContextIDs& ObjectSpaceObjectPropSet::contextIDs()
 void ObjectSpaceObjectPropSet::setContextIDs(
     const ObjectSpaceObjectStreamOfContextIDs& ContextIDs)
 {
+  m_isChanged  = true;
   m_ContextIDs = ContextIDs;
 }
 
@@ -66,7 +71,8 @@ PropertySet ObjectSpaceObjectPropSet::getBody() const { return m_body; }
 
 void ObjectSpaceObjectPropSet::setBody(const PropertySet& body)
 {
-  m_body = body;
+  m_isChanged = true;
+  m_body      = body;
 }
 
 quint64 ObjectSpaceObjectPropSet::getPaddingLength() const

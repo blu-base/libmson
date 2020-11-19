@@ -67,7 +67,7 @@ std::shared_ptr<RevisionStoreFile> RevisionStoreFileParser::parse()
 
   // Parsing RootFileNodeList
   m_file->m_rootFileNodeList =
-      parseFileNodeList(m_ds, header->fcrFileNodeListRoot.lock());
+      parseFileNodeList(m_ds, header->m_fcrFileNodeListRoot.lock());
 
   // search for ObjectSpaceManifestRootFND in RootFileNodeList and verify only
   // one ObjectSpaceManifestRootFND is present
@@ -88,7 +88,7 @@ std::shared_ptr<RevisionStoreFile> RevisionStoreFileParser::parse()
 
   // Parsing HashedChunkList
   m_file->m_hashedChunkListFragments =
-      parseFileNodeList(m_ds, header->fcrHashedChunkList.lock());
+      parseFileNodeList(m_ds, header->m_fcrHashedChunkList.lock());
 
 
   // Traverse RootFileNodeList to parse ObjectSpaceManifests
@@ -392,22 +392,23 @@ RevisionStoreFileParser::parseRevisionStoreFileHeader(QDataStream& ds)
 
   m_file->chunks().push_back(header);
 
-  ds >> header->guidFileType;
-  ds >> header->guidFile;
-  ds >> header->guidLegacyFileVersion;
-  if (header->guidLegacyFileVersion != header->v_guidLegacyFileVersion) {
+  ds >> header->m_guidFileType;
+  ds >> header->m_guidFile;
+  ds >> header->m_guidLegacyFileVersion;
+  if (header->guidLegacyFileVersion !=
+      RevisionStoreFileHeader::guidLegacyFileVersion) {
     qWarning(
         "guidLegacyFileVersion of the RevisionStoreFileHeader is invalid.");
   }
-  ds >> header->guidFileFormat;
-  if (header->guidFileFormat != header->v_guidFileFormat) {
+  ds >> header->m_guidFileFormat;
+  if (header->guidFileFormat != RevisionStoreFileHeader::guidFileFormat) {
     qWarning("guidFileFormat of the RevisionStoreFileHeader is invalid.");
     return RevisionStoreFileHeader_WPtr_t();
   }
-  ds >> header->ffvLastWriterVersion;
-  ds >> header->ffvOldestWriterVersion;
-  ds >> header->ffvNewestWriterVersion;
-  ds >> header->ffvOldestReader;
+  ds >> header->m_ffvLastWriterVersion;
+  ds >> header->m_ffvOldestWriterVersion;
+  ds >> header->m_ffvNewestWriterVersion;
+  ds >> header->m_ffvOldestReader;
 
   FileChunkReference32 fcrLegacyFreeChunkList;
   ds >> fcrLegacyFreeChunkList;
@@ -423,7 +424,7 @@ RevisionStoreFileParser::parseRevisionStoreFileHeader(QDataStream& ds)
              "invalid.");
   }
 
-  ds >> header->cTransactionsInLog;
+  ds >> header->m_cTransactionsInLog;
 
   quint32 cbLegacyExpectedFileLength;
   ds >> cbLegacyExpectedFileLength;
@@ -432,7 +433,7 @@ RevisionStoreFileParser::parseRevisionStoreFileHeader(QDataStream& ds)
              "invalid.");
   }
 
-  ds >> header->rgbPlaceholder;
+  ds >> header->m_rgbPlaceholder;
 
   FileChunkReference32 fcrLegacyFileNodeListRoot;
   ds >> fcrLegacyFileNodeListRoot;
@@ -448,12 +449,12 @@ RevisionStoreFileParser::parseRevisionStoreFileHeader(QDataStream& ds)
              "is invalid.");
   }
 
-  ds >> header->fNeedsDefrag;
-  ds >> header->fRepairedFile;
-  ds >> header->fNeedsGarbageCollect;
-  ds >> header->fHasNoEmbeddedFileObjects;
-  ds >> header->guidAncestor;
-  ds >> header->crcName;
+  ds >> header->m_fNeedsDefrag;
+  ds >> header->m_fRepairedFile;
+  ds >> header->m_fNeedsGarbageCollect;
+  ds >> header->m_fHasNoEmbeddedFileObjects;
+  ds >> header->m_guidAncestor;
+  ds >> header->m_crcName;
 
   FileChunkReference64x32 fcrHashedChunkList;
   ds >> fcrHashedChunkList;
@@ -467,7 +468,7 @@ RevisionStoreFileParser::parseRevisionStoreFileHeader(QDataStream& ds)
     fcrHashedChunkListFragment =
         insertChunkSorted(m_file->chunks(), fcrHashedChunkListFragment);
 
-    header->fcrHashedChunkList = fcrHashedChunkListFragment;
+    header->m_fcrHashedChunkList = fcrHashedChunkListFragment;
   }
 
   FileChunkReference64x32 fcrTransactionLog;
@@ -480,7 +481,7 @@ RevisionStoreFileParser::parseRevisionStoreFileHeader(QDataStream& ds)
     fcrTransactionLogFragment =
         insertChunkSorted(m_file->chunks(), fcrTransactionLogFragment);
 
-    header->fcrTransactionLog = fcrTransactionLogFragment;
+    header->m_fcrTransactionLog = fcrTransactionLogFragment;
   }
 
   FileChunkReference64x32 fcrFileNodeListRoot;
@@ -493,7 +494,7 @@ RevisionStoreFileParser::parseRevisionStoreFileHeader(QDataStream& ds)
     fileNodeListRootChunk =
         insertChunkSorted(m_file->chunks(), fileNodeListRootChunk);
 
-    header->fcrFileNodeListRoot = fileNodeListRootChunk;
+    header->m_fcrFileNodeListRoot = fileNodeListRootChunk;
   }
 
   FileChunkReference64x32 fcrFreeChunkList;
@@ -506,15 +507,15 @@ RevisionStoreFileParser::parseRevisionStoreFileHeader(QDataStream& ds)
     freeChunkListFragment =
         insertChunkSorted(m_file->chunks(), freeChunkListFragment);
 
-    header->fcrFreeChunkList = freeChunkListFragment;
+    header->m_fcrFreeChunkList = freeChunkListFragment;
   }
 
-  ds >> header->cbExpectedFileLength;
-  ds >> header->cbFreeSpaceInFreeChunkList;
-  ds >> header->guidFileVersion;
-  ds >> header->nFileVersionGeneration;
-  ds >> header->guidDenyReadFileVersion;
-  ds >> header->grfDebugLogFlags;
+  ds >> header->m_cbExpectedFileLength;
+  ds >> header->m_cbFreeSpaceInFreeChunkList;
+  ds >> header->m_guidFileVersion;
+  ds >> header->m_nFileVersionGeneration;
+  ds >> header->m_guidDenyReadFileVersion;
+  ds >> header->m_grfDebugLogFlags;
 
   FileChunkReference64x32 fcrDebugLog;
   ds >> fcrDebugLog;
@@ -530,10 +531,10 @@ RevisionStoreFileParser::parseRevisionStoreFileHeader(QDataStream& ds)
              "invalid.");
   }
 
-  ds >> header->bnCreated;
-  ds >> header->bnLastWroteToThisFile;
-  ds >> header->bnOldestWritten;
-  ds >> header->bnNewestWritten;
+  ds >> header->m_bnCreated;
+  ds >> header->m_bnLastWroteToThisFile;
+  ds >> header->m_bnOldestWritten;
+  ds >> header->m_bnNewestWritten;
   ds.skipRawData(header->def_reservedHeaderTailLength);
 
 
@@ -554,19 +555,20 @@ FileNode_SPtr_t RevisionStoreFileParser::parseFileNode(
     QDataStream& ds, const quint64 stp, FileNodeListFragment_WPtr_t parent)
 {
 
-  auto fn = std::make_shared<FileNode>(parent, stp, FileNode::minSizeInFile);
+  quint32 composite;
+  ds >> composite;
 
-  {
-    quint32 temp;
-    ds >> temp;
+  quint16 fileNodeSize =
+      (composite >> fNshiftFileNodeSize) & fNmaskFileNodeSize;
 
-    fn->baseType     = (temp >> fNshiftBaseType) & fNmaskBaseType;
-    fn->cbFormat     = (temp >> fNshiftCbFormat) & fNmaskCbFormat;
-    fn->stpFormat    = (temp >> fNshiftStpFormat) & fNmaskStpFormat;
-    fn->fileNodeSize = (temp >> fNshiftFileNodeSize) & fNmaskFileNodeSize;
-    fn->fileNodeID   = (temp >> fNshiftFileNodeID) & fNmaskFileNodeID;
-  }
-  fn->m_initialCb = fn->getFileNodeSize();
+  auto fn = std::make_shared<FileNode>(parent, stp, fileNodeSize);
+
+  fn->baseType   = (composite >> fNshiftBaseType) & fNmaskBaseType;
+  fn->cbFormat   = (composite >> fNshiftCbFormat) & fNmaskCbFormat;
+  fn->stpFormat  = (composite >> fNshiftStpFormat) & fNmaskStpFormat;
+  fn->fileNodeID = (composite >> fNshiftFileNodeID) & fNmaskFileNodeID;
+
+
   // distinguish by baseType,
   // type 0 does not contain any reference to a chunk, and therefore can be
   // parsed trivially type 1 and type 2 do contain references and must cast

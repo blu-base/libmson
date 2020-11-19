@@ -19,14 +19,16 @@ quint64 FileDataStoreObject::getCbLength() const { return m_cbLength; }
 
 void FileDataStoreObject::setCbLength(const quint64& cbLength)
 {
-  m_cbLength = cbLength;
+  m_isChanged = true;
+  m_cbLength  = cbLength;
 }
 
 QByteArray FileDataStoreObject::getFileData() const { return m_FileData; }
 
 void FileDataStoreObject::setFileData(const QByteArray& FileData)
 {
-  m_FileData = FileData;
+  m_isChanged = true;
+  m_FileData  = FileData;
 }
 
 const quint64 FileDataStoreObject::sizeInFileBase =

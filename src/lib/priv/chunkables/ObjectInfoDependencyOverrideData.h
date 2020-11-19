@@ -65,7 +65,6 @@ public:
 
   quint64 getSizeInFile() const;
 
-  friend class RevisionStoreFileWriter;
   friend class RevisionStoreFileParser;
 
 

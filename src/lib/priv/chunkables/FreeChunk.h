@@ -21,7 +21,7 @@ public:
   quint64 getSize() const;
   void setSize(const quint64& size);
 
-  friend class RevisionStoreFileWriter;
+
   friend class RevisionStoreFileParser;
 
 

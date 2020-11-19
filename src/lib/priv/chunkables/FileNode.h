@@ -70,7 +70,6 @@ private:
   std::weak_ptr<FileNodeListFragment> m_parent;
 
   quint16 fileNodeID;
-  quint16 fileNodeSize;
 
   quint8 stpFormat;
   quint8 cbFormat;
@@ -92,7 +91,6 @@ public:
   FileNodeTypeID getFileNodeTypeID() const;
 
   quint16 getFileNodeSize() const;
-  void setFileNodeSize(const quint16& value);
 
   quint8 getStpFormat() const;
   FNCR_STP_FORMAT getStpFormatEnum() const;
@@ -105,16 +103,14 @@ public:
   quint8 getBaseType() const;
   void setBaseType(const quint8& value);
 
-  void setFileNodeType(const std::shared_ptr<IFileNodeType>& value);
-  std::shared_ptr<IFileNodeType> getFnt() const;
+  void setFileNodeType(std::shared_ptr<IFileNodeType>& value);
+  std::shared_ptr<IFileNodeType> getFnt();
 
 
   quint8 getFileNodeChunkReferenceSize();
 
   std::weak_ptr<FileNodeListFragment> getParent();
 
-
-  friend class RevisionStoreFileWriter;
   friend class RevisionStoreFileParser;
 
 private:

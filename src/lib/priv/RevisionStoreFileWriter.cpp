@@ -186,7 +186,7 @@ bool RevisionStoreFileWriter::writeRevisionStoreFileHeader(
 
   quint64 totalFileSize = 0;
 
-  auto addCb = [](quint64 a, Chunkable_SPtr_t b) {
+  auto addCb = [](quint64 a, Chunkable_SPtr_t& b) {
     return std::move(a) + b->getSizeInFile();
   };
 
@@ -195,19 +195,19 @@ bool RevisionStoreFileWriter::writeRevisionStoreFileHeader(
       addCb);
 
   // Updating the header;
-  header->cbExpectedFileLength = totalFileSize;
-  header->crcName = Crc32::computeCrcName(m_revStoreFile->m_fileName);
+  header->setCbExpectedFileLength(totalFileSize);
+  header->setCrcName(Crc32::computeCrcName(m_revStoreFile->m_fileName));
   /// \todo update cTransactionsInLog
 
-  ds << header->guidFileType;
-  ds << header->guidFile;
-  ds << header->v_guidLegacyFileVersion;
-  ds << header->v_guidFileFormat;
+  ds << header->getGuidFileType();
+  ds << header->getGuidFile();
+  ds << RevisionStoreFileHeader::guidLegacyFileVersion;
+  ds << RevisionStoreFileHeader::guidFileFormat;
   // 0x0040
-  ds << header->ffvLastWriterVersion;
-  ds << header->ffvOldestWriterVersion;
-  ds << header->ffvNewestWriterVersion;
-  ds << header->ffvOldestReader;
+  ds << header->getFfvLastWriterVersion();
+  ds << header->getFfvOldestWriterVersion();
+  ds << header->getFfvNewestWriterVersion();
+  ds << header->getFfvOldestReader();
 
   // 0x0050
 
@@ -217,12 +217,12 @@ bool RevisionStoreFileWriter::writeRevisionStoreFileHeader(
   ds << FileChunkReference32(FCR_INIT::NIL);
 
   // 0x0060
-  ds << header->cTransactionsInLog;
+  ds << header->getCTransactionsInLog();
 
   quint32 cbLegacyExpectedFileLength = 0u;
   ds << cbLegacyExpectedFileLength;
 
-  ds << header->rgbPlaceholder;
+  ds << header->getRgbPlaceholder();
 
   // fcrLegacyFileNodeListRoot
   ds << FileChunkReference32(FCR_INIT::NIL);
@@ -230,37 +230,37 @@ bool RevisionStoreFileWriter::writeRevisionStoreFileHeader(
   quint32 cbLegacyFreeSpaceInFreeChunkList = 0u;
   ds << cbLegacyFreeSpaceInFreeChunkList;
 
-  ds << header->fNeedsDefrag;
-  ds << header->fRepairedFile;
-  ds << header->fNeedsGarbageCollect;
-  ds << header->fHasNoEmbeddedFileObjects;
+  ds << header->getFNeedsDefrag();
+  ds << header->getFRepairedFile();
+  ds << header->getFNeedsGarbageCollect();
+  ds << header->getFHasNoEmbeddedFileObjects();
 
   // 0x0080
-  ds << header->guidAncestor;
+  ds << header->getGuidAncestor();
 
   // 0x0090
-  ds << header->crcName;
+  ds << header->getCrcName();
 
   // fcrHashedChunkList
-  ds << getFcr64x32FromChunk(header->fcrHashedChunkList);
+  ds << getFcr64x32FromChunk(header->getFcrHashedChunkList());
 
   // 0x00A0
   // fcrTransactionLog
-  ds << getFcr64x32FromChunk(header->fcrTransactionLog);
+  ds << getFcr64x32FromChunk(header->getFcrTransactionLog());
 
   // fcrFileNodeListRoot
-  ds << getFcr64x32FromChunk(header->fcrFileNodeListRoot);
+  ds << getFcr64x32FromChunk(header->getFcrFileNodeListRoot());
 
   // fcrFreeChunkList
-  ds << getFcr64x32FromChunk(header->fcrFreeChunkList);
+  ds << getFcr64x32FromChunk(header->getFcrFreeChunkList());
 
   // 0x00C4
-  ds << header->cbExpectedFileLength;
-  ds << header->cbFreeSpaceInFreeChunkList;
-  ds << header->guidFileVersion;
-  ds << header->nFileVersionGeneration;
-  ds << header->guidDenyReadFileVersion;
-  ds << header->grfDebugLogFlags;
+  ds << header->getCbExpectedFileLength();
+  ds << header->getCbFreeSpaceInFreeChunkList();
+  ds << header->getGuidFileVersion();
+  ds << header->getNFileVersionGeneration();
+  ds << header->getGuidDenyReadFileVersion();
+  ds << header->getGrfDebugLogFlags();
 
   // 0x0100
   // fcrDebugLog
@@ -269,11 +269,11 @@ bool RevisionStoreFileWriter::writeRevisionStoreFileHeader(
   // fcrAllocVerificationFreeChunkList
   ds << FileChunkReference64x32(FCR_INIT::ZERO);
 
-  ds << header->bnCreated;
-  ds << header->bnLastWroteToThisFile;
+  ds << header->getBnCreated();
+  ds << header->getBnLastWroteToThisFile();
   // 0x0120
-  ds << header->bnOldestWritten;
-  ds << header->bnNewestWritten;
+  ds << header->getBnOldestWritten();
+  ds << header->getBnNewestWritten();
 
   const std::array<char, RevisionStoreFileHeader::def_reservedHeaderTailLength>
       padding{};
@@ -332,25 +332,25 @@ bool RevisionStoreFileWriter::writeFileNode(
     ds.setByteOrder(QDataStream::LittleEndian);
   }
 
+  {
+    quint32 composite;
 
-  // updating self size
-  fileNode->fileNodeSize = fileNode->getSizeInFile();
+    // reserved, must be 1, MS-ONESTORE section 2.4.3 FileNode
+    composite = 1u << fNshiftReserved;
 
-  quint32 composite;
+    composite += (fileNode->getBaseType() & fNmaskBaseType) << fNshiftBaseType;
+    composite += (fileNode->getCbFormat() & fNmaskCbFormat) << fNshiftCbFormat;
+    composite += (fileNode->getStpFormat() & fNmaskStpFormat)
+                 << fNshiftStpFormat;
+    composite += (fileNode->getSizeInFile() & fNmaskFileNodeSize)
+                 << fNshiftFileNodeSize;
+    composite += (fileNode->getFileNodeID() & fNmaskFileNodeID)
+                 << fNshiftFileNodeID;
 
-  // reserved, must be 1, MS-ONESTORE section 2.4.3 FileNode
-  composite = 1u << fNshiftReserved;
+    ds << composite;
+  }
 
-  composite += (fileNode->baseType & fNmaskBaseType) << fNshiftBaseType;
-  composite += (fileNode->cbFormat & fNmaskCbFormat) << fNshiftCbFormat;
-  composite += (fileNode->stpFormat & fNmaskStpFormat) << fNshiftStpFormat;
-  composite += (fileNode->fileNodeSize & fNmaskFileNodeSize)
-               << fNshiftFileNodeSize;
-  composite += (fileNode->fileNodeID & fNmaskFileNodeID) << fNshiftFileNodeID;
-
-  ds << composite;
-
-  if (fileNode->baseType == 0) {
+  if (fileNode->getBaseType() == 0) {
     switch (fileNode->getFileNodeTypeID()) {
 
 
@@ -477,8 +477,9 @@ bool RevisionStoreFileWriter::writeFileNode(
 
     default:
       qDebug() << "FileNodeID: " << fileNode->getFileNodeID();
-      qWarning("FileNode of base type 0 has a fileNodeTypeID which switches to "
-               "default. Should not happen.");
+      qFatal("Fatal Error: FileNode of base type 0 has a fileNodeTypeID which "
+             "switches to "
+             "default. Should not happen.");
     }
   }
   else {
@@ -515,6 +516,7 @@ bool RevisionStoreFileWriter::writeFileNode(
 
       const QByteArray md5hash =
           QCryptographicHash::hash(*data, QCryptographicHash::Md5);
+      cFnd->setGuidHash(md5hash);
 
       ds.writeRawData(md5hash.data(), cFnd->guidHashWidth);
       break;
@@ -585,6 +587,7 @@ bool RevisionStoreFileWriter::writeFileNode(
 
       const QByteArray md5hash =
           QCryptographicHash::hash(*data, QCryptographicHash::Md5);
+      cFnd->setMd5hash(md5hash);
 
       /*
       qDebug() << "Original Md5 hash:\n" << cFnd->getMd5hash().toHex();
@@ -619,7 +622,7 @@ bool RevisionStoreFileWriter::writeFileNode(
 
       const QByteArray md5hash =
           QCryptographicHash::hash(*data, QCryptographicHash::Md5);
-
+      cFnd->setMd5hash(md5hash);
       /*
       qInfo() << "Original Md5 hash:\n" << cFnd->getMd5hash().toHex();
       qInfo() << "Computed Md5 hash:\n" << md5hash.toHex();
@@ -670,12 +673,12 @@ bool RevisionStoreFileWriter::writeFileNode(
           fileNode->getCbFormatEnum());
       ds << cFnd->getOid();
 
-      quint32 temp{0};
+      quint32 composite{0};
 
-      temp += static_cast<quint32>(cFnd->getFHasOidReferences());
-      temp += static_cast<quint32>(cFnd->getFHasOsidReferences() << 1);
+      composite += static_cast<quint32>(cFnd->getFHasOidReferences());
+      composite += static_cast<quint32>(cFnd->getFHasOsidReferences() << 1u);
 
-      ds << temp;
+      ds << composite;
 
       ds << cFnd->getCRef();
 
@@ -691,11 +694,11 @@ bool RevisionStoreFileWriter::writeFileNode(
       ds << cFnd->getOid();
 
 
-      quint8 temp = cFnd->getCRef() >> 2;
-      temp += static_cast<quint32>(cFnd->getFHasOidReferences());
-      temp += static_cast<quint32>(cFnd->getFHasOsidReferences() << 1);
+      quint8 composite = cFnd->getCRef() >> 2u;
+      composite += static_cast<quint32>(cFnd->getFHasOidReferences());
+      composite += static_cast<quint32>(cFnd->getFHasOsidReferences() << 1u);
 
-      ds << temp;
+      ds << composite;
 
       break;
     }
@@ -743,8 +746,9 @@ bool RevisionStoreFileWriter::writeFileNode(
 
     default:
       qInfo() << "FileNodeID: " << fileNode->getFileNodeID();
-      qWarning("FileNode of base type 1 has a fileNodeTypeID which switches to "
-               "default. Should not happen.");
+      qFatal("Fatal Error: FileNode of base type 1 has a fileNodeTypeID which "
+             "switches to "
+             "default. Should not happen.");
     }
   }
 
@@ -763,14 +767,14 @@ bool RevisionStoreFileWriter::writeFileNodeListFragment(
 
 
   ds << FileNodeListFragment::header_magic_id;
-  ds << fileNodeListFragment->m_fileNodeListID;
-  ds << fileNodeListFragment->m_nFragmentSequence;
+  ds << fileNodeListFragment->getFileNodeListID();
+  ds << fileNodeListFragment->getNFragmentSequence();
 
-  for (auto& fn : fileNodeListFragment->m_fileNodes) {
+  for (auto& fn : fileNodeListFragment->getFileNodes()) {
     writeFileNode(ds, fn);
   }
 
-  quint32 size = fileNodeListFragment->m_paddingLength;
+  quint32 size = fileNodeListFragment->getPaddingLength();
 
   const quint8 zeros8{};
   while (size > 0) {

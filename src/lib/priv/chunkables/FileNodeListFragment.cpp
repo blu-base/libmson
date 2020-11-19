@@ -4,6 +4,7 @@
 namespace libmson {
 namespace priv {
 
+
 FileNodeListFragment::FileNodeListFragment(
     const quint64 initialStp, const quint64 initialCb)
     : Chunkable(initialStp, initialCb), m_fileNodeListID(),
@@ -11,8 +12,33 @@ FileNodeListFragment::FileNodeListFragment(
 {
 }
 
+quint32 FileNodeListFragment::getFileNodeListID() const
+{
+  return m_fileNodeListID;
+}
+
+void FileNodeListFragment::setFileNodeListID(const quint32& fileNodeListID)
+{
+  m_isChanged      = true;
+  m_fileNodeListID = fileNodeListID;
+}
+
+quint32 FileNodeListFragment::getNFragmentSequence() const
+{
+  return m_nFragmentSequence;
+}
+
+void FileNodeListFragment::setNFragmentSequence(
+    const quint32& nFragmentSequence)
+{
+  m_isChanged         = true;
+  m_nFragmentSequence = nFragmentSequence;
+}
+
+
 std::list<FileNode_SPtr_t>& FileNodeListFragment::fileNodes()
 {
+  m_isChanged = true;
   return m_fileNodes;
 }
 
@@ -24,8 +50,21 @@ std::list<FileNode_SPtr_t> FileNodeListFragment::getFileNodes() const
 void FileNodeListFragment::setFileNodes(
     const std::list<FileNode_SPtr_t>& fileNodes)
 {
+  m_isChanged = true;
   m_fileNodes = fileNodes;
 }
+
+quint16 FileNodeListFragment::getPaddingLength() const
+{
+  return m_paddingLength;
+}
+
+void FileNodeListFragment::setPaddingLength(const quint16& paddingLength)
+{
+  m_isChanged     = true;
+  m_paddingLength = paddingLength;
+}
+
 
 FileNodeListFragment_WPtr_t FileNodeListFragment::getNextFragment()
 {
@@ -34,6 +73,7 @@ FileNodeListFragment_WPtr_t FileNodeListFragment::getNextFragment()
 
 void FileNodeListFragment::setNextFragment(FileNodeListFragment_WPtr_t chunk)
 {
+  m_isChanged    = true;
   m_nextFragment = chunk;
 }
 

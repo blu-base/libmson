@@ -49,7 +49,7 @@ public:
   quint8 getPaddingLength() const;
   void setPaddingLength(const quint8& paddingLength);
 
-  friend class RevisionStoreFileWriter;
+
   friend class RevisionStoreFileParser;
 
 

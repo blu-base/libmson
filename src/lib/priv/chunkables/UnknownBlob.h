@@ -14,12 +14,9 @@ private:
   QByteArray m_blob;
 
 public:
-  UnknownBlob(const quint64 initialStp = 0,
-      const quint64 initialCb = 0);
+  UnknownBlob(const quint64 initialStp = 0, const quint64 initialCb = 0);
 
 
-
-  friend class RevisionStoreFileWriter;
   friend class RevisionStoreFileParser;
 
 

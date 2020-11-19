@@ -34,7 +34,10 @@ protected:
 
   quint64 m_cb;
 
-  bool m_isParsed  = false;
+  bool m_isParsed = false;
+
+  /// indicates whether m_cb needs to be recalculated, since this value is
+  /// needed often during writing
   bool m_isChanged = false;
 
   virtual quint64 cb() const                     = 0;
