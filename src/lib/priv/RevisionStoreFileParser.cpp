@@ -194,6 +194,7 @@ std::shared_ptr<RevisionStoreFile> RevisionStoreFileParser::parse()
 
     for (auto it = chunks.rbegin(); it != chunks.rend(); ++it) {
       if (!(*it)->isParsed()) {
+        m_file->m_undiscovered.push_back(*it);
         foundUnparsedThisLoop = true;
         parseChunk(m_ds, *it);
       }
@@ -1488,7 +1489,7 @@ bool RevisionStoreFileParser::parseTransactionLogFragment(
     std::vector<TransactionEntry_SPtr_t> transactionEntries;
     transactionEntries.reserve(num_entries);
     for (size_t i{0}; i < num_entries; i++) {
-      TransactionEntry_SPtr_t entry;
+      TransactionEntry_SPtr_t entry = std::make_shared<TransactionEntry>();
       ds >> *entry;
       transactionEntries.push_back(entry);
     }

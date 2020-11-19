@@ -82,6 +82,16 @@ private:
   QMap<quint32, quint32> m_fileNodeCountMapping;
 
 
+  /// A list of Chunkables which have not been parsed during walking the
+  /// RootNodeFileList and its references The list ist filled by the
+  /// "brute-force" loop in the main parse method of the
+  /// RevisionStoreFileParser. At some point this list should be empty, since
+  /// all Chunkables should be parsed in and ordered way.
+  std::list<Chunkable_WPtr_t> m_undiscovered;
+
+
+  /// this is a list of binary blobs which do not seem to be referenced
+  /// somewhere, or are missed possibly due to bugs in this library.
   std::list<UnknownBlob_WPtr_t> m_unkownBlobs;
 };
 
