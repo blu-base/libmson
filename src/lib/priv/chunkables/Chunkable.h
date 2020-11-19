@@ -61,6 +61,9 @@ public:
 
 
   bool isParsed() const;
+
+  /// sets the isChanged Flag to true.
+  void setIsChanged();
   bool isChanged() const;
 
   friend class RevisionStoreFileParser;
