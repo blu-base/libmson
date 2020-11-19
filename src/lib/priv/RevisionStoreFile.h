@@ -51,11 +51,19 @@ public:
   friend class RevisionStoreFileParser;
   friend class RevisionStoreFileWriter;
 
+  QString getFileName() const;
+  void setFileName(const QString& fileName);
+
+  RevisionStoreFileHeader_SPtr_t getHeader() const;
+  void setHeader(const RevisionStoreFileHeader_SPtr_t& header);
+
 private:
   /// File name such as "Notebook.one". Does not include any path information.
   QString m_fileName;
 
-  QDataStream m_ds;
+  RevisionStoreFileHeader_SPtr_t m_header;
+
+
   std::list<Chunkable_SPtr_t> m_chunks;
   std::map<quint32, FileNodeListFragment_WPtr_t> m_fileNodeListFragments;
 
