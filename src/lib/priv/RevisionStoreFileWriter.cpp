@@ -77,28 +77,18 @@ RevisionStoreFileWriter::RevisionStoreFileWriter(
 
 bool RevisionStoreFileWriter::write(QDataStream& ds)
 {
+  if (!writeRevisionStoreFileHeader(ds, m_revStoreFile->getHeader())) {
+    return false;
+  }
+
+  computeTransactionEntryCRCs();
+
+
   auto chunks = m_revStoreFile->chunks();
 
 
   if (chunks.size() < 1) {
     qFatal("No chunks to write in RevisionStoreFile.");
-  }
-
-
-  //  auto it = chunks.begin();
-
-
-  //  // write header
-  //  if (!writeRevisionStoreFileHeader(
-  //          ds, std::static_pointer_cast<RevisionStoreFileHeader>(*it))) {
-  //    return false;
-  //  }
-  //  ++it;
-
-  // then write the rest
-
-  if (!writeRevisionStoreFileHeader(ds, m_revStoreFile->getHeader())) {
-    return false;
   }
 
 
@@ -196,12 +186,12 @@ bool RevisionStoreFileWriter::writeRevisionStoreFileHeader(
   };
 
   totalFileSize += std::accumulate(
-      m_revStoreFile->m_chunks.begin(), m_revStoreFile->m_chunks.end(), 0,
+      m_revStoreFile->chunks().begin(), m_revStoreFile->chunks().end(), 0,
       addCb);
 
   // Updating the header;
   header->setCbExpectedFileLength(totalFileSize);
-  header->setCrcName(Crc32::computeCrcName(m_revStoreFile->m_fileName));
+  header->setCrcName(Crc32::computeCrcName(m_revStoreFile->getFileName()));
   /// \todo update cTransactionsInLog
 
   ds << header->getGuidFileType();
@@ -299,10 +289,45 @@ bool RevisionStoreFileWriter::writeTransactionLogFragment(
   }
 
   auto sizeTable = transactionLogFragment->getSizeTable();
+  //  std::list<TransactionEntry_SPtr_t> currentGroup;
+  for (auto it = sizeTable.begin(); it != sizeTable.end(); ++it) {
 
-  std::for_each(
-      sizeTable.begin(), sizeTable.end(),
-      [&ds](const TransactionEntry_SPtr_t& entry) { ds << *entry; });
+
+    //    quint32 currentSrcID = (*it)->getSrcID();
+    //    if (currentSrcID != 0x0 && currentSrcID != 0x1) {
+    //      currentGroup.push_back(*it);
+    //      ds << **it;
+    //      continue;
+    //    }
+
+    //    if (currentSrcID == 0x1) {
+    //      auto toHash = std::make_unique<QByteArray>(
+    //          currentGroup.size() * TransactionEntry::getSizeInFile(), 0x0);
+
+    //      QDataStream data_ds(toHash.get(), QIODevice::WriteOnly);
+    //      data_ds.setByteOrder(QDataStream::LittleEndian);
+
+    //      for (const auto& entry : currentGroup) {
+    //        data_ds << *entry;
+    //      }
+
+    //      /// \todo switch depending on file type
+    //      (*it)->setTransactionEntrySwitch(Crc32::computeCRC(*toHash));
+
+    //      ds << **it;
+    //      //      currentGroup.clear();
+    //      currentGroup.push_back(*it);
+    //    }
+    //    else {
+    //      /// \todo deal with transactions spanning multiple Fragments, likely
+    //      need
+    //      /// a method which deals with all transactionLogFragment Chunkables
+    //    }
+
+    //    if (currentSrcID == 0x0) {
+    ds << **it;
+    //    }
+  }
 
 
   ds << getFcr64x32FromChunk(
@@ -959,6 +984,33 @@ bool RevisionStoreFileWriter::writeUnparsedChunk(
   }
 
   return true;
+}
+
+void RevisionStoreFileWriter::computeTransactionEntryCRCs()
+{
+  auto toHash = std::make_unique<QByteArray>();
+
+  QDataStream data_ds(toHash.get(), QIODevice::WriteOnly);
+  data_ds.setByteOrder(QDataStream::LittleEndian);
+
+  for (auto& fragment : m_revStoreFile->getTransactionLogs()) {
+    if (fragment.lock() == nullptr) {
+      break;
+    }
+
+    auto cFragment = fragment.lock();
+
+    for (auto& entry : cFragment->getSizeTable()) {
+
+      quint32 currentSrcID = (entry)->getSrcID();
+
+      if (currentSrcID == 0x1) {
+        entry->setTransactionEntrySwitch(Crc32::computeCRC(*toHash));
+      }
+
+      data_ds << *entry;
+    }
+  }
 }
 
 quint64 RevisionStoreFileWriter::stpFromChunk(Chunkable_WPtr_t chunk)

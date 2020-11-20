@@ -1,29 +1,32 @@
-//#include "ObjectSpaceManifestList.h"
+#include "ObjectSpaceManifestList.h"
 
-//#include <memory>
+#include "chunkables/fileNodeTypes/ObjectSpaceManifestListReferenceFND.h"
 
-//#include "FileNodeTypes/ObjectSpaceManifestListStartFND.h"
-//#include "FileNodeTypes/RevisionManifestListReferenceFND.h"
-//#include "commonTypes/ExtendedGUID.h"
 
-//#include "commonTypes/Enums.h"
-//#include "helper/Helper.h"
+namespace libmson {
+namespace priv {
 
-// namespace MSONcommon {
+ObjectSpaceManifestList::ObjectSpaceManifestList(
+    const FileNode_SPtr_t& referenceFND)
+    : m_objectSpaceManifestListReferenceFND(referenceFND)
+{
 
-// ObjectSpaceManifestList::ObjectSpaceManifestList(
-//    const FileNodeChunkReference &ref)
-//    : m_ref{ref} {}
+  if (referenceFND->getFileNodeTypeID() !=
+      FileNodeTypeID::ObjectSpaceManifestListReferenceFND) {
+    qFatal("ObjectSpaceManifestList was not initialized with "
+           "ObjectSpaceManifestListReferenceFND");
+  }
 
-// FileNodeChunkReference ObjectSpaceManifestList::getRef() const { return
-// m_ref; }
+  auto fnd = std::static_pointer_cast<ObjectSpaceManifestListReferenceFND>(
+      referenceFND->getFnt());
 
-// void ObjectSpaceManifestList::setRef(const FileNodeChunkReference &ref) {
-//  m_ref = ref;
-//}
+  m_gosid = fnd->getGosid();
+}
+
 
 // void ObjectSpaceManifestList::writeLowLevelXml(
-//    QXmlStreamWriter &xmlWriter) const {
+//    QXmlStreamWriter& xmlWriter) const
+//{
 //  xmlWriter.writeStartElement("ObjectSpaceManifestList");
 
 //  ExtendedGUID gosid =
@@ -37,13 +40,13 @@
 //  xmlWriter.writeAttribute("cb", qStringHex(m_ref.cb(), 16));
 
 //  xmlWriter.writeStartElement("revisionManifestLists");
-//  for (const auto &entry : m_revisionManifestLists) {
+//  for (const auto& entry : m_revisionManifestLists) {
 //    xmlWriter << *entry;
 //  }
 //  xmlWriter.writeEndElement();
 
 //  xmlWriter.writeStartElement("fileNodeSequence");
-//  for (const auto &entry : m_fileNodeSequence) {
+//  for (const auto& entry : m_fileNodeSequence) {
 //    xmlWriter << *entry;
 //  }
 //  xmlWriter.writeEndElement();
@@ -51,28 +54,31 @@
 //  xmlWriter.writeEndElement();
 //}
 
-// void ObjectSpaceManifestList::deserialize(QDataStream &ds) {
+// void ObjectSpaceManifestList::deserialize(QDataStream& ds)
+//{
 //  qInfo() << "Parsing ObjectSpaceManifestList";
 //  m_fileNodeListFragments = parseFileNodeListFragments(ds, m_ref);
 
-//  for (const auto &fragment : m_fileNodeListFragments) {
-//    const auto &rgFileNodes = fragment->rgFileNodes();
-//    copy_if(rgFileNodes.begin(), rgFileNodes.end(),
-//            back_inserter(m_fileNodeSequence),
-//            [](const std::shared_ptr<FileNode> &entry) {
-//              return entry->getFileNodeTypeID() !=
-//                     FileNodeTypeID::ChunkTerminatorFND;
-//            });
+//  for (const auto& fragment : m_fileNodeListFragments) {
+//    const auto& rgFileNodes = fragment->rgFileNodes();
+//    copy_if(
+//        rgFileNodes.begin(), rgFileNodes.end(),
+//        back_inserter(m_fileNodeSequence),
+//        [](const std::shared_ptr<FileNode>& entry) {
+//          return entry->getFileNodeTypeID() !=
+//                 FileNodeTypeID::ChunkTerminatorFND;
+//        });
 //  }
 
 //  std::vector<std::shared_ptr<FileNode>> objectSpaceManifestListStarts{};
 
-//  std::copy_if(m_fileNodeSequence.begin(), m_fileNodeSequence.end(),
-//               back_inserter(objectSpaceManifestListStarts),
-//               [](const std::shared_ptr<FileNode> &entry) {
-//                 return entry->getFileNodeTypeID() ==
-//                            FileNodeTypeID::ObjectSpaceManifestListStartFND;
-//               });
+//  std::copy_if(
+//      m_fileNodeSequence.begin(), m_fileNodeSequence.end(),
+//      back_inserter(objectSpaceManifestListStarts),
+//      [](const std::shared_ptr<FileNode>& entry) {
+//        return entry->getFileNodeTypeID() ==
+//               FileNodeTypeID::ObjectSpaceManifestListStartFND;
+//      });
 
 //  if (objectSpaceManifestListStarts.size() == 1) {
 //    m_objectSpaceManifestListStart = objectSpaceManifestListStarts.at(0);
@@ -80,14 +86,15 @@
 
 //  std::vector<std::shared_ptr<FileNode>> revisionManifestListRefs{};
 
-//  std::copy_if(m_fileNodeSequence.begin(), m_fileNodeSequence.end(),
-//               back_inserter(revisionManifestListRefs),
-//               [](const std::shared_ptr<FileNode> &entry) {
-//                 return entry->getFileNodeTypeID() ==
-//                            FileNodeTypeID::RevisionManifestListReferenceFND;
-//               });
+//  std::copy_if(
+//      m_fileNodeSequence.begin(), m_fileNodeSequence.end(),
+//      back_inserter(revisionManifestListRefs),
+//      [](const std::shared_ptr<FileNode>& entry) {
+//        return entry->getFileNodeTypeID() ==
+//               FileNodeTypeID::RevisionManifestListReferenceFND;
+//      });
 
-//  for (const auto &entry : revisionManifestListRefs) {
+//  for (const auto& entry : revisionManifestListRefs) {
 
 //    FileNodeChunkReference rmlr =
 //        std::dynamic_pointer_cast<RevisionManifestListReferenceFND>(
@@ -104,77 +111,6 @@
 //  }
 //}
 
-// void ObjectSpaceManifestList::serialize(QDataStream &ds) const {}
 
-// void ObjectSpaceManifestList::toDebugString(QDebug &dbg) const {
-//  dbg << " ObjectSpaceManifestList:\n"
-//      << " fileNodeListFragments:\n";
-
-//  if (m_fileNodeListFragments.empty()) {
-//    dbg << "none\n";
-//  } else {
-//    for (const auto &entry : m_fileNodeListFragments) {
-//      dbg << *entry;
-//    }
-//  }
-
-//  dbg << "objectSpaceManifestListStart: " << *m_objectSpaceManifestListStart
-//      << " revisionManifestLists:\n";
-//  if (m_revisionManifestLists.empty()) {
-//    dbg << "none\n";
-//  } else {
-//    for (const auto &entry : m_revisionManifestLists) {
-//      dbg << *entry;
-//    }
-//  }
-
-//  dbg << " fileNodeSequence:\n";
-//  if (m_fileNodeSequence.empty()) {
-//    dbg << "none\n";
-//  } else {
-//    for (const auto &entry : m_fileNodeSequence) {
-//      dbg << *entry;
-//    }
-//  }
-//}
-
-// std::vector<std::shared_ptr<FileNode>>
-// ObjectSpaceManifestList::getFileNodeSequence() const {
-//  return m_fileNodeSequence;
-//}
-
-// void ObjectSpaceManifestList::setFileNodeSequence(
-//    const std::vector<std::shared_ptr<FileNode>> &value) {
-//  m_fileNodeSequence = value;
-//}
-
-// std::vector<std::shared_ptr<RevisionManifestList>>
-// ObjectSpaceManifestList::getRevisionManifestLists() {
-//  return m_revisionManifestLists;
-//}
-
-// void ObjectSpaceManifestList::setRevisionManifestLists(
-//    const std::vector<std::shared_ptr<RevisionManifestList>> &value) {
-//  m_revisionManifestLists = value;
-//}
-
-// std::shared_ptr<FileNode>
-// ObjectSpaceManifestList::getObjectSpaceManifestListStart() const {
-//  return m_objectSpaceManifestListStart;
-//}
-
-// void ObjectSpaceManifestList::setObjectSpaceManifestListStart(
-//    const std::shared_ptr<FileNode> &value) {
-//  m_objectSpaceManifestListStart = value;
-//}
-
-// std::vector<std::shared_ptr<FileNodeListFragment>>
-// ObjectSpaceManifestList::getFileNodeListFragments() const {
-//  return m_fileNodeListFragments;
-//}
-
-// void ObjectSpaceManifestList::setFileNodeListFragments(
-//    const std::vector<std::shared_ptr<FileNodeListFragment>> &value) {
-//  m_fileNodeListFragments = value;
-//}
-//} // namespace MSONcommon
+} // namespace priv
+} // namespace libmson

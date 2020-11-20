@@ -29,7 +29,8 @@
 
 #include "commonTypes/ExtendedGUID.h"
 
-class RevisionStoreChunkContainer;
+#include "ObjectSpaceManifestList.h"
+
 
 namespace libmson {
 namespace priv {
@@ -41,7 +42,7 @@ public:
 
   std::list<Chunkable_SPtr_t> getChunks() const { return m_chunks; };
   std::list<Chunkable_SPtr_t>& chunks() { return m_chunks; };
-
+  void setChunks(const std::list<Chunkable_SPtr_t>& chunks);
 
   /// returns the ExtendedGUID stored in the ObjectSpaceManifestRootFND of the
   /// FileNodeListRoot
@@ -49,13 +50,21 @@ public:
 
 
   friend class RevisionStoreFileParser;
-  friend class RevisionStoreFileWriter;
 
   QString getFileName() const;
   void setFileName(const QString& fileName);
 
   RevisionStoreFileHeader_SPtr_t getHeader() const;
   void setHeader(const RevisionStoreFileHeader_SPtr_t& header);
+
+
+  std::vector<TransactionLogFragment_WPtr_t> getTransactionLogs() const;
+  void setTransactionLogs(
+      const std::vector<TransactionLogFragment_WPtr_t>& transactionLogs);
+
+  FileNode_WPtr_t getFileDataStoreListReference() const;
+  void setFileDataStoreListReference(
+      const FileNode_WPtr_t& fileDataStoreListReference);
 
 private:
   /// File name such as "Notebook.one". Does not include any path information.
@@ -68,11 +77,15 @@ private:
   std::map<quint32, FileNodeListFragment_WPtr_t> m_fileNodeListFragments;
 
   std::vector<FileNodeListFragment_WPtr_t> m_rootFileNodeList;
+
   std::vector<TransactionLogFragment_WPtr_t> m_transactionLogs;
+
   std::vector<FileNodeListFragment_WPtr_t> m_hashedChunkListFragments;
 
   Chunkable_WPtr_t m_objectSpaceManifestRoot;
-  std::vector<FileNodeListFragment_WPtr_t> m_objectSpaceManifests;
+  std::vector<FileNodeListFragment_WPtr_t> m_objectSpaceManifestListReferences;
+  std::vector<ObjectSpaceManifestList> m_objectSpaceManifestLists;
+
   //  std::vector<std::shared_ptr<ObjectSpaceManifestList>>
   //      m_objectSpaceManifestList;
 

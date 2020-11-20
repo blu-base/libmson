@@ -61,6 +61,7 @@ private:
 
   bool writeUnparsedChunk(QDataStream& ds, Chunkable_SPtr_t chunk);
 
+
   // write utilities
   quint64 stpFromChunk(Chunkable_WPtr_t chunk);
 
@@ -77,6 +78,12 @@ private:
   FileNodeChunkReference getFncrFromChunk(
       Chunkable_WPtr_t chunk, FNCR_STP_FORMAT stpFormat,
       FNCR_CB_FORMAT cbFormat, FCR_INIT preferedState = FCR_INIT::NIL);
+
+
+  /// utility function, which recomputes the sentinal entries' crc sums
+  /// \todo crc computing should be in RevisionStoreFile, when ever a new
+  /// transaction is added
+  void computeTransactionEntryCRCs();
 };
 
 } // namespace priv

@@ -1,38 +1,43 @@
 #ifndef OBJECTSPACEMANIFESTLIST_H
 #define OBJECTSPACEMANIFESTLIST_H
 
-#include <QXmlStreamWriter>
 #include <QtCore/qglobal.h>
 #include <vector>
 
-#include "FileNode.h"
-#include "FileNodeListFragment.h"
+#include "chunkables/FileNode.h"
+#include "chunkables/FileNodeListFragment.h"
 
 #include "RevisionManifestList.h"
+
+#include "commonTypes/ExtendedGUID.h"
 
 namespace libmson {
 namespace priv {
 
-class ObjectSpaceManifestList : public IRevisionStoreFileObject {
+class ObjectSpaceManifestList {
 private:
-  std::vector<std::shared_ptr<FileNodeListFragment>> m_fileNodeListFragments;
+  FileNode_WPtr_t m_objectSpaceManifestListReferenceFND;
 
-  std::shared_ptr<FileNode> m_objectSpaceManifestListStart;
+  ExtendedGUID m_gosid;
 
-  std::vector<std::shared_ptr<RevisionManifestList>> m_revisionManifestLists;
+  FileNode_WPtr_t m_objectSpaceManifestListStartFND;
 
-  std::vector<std::shared_ptr<FileNode>> m_fileNodeSequence;
+  std::vector<FileNodeListFragment_WPtr_t> m_fileNodeListFragments;
+
+
+  //  std::shared_ptr<FileNode> m_objectSpaceManifestListStart;
+
+  std::vector<RevisionManifestList> m_revisionManifestLists;
+
+  //  std::vector<std::shared_ptr<FileNode>> m_fileNodeSequence;
 
 public:
-  ObjectSpaceManifestList(const FileNodeChunkReference& ref);
-  ~ObjectSpaceManifestList() = default;
+  ObjectSpaceManifestList(const FileNode_SPtr_t& referenceFND);
 
   std::vector<std::shared_ptr<FileNodeListFragment>>
   getFileNodeListFragments() const;
   void setFileNodeListFragments(
       const std::vector<std::shared_ptr<FileNodeListFragment>>& value);
-
-  std::shared_ptr<FileNode> getObjectSpaceManifestListStart() const;
 };
 
 } // namespace priv
