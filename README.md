@@ -66,3 +66,7 @@ Third party projects from which functionality has been derived are listed in LIC
 * Qt Open Source Edition - 5.15
 * OfficeDev's [Interop-TestSuites][1]
 * pablospe's [cmake-example-library][2]
+
+
+[1]: https://github.com/OfficeDev/Interop-TestSuites
+[2]: https://github.com/pablospe/cmake-example-library
