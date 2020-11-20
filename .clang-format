@@ -1,0 +1,21 @@
+﻿---
+BasedOnStyle: LLVM
+AlignAfterOpenBracket: AlwaysBreak
+AlignConsecutiveAssignments: 'true'
+AlignConsecutiveDeclarations: 'false'
+AlignTrailingComments: 'true'
+BreakBeforeBraces: Stroustrup
+BreakInheritanceList: BeforeComma
+ColumnLimit: '80'
+CompactNamespaces: 'false'
+FixNamespaceComments: 'true'
+IndentWidth: '2'
+Language: Cpp
+MaxEmptyLinesToKeep: '2'
+NamespaceIndentation: None
+PointerAlignment: Left
+SortUsingDeclarations: 'true'
+SpaceAfterTemplateKeyword: 'true'
+UseTab: Never
+
+...
