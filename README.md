@@ -11,6 +11,10 @@ If you are looking for working OneNote parsers go to:
 * [Apache Tika](https://tika.apache.org/), library to parse documents and meta data
 * [Interop-TestSuites](https://github.com/OfficeDev/Interop-TestSuites), an OfficeDev repository by Microsoft to test a number of protocols
 
+What I learn with this project I'll also contribute to the project [libone](https://github.com/tshikaboom/libone) which is based on [librevenge](https://sourceforge.net/projects/libwpd/). This library will be useful to a broader audience since it is already an important infrastructure for LibreOffice.
+
+
+
 ## Requirements
 
 * Qt 5.12+ libraries
@@ -27,22 +31,13 @@ cmake ..
 make
 ```
 
-In the build directory, you can find the tool `one2xml`.
-
-By calling the following command structure, you can convert `.one` and `.onetoc2` files to an xml format
-```
-one2xml -f \[filename\]
-```
-
-Run `one2xml --help` for more information.
-
-Right now, the xml format represents the revision store file's structure. Currently, this is hardly useful.
-
-
 ## Contributing
-Any comments and contributions are welcome! Just open an issue, or drop me an email.
+Any comments and contributions are welcome! Just open an issue, or drop me an [email](mailto:libmson@sebastianengel.eu).
 
 If you run into any issues while trying to parse a file, consider to open an issue in which the respective file is submitted. That way i can figure out which part of the code is the likely culprit.
+
+
+At some point this library should have a public API which masks the RevisionStoreFile components and lets you interact with the actual content of the notebooks/sections/pages only. If you imagine a specific use case, I would be glad to hear your ideas.
 
 
 ## TODO
@@ -59,9 +54,15 @@ If you run into any issues while trying to parse a file, consider to open an iss
 * Deduct serialized format of Shapes
 * Analyze Audio/Video embedded into File
 
+* Create XMLs according to OneNotes XSD
+
 
 ## Disclaimer
 
-This project is neither related nor endorsed by Microsoft in any way. The author does not have any affiliation with Microsoft. Reverse engineered content which is not specified in MS-ONESTORE is done by 'clean room reverse engineering' only, mostly with code found in this project. Third party software binaries have NOT been analyzed (or disassembled). Only .one, .onetoc2, and .onepkg files have been used to deduct unspecified information. This also means validity of the finding cannot be garuanteed.
+This project is neither related nor endorsed by Microsoft in any way. The author does not have any affiliation with Microsoft. Information which is not specified in MS-ONESTORE is done by 'clean room reverse engineering' only, mostly with code found in this project. Third party software binaries have NOT been analyzed (or disassembled). Only .one, .onetoc2, and .onepkg files have been used to deduct unspecified information. This also means validity of the finding cannot be garuanteed.
 
-Third party projects from which functionality has been derived are listed in LICENSE.3rdparty.md.
+Third party projects from which functionality has been derived are listed in LICENSE.3rdparty.md. This currently includes :
+
+* Qt Open Source Edition - 5.15
+* OfficeDev's [Interop-TestSuites][1]
+* pablospe's [cmake-example-library][2]
