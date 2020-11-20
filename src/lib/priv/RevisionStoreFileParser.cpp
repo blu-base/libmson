@@ -59,9 +59,6 @@ std::shared_ptr<RevisionStoreFile> RevisionStoreFileParser::parse()
   auto header = parseRevisionStoreFileHeader(m_ds).lock();
 
 
-  // Parsing FreeChunkList
-  parseFreeChunkListFragments(m_ds, header->getFcrFreeChunkList().lock());
-
   // Parsing TransactionLog
   parseTransactionLogFragment(m_ds, header->getFcrTransactionLog().lock());
 
@@ -80,19 +77,15 @@ std::shared_ptr<RevisionStoreFile> RevisionStoreFileParser::parse()
           m_file->m_objectSpaceManifestRoot = fn;
         }
         else {
-          qWarning("There is an additional ObjectSpaceManifestRootFND present");
+          qWarning("There is an additional ObjectSpaceManifestRootFND present. "
+                   "Ignoring it.");
         }
       }
     }
   }
 
-  // Parsing HashedChunkList
-  m_file->m_hashedChunkListFragments =
-      parseFileNodeList(m_ds, header->m_fcrHashedChunkList.lock());
 
-
-  // Traverse RootFileNodeList to parse ObjectSpaceManifests
-
+  // Traverse RootFileNodeList to parse ObjectSpaceManifestListReferences
   for (const auto& frag : m_file->m_rootFileNodeList) {
     for (const auto& fn : frag.lock()->getFileNodes()) {
       if (fn->getFileNodeTypeID() ==
@@ -101,7 +94,7 @@ std::shared_ptr<RevisionStoreFile> RevisionStoreFileParser::parse()
         auto fndRef =
             std::static_pointer_cast<ObjectSpaceManifestListReferenceFND>(
                 fn->fnt);
-        m_file->m_objectSpaceManifests.push_back(fndRef->getRef());
+        m_file->m_objectSpaceManifestListReferences.push_back(fndRef->getRef());
       }
     }
   }
@@ -129,6 +122,14 @@ std::shared_ptr<RevisionStoreFile> RevisionStoreFileParser::parse()
   //  }
 
   // Traverse RevisionManifests and stuff
+
+  // Parsing HashedChunkList
+  m_file->m_hashedChunkListFragments =
+      parseFileNodeList(m_ds, header->m_fcrHashedChunkList.lock());
+
+
+  // Parsing FreeChunkList
+  parseFreeChunkListFragments(m_ds, header->getFcrFreeChunkList().lock());
 
 
   // Traverse RootFileNodeList to parse FileDataStoreList
@@ -575,598 +576,7 @@ FileNode_SPtr_t RevisionStoreFileParser::parseFileNode(
   fn->fileNodeID = (composite >> fNshiftFileNodeID) & fNmaskFileNodeID;
 
 
-  // distinguish by baseType,
-  // type 0 does not contain any reference to a chunk, and therefore can be
-  // parsed trivially type 1 and type 2 do contain references and must cast
-  // chunkContainer
-
-
-  if (fn->baseType == 0) {
-
-    switch (fn->getFileNodeTypeID()) {
-    case FileNodeTypeID::ChunkTerminatorFND: {
-      auto thisFnt = std::make_shared<ChunkTerminatorFND>(fn);
-      ds >> *thisFnt;
-      fn->fnt = thisFnt;
-      break;
-    }
-    case FileNodeTypeID::DataSignatureGroupDefinitionFND: {
-      auto thisFnt = std::make_shared<DataSignatureGroupDefinitionFND>(fn);
-      ds >> *thisFnt;
-      fn->fnt = thisFnt;
-      break;
-    }
-    case FileNodeTypeID::GlobalIdTableEndFNDX: {
-      auto thisFnt = std::make_shared<GlobalIdTableEndFNDX>(fn);
-      ds >> *thisFnt;
-      fn->fnt = thisFnt;
-      break;
-    }
-    case FileNodeTypeID::GlobalIdTableEntry2FNDX: {
-      auto thisFnt = std::make_shared<GlobalIdTableEntry2FNDX>(fn);
-      ds >> *thisFnt;
-      fn->fnt = thisFnt;
-      break;
-    }
-    case FileNodeTypeID::GlobalIdTableEntry3FNDX: {
-      auto thisFnt = std::make_shared<GlobalIdTableEntry3FNDX>(fn);
-      ds >> *thisFnt;
-      fn->fnt = thisFnt;
-      break;
-    }
-    case FileNodeTypeID::GlobalIdTableEntryFNDX: {
-      auto thisFnt = std::make_shared<GlobalIdTableEntryFNDX>(fn);
-      ds >> *thisFnt;
-      fn->fnt = thisFnt;
-      break;
-    }
-    case FileNodeTypeID::GlobalIdTableStart2FND: {
-      auto thisFnt = std::make_shared<GlobalIdTableStart2FND>(fn);
-      ds >> *thisFnt;
-      fn->fnt = thisFnt;
-      break;
-    }
-    case FileNodeTypeID::GlobalIdTableStartFNDX: {
-      auto thisFnt = std::make_shared<GlobalIdTableStartFNDX>(fn);
-      ds >> *thisFnt;
-      fn->fnt = thisFnt;
-      break;
-    }
-    case FileNodeTypeID::ObjectDeclarationFileData3LargeRefCountFND: {
-      auto thisFnt =
-          std::make_shared<ObjectDeclarationFileData3LargeRefCountFND>(fn);
-      ds >> *thisFnt;
-      fn->fnt = thisFnt;
-      break;
-    }
-    case FileNodeTypeID::ObjectDeclarationFileData3RefCountFND: {
-      auto thisFnt =
-          std::make_shared<ObjectDeclarationFileData3RefCountFND>(fn);
-      ds >> *thisFnt;
-      fn->fnt = thisFnt;
-      break;
-    }
-    case FileNodeTypeID::ObjectGroupEndFND: {
-      auto thisFnt = std::make_shared<ObjectGroupEndFND>(fn);
-      ds >> *thisFnt;
-      fn->fnt = thisFnt;
-      break;
-    }
-    case FileNodeTypeID::ObjectGroupStartFND: {
-      auto thisFnt = std::make_shared<ObjectGroupStartFND>(fn);
-      ds >> *thisFnt;
-      fn->fnt = thisFnt;
-      break;
-    }
-    case FileNodeTypeID::ObjectSpaceManifestListStartFND: {
-      auto thisFnt = std::make_shared<ObjectSpaceManifestListStartFND>(fn);
-      ds >> *thisFnt;
-      fn->fnt = thisFnt;
-      break;
-    }
-    case FileNodeTypeID::ObjectSpaceManifestRootFND: {
-      auto thisFnt = std::make_shared<ObjectSpaceManifestRootFND>(fn);
-      ds >> *thisFnt;
-      fn->fnt = thisFnt;
-      break;
-    }
-    case FileNodeTypeID::RevisionManifestEndFND: {
-      auto thisFnt = std::make_shared<RevisionManifestEndFND>(fn);
-      ds >> *thisFnt;
-      fn->fnt = thisFnt;
-      break;
-    }
-    case FileNodeTypeID::RevisionManifestListStartFND: {
-      auto thisFnt = std::make_shared<RevisionManifestListStartFND>(fn);
-      ds >> *thisFnt;
-      fn->fnt = thisFnt;
-      break;
-    }
-    case FileNodeTypeID::RevisionManifestStart4FND: {
-      auto thisFnt = std::make_shared<RevisionManifestStart4FND>(fn);
-      ds >> *thisFnt;
-      fn->fnt = thisFnt;
-      break;
-    }
-    case FileNodeTypeID::RevisionManifestStart6FND: {
-      auto thisFnt = std::make_shared<RevisionManifestStart6FND>(fn);
-      ds >> *thisFnt;
-      fn->fnt = thisFnt;
-      break;
-    }
-    case FileNodeTypeID::RevisionManifestStart7FND: {
-      auto thisFnt = std::make_shared<RevisionManifestStart7FND>(fn);
-      ds >> *thisFnt;
-      fn->fnt = thisFnt;
-      break;
-    }
-    case FileNodeTypeID::RevisionRoleAndContextDeclarationFND: {
-      auto thisFnt = std::make_shared<RevisionRoleAndContextDeclarationFND>(fn);
-      ds >> *thisFnt;
-      fn->fnt = thisFnt;
-      break;
-    }
-    case FileNodeTypeID::RevisionRoleDeclarationFND: {
-      auto thisFnt = std::make_shared<RevisionRoleDeclarationFND>(fn);
-      ds >> *thisFnt;
-      fn->fnt = thisFnt;
-      break;
-    }
-    case FileNodeTypeID::RootObjectReference2FNDX: {
-      auto thisFnt = std::make_shared<RootObjectReference2FNDX>(fn);
-      ds >> *thisFnt;
-      fn->fnt = thisFnt;
-      break;
-    }
-    case FileNodeTypeID::RootObjectReference3FND: {
-      auto thisFnt = std::make_shared<RootObjectReference3FND>(fn);
-      ds >> *thisFnt;
-      fn->fnt = thisFnt;
-      break;
-    }
-
-    case FileNodeTypeID::NullFnd: {
-      fn->fnt = nullptr;
-      break;
-    }
-
-
-    default:
-      qInfo() << "FileNodeID: " << fn->getFileNodeID();
-      qWarning("FileNode of base type 0 has a fileNodeTypeID which switches to "
-               "default. Should not happen.");
-    }
-  }
-  else
-
-
-      if (fn->baseType == 1) {
-    switch (fn->getFileNodeTypeID()) {
-    case FileNodeTypeID::FileDataStoreObjectReferenceFND: {
-      fn->fnt = std::make_shared<FileDataStoreObjectReferenceFND>(fn);
-
-      auto currentFnt =
-          std::static_pointer_cast<FileDataStoreObjectReferenceFND>(fn->fnt);
-
-      FileNodeChunkReference blobRef(fn->stpFormat, fn->cbFormat);
-      ds >> blobRef;
-      if (!blobRef.is_fcrNil() && !blobRef.is_fcrZero()) {
-
-        auto objectSpaceObjectPropSetChunk =
-            std::make_shared<FileDataStoreObject>(blobRef.stp(), blobRef.cb());
-
-
-        objectSpaceObjectPropSetChunk =
-            insertChunkSorted(m_file->chunks(), objectSpaceObjectPropSetChunk);
-
-        currentFnt->m_blobRef = objectSpaceObjectPropSetChunk;
-      }
-
-      ds >> currentFnt->m_guidReference;
-
-      break;
-    }
-    case FileNodeTypeID::HashedChunkDescriptor2FND: {
-      fn->fnt = std::make_shared<HashedChunkDescriptor2FND>(fn);
-
-      auto currentFnt =
-          std::static_pointer_cast<HashedChunkDescriptor2FND>(fn->fnt);
-
-      FileNodeChunkReference blobRef(fn->stpFormat, fn->cbFormat);
-      ds >> blobRef;
-      if (!blobRef.is_fcrNil() && !blobRef.is_fcrZero()) {
-
-        auto objectSpaceObjectPropSetChunk =
-            std::make_shared<ObjectSpaceObjectPropSet>(
-                blobRef.stp(), blobRef.cb());
-
-        objectSpaceObjectPropSetChunk =
-            insertChunkSorted(m_file->chunks(), objectSpaceObjectPropSetChunk);
-
-        currentFnt->m_blobRef = objectSpaceObjectPropSetChunk;
-      }
-
-      currentFnt->m_guidHash =
-          ds.device()->read(HashedChunkDescriptor2FND::guidHashWidth);
-
-      break;
-    }
-    case FileNodeTypeID::ObjectDataEncryptionKeyV2FNDX: {
-      fn->fnt = std::make_shared<ObjectDataEncryptionKeyV2FNDX>(fn);
-
-      auto currentFnt =
-          std::static_pointer_cast<ObjectDataEncryptionKeyV2FNDX>(fn->fnt);
-
-      FileNodeChunkReference blobRef(fn->stpFormat, fn->cbFormat);
-      ds >> blobRef;
-      if (!blobRef.is_fcrNil() && !blobRef.is_fcrZero()) {
-
-        auto objectSpaceObjectPropSetChunk =
-            std::make_shared<EncryptedData>(blobRef.stp(), blobRef.cb());
-
-        objectSpaceObjectPropSetChunk =
-            insertChunkSorted(m_file->chunks(), objectSpaceObjectPropSetChunk);
-
-        currentFnt->m_blobRef = objectSpaceObjectPropSetChunk;
-      }
-
-      break;
-    }
-
-    case FileNodeTypeID::ObjectDeclaration2LargeRefCountFND: {
-      fn->fnt = std::make_shared<ObjectDeclaration2LargeRefCountFND>(fn);
-
-      auto currentFnt =
-          std::static_pointer_cast<ObjectDeclaration2LargeRefCountFND>(fn->fnt);
-
-      FileNodeChunkReference blobRef(fn->stpFormat, fn->cbFormat);
-      ds >> blobRef;
-      if (!blobRef.is_fcrNil() && !blobRef.is_fcrZero()) {
-
-        auto objectSpaceObjectPropSetChunk =
-            std::make_shared<ObjectSpaceObjectPropSet>(
-                blobRef.stp(), blobRef.cb());
-
-        objectSpaceObjectPropSetChunk =
-            insertChunkSorted(m_file->chunks(), objectSpaceObjectPropSetChunk);
-
-        currentFnt->m_blobRef = objectSpaceObjectPropSetChunk;
-      }
-
-      ds >> currentFnt->m_body;
-      ds >> currentFnt->m_cRef;
-
-      break;
-    }
-
-    case FileNodeTypeID::ObjectDeclaration2RefCountFND: {
-      fn->fnt = std::make_shared<ObjectDeclaration2RefCountFND>(fn);
-
-      auto currentFnt =
-          std::static_pointer_cast<ObjectDeclaration2RefCountFND>(fn->fnt);
-
-      FileNodeChunkReference blobRef(fn->stpFormat, fn->cbFormat);
-      ds >> blobRef;
-      if (!blobRef.is_fcrNil() && !blobRef.is_fcrZero()) {
-
-        auto objectSpaceObjectPropSetChunk =
-            std::make_shared<ObjectSpaceObjectPropSet>(
-                blobRef.stp(), blobRef.cb());
-
-        objectSpaceObjectPropSetChunk =
-            insertChunkSorted(m_file->chunks(), objectSpaceObjectPropSetChunk);
-
-        currentFnt->m_blobRef = objectSpaceObjectPropSetChunk;
-      }
-
-      ds >> currentFnt->m_body;
-      ds >> currentFnt->m_cRef;
-
-      break;
-    }
-    case FileNodeTypeID::ObjectDeclarationWithRefCount2FNDX: {
-      fn->fnt = std::make_shared<ObjectDeclarationWithRefCount2FNDX>(fn);
-
-      auto currentFnt =
-          std::static_pointer_cast<ObjectDeclarationWithRefCount2FNDX>(fn->fnt);
-
-      FileNodeChunkReference blobRef(fn->stpFormat, fn->cbFormat);
-      ds >> blobRef;
-      if (!blobRef.is_fcrNil() && !blobRef.is_fcrZero()) {
-
-        auto objectSpaceObjectPropSetChunk =
-            std::make_shared<ObjectSpaceObjectPropSet>(
-                blobRef.stp(), blobRef.cb());
-
-        objectSpaceObjectPropSetChunk =
-            insertChunkSorted(m_file->chunks(), objectSpaceObjectPropSetChunk);
-
-        currentFnt->m_objectRef = objectSpaceObjectPropSetChunk;
-      }
-
-      ds >> currentFnt->m_body;
-      ds >> currentFnt->m_cRef;
-
-      break;
-    }
-    case FileNodeTypeID::ReadOnlyObjectDeclaration2LargeRefCountFND: {
-      fn->fnt =
-          std::make_shared<ReadOnlyObjectDeclaration2LargeRefCountFND>(fn);
-
-      auto currentFnt =
-          std::static_pointer_cast<ReadOnlyObjectDeclaration2LargeRefCountFND>(
-              fn->fnt);
-
-      FileNodeChunkReference blobRef(fn->stpFormat, fn->cbFormat);
-      ds >> blobRef;
-      if (!blobRef.is_fcrNil() && !blobRef.is_fcrZero()) {
-
-        auto objectSpaceObjectPropSetChunk =
-            std::make_shared<ObjectSpaceObjectPropSet>(
-                blobRef.stp(), blobRef.cb());
-
-        objectSpaceObjectPropSetChunk =
-            insertChunkSorted(m_file->chunks(), objectSpaceObjectPropSetChunk);
-
-        currentFnt->m_blobRef = objectSpaceObjectPropSetChunk;
-      }
-
-      ds >> currentFnt->m_body;
-      ds >> currentFnt->m_cRef;
-
-      currentFnt->setMd5hash(ds.device()->read(
-          ReadOnlyObjectDeclaration2LargeRefCountFND::md5HashSize));
-      break;
-    }
-    case FileNodeTypeID::ReadOnlyObjectDeclaration2RefCountFND: {
-      fn->fnt = std::make_shared<ReadOnlyObjectDeclaration2RefCountFND>(fn);
-
-      auto currentFnt =
-          std::static_pointer_cast<ReadOnlyObjectDeclaration2RefCountFND>(
-              fn->fnt);
-
-      FileNodeChunkReference blobRef(fn->stpFormat, fn->cbFormat);
-      ds >> blobRef;
-      if (!blobRef.is_fcrNil() && !blobRef.is_fcrZero()) {
-
-        auto objectSpaceObjectPropSetChunk =
-            std::make_shared<ObjectSpaceObjectPropSet>(
-                blobRef.stp(), blobRef.cb());
-
-        objectSpaceObjectPropSetChunk =
-            insertChunkSorted(m_file->chunks(), objectSpaceObjectPropSetChunk);
-
-        currentFnt->m_blobRef = objectSpaceObjectPropSetChunk;
-      }
-
-      ds >> currentFnt->m_body;
-      ds >> currentFnt->m_cRef;
-
-      currentFnt->setMd5hash(ds.device()->read(
-          ReadOnlyObjectDeclaration2RefCountFND::md5HashSize));
-
-      break;
-    }
-    case FileNodeTypeID::ObjectDeclarationWithRefCountFNDX: {
-      fn->fnt = std::make_shared<ObjectDeclarationWithRefCountFNDX>(fn);
-
-      auto currentFnt =
-          std::static_pointer_cast<ObjectDeclarationWithRefCountFNDX>(fn->fnt);
-
-      FileNodeChunkReference blobRef(fn->stpFormat, fn->cbFormat);
-      ds >> blobRef;
-      if (!blobRef.is_fcrNil() && !blobRef.is_fcrZero()) {
-
-        auto objectSpaceObjectPropSetChunk =
-            std::make_shared<ObjectSpaceObjectPropSet>(
-                blobRef.stp(), blobRef.cb());
-
-        objectSpaceObjectPropSetChunk =
-            insertChunkSorted(m_file->chunks(), objectSpaceObjectPropSetChunk);
-
-        currentFnt->m_objectRef = objectSpaceObjectPropSetChunk;
-      }
-
-      ds >> currentFnt->m_body;
-      ds >> currentFnt->m_cRef;
-
-      break;
-    }
-    case FileNodeTypeID::ObjectInfoDependencyOverridesFND: {
-      auto currentFnt = std::make_shared<ObjectInfoDependencyOverridesFND>(fn);
-
-      fn->fnt = currentFnt;
-
-      FileNodeChunkReference blobRef(fn->stpFormat, fn->cbFormat);
-      ds >> blobRef;
-      if (!blobRef.is_fcrNil() && !blobRef.is_fcrZero()) {
-
-        auto objectSpaceObjectPropSetChunk =
-            std::make_shared<ObjectInfoDependencyOverrideData>(
-                blobRef.stp(), blobRef.cb());
-
-        objectSpaceObjectPropSetChunk =
-            insertChunkSorted(m_file->chunks(), objectSpaceObjectPropSetChunk);
-
-        currentFnt->m_ref = objectSpaceObjectPropSetChunk;
-      }
-
-      if (blobRef.is_fcrNil()) {
-        ds >> currentFnt->m_data;
-      }
-
-
-      break;
-    }
-    case FileNodeTypeID::ObjectRevisionWithRefCount2FNDX: {
-      fn->fnt = std::make_shared<ObjectRevisionWithRefCount2FNDX>(fn);
-
-      auto currentFnt =
-          std::static_pointer_cast<ObjectRevisionWithRefCount2FNDX>(fn->fnt);
-
-      FileNodeChunkReference blobRef(fn->stpFormat, fn->cbFormat);
-      ds >> blobRef;
-      if (!blobRef.is_fcrNil() && !blobRef.is_fcrZero()) {
-
-        auto objectSpaceObjectPropSetChunk =
-            std::make_shared<ObjectSpaceObjectPropSet>(
-                blobRef.stp(), blobRef.cb());
-
-        objectSpaceObjectPropSetChunk =
-            insertChunkSorted(m_file->chunks(), objectSpaceObjectPropSetChunk);
-
-        currentFnt->m_ref = objectSpaceObjectPropSetChunk;
-      }
-
-      ds >> currentFnt->m_oid;
-
-      quint32 temp = 0;
-      ds >> temp;
-      currentFnt->m_fHasOidReferences  = static_cast<bool>(temp & 0x1);
-      currentFnt->m_fHasOsidReferences = static_cast<bool>((temp & 0x2) >> 1);
-
-      ds >> currentFnt->m_cRef;
-
-
-      break;
-    }
-    case FileNodeTypeID::ObjectRevisionWithRefCountFNDX: {
-      fn->fnt = std::make_shared<ObjectRevisionWithRefCountFNDX>(fn);
-
-      auto currentFnt =
-          std::static_pointer_cast<ObjectRevisionWithRefCountFNDX>(fn->fnt);
-
-      FileNodeChunkReference blobRef(fn->stpFormat, fn->cbFormat);
-      ds >> blobRef;
-      if (!blobRef.is_fcrNil() && !blobRef.is_fcrZero()) {
-
-        auto objectSpaceObjectPropSetChunk =
-            std::make_shared<ObjectSpaceObjectPropSet>(
-                blobRef.stp(), blobRef.cb());
-
-        objectSpaceObjectPropSetChunk =
-            insertChunkSorted(m_file->chunks(), objectSpaceObjectPropSetChunk);
-
-        currentFnt->m_ref = objectSpaceObjectPropSetChunk;
-      }
-
-      ds >> currentFnt->m_oid;
-
-      ds >> currentFnt->m_cRef;
-      currentFnt->m_fHasOidReferences  = ((currentFnt->m_cRef & 0x1) != 0u);
-      currentFnt->m_fHasOsidReferences = ((currentFnt->m_cRef & 0x2) != 0u);
-      currentFnt->m_cRef >>= 2;
-
-
-      break;
-    }
-
-    default:
-      /// \todo make an unknown blob filenode to cope with undocumented stuff
-      qInfo() << "FileNodeID: " << fn->getFileNodeID();
-      qWarning("FileNode of base type 1 has a fileNodeTypeID which switches to "
-               "default. Should not happen.");
-    }
-  }
-  else if (fn->baseType == 2) {
-    switch (fn->getFileNodeTypeID()) {
-
-    case FileNodeTypeID::FileDataStoreListReferenceFND: {
-      fn->fnt = std::make_shared<FileDataStoreListReferenceFND>(fn);
-
-      auto currentFnt =
-          std::static_pointer_cast<FileDataStoreListReferenceFND>(fn->fnt);
-
-      FileNodeChunkReference ref(fn->stpFormat, fn->cbFormat);
-      ds >> ref;
-      if (!ref.is_fcrNil() && !ref.is_fcrZero()) {
-
-        auto objectSpaceObjectPropSetChunk =
-            std::make_shared<FileNodeListFragment>(ref.stp(), ref.cb());
-
-        objectSpaceObjectPropSetChunk =
-            insertChunkSorted(m_file->chunks(), objectSpaceObjectPropSetChunk);
-
-        currentFnt->m_ref = objectSpaceObjectPropSetChunk;
-      }
-
-      break;
-    }
-
-    case FileNodeTypeID::ObjectGroupListReferenceFND: {
-      fn->fnt = std::make_shared<ObjectGroupListReferenceFND>(fn);
-
-      auto currentFnt =
-          std::static_pointer_cast<ObjectGroupListReferenceFND>(fn->fnt);
-
-      FileNodeChunkReference ref(fn->stpFormat, fn->cbFormat);
-      ds >> ref;
-      if (!ref.is_fcrNil() && !ref.is_fcrZero()) {
-
-        auto fileNodeListFragment =
-            std::make_shared<FileNodeListFragment>(ref.stp(), ref.cb());
-
-        fileNodeListFragment =
-            insertChunkSorted(m_file->chunks(), fileNodeListFragment);
-
-        currentFnt->m_ref = fileNodeListFragment;
-      }
-      ds >> currentFnt->m_ObjectGroupID;
-      break;
-    }
-
-    case FileNodeTypeID::ObjectSpaceManifestListReferenceFND: {
-      fn->fnt = std::make_shared<ObjectSpaceManifestListReferenceFND>(fn);
-
-      auto currentFnt =
-          std::static_pointer_cast<ObjectSpaceManifestListReferenceFND>(
-              fn->fnt);
-
-      FileNodeChunkReference ref(fn->stpFormat, fn->cbFormat);
-      ds >> ref;
-      if (!ref.is_fcrNil() && !ref.is_fcrZero()) {
-
-        auto fileNodeListFragmentContainer =
-            std::make_shared<FileNodeListFragment>(ref.stp(), ref.cb());
-
-        fileNodeListFragmentContainer =
-            insertChunkSorted(m_file->chunks(), fileNodeListFragmentContainer);
-
-        currentFnt->m_ref = fileNodeListFragmentContainer;
-      }
-
-      ds >> currentFnt->m_gosid;
-      break;
-    }
-    case FileNodeTypeID::RevisionManifestListReferenceFND: {
-      fn->fnt = std::make_shared<RevisionManifestListReferenceFND>(fn);
-
-      auto currentFnt =
-          std::static_pointer_cast<RevisionManifestListReferenceFND>(fn->fnt);
-
-      FileNodeChunkReference ref(fn->stpFormat, fn->cbFormat);
-      ds >> ref;
-      if (!ref.is_fcrNil() && !ref.is_fcrZero()) {
-
-        auto fileNodeListFragmentContainer =
-            std::make_shared<FileNodeListFragment>(ref.stp(), ref.cb());
-
-        fileNodeListFragmentContainer =
-            insertChunkSorted(m_file->chunks(), fileNodeListFragmentContainer);
-
-        currentFnt->m_ref = fileNodeListFragmentContainer;
-      }
-      break;
-    }
-    default:
-
-      qInfo() << "FileNodeID: " << fn->getFileNodeID();
-      qWarning("FileNode of base type 2 has a fileNodeTypeID which switches to "
-               "default. Should not happen.");
-      fn->fnt = nullptr;
-      break;
-    }
-  }
+  fn->fnt = parseFileNodeType(ds, fn);
 
   fn->m_isParsed = true;
   return fn;
@@ -1579,8 +989,6 @@ bool RevisionStoreFileParser::parseTransactionLogFragment(
   ds.device()->seek(originalStp);
 
   // Reporting when parse was buggy
-
-
   if (countTransactions != header->getCTransactionsInLog()) {
     qWarning() << "Only " << QString::number(countTransactions)
                << " TransactionLogFragments parsed, but "
@@ -1605,6 +1013,470 @@ void RevisionStoreFileParser::parseUnknownBlob(
 
   ds.device()->seek(originalStp);
 }
+
+
+std::shared_ptr<IFileNodeType>
+RevisionStoreFileParser::parseFileNodeType(QDataStream& ds, FileNode_SPtr_t fn)
+{
+
+  switch (fn->getFileNodeTypeID()) {
+
+    // type 0
+  case FileNodeTypeID::ChunkTerminatorFND: {
+    auto thisFnt = std::make_shared<ChunkTerminatorFND>(fn);
+    ds >> *thisFnt;
+    return thisFnt;
+  }
+  case FileNodeTypeID::DataSignatureGroupDefinitionFND: {
+    auto thisFnt = std::make_shared<DataSignatureGroupDefinitionFND>(fn);
+    ds >> *thisFnt;
+    return thisFnt;
+  }
+  case FileNodeTypeID::GlobalIdTableEndFNDX: {
+    auto thisFnt = std::make_shared<GlobalIdTableEndFNDX>(fn);
+    ds >> *thisFnt;
+    return thisFnt;
+  }
+  case FileNodeTypeID::GlobalIdTableEntry2FNDX: {
+    auto thisFnt = std::make_shared<GlobalIdTableEntry2FNDX>(fn);
+    ds >> *thisFnt;
+    return thisFnt;
+  }
+  case FileNodeTypeID::GlobalIdTableEntry3FNDX: {
+    auto thisFnt = std::make_shared<GlobalIdTableEntry3FNDX>(fn);
+    ds >> *thisFnt;
+    return thisFnt;
+  }
+  case FileNodeTypeID::GlobalIdTableEntryFNDX: {
+    auto thisFnt = std::make_shared<GlobalIdTableEntryFNDX>(fn);
+    ds >> *thisFnt;
+    return thisFnt;
+  }
+  case FileNodeTypeID::GlobalIdTableStart2FND: {
+    auto thisFnt = std::make_shared<GlobalIdTableStart2FND>(fn);
+    ds >> *thisFnt;
+    return thisFnt;
+  }
+  case FileNodeTypeID::GlobalIdTableStartFNDX: {
+    auto thisFnt = std::make_shared<GlobalIdTableStartFNDX>(fn);
+    ds >> *thisFnt;
+    return thisFnt;
+  }
+  case FileNodeTypeID::ObjectDeclarationFileData3LargeRefCountFND: {
+    auto thisFnt =
+        std::make_shared<ObjectDeclarationFileData3LargeRefCountFND>(fn);
+    ds >> *thisFnt;
+    return thisFnt;
+  }
+  case FileNodeTypeID::ObjectDeclarationFileData3RefCountFND: {
+    auto thisFnt = std::make_shared<ObjectDeclarationFileData3RefCountFND>(fn);
+    ds >> *thisFnt;
+    return thisFnt;
+  }
+  case FileNodeTypeID::ObjectGroupEndFND: {
+    auto thisFnt = std::make_shared<ObjectGroupEndFND>(fn);
+    ds >> *thisFnt;
+    return thisFnt;
+  }
+  case FileNodeTypeID::ObjectGroupStartFND: {
+    auto thisFnt = std::make_shared<ObjectGroupStartFND>(fn);
+    ds >> *thisFnt;
+    return thisFnt;
+  }
+  case FileNodeTypeID::ObjectSpaceManifestListStartFND: {
+    auto thisFnt = std::make_shared<ObjectSpaceManifestListStartFND>(fn);
+    ds >> *thisFnt;
+    return thisFnt;
+  }
+  case FileNodeTypeID::ObjectSpaceManifestRootFND: {
+    auto thisFnt = std::make_shared<ObjectSpaceManifestRootFND>(fn);
+    ds >> *thisFnt;
+    return thisFnt;
+  }
+  case FileNodeTypeID::RevisionManifestEndFND: {
+    auto thisFnt = std::make_shared<RevisionManifestEndFND>(fn);
+    ds >> *thisFnt;
+    return thisFnt;
+  }
+  case FileNodeTypeID::RevisionManifestListStartFND: {
+    auto thisFnt = std::make_shared<RevisionManifestListStartFND>(fn);
+    ds >> *thisFnt;
+    return thisFnt;
+  }
+  case FileNodeTypeID::RevisionManifestStart4FND: {
+    auto thisFnt = std::make_shared<RevisionManifestStart4FND>(fn);
+    ds >> *thisFnt;
+    return thisFnt;
+  }
+  case FileNodeTypeID::RevisionManifestStart6FND: {
+    auto thisFnt = std::make_shared<RevisionManifestStart6FND>(fn);
+    ds >> *thisFnt;
+    return thisFnt;
+  }
+  case FileNodeTypeID::RevisionManifestStart7FND: {
+    auto thisFnt = std::make_shared<RevisionManifestStart7FND>(fn);
+    ds >> *thisFnt;
+    return thisFnt;
+  }
+  case FileNodeTypeID::RevisionRoleAndContextDeclarationFND: {
+    auto thisFnt = std::make_shared<RevisionRoleAndContextDeclarationFND>(fn);
+    ds >> *thisFnt;
+    return thisFnt;
+  }
+  case FileNodeTypeID::RevisionRoleDeclarationFND: {
+    auto thisFnt = std::make_shared<RevisionRoleDeclarationFND>(fn);
+    ds >> *thisFnt;
+    return thisFnt;
+  }
+  case FileNodeTypeID::RootObjectReference2FNDX: {
+    auto thisFnt = std::make_shared<RootObjectReference2FNDX>(fn);
+    ds >> *thisFnt;
+    return thisFnt;
+  }
+  case FileNodeTypeID::RootObjectReference3FND: {
+    auto thisFnt = std::make_shared<RootObjectReference3FND>(fn);
+    ds >> *thisFnt;
+    return thisFnt;
+  }
+
+  // type 1
+  case FileNodeTypeID::FileDataStoreObjectReferenceFND: {
+    return parseFileDataStoreObjectReferenceFND(ds, fn);
+  }
+  case FileNodeTypeID::HashedChunkDescriptor2FND: {
+    return parseHashedChunkDescriptor2FND(ds, fn);
+  }
+  case FileNodeTypeID::ObjectDataEncryptionKeyV2FNDX: {
+    return parseObjectDataEncryptionKeyV2FNDX(ds, fn);
+  }
+  case FileNodeTypeID::ObjectDeclaration2LargeRefCountFND: {
+    return parseObjectDeclaration2LargeRefCountFND(ds, fn);
+  }
+  case FileNodeTypeID::ObjectDeclaration2RefCountFND: {
+    return parseObjectDeclaration2RefCountFND(ds, fn);
+  }
+  case FileNodeTypeID::ObjectDeclarationWithRefCount2FNDX: {
+    return parseObjectDeclarationWithRefCount2FNDX(ds, fn);
+  }
+  case FileNodeTypeID::ReadOnlyObjectDeclaration2LargeRefCountFND: {
+    return parseReadOnlyObjectDeclaration2LargeRefCountFND(ds, fn);
+  }
+  case FileNodeTypeID::ReadOnlyObjectDeclaration2RefCountFND: {
+    return parseReadOnlyObjectDeclaration2RefCountFND(ds, fn);
+  }
+  case FileNodeTypeID::ObjectDeclarationWithRefCountFNDX: {
+    return parseObjectDeclarationWithRefCountFNDX(ds, fn);
+  }
+  case FileNodeTypeID::ObjectInfoDependencyOverridesFND: {
+    return parseObjectInfoDependencyOverridesFND(ds, fn);
+  }
+  case FileNodeTypeID::ObjectRevisionWithRefCount2FNDX: {
+    return parseObjectRevisionWithRefCount2FNDX(ds, fn);
+  }
+  case FileNodeTypeID::ObjectRevisionWithRefCountFNDX: {
+    return parseObjectRevisionWithRefCountFNDX(ds, fn);
+  }
+
+    // type 2
+  case FileNodeTypeID::FileDataStoreListReferenceFND: {
+    return parseFileDataStoreListReferenceFND(ds, fn);
+  }
+  case FileNodeTypeID::ObjectGroupListReferenceFND: {
+    return parseObjectGroupListReferenceFND(ds, fn);
+  }
+  case FileNodeTypeID::ObjectSpaceManifestListReferenceFND: {
+    return parseObjectSpaceManifestListReferenceFND(ds, fn);
+  }
+  case FileNodeTypeID::RevisionManifestListReferenceFND: {
+    return parseRevisionManifestListReferenceFND(ds, fn);
+  }
+
+  // needed to let FileNodeListFragment parser break out from loop
+  case FileNodeTypeID::NullFnd: {
+    return nullptr;
+  }
+
+  case FileNodeTypeID::InvalidFND:
+  default:
+    qInfo() << "FileNodeID: " << fn->getFileNodeID();
+    qFatal("FileNode has a fileNodeTypeID which switches to "
+           "default. Should not happen.");
+  }
+}
+
+// FileNodeType parsers ------------------------------------------------------
+
+IFileNodeType_SPtr_t
+RevisionStoreFileParser::parseFileDataStoreObjectReferenceFND(
+    QDataStream& ds, FileNode_SPtr_t fn)
+{
+  auto currentFnt = std::make_shared<FileDataStoreObjectReferenceFND>(fn);
+
+  currentFnt->m_blobRef =
+      parseFileNodeChunkReference<FileDataStoreObject>(ds, fn);
+
+  ds >> currentFnt->m_guidReference;
+
+  return currentFnt;
+}
+
+IFileNodeType_SPtr_t RevisionStoreFileParser::parseHashedChunkDescriptor2FND(
+    QDataStream& ds, FileNode_SPtr_t fn)
+{
+  auto currentFnt = std::make_shared<HashedChunkDescriptor2FND>(fn);
+
+  currentFnt->m_blobRef =
+      parseFileNodeChunkReference<ObjectSpaceObjectPropSet>(ds, fn);
+
+
+  currentFnt->m_guidHash =
+      ds.device()->read(HashedChunkDescriptor2FND::guidHashWidth);
+
+  return currentFnt;
+}
+
+IFileNodeType_SPtr_t
+RevisionStoreFileParser::parseObjectDataEncryptionKeyV2FNDX(
+    QDataStream& ds, FileNode_SPtr_t fn)
+{
+  auto currentFnt = std::make_shared<ObjectDataEncryptionKeyV2FNDX>(fn);
+
+  currentFnt->m_blobRef = parseFileNodeChunkReference<EncryptedData>(ds, fn);
+
+  return currentFnt;
+}
+
+IFileNodeType_SPtr_t
+RevisionStoreFileParser::parseObjectDeclaration2LargeRefCountFND(
+    QDataStream& ds, FileNode_SPtr_t fn)
+{
+  auto currentFnt = std::make_shared<ObjectDeclaration2LargeRefCountFND>(fn);
+
+  currentFnt->m_blobRef =
+      parseFileNodeChunkReference<ObjectSpaceObjectPropSet>(ds, fn);
+
+
+  ds >> currentFnt->m_body;
+  ds >> currentFnt->m_cRef;
+
+  return currentFnt;
+}
+
+IFileNodeType_SPtr_t
+RevisionStoreFileParser::parseObjectDeclaration2RefCountFND(
+    QDataStream& ds, FileNode_SPtr_t fn)
+{
+  auto currentFnt = std::make_shared<ObjectDeclaration2RefCountFND>(fn);
+
+  currentFnt->m_blobRef =
+      parseFileNodeChunkReference<ObjectSpaceObjectPropSet>(ds, fn);
+
+
+  ds >> currentFnt->m_body;
+  ds >> currentFnt->m_cRef;
+
+  return currentFnt;
+}
+
+IFileNodeType_SPtr_t
+RevisionStoreFileParser::parseObjectDeclarationWithRefCount2FNDX(
+    QDataStream& ds, FileNode_SPtr_t fn)
+{
+  auto currentFnt = std::make_shared<ObjectDeclarationWithRefCount2FNDX>(fn);
+
+  currentFnt->m_objectRef =
+      parseFileNodeChunkReference<ObjectSpaceObjectPropSet>(ds, fn);
+
+
+  ds >> currentFnt->m_body;
+  ds >> currentFnt->m_cRef;
+
+  return currentFnt;
+}
+
+IFileNodeType_SPtr_t
+RevisionStoreFileParser::parseReadOnlyObjectDeclaration2LargeRefCountFND(
+    QDataStream& ds, FileNode_SPtr_t fn)
+{
+  auto currentFnt =
+      std::make_shared<ReadOnlyObjectDeclaration2LargeRefCountFND>(fn);
+
+  currentFnt->m_blobRef =
+      parseFileNodeChunkReference<ObjectSpaceObjectPropSet>(ds, fn);
+
+
+  ds >> currentFnt->m_body;
+  ds >> currentFnt->m_cRef;
+
+  currentFnt->setMd5hash(ds.device()->read(
+      ReadOnlyObjectDeclaration2LargeRefCountFND::md5HashSize));
+
+  return currentFnt;
+}
+
+IFileNodeType_SPtr_t
+RevisionStoreFileParser::parseReadOnlyObjectDeclaration2RefCountFND(
+    QDataStream& ds, FileNode_SPtr_t fn)
+{
+  auto currentFnt = std::make_shared<ReadOnlyObjectDeclaration2RefCountFND>(fn);
+
+  currentFnt->m_blobRef =
+      parseFileNodeChunkReference<ObjectSpaceObjectPropSet>(ds, fn);
+
+
+  ds >> currentFnt->m_body;
+  ds >> currentFnt->m_cRef;
+
+  currentFnt->setMd5hash(ds.device()->read(
+      ReadOnlyObjectDeclaration2LargeRefCountFND::md5HashSize));
+
+  return currentFnt;
+}
+
+IFileNodeType_SPtr_t
+RevisionStoreFileParser::parseObjectDeclarationWithRefCountFNDX(
+    QDataStream& ds, FileNode_SPtr_t fn)
+{
+  auto currentFnt = std::make_shared<ObjectDeclarationWithRefCountFNDX>(fn);
+
+  currentFnt->m_objectRef =
+      parseFileNodeChunkReference<ObjectSpaceObjectPropSet>(ds, fn);
+
+  ds >> currentFnt->m_body;
+  ds >> currentFnt->m_cRef;
+
+  return currentFnt;
+}
+
+IFileNodeType_SPtr_t
+RevisionStoreFileParser::parseObjectInfoDependencyOverridesFND(
+    QDataStream& ds, FileNode_SPtr_t fn)
+{
+  auto currentFnt = std::make_shared<ObjectInfoDependencyOverridesFND>(fn);
+
+  currentFnt->m_ref =
+      parseFileNodeChunkReference<ObjectInfoDependencyOverrideData>(ds, fn);
+
+  if (currentFnt->m_ref.lock() == nullptr) {
+    ds >> currentFnt->m_data;
+  }
+
+  return currentFnt;
+}
+
+IFileNodeType_SPtr_t
+RevisionStoreFileParser::parseObjectRevisionWithRefCount2FNDX(
+    QDataStream& ds, FileNode_SPtr_t fn)
+{
+  auto currentFnt = std::make_shared<ObjectRevisionWithRefCount2FNDX>(fn);
+
+  currentFnt->m_ref =
+      parseFileNodeChunkReference<ObjectSpaceObjectPropSet>(ds, fn);
+
+  ds >> currentFnt->m_oid;
+
+  quint32 composite = 0;
+  ds >> composite;
+  currentFnt->m_fHasOidReferences = static_cast<bool>(composite & 0x1u);
+  currentFnt->m_fHasOsidReferences =
+      static_cast<bool>((composite & 0x2u) >> 1u);
+
+  ds >> currentFnt->m_cRef;
+
+  return currentFnt;
+}
+
+IFileNodeType_SPtr_t
+RevisionStoreFileParser::parseObjectRevisionWithRefCountFNDX(
+    QDataStream& ds, FileNode_SPtr_t fn)
+{
+  auto currentFnt = std::make_shared<ObjectRevisionWithRefCountFNDX>(fn);
+
+  currentFnt->m_ref =
+      parseFileNodeChunkReference<ObjectSpaceObjectPropSet>(ds, fn);
+
+  ds >> currentFnt->m_oid;
+
+
+  /// \todo use temporary storage before assigning just as above
+  ds >> currentFnt->m_cRef;
+  currentFnt->m_fHasOidReferences  = ((currentFnt->m_cRef & 0x1u) != 0u);
+  currentFnt->m_fHasOsidReferences = ((currentFnt->m_cRef & 0x2u) != 0u);
+  currentFnt->m_cRef >>= 2u;
+
+  return currentFnt;
+}
+
+// type 2
+IFileNodeType_SPtr_t
+RevisionStoreFileParser::parseFileDataStoreListReferenceFND(
+    QDataStream& ds, FileNode_SPtr_t fn)
+{
+  auto currentFnt = std::make_shared<FileDataStoreListReferenceFND>(fn);
+
+  currentFnt->m_ref = parseFileNodeChunkReference<FileNodeListFragment>(ds, fn);
+
+  return currentFnt;
+}
+
+IFileNodeType_SPtr_t RevisionStoreFileParser::parseObjectGroupListReferenceFND(
+    QDataStream& ds, FileNode_SPtr_t fn)
+{
+  auto currentFnt = std::make_shared<ObjectGroupListReferenceFND>(fn);
+
+  currentFnt->m_ref = parseFileNodeChunkReference<FileNodeListFragment>(ds, fn);
+
+  ds >> currentFnt->m_ObjectGroupID;
+
+  return currentFnt;
+}
+
+IFileNodeType_SPtr_t
+RevisionStoreFileParser::parseObjectSpaceManifestListReferenceFND(
+    QDataStream& ds, FileNode_SPtr_t fn)
+{
+  auto currentFnt = std::make_shared<ObjectSpaceManifestListReferenceFND>(fn);
+
+  currentFnt->m_ref = parseFileNodeChunkReference<FileNodeListFragment>(ds, fn);
+
+  ds >> currentFnt->m_gosid;
+
+  return currentFnt;
+}
+
+IFileNodeType_SPtr_t
+RevisionStoreFileParser::parseRevisionManifestListReferenceFND(
+    QDataStream& ds, FileNode_SPtr_t fn)
+{
+  auto currentFnt = std::make_shared<RevisionManifestListReferenceFND>(fn);
+
+  currentFnt->m_ref = parseFileNodeChunkReference<FileNodeListFragment>(ds, fn);
+
+  return currentFnt;
+}
+
+
+// Utility functions ---------------------------------------------------------
+
+template <class Chunkably>
+std::shared_ptr<Chunkably> RevisionStoreFileParser::parseFileNodeChunkReference(
+    QDataStream& ds, FileNode_SPtr_t fn)
+{
+  FileNodeChunkReference ref(fn->stpFormat, fn->cbFormat);
+  ds >> ref;
+
+  if (!ref.is_fcrNil() && !ref.is_fcrZero()) {
+    auto chunkable = std::make_shared<Chunkably>(ref.stp(), ref.cb());
+
+    chunkable = insertChunkSorted(m_file->chunks(), chunkable);
+
+    return chunkable;
+  }
+
+  /// return nullptr
+  return std::make_shared<Chunkably>();
+}
+
 
 template <class Chunkably>
 std::shared_ptr<Chunkably> RevisionStoreFileParser::preventDuplicate(
@@ -1656,7 +1528,7 @@ std::shared_ptr<Chunkably> RevisionStoreFileParser::insertChunkSorted(
     }
   }
 
-  // if it's at the end since we are reverse looping before
+  // if iterator(it) is at the end push_front since we are reverse-looping
   chunkList.push_front(chunk);
 
   return chunk;

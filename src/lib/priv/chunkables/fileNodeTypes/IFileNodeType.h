@@ -34,6 +34,9 @@ public:
   virtual quint64 getSizeInFile() const = 0;
 };
 
+typedef std::shared_ptr<IFileNodeType> IFileNodeType_SPtr_t;
+
+
 } // namespace priv
 } // namespace libmson
 

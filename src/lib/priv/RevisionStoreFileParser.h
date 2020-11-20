@@ -21,6 +21,8 @@
 #include "chunkables/TransactionLogFragment.h"
 #include "chunkables/UnknownBlob.h"
 
+#include "chunkables/fileNodeTypes/IFileNodeType.h"
+
 
 namespace libmson {
 namespace priv {
@@ -37,13 +39,11 @@ public:
   std::shared_ptr<RevisionStoreFile> parse();
 
 private:
-  // parsers
+  // Chunkable parsers ---------------------------------------------------------
 
   void parseChunk(QDataStream& ds, Chunkable_SPtr_t chunk);
 
-
   void parseEncryptedData(QDataStream& ds, EncryptedData_WPtr_t chunk);
-
 
   void parseFileDataStoreObject(
       QDataStream& ds, FileDataStoreObject_WPtr_t fileData);
@@ -85,13 +85,69 @@ private:
   bool parseTransactionLogFragment(
       QDataStream& ds, TransactionLogFragment_SPtr_t firstFragment);
 
-
   void parseUnknownBlob(QDataStream& ds, UnknownBlob_SPtr_t unknownBlob);
 
-  /// Iterates through the list and checks whether chunk is already present at
-  /// the specified location (stp, and cb must be equal)
-  /// If it does not find an identical Chunkable in chunkList, it will return
-  /// chunk;
+
+  // FileNodeType parsers ------------------------------------------------------
+  /// \todo should the FND parses return their full class type?
+
+  /// encapsulation layer for parsing FileNode data
+  IFileNodeType_SPtr_t parseFileNodeType(QDataStream& ds, FileNode_SPtr_t fn);
+
+  // type 0
+  /// \todo pull out Streamable from other FNDs
+
+  // type 1
+  IFileNodeType_SPtr_t
+  parseFileDataStoreObjectReferenceFND(QDataStream& ds, FileNode_SPtr_t fn);
+  IFileNodeType_SPtr_t
+  parseHashedChunkDescriptor2FND(QDataStream& ds, FileNode_SPtr_t fn);
+  IFileNodeType_SPtr_t
+  parseObjectDataEncryptionKeyV2FNDX(QDataStream& ds, FileNode_SPtr_t fn);
+  IFileNodeType_SPtr_t
+  parseObjectDeclaration2LargeRefCountFND(QDataStream& ds, FileNode_SPtr_t fn);
+  IFileNodeType_SPtr_t
+  parseObjectDeclaration2RefCountFND(QDataStream& ds, FileNode_SPtr_t fn);
+  IFileNodeType_SPtr_t
+  parseObjectDeclarationWithRefCount2FNDX(QDataStream& ds, FileNode_SPtr_t fn);
+  IFileNodeType_SPtr_t parseReadOnlyObjectDeclaration2LargeRefCountFND(
+      QDataStream& ds, FileNode_SPtr_t fn);
+  IFileNodeType_SPtr_t parseReadOnlyObjectDeclaration2RefCountFND(
+      QDataStream& ds, FileNode_SPtr_t fn);
+  IFileNodeType_SPtr_t
+  parseObjectDeclarationWithRefCountFNDX(QDataStream& ds, FileNode_SPtr_t fn);
+  IFileNodeType_SPtr_t
+  parseObjectInfoDependencyOverridesFND(QDataStream& ds, FileNode_SPtr_t fn);
+  IFileNodeType_SPtr_t
+  parseObjectRevisionWithRefCount2FNDX(QDataStream& ds, FileNode_SPtr_t fn);
+  IFileNodeType_SPtr_t
+  parseObjectRevisionWithRefCountFNDX(QDataStream& ds, FileNode_SPtr_t fn);
+
+  // type 2
+  IFileNodeType_SPtr_t
+  parseFileDataStoreListReferenceFND(QDataStream& ds, FileNode_SPtr_t fn);
+  IFileNodeType_SPtr_t
+  parseObjectGroupListReferenceFND(QDataStream& ds, FileNode_SPtr_t fn);
+  IFileNodeType_SPtr_t
+  parseObjectSpaceManifestListReferenceFND(QDataStream& ds, FileNode_SPtr_t fn);
+  IFileNodeType_SPtr_t
+  parseRevisionManifestListReferenceFND(QDataStream& ds, FileNode_SPtr_t fn);
+
+  // Other non-chunkables ------------------------------------------------------
+
+
+  // Utility functions ---------------------------------------------------------
+
+
+  /// parses a FileNodeChunkReference, creates and adds a Chunkable to the
+  /// RevisionStoreFile and returns the Chunkable poitner
+  template <class Chunkably>
+  std::shared_ptr<Chunkably>
+  parseFileNodeChunkReference(QDataStream& ds, FileNode_SPtr_t fn);
+
+  /// Iterates through the list and checks whether chunk is already present
+  /// at the specified location (stp, and cb must be equal) If it does not
+  /// find an identical Chunkable in chunkList, it will return chunk;
   template <class Chunkably>
   std::shared_ptr<Chunkably> preventDuplicate(
       std::list<Chunkable_SPtr_t>& chunkList, std::shared_ptr<Chunkably> chunk);
