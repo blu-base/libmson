@@ -8,7 +8,6 @@
 #include <cmath>
 #include <string>
 
-#include "../utils/Helper.h"
 
 namespace libmson {
 namespace priv {

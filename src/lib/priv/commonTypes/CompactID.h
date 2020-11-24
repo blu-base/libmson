@@ -3,12 +3,11 @@
 
 #include <QtCore/qglobal.h>
 
-#include "ExtendedGUID.h"
-
 #include "../IStreamable.h"
 
 namespace libmson {
 namespace priv {
+
 
 class CompactID : public IStreamable {
 private:
