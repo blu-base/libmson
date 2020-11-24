@@ -3,20 +3,18 @@
 
 #include <QtCore/qglobal.h>
 
-#include <QXmlStreamWriter>
-
 #include "../IStreamable.h"
 
-namespace libmson{
-namespace priv{
+namespace libmson {
+namespace priv {
 
 class IProperty : public IStreamable {
 protected:
-  IProperty() = default;
+  IProperty()          = default;
   virtual ~IProperty() = default;
 };
 
-} //namespace priv
+} // namespace priv
 } // namespace libmson
 
 #endif // IPROPERTY_H

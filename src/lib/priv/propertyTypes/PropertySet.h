@@ -3,18 +3,15 @@
 
 #include <QtCore/qglobal.h>
 
-#include <QDataStream>
-#include <QDebug>
-#include <QXmlStreamWriter>
 #include <vector>
 
+#include "../IStreamable.h"
 #include "IPropertyType.h"
 #include "PropertyID.h"
-#include "../IStreamable.h"
 
 
-namespace libmson{
-namespace priv{
+namespace libmson {
+namespace priv {
 
 class PropertySet : public IStreamable {
 private:
@@ -32,32 +29,28 @@ private:
    * @brief vector which contains the data associated to the PropertyIDs in
    * m_rgPrids
    */
-  std::vector<std::shared_ptr<IPropertyType>> m_rgData;
+  std::vector<IPropertyType_SPtr_t> m_rgData;
 
 public:
   PropertySet();
 
   quint16 cProperties() const;
-  void setCProperties(const quint16 &cProperties);
+  void setCProperties(const quint16& cProperties);
 
   std::vector<PropertyID> rgPrids() const;
-  void setRgPrids(const std::vector<PropertyID> &rgPrids);
+  void setRgPrids(const std::vector<PropertyID>& rgPrids);
 
- std::vector<std::shared_ptr<IPropertyType>> rgData() const;
-  void setRgData(const std::vector<std::shared_ptr<IPropertyType>> &rgData);
+  std::vector<IPropertyType_SPtr_t> rgData() const;
+  void setRgData(const std::vector<IPropertyType_SPtr_t>& rgData);
 
   quint64 getSizeInFile() const;
 
 private:
-  virtual void deserialize(QDataStream &ds) override;
-  virtual void serialize(QDataStream &ds) const override;
-
-
-
-
+  virtual void deserialize(QDataStream& ds) override;
+  virtual void serialize(QDataStream& ds) const override;
 };
 
-} //namespace priv
+} // namespace priv
 } // namespace libmson
 
 #endif // PROPERTYSET_H

@@ -1,8 +1,5 @@
 #include "PropertyType_ContextID.h"
 
-#include <QDataStream>
-#include <QDebug>
-
 namespace libmson {
 namespace priv {
 

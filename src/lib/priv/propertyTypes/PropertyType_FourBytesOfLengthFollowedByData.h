@@ -2,16 +2,12 @@
 #define PROPERTYTYPE_FOURBYTESOFLENGTHFOLLOWEDBYDATA_H
 
 #include "IPropertyType.h"
-#include "PropertyType_ArrayOfPropertyValues.h"
 #include <QByteArray>
 #include <QtCore/qglobal.h>
 
-#include <QByteArray>
 
-#include <QDebug>
-
-namespace libmson{
-namespace priv{
+namespace libmson {
+namespace priv {
 
 class PropertyType_FourBytesOfLengthFollowedByData : public IPropertyType {
 private:
@@ -22,25 +18,22 @@ public:
   PropertyType_FourBytesOfLengthFollowedByData();
 
   quint32 cb() const;
-  void setCb(const quint32 &cb);
+  void setCb(const quint32& cb);
 
   QByteArray data() const;
-  void setData(const QByteArray &data);
+  void setData(const QByteArray& data);
 
   virtual quint64 getSizeInFile() const override;
 
 private:
-  virtual void deserialize(QDataStream &ds) override;
-  virtual void serialize(QDataStream &ds) const override;
-
-
-
+  virtual void deserialize(QDataStream& ds) override;
+  virtual void serialize(QDataStream& ds) const override;
 
 
   static const quint64 sizeInFileBase = 4;
 };
 
-} //namespace priv
+} // namespace priv
 } // namespace libmson
 
 #endif // PROPERTYTYPE_FOURBYTESOFLENGTHFOLLOWEDBYDATA_H

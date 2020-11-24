@@ -3,22 +3,24 @@
 
 #include <QtCore/qglobal.h>
 
-#include <QXmlStreamWriter>
-
 #include "../IStreamable.h"
+#include <memory>
 
-namespace libmson{
-namespace priv{
+namespace libmson {
+namespace priv {
 
 class IPropertyType : public IStreamable {
 public:
-  IPropertyType() = default;
+  IPropertyType()          = default;
   virtual ~IPropertyType() = default;
 
   virtual quint64 getSizeInFile() const = 0;
 };
 
-} //namespace priv
+typedef std::shared_ptr<IPropertyType> IPropertyType_SPtr_t;
+typedef std::weak_ptr<IPropertyType> IPropertyType_WPtr_t;
+
+} // namespace priv
 } // namespace libmson
 
 #endif // IPROPERTYTYPE_H

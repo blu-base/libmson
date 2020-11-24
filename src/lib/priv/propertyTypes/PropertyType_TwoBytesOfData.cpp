@@ -1,7 +1,5 @@
 #include "PropertyType_TwoBytesOfData.h"
 
-#include <QDataStream>
-#include <QDebug>
 
 namespace libmson {
 namespace priv {

@@ -1,5 +1,4 @@
 #include "PropertyType_Bool.h"
-#include <QDebug>
 
 namespace libmson {
 namespace priv {

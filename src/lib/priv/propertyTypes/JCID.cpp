@@ -1,8 +1,6 @@
 #include "JCID.h"
 #include "../utils/Helper.h"
 
-#include <QDataStream>
-#include <QDebug>
 #include <QString>
 
 namespace libmson {

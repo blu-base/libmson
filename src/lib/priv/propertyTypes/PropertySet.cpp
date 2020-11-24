@@ -1,5 +1,4 @@
 #include "PropertySet.h"
-#include <QDebug>
 #include <algorithm>
 
 #include "PropertyType_ArrayNumber.h"
@@ -28,6 +27,8 @@
 namespace libmson {
 namespace priv {
 
+PropertySet::PropertySet() : m_cProperties{} {}
+
 quint16 PropertySet::cProperties() const { return m_cProperties; }
 
 void PropertySet::setCProperties(const quint16& cProperties)
@@ -42,13 +43,12 @@ void PropertySet::setRgPrids(const std::vector<PropertyID>& rgPrids)
   m_rgPrids = rgPrids;
 }
 
-std::vector<std::shared_ptr<IPropertyType>> PropertySet::rgData() const
+std::vector<IPropertyType_SPtr_t> PropertySet::rgData() const
 {
   return m_rgData;
 }
 
-void PropertySet::setRgData(
-    const std::vector<std::shared_ptr<IPropertyType>>& rgData)
+void PropertySet::setRgData(const std::vector<IPropertyType_SPtr_t>& rgData)
 {
   m_rgData = rgData;
 }
@@ -169,7 +169,6 @@ void PropertySet::serialize(QDataStream& ds) const
 
 // void PropertySet::toDebugString(QDebug &dbg) const {}
 
-PropertySet::PropertySet() : m_cProperties{} {}
 
 /*
 /// \todo utf16 and utf8 might end prematurely because \0 terminator found

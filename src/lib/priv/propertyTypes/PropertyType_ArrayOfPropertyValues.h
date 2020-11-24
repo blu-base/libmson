@@ -2,16 +2,14 @@
 #define PROPERTYTYPE_ARRAYOFPROPERTYVALUES_H
 
 #include "PropertyID.h"
-#include <QByteArray>
-#include <QDataStream>
-#include <QtCore/qglobal.h>
-#include <vector>
 
 #include "IPropertyType.h"
 #include "PropertySet.h"
+#include <QtCore/qglobal.h>
+#include <vector>
 
-namespace libmson{
-namespace priv{
+namespace libmson {
+namespace priv {
 
 class PropertyType_ArrayOfPropertyValues : public IPropertyType {
 private:
@@ -33,28 +31,25 @@ public:
   PropertyType_ArrayOfPropertyValues();
 
   quint32 cProperties() const;
-  void setCProperties(const quint32 &cProperties);
+  void setCProperties(const quint32& cProperties);
 
   PropertyID prid() const;
-  void setPrid(const PropertyID &prid);
+  void setPrid(const PropertyID& prid);
 
   std::vector<PropertySet> data() const;
-  void setData(const std::vector<PropertySet> &data);
+  void setData(const std::vector<PropertySet>& data);
 
   virtual quint64 getSizeInFile() const override;
 
 private:
-  virtual void deserialize(QDataStream &ds) override;
-  virtual void serialize(QDataStream &ds) const override;
-
-
-
+  virtual void deserialize(QDataStream& ds) override;
+  virtual void serialize(QDataStream& ds) const override;
 
 
   static const quint64 sizeInFileBase = 4 + PropertyID::getSizeInFile();
 };
 
-} //namespace priv
+} // namespace priv
 } // namespace libmson
 
 #endif // PROPERTYTYPE_ARRAYOFPROPERTYVALUES_H

@@ -1,5 +1,4 @@
 #include "PropertyType_NoData.h"
-#include <QDebug>
 
 namespace libmson {
 namespace priv {

@@ -1,9 +1,6 @@
 #include "PropertyID.h"
 
-#include "../commonTypes/Enums.h"
 #include "../utils/Helper.h"
-
-#include <QDataStream>
 #include <QDebug>
 
 namespace libmson {

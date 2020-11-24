@@ -1,29 +1,20 @@
 #include "PropertyType_OneByteOfData.h"
 
-#include <QDataStream>
-#include <QDebug>
-
 namespace libmson {
 namespace priv {
 
-QByteArray PropertyType_OneByteOfData::data() const { return m_data; }
+uint8_t PropertyType_OneByteOfData::data() const { return m_data; }
 
-void PropertyType_OneByteOfData::setData(const QByteArray& data)
-{
-  m_data = data;
-}
+void PropertyType_OneByteOfData::setData(const uint8_t data) { m_data = data; }
 
 
-PropertyType_OneByteOfData::PropertyType_OneByteOfData() {}
+PropertyType_OneByteOfData::PropertyType_OneByteOfData() : m_data() {}
 
-void PropertyType_OneByteOfData::deserialize(QDataStream& ds)
-{
-  m_data = ds.device()->read(1);
-}
+void PropertyType_OneByteOfData::deserialize(QDataStream& ds) { ds >> m_data; }
 
 void PropertyType_OneByteOfData::serialize(QDataStream& ds) const
 {
-  ds.writeRawData(m_data.data(), 1);
+  ds << m_data;
 }
 
 // void PropertyType_OneByteOfData::writeLowLevelXml(

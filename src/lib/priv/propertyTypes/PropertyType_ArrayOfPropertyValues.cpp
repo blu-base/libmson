@@ -1,8 +1,5 @@
 #include "PropertyType_ArrayOfPropertyValues.h"
 
-#include <QDataStream>
-#include <QDebug>
-
 namespace libmson {
 namespace priv {
 

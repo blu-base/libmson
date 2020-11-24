@@ -5,33 +5,30 @@
 #include <QByteArray>
 #include <QtCore/qglobal.h>
 
-namespace libmson{
-namespace priv{
+namespace libmson {
+namespace priv {
 
 class PropertyType_OneByteOfData : public IPropertyType {
 private:
-  QByteArray m_data;
+  uint8_t m_data;
 
 public:
   PropertyType_OneByteOfData();
 
-  QByteArray data() const;
-  void setData(const QByteArray &data);
+  uint8_t data() const;
+  void setData(const uint8_t data);
 
- virtual quint64 getSizeInFile() const override { return sizeInFile; };
+  virtual quint64 getSizeInFile() const override { return sizeInFile; };
 
 private:
-  virtual void deserialize(QDataStream &ds) override;
-  virtual void serialize(QDataStream &ds) const override;
-
-
-
+  virtual void deserialize(QDataStream& ds) override;
+  virtual void serialize(QDataStream& ds) const override;
 
 
   static const quint64 sizeInFile = 1;
 };
 
-} //namespace priv
+} // namespace priv
 } // namespace libmson
 
 #endif // PROPERTYTYPE_ONEBYTEOFDATA_H

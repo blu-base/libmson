@@ -4,8 +4,6 @@
 #include "IProperty.h"
 #include <QtCore/qglobal.h>
 
-#include <QXmlStreamWriter>
-
 namespace libmson {
 namespace priv {
 
@@ -149,17 +147,19 @@ enum class PropertyIDs : quint32 {
   // deducted correctly
 
   /** Likely is used for labeling multi-author document changes
-   * Uses two letters for author with one family name and one given name (in german, and english)
+   * Uses two letters for author with one family name and one given name (in
+   * german, and english)
    */
   undoc_AuthorInitials = 0x1c001df8,
 
   /** some windows live stuff, eg:
-   * <resolutionId provider="Windows Live" hash="abcdefg"> <localId cid="abcdefg"/></resolutionId>
+   * <resolutionId provider="Windows Live" hash="abcdefg"> <localId
+   * cid="abcdefg"/></resolutionId>
    */
   undoc_ResolutionID = 0x1c001e30,
 
-  /** ObjectID which points to undoc_jciddrawingToolData(0x00120048), the tool settings
-   * which contains:
+  /** ObjectID which points to undoc_jciddrawingToolData(0x00120048), the tool
+   * settings which contains:
    * * undoc_Undetermined64byteBlock/ 0x1c00340a
    * * undoc_StrokesColor
    * * undoc_StrokesToolSizeHeight
@@ -204,32 +204,32 @@ enum class PropertyIDs : quint32 {
    *
    * the first three bytes seem to be the color hex code.
    *
-   * X might be a switch to declare fixed color versus automatically changeble,such as maybe color scheme
+   * X might be a switch to declare fixed color versus automatically
+   * changeble,such as maybe color scheme
    */
   undoc_StrokesColor = 0x1400340f,
 
 
-
-  /** Strokes's tool setting, which seem to correlate with square-like tool such as the highlight markers
-   * Bool
-   * usually seems to have only the value True when present
+  /** Strokes's tool setting, which seem to correlate with square-like tool such
+   * as the highlight markers Bool usually seems to have only the value True
+   * when present
    */
   undoc_StrokesToolSetting003411 = 0x0c003411,
-  /** Strokes's tool setting, which seem to correlate with square-like tool such as the highlight markers
-   * OneByteOfData
-   * usually seems to have only the value 0x01
+  /** Strokes's tool setting, which seem to correlate with square-like tool such
+   * as the highlight markers OneByteOfData usually seems to have only the value
+   * 0x01
    */
   undoc_StrokesToolSetting003412 = 0x0c003412,
 
-  /** Strokes's tool setting, which seem to correlate with square-like tool such as the highlight markers
-   * OneByteOfData
-   * usually seems to have only the value 0x09
+  /** Strokes's tool setting, which seem to correlate with square-like tool such
+   * as the highlight markers OneByteOfData usually seems to have only the value
+   * 0x09
    */
   undoc_StrokesToolSetting003413 = 0x0c003413,
 
-  /** Strokes's tool setting, which seem to correlate with square-like tool such as the highlight markers
-   * OneByteOfData
-   * usually seems to have only the value 0x7f
+  /** Strokes's tool setting, which seem to correlate with square-like tool such
+   * as the highlight markers OneByteOfData usually seems to have only the value
+   * 0x7f
    */
   undoc_StrokesToolSetting003414 = 0x0c003414,
 
@@ -426,9 +426,6 @@ public:
 private:
   virtual void deserialize(QDataStream& ds) override;
   virtual void serialize(QDataStream& ds) const override;
-
-
-
 
 
   static const quint64 sizeInFile = 4;
