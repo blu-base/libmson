@@ -27,9 +27,11 @@ private:
 
   //  std::shared_ptr<FileNode> m_objectSpaceManifestListStart;
 
-  std::vector<RevisionManifestList> m_revisionManifestLists;
+  std::vector<std::shared_ptr<RevisionManifestList>> m_revisionManifestLists;
 
   //  std::vector<std::shared_ptr<FileNode>> m_fileNodeSequence;
+
+  friend class RevisionStoreFileParser;
 
 public:
   ObjectSpaceManifestList(const FileNode_SPtr_t& referenceFND);
@@ -38,7 +40,12 @@ public:
   getFileNodeListFragments() const;
   void setFileNodeListFragments(
       const std::vector<std::shared_ptr<FileNodeListFragment>>& value);
+
+  ExtendedGUID getGosid() const;
+  void setGosid(const ExtendedGUID& gosid);
 };
+typedef std::shared_ptr<ObjectSpaceManifestList> ObjectSpaceManifestList_SPtr_t;
+typedef std::weak_ptr<ObjectSpaceManifestList> ObjectSpaceManifestList_WPtr_t;
 
 } // namespace priv
 } // namespace libmson

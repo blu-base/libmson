@@ -70,6 +70,8 @@ private:
   /// File name such as "Notebook.one". Does not include any path information.
   QString m_fileName;
 
+  bool m_isEncrypted = false;
+
   RevisionStoreFileHeader_SPtr_t m_header;
 
 
@@ -82,9 +84,10 @@ private:
 
   std::vector<FileNodeListFragment_WPtr_t> m_hashedChunkListFragments;
 
-  Chunkable_WPtr_t m_objectSpaceManifestRoot;
-  std::vector<FileNodeListFragment_WPtr_t> m_objectSpaceManifestListReferences;
-  std::vector<ObjectSpaceManifestList> m_objectSpaceManifestLists;
+  FileNode_SPtr_t m_objectSpaceManifestRootFN;
+
+  std::map<ExtendedGUID, ObjectSpaceManifestList_SPtr_t>
+      m_objectSpaceManifestLists;
 
   //  std::vector<std::shared_ptr<ObjectSpaceManifestList>>
   //      m_objectSpaceManifestList;

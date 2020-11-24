@@ -6,12 +6,22 @@
 namespace libmson {
 namespace priv {
 
+ExtendedGUID ObjectSpaceManifestList::getGosid() const
+{
+    return m_gosid;
+}
+
+void ObjectSpaceManifestList::setGosid(const ExtendedGUID& gosid)
+{
+    m_gosid = gosid;
+}
+
 ObjectSpaceManifestList::ObjectSpaceManifestList(
-    const FileNode_SPtr_t& referenceFND)
+        const FileNode_SPtr_t& referenceFND)
     : m_objectSpaceManifestListReferenceFND(referenceFND)
 {
-
-  if (referenceFND->getFileNodeTypeID() !=
+    
+    if (referenceFND->getFileNodeTypeID() !=
       FileNodeTypeID::ObjectSpaceManifestListReferenceFND) {
     qFatal("ObjectSpaceManifestList was not initialized with "
            "ObjectSpaceManifestListReferenceFND");

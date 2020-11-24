@@ -1,10 +1,14 @@
 #include "ObjectGroupList.h"
-#include "commonTypes/Enums.h"
 
 #include "utils/Helper.h"
 
 namespace libmson {
 namespace priv {
+
+ObjectGroupList::ObjectGroupList(RevisionManifest_SPtr_t parent)
+    : m_parent(parent)
+{
+}
 
 
 // void ObjectGroupList::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {

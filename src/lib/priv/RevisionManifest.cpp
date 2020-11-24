@@ -1,15 +1,29 @@
 #include "RevisionManifest.h"
+
+
 namespace libmson {
 namespace priv {
 
-RevisionManifest::RevisionManifest(std::shared_ptr<RevisionManifestList> parent)
+RevisionManifest::RevisionManifest(RevisionManifestList_SPtr_t parent)
     : m_parent(parent)
 {
 }
 
-std::weak_ptr<RevisionManifestList> RevisionManifest::getParent() const
+RevisionManifestList_WPtr_t RevisionManifest::getParent() const
 {
   return m_parent;
+}
+
+std::vector<ObjectGroupList_SPtr_t>
+RevisionManifest::getObjectGroupLists() const
+{
+  return m_ObjectGroupLists;
+}
+
+void RevisionManifest::setObjectGroupLists(
+    const std::vector<ObjectGroupList_SPtr_t>& ObjectGroupLists)
+{
+  m_ObjectGroupLists = ObjectGroupLists;
 }
 
 std::vector<FileNode_WPtr_t> RevisionManifest::getFileNodeSequence() const

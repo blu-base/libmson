@@ -5,27 +5,46 @@
 #include <memory>
 #include <vector>
 
-#include "chunkables/FileNode.h"
-
-class RevisionManifestList;
-
 namespace libmson {
 namespace priv {
 
+typedef std::shared_ptr<class ObjectGroupList> ObjectGroupList_SPtr_t;
+
+typedef std::weak_ptr<class RevisionManifestList> RevisionManifestList_WPtr_t;
+typedef std::shared_ptr<class RevisionManifestList> RevisionManifestList_SPtr_t;
+
+typedef std::weak_ptr<class FileNode> FileNode_WPtr_t;
+
+/** @brief RevisionManifestList according to MS-ONESTORE, section 2.1.9
+ *
+ *
+ */
 class RevisionManifest {
 private:
-  std::weak_ptr<RevisionManifestList> m_parent;
+  RevisionManifestList_WPtr_t m_parent;
   std::vector<FileNode_WPtr_t> m_FileNodeSequence;
 
-public:
-  RevisionManifest(std::shared_ptr<RevisionManifestList> parent);
+  std::vector<ObjectGroupList_SPtr_t> m_ObjectGroupLists;
 
-  std::weak_ptr<RevisionManifestList> getParent() const;
+public:
+  RevisionManifest(RevisionManifestList_SPtr_t parent);
+
+  RevisionManifestList_WPtr_t getParent() const;
 
   std::vector<FileNode_WPtr_t> getFileNodeSequence() const;
   void
   setFileNodeSequence(const std::vector<FileNode_WPtr_t>& FileNodeSequence);
+
+
+  std::vector<ObjectGroupList_SPtr_t> getObjectGroupLists() const;
+  void setObjectGroupLists(
+      const std::vector<ObjectGroupList_SPtr_t>& ObjectGroupLists);
+
+  friend class RevisionStoreFileParser;
 };
+
+typedef std::weak_ptr<RevisionManifest> RevisionManifest_WPtr_t;
+typedef std::shared_ptr<RevisionManifest> RevisionManifest_SPtr_t;
 
 } // namespace priv
 } // namespace libmson

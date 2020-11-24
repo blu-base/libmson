@@ -64,6 +64,10 @@
 
 #include <QCryptographicHash>
 
+#include "ObjectSpaceManifestList.h"
+#include "RevisionManifest.h"
+#include "RevisionManifestList.h"
+
 
 namespace libmson {
 namespace priv {

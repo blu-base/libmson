@@ -11,29 +11,28 @@
 
 #include <QDataStream>
 #include <QDebug>
+#include <memory>
 #include <vector>
 
-class ObjectSpaceManifestList;
 
 namespace libmson {
 namespace priv {
 
+class ObjectSpaceManifestList;
 
 class RevisionManifestList {
 private:
   std::weak_ptr<ObjectSpaceManifestList> m_parent;
 
-//  FileNodeChunkReference m_ref;
+  //  FileNodeChunkReference m_ref;
 
-  std::vector<std::shared_ptr<FileNodeListFragment>> m_FileNodeListFragments;
+  std::vector<FileNodeListFragment_WPtr_t> m_fileNodeListFragments;
   std::vector<std::shared_ptr<RevisionManifest>> m_RevisionManifests;
-  std::vector<std::shared_ptr<FileNode>> m_RevisionRoleDeclarations;
+  std::vector<FileNode_SPtr_t> m_RevisionRoleDeclarations;
 
-  std::vector<std::shared_ptr<FileNode>> m_RevisionRoleAndContextDeclarations;
+  std::vector<FileNode_SPtr_t> m_RevisionRoleAndContextDeclarations;
 
   std::vector<std::shared_ptr<ObjectGroupList>> m_ObjectGroupLists;
-
-  std::vector<std::shared_ptr<FileNode>> m_FileNodeSequence;
 
 public:
   RevisionManifestList(std::shared_ptr<ObjectSpaceManifestList> parent);
@@ -48,22 +47,18 @@ public:
   void setRevisionManifests(
       const std::vector<std::shared_ptr<RevisionManifest>>& value);
 
-  std::vector<std::shared_ptr<FileNode>> getRevisionRoleDeclarations() const;
-  void setRevisionRoleDeclarations(
-      const std::vector<std::shared_ptr<FileNode>>& value);
+  std::vector<FileNode_SPtr_t> getRevisionRoleDeclarations() const;
+  void setRevisionRoleDeclarations(const std::vector<FileNode_SPtr_t>& value);
 
-  std::vector<std::shared_ptr<FileNode>>
-  getRevisionRoleAndContextDeclarations() const;
+  std::vector<FileNode_SPtr_t> getRevisionRoleAndContextDeclarations() const;
   void setRevisionRoleAndContextDeclarations(
-      const std::vector<std::shared_ptr<FileNode>>& value);
+      const std::vector<FileNode_SPtr_t>& value);
 
   std::vector<std::shared_ptr<ObjectGroupList>> getObjectGroupLists() const;
   void setObjectGroupLists(
       const std::vector<std::shared_ptr<ObjectGroupList>>& value);
 
-  std::vector<std::shared_ptr<FileNode>> getFileNodeSequence() const;
-  void setFileNodeSequence(const std::vector<std::shared_ptr<FileNode>>& value);
-
+  friend class RevisionStoreFileParser;
 };
 
 } // namespace priv

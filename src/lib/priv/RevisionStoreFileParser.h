@@ -23,6 +23,10 @@
 
 #include "chunkables/fileNodeTypes/IFileNodeType.h"
 
+#include "ObjectSpaceManifestList.h"
+#include "RevisionManifest.h"
+#include "RevisionManifestList.h"
+
 
 namespace libmson {
 namespace priv {
@@ -135,6 +139,16 @@ private:
 
   // Other non-chunkables ------------------------------------------------------
 
+  ObjectSpaceManifestList_SPtr_t
+  parseObjectSpaceManifestList(QDataStream& ds, FileNode_SPtr_t fn);
+
+  std::shared_ptr<RevisionManifestList> parseRevisionManifestList(
+      QDataStream& ds, FileNode_SPtr_t fn,
+      ObjectSpaceManifestList_SPtr_t parent);
+
+  std::shared_ptr<ObjectGroupList> parseObjectGroupList(
+      QDataStream& ds, FileNode_SPtr_t fn,
+      std::shared_ptr<RevisionManifest> parent);
 
   // Utility functions ---------------------------------------------------------
 
