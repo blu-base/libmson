@@ -3,8 +3,6 @@
 
 #include <QString>
 #include <QtCore/qglobal.h>
-
-//#include "../FileNodeListFragment.h"
 #include <vector>
 
 namespace libmson {
@@ -32,13 +30,6 @@ template <class T> QString qStringHex(const T val, const quint8 width)
  * up to 16.
  */
 quint64 ceilToMultiple(const quint64 num, const quint64 multiple);
-
-// std::vector<std::shared_ptr<FileNodeListFragment>>
-// parseFileNodeListFragments(QDataStream& ds, const FileChunkReference64x32&
-// ref);
-// std::vector<std::shared_ptr<FileNodeListFragment>>
-// parseFileNodeListFragments(QDataStream& ds, const FileNodeChunkReference&
-// ref);
 
 } // namespace priv
 } // namespace libmson
