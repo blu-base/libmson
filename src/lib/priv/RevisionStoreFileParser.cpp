@@ -184,7 +184,7 @@ std::shared_ptr<RevisionStoreFile> RevisionStoreFileParser::parse()
       fragment = fragment->getNextFragment().lock();
     }
 
-    for (auto fileReference : fileDataStoreObjects) {
+    for (const auto& fileReference : fileDataStoreObjects) {
       parseFileDataStoreObject(m_ds, fileReference);
     }
   }
