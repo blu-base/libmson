@@ -4,7 +4,7 @@
 namespace libmson {
 namespace priv {
 
-RevisionManifest::RevisionManifest(RevisionManifestList_SPtr_t parent)
+RevisionManifest::RevisionManifest(const RevisionManifestList_SPtr_t& parent)
     : m_parent(parent)
 {
 }

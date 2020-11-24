@@ -27,7 +27,7 @@ private:
   std::vector<ObjectGroupList_SPtr_t> m_ObjectGroupLists;
 
 public:
-  RevisionManifest(RevisionManifestList_SPtr_t parent);
+  RevisionManifest(const RevisionManifestList_SPtr_t& parent);
 
   RevisionManifestList_WPtr_t getParent() const;
 
