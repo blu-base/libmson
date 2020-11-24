@@ -35,7 +35,7 @@ private:
   std::vector<std::shared_ptr<ObjectGroupList>> m_ObjectGroupLists;
 
 public:
-  RevisionManifestList(std::shared_ptr<ObjectSpaceManifestList> parent);
+  RevisionManifestList(const std::shared_ptr<ObjectSpaceManifestList>& parent);
   ~RevisionManifestList() = default;
 
   std::vector<std::shared_ptr<FileNodeListFragment>>

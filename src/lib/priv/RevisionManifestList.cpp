@@ -6,7 +6,7 @@ namespace libmson {
 namespace priv {
 
 RevisionManifestList::RevisionManifestList(
-    std::shared_ptr<ObjectSpaceManifestList> parent)
+    const std::shared_ptr<ObjectSpaceManifestList>& parent)
     : m_parent(parent)
 {
 }
