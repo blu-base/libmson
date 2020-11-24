@@ -2,6 +2,7 @@
 #define UNKNOWNBLOB_H
 
 #include "Chunkable.h"
+#include <QByteArray>
 #include <QtCore/qglobal.h>
 
 namespace libmson {

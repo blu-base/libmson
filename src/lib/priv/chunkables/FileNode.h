@@ -1,7 +1,7 @@
 #ifndef FILENODE_H
 #define FILENODE_H
 
-#include "../commonTypes/FileNodeChunkReference.h"
+#include "../commonTypes/FileNodeChunkReference.h" // needed to pass FNCR_STP/CB_FORMAT
 #include "Chunkable.h"
 #include <QtCore/qglobal.h>
 

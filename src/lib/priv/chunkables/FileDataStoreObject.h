@@ -5,8 +5,8 @@
 #include <QtCore/qglobal.h>
 #include <cstdlib>
 
+#include <QByteArray>
 #include <QUuid>
-#include <QXmlStreamWriter>
 
 #include "../IStreamable.h"
 

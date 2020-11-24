@@ -1,10 +1,7 @@
 #ifndef CHUNKABLE_H
 #define CHUNKABLE_H
 
-
 #include <QtCore/qglobal.h>
-
-#include <QMetaEnum>
 #include <memory>
 
 namespace libmson {

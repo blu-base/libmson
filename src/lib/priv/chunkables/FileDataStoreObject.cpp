@@ -1,8 +1,5 @@
 #include "FileDataStoreObject.h"
 
-#include <QDataStream>
-#include <QDebug>
-
 #include "../utils/Helper.h"
 
 

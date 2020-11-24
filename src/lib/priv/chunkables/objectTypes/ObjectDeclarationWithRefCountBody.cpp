@@ -2,10 +2,6 @@
 #include <QDataStream>
 #include <QDebug>
 
-#include "../../commonTypes/CompactID.h"
-#include "../../propertyTypes/JCID.h"
-#include "../../utils/Helper.h"
-
 namespace libmson {
 namespace priv {
 

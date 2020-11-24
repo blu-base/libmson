@@ -9,6 +9,8 @@
 namespace libmson {
 namespace priv {
 
+class CompactID;
+
 class ObjectDeclarationWithRefCountBody : public IStreamable {
 private:
   /**
@@ -57,8 +59,6 @@ private:
 
 public:
   ObjectDeclarationWithRefCountBody();
-
-  void generateXml(QXmlStreamWriter& xmlWriter) const;
 
   CompactID getOid() const;
   void setOid(const CompactID& value);
