@@ -45,110 +45,114 @@ public:
 private:
   // Chunkable parsers ---------------------------------------------------------
 
-  void parseChunk(QDataStream& ds, Chunkable_SPtr_t chunk);
+  void parseChunk(QDataStream& ds, const Chunkable_SPtr_t& chunk);
 
-  void parseEncryptedData(QDataStream& ds, EncryptedData_WPtr_t chunk);
+  void parseEncryptedData(QDataStream& ds, const EncryptedData_WPtr_t& chunk);
 
   void parseFileDataStoreObject(
-      QDataStream& ds, FileDataStoreObject_WPtr_t fileData);
+      QDataStream& ds, const FileDataStoreObject_WPtr_t& fileData);
 
 
   FileNode_SPtr_t parseFileNode(
-      QDataStream& ds, const quint64 stp, FileNodeListFragment_WPtr_t parent);
+      QDataStream& ds, const quint64 stp,
+      const FileNodeListFragment_WPtr_t& parent);
 
-  FileNode_SPtr_t parseFileNode(QDataStream& ds, FileNode_SPtr_t fileNode);
+  FileNode_SPtr_t
+  parseFileNode(QDataStream& ds, const FileNode_SPtr_t& fileNode);
 
   /// parses a fragment. Returns a RSChunkContainer_SPtr_t if there is a next
   /// Fragment specified That RSChunkContainer_SPtr_t is not inserted to any
   /// std::list<RSChunkContainer_SPtr_t>& chunkList. This has to be done by
   /// calling method.
   FileNodeListFragment_SPtr_t parseFileNodeListFragment(
-      QDataStream& ds, FileNodeListFragment_SPtr_t fragment);
+      QDataStream& ds, const FileNodeListFragment_SPtr_t& fragment);
 
   /// parses a fragment tree. Returns a RSChunkContainer_WPtr_t list
-  std::vector<FileNodeListFragment_WPtr_t>
-  parseFileNodeList(QDataStream& ds, FileNodeListFragment_WPtr_t firstFragment);
+  std::vector<FileNodeListFragment_WPtr_t> parseFileNodeList(
+      QDataStream& ds, const FileNodeListFragment_WPtr_t& firstFragment);
 
 
   /// parses the FreeChunkListFrragments and adds ChunkContainer to m_file
   void parseFreeChunkListFragments(
-      QDataStream& ds, FreeChunkListFragment_WPtr_t firstFragment);
+      QDataStream& ds, const FreeChunkListFragment_WPtr_t& firstFragment);
 
-  void parseFreeChunk(QDataStream& ds, FreeChunk_SPtr_t freeChunk);
+  void parseFreeChunk(QDataStream& ds, const FreeChunk_SPtr_t& freeChunk);
 
   void parseObjectInfoDependencyOverrideData(
-      QDataStream& ds, ObjectInfoDependencyOverrideData_SPtr_t objectInfo);
+      QDataStream& ds,
+      const ObjectInfoDependencyOverrideData_SPtr_t& objectInfo);
 
   ObjectSpaceObjectPropSet_SPtr_t parseObjectSpaceObjectPropSet(
-      QDataStream& ds, ObjectSpaceObjectPropSet_SPtr_t objectPropSet);
+      QDataStream& ds, const ObjectSpaceObjectPropSet_SPtr_t& objectPropSet);
 
   /// parses the header, adds the containers to m_file and returns the pointer
   /// to the header container
   RevisionStoreFileHeader_WPtr_t parseRevisionStoreFileHeader(QDataStream& ds);
 
   bool parseTransactionLogFragment(
-      QDataStream& ds, TransactionLogFragment_SPtr_t firstFragment);
+      QDataStream& ds, const TransactionLogFragment_SPtr_t& firstFragment);
 
-  void parseUnknownBlob(QDataStream& ds, UnknownBlob_SPtr_t unknownBlob);
+  void parseUnknownBlob(QDataStream& ds, const UnknownBlob_SPtr_t& unknownBlob);
 
 
   // FileNodeType parsers ------------------------------------------------------
   /// \todo should the FND parses return their full class type?
 
   /// encapsulation layer for parsing FileNode data
-  IFileNodeType_SPtr_t parseFileNodeType(QDataStream& ds, FileNode_SPtr_t fn);
+  IFileNodeType_SPtr_t
+  parseFileNodeType(QDataStream& ds, const FileNode_SPtr_t& fn);
 
   // type 0
   /// \todo pull out Streamable from other FNDs
 
   // type 1
+  IFileNodeType_SPtr_t parseFileDataStoreObjectReferenceFND(
+      QDataStream& ds, const FileNode_SPtr_t& fn);
   IFileNodeType_SPtr_t
-  parseFileDataStoreObjectReferenceFND(QDataStream& ds, FileNode_SPtr_t fn);
-  IFileNodeType_SPtr_t
-  parseHashedChunkDescriptor2FND(QDataStream& ds, FileNode_SPtr_t fn);
-  IFileNodeType_SPtr_t
-  parseObjectDataEncryptionKeyV2FNDX(QDataStream& ds, FileNode_SPtr_t fn);
-  IFileNodeType_SPtr_t
-  parseObjectDeclaration2LargeRefCountFND(QDataStream& ds, FileNode_SPtr_t fn);
-  IFileNodeType_SPtr_t
-  parseObjectDeclaration2RefCountFND(QDataStream& ds, FileNode_SPtr_t fn);
-  IFileNodeType_SPtr_t
-  parseObjectDeclarationWithRefCount2FNDX(QDataStream& ds, FileNode_SPtr_t fn);
+  parseHashedChunkDescriptor2FND(QDataStream& ds, const FileNode_SPtr_t& fn);
+  IFileNodeType_SPtr_t parseObjectDataEncryptionKeyV2FNDX(
+      QDataStream& ds, const FileNode_SPtr_t& fn);
+  IFileNodeType_SPtr_t parseObjectDeclaration2LargeRefCountFND(
+      QDataStream& ds, const FileNode_SPtr_t& fn);
+  IFileNodeType_SPtr_t parseObjectDeclaration2RefCountFND(
+      QDataStream& ds, const FileNode_SPtr_t& fn);
+  IFileNodeType_SPtr_t parseObjectDeclarationWithRefCount2FNDX(
+      QDataStream& ds, const FileNode_SPtr_t& fn);
   IFileNodeType_SPtr_t parseReadOnlyObjectDeclaration2LargeRefCountFND(
-      QDataStream& ds, FileNode_SPtr_t fn);
+      QDataStream& ds, const FileNode_SPtr_t& fn);
   IFileNodeType_SPtr_t parseReadOnlyObjectDeclaration2RefCountFND(
-      QDataStream& ds, FileNode_SPtr_t fn);
-  IFileNodeType_SPtr_t
-  parseObjectDeclarationWithRefCountFNDX(QDataStream& ds, FileNode_SPtr_t fn);
-  IFileNodeType_SPtr_t
-  parseObjectInfoDependencyOverridesFND(QDataStream& ds, FileNode_SPtr_t fn);
-  IFileNodeType_SPtr_t
-  parseObjectRevisionWithRefCount2FNDX(QDataStream& ds, FileNode_SPtr_t fn);
-  IFileNodeType_SPtr_t
-  parseObjectRevisionWithRefCountFNDX(QDataStream& ds, FileNode_SPtr_t fn);
+      QDataStream& ds, const FileNode_SPtr_t& fn);
+  IFileNodeType_SPtr_t parseObjectDeclarationWithRefCountFNDX(
+      QDataStream& ds, const FileNode_SPtr_t& fn);
+  IFileNodeType_SPtr_t parseObjectInfoDependencyOverridesFND(
+      QDataStream& ds, const FileNode_SPtr_t& fn);
+  IFileNodeType_SPtr_t parseObjectRevisionWithRefCount2FNDX(
+      QDataStream& ds, const FileNode_SPtr_t& fn);
+  IFileNodeType_SPtr_t parseObjectRevisionWithRefCountFNDX(
+      QDataStream& ds, const FileNode_SPtr_t& fn);
 
   // type 2
+  IFileNodeType_SPtr_t parseFileDataStoreListReferenceFND(
+      QDataStream& ds, const FileNode_SPtr_t& fn);
   IFileNodeType_SPtr_t
-  parseFileDataStoreListReferenceFND(QDataStream& ds, FileNode_SPtr_t fn);
-  IFileNodeType_SPtr_t
-  parseObjectGroupListReferenceFND(QDataStream& ds, FileNode_SPtr_t fn);
-  IFileNodeType_SPtr_t
-  parseObjectSpaceManifestListReferenceFND(QDataStream& ds, FileNode_SPtr_t fn);
-  IFileNodeType_SPtr_t
-  parseRevisionManifestListReferenceFND(QDataStream& ds, FileNode_SPtr_t fn);
+  parseObjectGroupListReferenceFND(QDataStream& ds, const FileNode_SPtr_t& fn);
+  IFileNodeType_SPtr_t parseObjectSpaceManifestListReferenceFND(
+      QDataStream& ds, const FileNode_SPtr_t& fn);
+  IFileNodeType_SPtr_t parseRevisionManifestListReferenceFND(
+      QDataStream& ds, const FileNode_SPtr_t& fn);
 
   // Other non-chunkables ------------------------------------------------------
 
   ObjectSpaceManifestList_SPtr_t
-  parseObjectSpaceManifestList(QDataStream& ds, FileNode_SPtr_t fn);
+  parseObjectSpaceManifestList(QDataStream& ds, const FileNode_SPtr_t& fn);
 
   std::shared_ptr<RevisionManifestList> parseRevisionManifestList(
-      QDataStream& ds, FileNode_SPtr_t fn,
-      ObjectSpaceManifestList_SPtr_t parent);
+      QDataStream& ds, const FileNode_SPtr_t& fn,
+      const ObjectSpaceManifestList_SPtr_t& parent);
 
   std::shared_ptr<ObjectGroupList> parseObjectGroupList(
-      QDataStream& ds, FileNode_SPtr_t fn,
-      std::shared_ptr<RevisionManifest> parent);
+      QDataStream& ds, const FileNode_SPtr_t& fn,
+      const std::shared_ptr<RevisionManifest>& parent);
 
   // Utility functions ---------------------------------------------------------
 
@@ -157,7 +161,7 @@ private:
   /// RevisionStoreFile and returns the Chunkable poitner
   template <class Chunkably>
   std::shared_ptr<Chunkably>
-  parseFileNodeChunkReference(QDataStream& ds, FileNode_SPtr_t fn);
+  parseFileNodeChunkReference(QDataStream& ds, const FileNode_SPtr_t& fn);
 
   /// Iterates through the list and checks whether chunk is already present
   /// at the specified location (stp, and cb must be equal) If it does not

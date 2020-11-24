@@ -286,7 +286,7 @@ std::shared_ptr<RevisionStoreFile> RevisionStoreFileParser::parse()
 }
 
 void RevisionStoreFileParser::parseChunk(
-    QDataStream& ds, Chunkable_SPtr_t chunk)
+    QDataStream& ds, const Chunkable_SPtr_t& chunk)
 {
   switch (chunk->type()) {
 
@@ -350,7 +350,7 @@ void RevisionStoreFileParser::parseChunk(
 }
 
 void RevisionStoreFileParser::parseEncryptedData(
-    QDataStream& ds, EncryptedData_WPtr_t chunk)
+    QDataStream& ds, const EncryptedData_WPtr_t& chunk)
 {
   auto data = chunk.lock();
 
@@ -558,14 +558,15 @@ RevisionStoreFileParser::parseRevisionStoreFileHeader(QDataStream& ds)
 
 
 FileNode_SPtr_t RevisionStoreFileParser::parseFileNode(
-    QDataStream& ds, FileNode_SPtr_t fileNode)
+    QDataStream& ds, const FileNode_SPtr_t& fileNode)
 {
   return parseFileNode(ds, fileNode->getInitialStp(), fileNode->getParent());
 }
 
 
 FileNode_SPtr_t RevisionStoreFileParser::parseFileNode(
-    QDataStream& ds, const quint64 stp, FileNodeListFragment_WPtr_t parent)
+    QDataStream& ds, const quint64 stp,
+    const FileNodeListFragment_WPtr_t& parent)
 {
 
   quint32 composite;
@@ -590,7 +591,7 @@ FileNode_SPtr_t RevisionStoreFileParser::parseFileNode(
 
 
 void RevisionStoreFileParser::parseFileDataStoreObject(
-    QDataStream& ds, FileDataStoreObject_WPtr_t fileData)
+    QDataStream& ds, const FileDataStoreObject_WPtr_t& fileData)
 {
 
 
@@ -611,7 +612,7 @@ void RevisionStoreFileParser::parseFileDataStoreObject(
 }
 
 void RevisionStoreFileParser::parseFreeChunkListFragments(
-    QDataStream& ds, FreeChunkListFragment_WPtr_t firstFragment)
+    QDataStream& ds, const FreeChunkListFragment_WPtr_t& firstFragment)
 {
 
   qint64 originalStp = ds.device()->pos();
@@ -663,13 +664,13 @@ void RevisionStoreFileParser::parseFreeChunkListFragments(
 }
 
 void RevisionStoreFileParser::parseFreeChunk(
-    QDataStream& ds, FreeChunk_SPtr_t freeChunk)
+    QDataStream& ds, const FreeChunk_SPtr_t& freeChunk)
 {
   freeChunk->m_isParsed = true;
 }
 
 void RevisionStoreFileParser::parseObjectInfoDependencyOverrideData(
-    QDataStream& ds, ObjectInfoDependencyOverrideData_SPtr_t objectInfo)
+    QDataStream& ds, const ObjectInfoDependencyOverrideData_SPtr_t& objectInfo)
 {
   if (objectInfo != nullptr) {
 
@@ -689,7 +690,7 @@ void RevisionStoreFileParser::parseObjectInfoDependencyOverrideData(
 
 ObjectSpaceObjectPropSet_SPtr_t
 RevisionStoreFileParser::parseObjectSpaceObjectPropSet(
-    QDataStream& ds, ObjectSpaceObjectPropSet_SPtr_t objectPropSet)
+    QDataStream& ds, const ObjectSpaceObjectPropSet_SPtr_t& objectPropSet)
 {
   qint64 originalPos = ds.device()->pos();
   ds.device()->seek(objectPropSet->getInitialStp());
@@ -719,7 +720,7 @@ RevisionStoreFileParser::parseObjectSpaceObjectPropSet(
 }
 
 FileNodeListFragment_SPtr_t RevisionStoreFileParser::parseFileNodeListFragment(
-    QDataStream& ds, FileNodeListFragment_SPtr_t fragment)
+    QDataStream& ds, const FileNodeListFragment_SPtr_t& fragment)
 {
   const quint64 stp = fragment->getInitialStp();
   const quint64 cb  = fragment->getInitialCb();
@@ -853,7 +854,7 @@ FileNodeListFragment_SPtr_t RevisionStoreFileParser::parseFileNodeListFragment(
 
 std::vector<FileNodeListFragment_WPtr_t>
 RevisionStoreFileParser::parseFileNodeList(
-    QDataStream& ds, FileNodeListFragment_WPtr_t firstFragment)
+    QDataStream& ds, const FileNodeListFragment_WPtr_t& firstFragment)
 {
   std::vector<FileNodeListFragment_WPtr_t> vec;
   if (firstFragment.expired()) {
@@ -880,7 +881,7 @@ RevisionStoreFileParser::parseFileNodeList(
 }
 
 bool RevisionStoreFileParser::parseTransactionLogFragment(
-    QDataStream& ds, TransactionLogFragment_SPtr_t firstFragment)
+    QDataStream& ds, const TransactionLogFragment_SPtr_t& firstFragment)
 {
   if (firstFragment == nullptr) {
     return true;
@@ -1007,7 +1008,7 @@ bool RevisionStoreFileParser::parseTransactionLogFragment(
 }
 
 void RevisionStoreFileParser::parseUnknownBlob(
-    QDataStream& ds, UnknownBlob_SPtr_t unknownBlob)
+    QDataStream& ds, const UnknownBlob_SPtr_t& unknownBlob)
 {
   qint64 originalStp = ds.device()->pos();
 
@@ -1021,8 +1022,8 @@ void RevisionStoreFileParser::parseUnknownBlob(
 }
 
 
-std::shared_ptr<IFileNodeType>
-RevisionStoreFileParser::parseFileNodeType(QDataStream& ds, FileNode_SPtr_t fn)
+std::shared_ptr<IFileNodeType> RevisionStoreFileParser::parseFileNodeType(
+    QDataStream& ds, const FileNode_SPtr_t& fn)
 {
 
   switch (fn->getFileNodeTypeID()) {
@@ -1214,7 +1215,7 @@ RevisionStoreFileParser::parseFileNodeType(QDataStream& ds, FileNode_SPtr_t fn)
 
 IFileNodeType_SPtr_t
 RevisionStoreFileParser::parseFileDataStoreObjectReferenceFND(
-    QDataStream& ds, FileNode_SPtr_t fn)
+    QDataStream& ds, const FileNode_SPtr_t& fn)
 {
   Q_ASSERT(
       fn->getFileNodeTypeID() ==
@@ -1231,7 +1232,7 @@ RevisionStoreFileParser::parseFileDataStoreObjectReferenceFND(
 }
 
 IFileNodeType_SPtr_t RevisionStoreFileParser::parseHashedChunkDescriptor2FND(
-    QDataStream& ds, FileNode_SPtr_t fn)
+    QDataStream& ds, const FileNode_SPtr_t& fn)
 {
   Q_ASSERT(
       fn->getFileNodeTypeID() == FileNodeTypeID::HashedChunkDescriptor2FND);
@@ -1250,7 +1251,7 @@ IFileNodeType_SPtr_t RevisionStoreFileParser::parseHashedChunkDescriptor2FND(
 
 IFileNodeType_SPtr_t
 RevisionStoreFileParser::parseObjectDataEncryptionKeyV2FNDX(
-    QDataStream& ds, FileNode_SPtr_t fn)
+    QDataStream& ds, const FileNode_SPtr_t& fn)
 {
   Q_ASSERT(
       fn->getFileNodeTypeID() == FileNodeTypeID::ObjectDataEncryptionKeyV2FNDX);
@@ -1264,7 +1265,7 @@ RevisionStoreFileParser::parseObjectDataEncryptionKeyV2FNDX(
 
 IFileNodeType_SPtr_t
 RevisionStoreFileParser::parseObjectDeclaration2LargeRefCountFND(
-    QDataStream& ds, FileNode_SPtr_t fn)
+    QDataStream& ds, const FileNode_SPtr_t& fn)
 {
   Q_ASSERT(
       fn->getFileNodeTypeID() ==
@@ -1284,7 +1285,7 @@ RevisionStoreFileParser::parseObjectDeclaration2LargeRefCountFND(
 
 IFileNodeType_SPtr_t
 RevisionStoreFileParser::parseObjectDeclaration2RefCountFND(
-    QDataStream& ds, FileNode_SPtr_t fn)
+    QDataStream& ds, const FileNode_SPtr_t& fn)
 {
   Q_ASSERT(
       fn->getFileNodeTypeID() == FileNodeTypeID::ObjectDeclaration2RefCountFND);
@@ -1303,7 +1304,7 @@ RevisionStoreFileParser::parseObjectDeclaration2RefCountFND(
 
 IFileNodeType_SPtr_t
 RevisionStoreFileParser::parseObjectDeclarationWithRefCount2FNDX(
-    QDataStream& ds, FileNode_SPtr_t fn)
+    QDataStream& ds, const FileNode_SPtr_t& fn)
 {
   Q_ASSERT(
       fn->getFileNodeTypeID() ==
@@ -1323,7 +1324,7 @@ RevisionStoreFileParser::parseObjectDeclarationWithRefCount2FNDX(
 
 IFileNodeType_SPtr_t
 RevisionStoreFileParser::parseReadOnlyObjectDeclaration2LargeRefCountFND(
-    QDataStream& ds, FileNode_SPtr_t fn)
+    QDataStream& ds, const FileNode_SPtr_t& fn)
 {
   Q_ASSERT(
       fn->getFileNodeTypeID() ==
@@ -1347,7 +1348,7 @@ RevisionStoreFileParser::parseReadOnlyObjectDeclaration2LargeRefCountFND(
 
 IFileNodeType_SPtr_t
 RevisionStoreFileParser::parseReadOnlyObjectDeclaration2RefCountFND(
-    QDataStream& ds, FileNode_SPtr_t fn)
+    QDataStream& ds, const FileNode_SPtr_t& fn)
 {
   Q_ASSERT(
       fn->getFileNodeTypeID() ==
@@ -1370,7 +1371,7 @@ RevisionStoreFileParser::parseReadOnlyObjectDeclaration2RefCountFND(
 
 IFileNodeType_SPtr_t
 RevisionStoreFileParser::parseObjectDeclarationWithRefCountFNDX(
-    QDataStream& ds, FileNode_SPtr_t fn)
+    QDataStream& ds, const FileNode_SPtr_t& fn)
 {
   Q_ASSERT(
       fn->getFileNodeTypeID() ==
@@ -1389,7 +1390,7 @@ RevisionStoreFileParser::parseObjectDeclarationWithRefCountFNDX(
 
 IFileNodeType_SPtr_t
 RevisionStoreFileParser::parseObjectInfoDependencyOverridesFND(
-    QDataStream& ds, FileNode_SPtr_t fn)
+    QDataStream& ds, const FileNode_SPtr_t& fn)
 {
   Q_ASSERT(
       fn->getFileNodeTypeID() ==
@@ -1409,7 +1410,7 @@ RevisionStoreFileParser::parseObjectInfoDependencyOverridesFND(
 
 IFileNodeType_SPtr_t
 RevisionStoreFileParser::parseObjectRevisionWithRefCount2FNDX(
-    QDataStream& ds, FileNode_SPtr_t fn)
+    QDataStream& ds, const FileNode_SPtr_t& fn)
 {
   Q_ASSERT(
       fn->getFileNodeTypeID() ==
@@ -1435,7 +1436,7 @@ RevisionStoreFileParser::parseObjectRevisionWithRefCount2FNDX(
 
 IFileNodeType_SPtr_t
 RevisionStoreFileParser::parseObjectRevisionWithRefCountFNDX(
-    QDataStream& ds, FileNode_SPtr_t fn)
+    QDataStream& ds, const FileNode_SPtr_t& fn)
 {
   Q_ASSERT(
       fn->getFileNodeTypeID() ==
@@ -1461,7 +1462,7 @@ RevisionStoreFileParser::parseObjectRevisionWithRefCountFNDX(
 // type 2
 IFileNodeType_SPtr_t
 RevisionStoreFileParser::parseFileDataStoreListReferenceFND(
-    QDataStream& ds, FileNode_SPtr_t fn)
+    QDataStream& ds, const FileNode_SPtr_t& fn)
 {
   Q_ASSERT(
       fn->getFileNodeTypeID() == FileNodeTypeID::FileDataStoreListReferenceFND);
@@ -1474,7 +1475,7 @@ RevisionStoreFileParser::parseFileDataStoreListReferenceFND(
 }
 
 IFileNodeType_SPtr_t RevisionStoreFileParser::parseObjectGroupListReferenceFND(
-    QDataStream& ds, FileNode_SPtr_t fn)
+    QDataStream& ds, const FileNode_SPtr_t& fn)
 {
   Q_ASSERT(
       fn->getFileNodeTypeID() == FileNodeTypeID::ObjectGroupListReferenceFND);
@@ -1490,7 +1491,7 @@ IFileNodeType_SPtr_t RevisionStoreFileParser::parseObjectGroupListReferenceFND(
 
 IFileNodeType_SPtr_t
 RevisionStoreFileParser::parseObjectSpaceManifestListReferenceFND(
-    QDataStream& ds, FileNode_SPtr_t fn)
+    QDataStream& ds, const FileNode_SPtr_t& fn)
 {
   Q_ASSERT(
       fn->getFileNodeTypeID() ==
@@ -1507,7 +1508,7 @@ RevisionStoreFileParser::parseObjectSpaceManifestListReferenceFND(
 
 IFileNodeType_SPtr_t
 RevisionStoreFileParser::parseRevisionManifestListReferenceFND(
-    QDataStream& ds, FileNode_SPtr_t fn)
+    QDataStream& ds, const FileNode_SPtr_t& fn)
 {
   Q_ASSERT(
       fn->getFileNodeTypeID() ==
@@ -1525,7 +1526,7 @@ RevisionStoreFileParser::parseRevisionManifestListReferenceFND(
 
 ObjectSpaceManifestList_SPtr_t
 RevisionStoreFileParser::parseObjectSpaceManifestList(
-    QDataStream& ds, FileNode_SPtr_t fn)
+    QDataStream& ds, const FileNode_SPtr_t& fn)
 {
   Q_ASSERT(
       fn->getFileNodeTypeID() ==
@@ -1595,7 +1596,8 @@ RevisionStoreFileParser::parseObjectSpaceManifestList(
 
 std::shared_ptr<RevisionManifestList>
 RevisionStoreFileParser::parseRevisionManifestList(
-    QDataStream& ds, FileNode_SPtr_t fn, ObjectSpaceManifestList_SPtr_t parent)
+    QDataStream& ds, const FileNode_SPtr_t& fn,
+    const ObjectSpaceManifestList_SPtr_t& parent)
 {
   Q_ASSERT(
       fn->getFileNodeTypeID() ==
@@ -1644,7 +1646,7 @@ RevisionStoreFileParser::parseRevisionManifestList(
   for (const auto& fragRef : revisionManifestList->m_fileNodeListFragments) {
     auto frag = fragRef.lock();
 
-    for (auto cfn : frag->m_fileNodes) {
+    for (const auto& cfn : frag->m_fileNodes) {
 
       switch (cfn->getFileNodeTypeID()) {
       case FileNodeTypeID::RevisionManifestStart6FND:
@@ -1688,8 +1690,8 @@ RevisionStoreFileParser::parseRevisionManifestList(
 }
 
 std::shared_ptr<ObjectGroupList> RevisionStoreFileParser::parseObjectGroupList(
-    QDataStream& ds, FileNode_SPtr_t fn,
-    std::shared_ptr<RevisionManifest> parent)
+    QDataStream& ds, const FileNode_SPtr_t& fn,
+    const std::shared_ptr<RevisionManifest>& parent)
 {
   auto objectGroupList = std::make_shared<ObjectGroupList>(parent);
 
@@ -1710,7 +1712,7 @@ std::shared_ptr<ObjectGroupList> RevisionStoreFileParser::parseObjectGroupList(
 
 template <class Chunkably>
 std::shared_ptr<Chunkably> RevisionStoreFileParser::parseFileNodeChunkReference(
-    QDataStream& ds, FileNode_SPtr_t fn)
+    QDataStream& ds, const FileNode_SPtr_t& fn)
 {
   FileNodeChunkReference ref(fn->stpFormat, fn->cbFormat);
   ds >> ref;
