@@ -1,6 +1,5 @@
 #include "ObjectDeclaration2RefCountFND.h"
 
-#include "../../utils/Helper.h"
 #include "../FileNode.h"
 
 
@@ -8,7 +7,7 @@ namespace libmson {
 namespace priv {
 
 ObjectDeclaration2RefCountFND::ObjectDeclaration2RefCountFND(
-    FileNode_WPtr_t parentFileNode)
+    FileNode_SPtr_t parentFileNode)
     : IFileNodeType(std::move(parentFileNode)), m_cRef(0)
 {
 }
@@ -37,7 +36,7 @@ ObjectSpaceObjectPropSet_WPtr_t ObjectDeclaration2RefCountFND::getBlobRef()
 }
 
 void ObjectDeclaration2RefCountFND::setBlobRef(
-    const ObjectSpaceObjectPropSet_WPtr_t& value)
+    const ObjectSpaceObjectPropSet_SPtr_t& value)
 {
   m_blobRef = value;
 }

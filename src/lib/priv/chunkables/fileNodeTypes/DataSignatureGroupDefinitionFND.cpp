@@ -6,7 +6,7 @@ namespace libmson {
 namespace priv {
 
 DataSignatureGroupDefinitionFND::DataSignatureGroupDefinitionFND(
-    FileNode_WPtr_t parentFileNode)
+    FileNode_SPtr_t parentFileNode)
     : IFileNodeType(std::move(parentFileNode)),
       m_dataSignatureGroup(ExtendedGUID())
 {

@@ -3,12 +3,14 @@
 
 #include <QtCore/qglobal.h>
 
-#include "../../commonTypes/FileNodeChunkReference.h"
-#include "../FileNodeListFragment.h"
 #include "IFileNodeType.h"
 
 namespace libmson {
 namespace priv {
+
+typedef std::shared_ptr<class FileNodeListFragment> FileNodeListFragment_SPtr_t;
+typedef std::weak_ptr<class FileNodeListFragment> FileNodeListFragment_WPtr_t;
+
 /**
  * @brief specifies the reference to a revision manifest list for the current
  * object space
@@ -27,7 +29,7 @@ private:
   FileNodeListFragment_WPtr_t m_ref;
 
 public:
-  RevisionManifestListReferenceFND(FileNode_WPtr_t parentFileNode);
+  RevisionManifestListReferenceFND(FileNode_SPtr_t parentFileNode);
   ~RevisionManifestListReferenceFND() = default;
 
   FileNodeListFragment_WPtr_t getRef() const;

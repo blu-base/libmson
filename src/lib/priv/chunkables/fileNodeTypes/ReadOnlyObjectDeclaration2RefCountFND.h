@@ -2,11 +2,14 @@
 #define READONLYOBJECTDECLARATION2REFCOUNTFND_H
 
 #include "IFileNodeType.h"
-#include "ObjectDeclaration2RefCountFND.h"
 #include <QtCore/qglobal.h>
+
+#include "../ObjectSpaceObjectPropSet.h"
+#include "../objectTypes/ObjectDeclaration2Body.h"
 
 namespace libmson {
 namespace priv {
+
 
 class ReadOnlyObjectDeclaration2RefCountFND : public IFileNodeType {
 private:
@@ -18,11 +21,11 @@ private:
   QByteArray m_md5hash;
 
 public:
-  ReadOnlyObjectDeclaration2RefCountFND(FileNode_WPtr_t parentFileNode);
+  ReadOnlyObjectDeclaration2RefCountFND(FileNode_SPtr_t parentFileNode);
   virtual ~ReadOnlyObjectDeclaration2RefCountFND() = default;
 
   ObjectSpaceObjectPropSet_WPtr_t getBlobRef();
-  void setBlobRef(const ObjectSpaceObjectPropSet_WPtr_t& value);
+  void setBlobRef(const ObjectSpaceObjectPropSet_SPtr_t& value);
 
   ObjectDeclaration2Body getBody() const;
   void setBody(const ObjectDeclaration2Body& value);

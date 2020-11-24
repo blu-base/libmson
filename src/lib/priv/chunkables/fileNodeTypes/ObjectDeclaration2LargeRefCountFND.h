@@ -2,14 +2,18 @@
 #define OBJECTDECLARATION2LARGEREFCOUNTFND_H
 
 
-#include "../Chunkable.h"
-#include "../ObjectSpaceObjectPropSet.h"
 #include "../objectTypes/ObjectDeclaration2Body.h"
+
 #include "IFileNodeType.h"
 #include <QtCore/qglobal.h>
 
 namespace libmson {
 namespace priv {
+
+typedef std::shared_ptr<class ObjectSpaceObjectPropSet>
+    ObjectSpaceObjectPropSet_SPtr_t;
+typedef std::weak_ptr<class ObjectSpaceObjectPropSet>
+    ObjectSpaceObjectPropSet_WPtr_t;
 
 class ObjectDeclaration2LargeRefCountFND : public IFileNodeType {
 private:
@@ -18,11 +22,11 @@ private:
   quint32 m_cRef;
 
 public:
-  ObjectDeclaration2LargeRefCountFND(FileNode_WPtr_t parentFileNode);
+  ObjectDeclaration2LargeRefCountFND(FileNode_SPtr_t parentFileNode);
   virtual ~ObjectDeclaration2LargeRefCountFND() = default;
 
   ObjectSpaceObjectPropSet_WPtr_t getBlobRef();
-  void setBlobRef(const ObjectSpaceObjectPropSet_WPtr_t& blobRef);
+  void setBlobRef(const ObjectSpaceObjectPropSet_SPtr_t& blobRef);
 
   ObjectDeclaration2Body getBody() const;
   void setBody(const ObjectDeclaration2Body& body);

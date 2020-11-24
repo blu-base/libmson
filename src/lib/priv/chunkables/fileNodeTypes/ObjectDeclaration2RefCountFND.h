@@ -3,13 +3,16 @@
 
 #include <QtCore/qglobal.h>
 
-#include "../Chunkable.h"
-#include "../ObjectSpaceObjectPropSet.h"
 #include "../objectTypes/ObjectDeclaration2Body.h"
 #include "IFileNodeType.h"
 
 namespace libmson {
 namespace priv {
+
+typedef std::shared_ptr<class ObjectSpaceObjectPropSet>
+    ObjectSpaceObjectPropSet_SPtr_t;
+typedef std::weak_ptr<class ObjectSpaceObjectPropSet>
+    ObjectSpaceObjectPropSet_WPtr_t;
 
 class ObjectDeclaration2RefCountFND : public IFileNodeType {
 private:
@@ -19,11 +22,11 @@ private:
   quint8 m_cRef;
 
 public:
-  ObjectDeclaration2RefCountFND(FileNode_WPtr_t parentFileNode);
+  ObjectDeclaration2RefCountFND(FileNode_SPtr_t parentFileNode);
   virtual ~ObjectDeclaration2RefCountFND() = default;
 
   ObjectSpaceObjectPropSet_WPtr_t getBlobRef();
-  void setBlobRef(const ObjectSpaceObjectPropSet_WPtr_t& value);
+  void setBlobRef(const ObjectSpaceObjectPropSet_SPtr_t& value);
 
   ObjectDeclaration2Body getBody() const;
   void setBody(const ObjectDeclaration2Body& value);

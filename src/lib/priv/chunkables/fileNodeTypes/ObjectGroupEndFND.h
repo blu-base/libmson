@@ -11,7 +11,7 @@ class ObjectGroupEndFND
     : public IFileNodeType
     , public IStreamable {
 public:
-  ObjectGroupEndFND(FileNode_WPtr_t parentFileNode)
+  ObjectGroupEndFND(FileNode_SPtr_t parentFileNode)
       : IFileNodeType(std::move(parentFileNode)){};
   virtual ~ObjectGroupEndFND() = default;
 

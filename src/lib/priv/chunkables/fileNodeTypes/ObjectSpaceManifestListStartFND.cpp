@@ -4,7 +4,7 @@ namespace libmson {
 namespace priv {
 
 ObjectSpaceManifestListStartFND::ObjectSpaceManifestListStartFND(
-    FileNode_WPtr_t parentFileNode)
+    FileNode_SPtr_t parentFileNode)
     : IFileNodeType(std::move(parentFileNode))
 {
 }

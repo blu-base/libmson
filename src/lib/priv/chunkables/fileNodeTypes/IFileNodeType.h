@@ -2,17 +2,17 @@
 #define IFILENODETYPE_H
 
 #include <QtCore/qglobal.h>
-
-//#include "../Chunkable.h"
-#include "../FileNode.h"
 #include <memory>
-
-
 #include <utility> /* to be used by FND implementations for std::move*/
 
 
 namespace libmson {
 namespace priv {
+
+typedef std::shared_ptr<class FileNode> FileNode_SPtr_t;
+typedef std::weak_ptr<class FileNode> FileNode_WPtr_t;
+
+
 /**
  * @class IFileNodeType
  * @brief The abstract class for the Data contained in FileNodes
@@ -29,7 +29,7 @@ protected:
   FileNode_WPtr_t m_parent;
 
 public:
-  IFileNodeType(FileNode_WPtr_t parentFileNode);
+  IFileNodeType(FileNode_SPtr_t parentFileNode);
 
   virtual quint64 getSizeInFile() const = 0;
 };

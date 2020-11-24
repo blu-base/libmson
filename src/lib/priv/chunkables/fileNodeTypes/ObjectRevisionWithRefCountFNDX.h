@@ -4,11 +4,15 @@
 #include <QtCore/qglobal.h>
 
 #include "../../commonTypes/CompactID.h"
-#include "../ObjectSpaceObjectPropSet.h"
 #include "IFileNodeType.h"
 
 namespace libmson {
 namespace priv {
+
+typedef std::shared_ptr<class ObjectSpaceObjectPropSet>
+    ObjectSpaceObjectPropSet_SPtr_t;
+typedef std::weak_ptr<class ObjectSpaceObjectPropSet>
+    ObjectSpaceObjectPropSet_WPtr_t;
 
 class ObjectRevisionWithRefCountFNDX : public IFileNodeType {
 private:
@@ -19,11 +23,11 @@ private:
   quint8 m_cRef;
 
 public:
-  ObjectRevisionWithRefCountFNDX(FileNode_WPtr_t parentFileNode);
+  ObjectRevisionWithRefCountFNDX(FileNode_SPtr_t parentFileNode);
   virtual ~ObjectRevisionWithRefCountFNDX() = default;
 
   ObjectSpaceObjectPropSet_WPtr_t getRef() const;
-  void setRef(const ObjectSpaceObjectPropSet_WPtr_t value);
+  void setRef(const ObjectSpaceObjectPropSet_SPtr_t value);
 
   CompactID getOid() const;
   void setOid(const CompactID& value);

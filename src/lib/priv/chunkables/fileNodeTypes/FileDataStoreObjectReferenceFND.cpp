@@ -5,7 +5,7 @@
 namespace libmson {
 namespace priv {
 FileDataStoreObjectReferenceFND::FileDataStoreObjectReferenceFND(
-    FileNode_WPtr_t parentFileNode)
+    FileNode_SPtr_t parentFileNode)
     : IFileNodeType(std::move(parentFileNode))
 {
 }
@@ -16,7 +16,7 @@ FileDataStoreObject_WPtr_t FileDataStoreObjectReferenceFND::getBlobRef() const
 }
 
 void FileDataStoreObjectReferenceFND::setBlobRef(
-    const FileDataStoreObject_WPtr_t& value)
+    const FileDataStoreObject_SPtr_t& value)
 {
   m_blobRef = value;
 }

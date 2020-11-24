@@ -33,7 +33,7 @@ private:
   ExtendedGUID m_gosid;
 
 public:
-  ObjectSpaceManifestListStartFND(FileNode_WPtr_t parentFileNode);
+  ObjectSpaceManifestListStartFND(FileNode_SPtr_t parentFileNode);
   virtual ~ObjectSpaceManifestListStartFND() = default;
 
   ExtendedGUID gosid() const;

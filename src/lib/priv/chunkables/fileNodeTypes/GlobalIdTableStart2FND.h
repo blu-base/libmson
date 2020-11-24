@@ -12,7 +12,7 @@ class GlobalIdTableStart2FND
     : public IFileNodeType
     , public IStreamable {
 public:
-  GlobalIdTableStart2FND(FileNode_WPtr_t parentFileNode)
+  GlobalIdTableStart2FND(FileNode_SPtr_t parentFileNode)
       : IFileNodeType(parentFileNode){};
   virtual ~GlobalIdTableStart2FND() = default;
 

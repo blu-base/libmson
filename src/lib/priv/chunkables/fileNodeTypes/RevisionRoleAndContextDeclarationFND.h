@@ -19,7 +19,7 @@ private:
   ExtendedGUID m_gctxid;
 
 public:
-  RevisionRoleAndContextDeclarationFND(FileNode_WPtr_t parentFileNode);
+  RevisionRoleAndContextDeclarationFND(FileNode_SPtr_t parentFileNode);
   virtual ~RevisionRoleAndContextDeclarationFND() = default;
 
   RevisionRoleDeclarationFND getBase() const;

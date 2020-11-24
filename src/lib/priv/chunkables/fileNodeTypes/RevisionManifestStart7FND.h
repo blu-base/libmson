@@ -36,7 +36,7 @@ private:
   ExtendedGUID m_gctxid;
 
 public:
-  RevisionManifestStart7FND(FileNode_WPtr_t parentFileNode);
+  RevisionManifestStart7FND(FileNode_SPtr_t parentFileNode);
   virtual ~RevisionManifestStart7FND() = default;
 
 

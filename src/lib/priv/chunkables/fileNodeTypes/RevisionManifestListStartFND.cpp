@@ -4,7 +4,7 @@ namespace libmson {
 namespace priv {
 
 RevisionManifestListStartFND::RevisionManifestListStartFND(
-    FileNode_WPtr_t parentFileNode)
+    FileNode_SPtr_t parentFileNode)
     : IFileNodeType(std::move(parentFileNode)), m_nInstance()
 {
 }

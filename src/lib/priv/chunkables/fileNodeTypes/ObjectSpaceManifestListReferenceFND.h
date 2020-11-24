@@ -4,11 +4,14 @@
 #include <QtCore/qglobal.h>
 
 #include "../../commonTypes/ExtendedGUID.h"
-#include "../FileNodeListFragment.h"
 #include "IFileNodeType.h"
 
 namespace libmson {
 namespace priv {
+
+typedef std::shared_ptr<class FileNodeListFragment> FileNodeListFragment_SPtr_t;
+typedef std::weak_ptr<class FileNodeListFragment> FileNodeListFragment_WPtr_t;
+
 /**
  * @brief specifies the reference to an object space manifest list
  * @class ObjectSpaceManifestListReferenceFND
@@ -39,17 +42,16 @@ private:
   ExtendedGUID m_gosid;
 
 public:
-  ObjectSpaceManifestListReferenceFND(FileNode_WPtr_t parentFileNode);
+  ObjectSpaceManifestListReferenceFND(FileNode_SPtr_t parentFileNode);
   virtual ~ObjectSpaceManifestListReferenceFND() = default;
 
   FileNodeListFragment_WPtr_t getRef() const;
-  void setRef(const FileNodeListFragment_WPtr_t value);
+  void setRef(const FileNodeListFragment_SPtr_t value);
 
   ExtendedGUID getGosid() const;
   void setGosid(const ExtendedGUID& value);
 
   friend class RevisionStoreFileParser;
-  friend class RevisionStoreFileWriter;
 
   virtual quint64 getSizeInFile() const override;
 };

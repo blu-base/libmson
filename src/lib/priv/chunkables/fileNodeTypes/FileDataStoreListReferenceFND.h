@@ -3,12 +3,13 @@
 
 #include <QtCore/qglobal.h>
 
-#include "../FileNodeListFragment.h"
 #include "IFileNodeType.h"
-
 
 namespace libmson {
 namespace priv {
+
+typedef std::shared_ptr<class FileNodeListFragment> FileNodeListFragment_SPtr_t;
+typedef std::weak_ptr<class FileNodeListFragment> FileNodeListFragment_WPtr_t;
 
 class FileDataStoreListReferenceFND : public IFileNodeType {
 private:
@@ -17,11 +18,11 @@ private:
   //  FileNodeListFragment m_StoreList;
 
 public:
-  FileDataStoreListReferenceFND(FileNode_WPtr_t parentFileNode);
+  FileDataStoreListReferenceFND(FileNode_SPtr_t parentFileNode);
   virtual ~FileDataStoreListReferenceFND() = default;
 
   FileNodeListFragment_WPtr_t getRef() const;
-  void setRef(const FileNodeListFragment_WPtr_t value);
+  void setRef(const FileNodeListFragment_SPtr_t value);
 
   std::shared_ptr<FileNodeListFragment> getStoreList();
 

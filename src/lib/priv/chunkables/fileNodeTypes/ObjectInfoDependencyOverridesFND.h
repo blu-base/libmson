@@ -1,7 +1,7 @@
 #ifndef OBJECTINFODEPENDENCYOVERRIDESFND_H
 #define OBJECTINFODEPENDENCYOVERRIDESFND_H
 
-#include "../Chunkable.h"
+
 #include "../ObjectInfoDependencyOverrideData.h"
 #include "IFileNodeType.h"
 #include <QtCore/qglobal.h>
@@ -18,7 +18,7 @@ private:
   ObjectInfoDependencyOverrideData m_data;
 
 public:
-  ObjectInfoDependencyOverridesFND(FileNode_WPtr_t parentFileNode);
+  ObjectInfoDependencyOverridesFND(FileNode_SPtr_t parentFileNode);
   virtual ~ObjectInfoDependencyOverridesFND() = default;
 
   /**
@@ -28,11 +28,11 @@ public:
    * If ref is fcrNil, then data tails ref in the stream
    */
   ObjectInfoDependencyOverrideData_WPtr_t getRef() const;
-  void setRef(const ObjectInfoDependencyOverrideData_WPtr_t value);
+  void setRef(const ObjectInfoDependencyOverrideData_SPtr_t value);
 
   ObjectInfoDependencyOverrideData getData() const;
   void setData(const ObjectInfoDependencyOverrideData& value);
-  void setData(ObjectInfoDependencyOverrideData_WPtr_t remote);
+  void setData(ObjectInfoDependencyOverrideData_SPtr_t remote);
 
   virtual quint64 getSizeInFile() const override;
 

@@ -6,7 +6,7 @@ namespace libmson {
 namespace priv {
 
 ObjectRevisionWithRefCountFNDX::ObjectRevisionWithRefCountFNDX(
-    FileNode_WPtr_t parentFileNode)
+    FileNode_SPtr_t parentFileNode)
     : IFileNodeType(std::move(parentFileNode)), m_fHasOidReferences(false),
       m_fHasOsidReferences(false), m_cRef(0)
 {
@@ -52,7 +52,7 @@ ObjectSpaceObjectPropSet_WPtr_t ObjectRevisionWithRefCountFNDX::getRef() const
 }
 
 void ObjectRevisionWithRefCountFNDX::setRef(
-    const ObjectSpaceObjectPropSet_WPtr_t value)
+    const ObjectSpaceObjectPropSet_SPtr_t value)
 {
   m_ref = value;
 }

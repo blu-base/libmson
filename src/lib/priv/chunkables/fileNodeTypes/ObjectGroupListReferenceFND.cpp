@@ -6,7 +6,7 @@ namespace libmson {
 namespace priv {
 
 ObjectGroupListReferenceFND::ObjectGroupListReferenceFND(
-    FileNode_WPtr_t parentFileNode)
+    FileNode_SPtr_t parentFileNode)
     : IFileNodeType(std::move(parentFileNode))
 {
 }
@@ -34,7 +34,7 @@ FileNodeListFragment_WPtr_t ObjectGroupListReferenceFND::getRef() const
   return m_ref;
 }
 
-void ObjectGroupListReferenceFND::setRef(const FileNodeListFragment_WPtr_t& ref)
+void ObjectGroupListReferenceFND::setRef(const FileNodeListFragment_SPtr_t& ref)
 {
   m_ref = ref;
 }

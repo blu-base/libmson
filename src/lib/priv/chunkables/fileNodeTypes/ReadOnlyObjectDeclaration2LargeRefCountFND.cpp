@@ -1,11 +1,13 @@
 #include "ReadOnlyObjectDeclaration2LargeRefCountFND.h"
 
+#include "../FileNode.h"
+
 namespace libmson {
 namespace priv {
 
 
 ReadOnlyObjectDeclaration2LargeRefCountFND::
-    ReadOnlyObjectDeclaration2LargeRefCountFND(FileNode_WPtr_t parentFileNode)
+    ReadOnlyObjectDeclaration2LargeRefCountFND(FileNode_SPtr_t parentFileNode)
     : IFileNodeType(std::move(parentFileNode)), m_cRef()
 {
 }
@@ -35,7 +37,7 @@ ReadOnlyObjectDeclaration2LargeRefCountFND::getBlobRef()
 }
 
 void ReadOnlyObjectDeclaration2LargeRefCountFND::setBlobRef(
-    const ObjectSpaceObjectPropSet_WPtr_t& blobRef)
+    const ObjectSpaceObjectPropSet_SPtr_t& blobRef)
 {
   m_blobRef = blobRef;
 }

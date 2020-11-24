@@ -12,7 +12,7 @@ class RevisionManifestEndFND
     : public IFileNodeType
     , public IStreamable {
 public:
-  RevisionManifestEndFND(FileNode_WPtr_t parentFileNode)
+  RevisionManifestEndFND(FileNode_SPtr_t parentFileNode)
       : IFileNodeType(std::move(parentFileNode)){};
   virtual ~RevisionManifestEndFND() = default;
 

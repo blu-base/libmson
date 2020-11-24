@@ -5,7 +5,7 @@
 namespace libmson {
 namespace priv {
 HashedChunkDescriptor2FND::HashedChunkDescriptor2FND(
-    FileNode_WPtr_t parentFileNode)
+    FileNode_SPtr_t parentFileNode)
     : IFileNodeType(std::move(parentFileNode))
 {
 }

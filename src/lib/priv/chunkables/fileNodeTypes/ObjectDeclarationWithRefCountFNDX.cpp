@@ -7,7 +7,7 @@ namespace libmson {
 namespace priv {
 
 ObjectDeclarationWithRefCountFNDX::ObjectDeclarationWithRefCountFNDX(
-    FileNode_WPtr_t parentFileNode)
+    FileNode_SPtr_t parentFileNode)
     : IFileNodeType(std::move(parentFileNode)), m_cRef{}
 {
 }
@@ -20,7 +20,7 @@ ObjectDeclarationWithRefCountFNDX::getObjectRef() const
 }
 
 void ObjectDeclarationWithRefCountFNDX::setObjectRef(
-    const ObjectSpaceObjectPropSet_WPtr_t& value)
+    const ObjectSpaceObjectPropSet_SPtr_t& value)
 {
   m_objectRef = value;
 }

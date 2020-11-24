@@ -1,13 +1,11 @@
 #include "ObjectDataEncryptionKeyV2FNDX.h"
 
-#include "../../utils/Helper.h"
-
 #include "../FileNode.h"
 
 namespace libmson {
 namespace priv {
 ObjectDataEncryptionKeyV2FNDX::ObjectDataEncryptionKeyV2FNDX(
-    FileNode_WPtr_t parentFileNode)
+    FileNode_SPtr_t parentFileNode)
     : IFileNodeType(std::move(parentFileNode))
 {
 }
@@ -19,7 +17,7 @@ EncryptedData_WPtr_t ObjectDataEncryptionKeyV2FNDX::getBlobRef() const
 }
 
 void ObjectDataEncryptionKeyV2FNDX::setBlobRef(
-    const EncryptedData_WPtr_t& value)
+    const EncryptedData_SPtr_t& value)
 {
   m_blobRef = value;
 }

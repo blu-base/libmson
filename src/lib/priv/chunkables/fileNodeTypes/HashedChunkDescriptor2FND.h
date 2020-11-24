@@ -4,12 +4,16 @@
 #include <QtCore/qglobal.h>
 
 #include "IFileNodeType.h"
-
-#include "../Chunkable.h"
-#include "../ObjectSpaceObjectPropSet.h"
+#include <QByteArray>
 
 namespace libmson {
 namespace priv {
+
+typedef std::shared_ptr<class ObjectSpaceObjectPropSet>
+    ObjectSpaceObjectPropSet_SPtr_t;
+typedef std::weak_ptr<class ObjectSpaceObjectPropSet>
+    ObjectSpaceObjectPropSet_WPtr_t;
+
 
 class HashedChunkDescriptor2FND : public IFileNodeType {
 private:
@@ -19,7 +23,7 @@ private:
 
 
 public:
-  HashedChunkDescriptor2FND(FileNode_WPtr_t parentFileNode);
+  HashedChunkDescriptor2FND(FileNode_SPtr_t parentFileNode);
   virtual ~HashedChunkDescriptor2FND() = default;
 
   ObjectSpaceObjectPropSet_WPtr_t getBlobRef() const;

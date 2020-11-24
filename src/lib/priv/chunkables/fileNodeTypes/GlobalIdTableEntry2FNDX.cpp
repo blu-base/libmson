@@ -2,7 +2,7 @@
 
 namespace libmson {
 namespace priv {
-GlobalIdTableEntry2FNDX::GlobalIdTableEntry2FNDX(FileNode_WPtr_t parentFileNode)
+GlobalIdTableEntry2FNDX::GlobalIdTableEntry2FNDX(FileNode_SPtr_t parentFileNode)
     : IFileNodeType(std::move(parentFileNode)), m_iIndexMapFrom{0},
       m_iIndexMapTo{0}
 {

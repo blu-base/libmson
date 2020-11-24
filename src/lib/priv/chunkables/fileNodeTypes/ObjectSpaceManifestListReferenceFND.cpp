@@ -6,7 +6,7 @@ namespace libmson {
 namespace priv {
 
 ObjectSpaceManifestListReferenceFND::ObjectSpaceManifestListReferenceFND(
-    FileNode_WPtr_t parentFileNode)
+    FileNode_SPtr_t parentFileNode)
     : IFileNodeType(std::move(parentFileNode))
 {
 }
@@ -53,7 +53,7 @@ FileNodeListFragment_WPtr_t ObjectSpaceManifestListReferenceFND::getRef() const
 }
 
 void ObjectSpaceManifestListReferenceFND::setRef(
-    const FileNodeListFragment_WPtr_t value)
+    const FileNodeListFragment_SPtr_t value)
 {
   m_ref = value;
 }

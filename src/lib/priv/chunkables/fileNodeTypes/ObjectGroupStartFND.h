@@ -6,6 +6,7 @@
 #include "../../IStreamable.h"
 #include "../../commonTypes/ExtendedGUID.h"
 #include "IFileNodeType.h"
+
 namespace libmson {
 namespace priv {
 
@@ -16,7 +17,7 @@ private:
   ExtendedGUID m_oid;
 
 public:
-  ObjectGroupStartFND(FileNode_WPtr_t parentFileNode);
+  ObjectGroupStartFND(FileNode_SPtr_t parentFileNode);
   virtual ~ObjectGroupStartFND() = default;
 
   ExtendedGUID oid() const;

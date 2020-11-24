@@ -17,7 +17,7 @@ private:
   ExtendedGUID m_dataSignatureGroup;
 
 public:
-  DataSignatureGroupDefinitionFND(FileNode_WPtr_t parentFileNode);
+  DataSignatureGroupDefinitionFND(FileNode_SPtr_t parentFileNode);
   virtual ~DataSignatureGroupDefinitionFND() = default;
 
   ExtendedGUID getDataSignatureGroup() const;

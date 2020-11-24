@@ -34,7 +34,7 @@ private:
   ExtendedGUID m_gosidRoot;
 
 public:
-  ObjectSpaceManifestRootFND(FileNode_WPtr_t parentFileNode);
+  ObjectSpaceManifestRootFND(FileNode_SPtr_t parentFileNode);
   virtual ~ObjectSpaceManifestRootFND() = default;
 
   ExtendedGUID getGosidRoot() const;

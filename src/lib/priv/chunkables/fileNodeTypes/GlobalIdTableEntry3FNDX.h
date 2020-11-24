@@ -17,7 +17,7 @@ private:
   quint32 m_iIndexCopyToStart;
 
 public:
-  GlobalIdTableEntry3FNDX(FileNode_WPtr_t parentFileNode);
+  GlobalIdTableEntry3FNDX(FileNode_SPtr_t parentFileNode);
   virtual ~GlobalIdTableEntry3FNDX() = default;
 
   quint32 getIIndexCopyFromStart() const;

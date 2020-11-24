@@ -4,12 +4,13 @@
 #include <QtCore/qglobal.h>
 
 #include "../../commonTypes/ExtendedGUID.h"
-#include "../Chunkable.h"
-#include "../FileNodeListFragment.h"
 #include "IFileNodeType.h"
 
 namespace libmson {
 namespace priv {
+
+typedef std::shared_ptr<class FileNodeListFragment> FileNodeListFragment_SPtr_t;
+typedef std::weak_ptr<class FileNodeListFragment> FileNodeListFragment_WPtr_t;
 
 class ObjectGroupListReferenceFND : public IFileNodeType {
 private:
@@ -17,11 +18,11 @@ private:
   ExtendedGUID m_ObjectGroupID;
 
 public:
-  ObjectGroupListReferenceFND(FileNode_WPtr_t parentFileNode);
+  ObjectGroupListReferenceFND(FileNode_SPtr_t parentFileNode);
   virtual ~ObjectGroupListReferenceFND() = default;
 
   FileNodeListFragment_WPtr_t getRef() const;
-  void setRef(const FileNodeListFragment_WPtr_t& ref);
+  void setRef(const FileNodeListFragment_SPtr_t& ref);
 
   ExtendedGUID getObjectGroupID() const;
   void setObjectGroupID(const ExtendedGUID& objectGroupID);

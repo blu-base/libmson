@@ -6,7 +6,7 @@ namespace libmson {
 namespace priv {
 
 FileDataStoreListReferenceFND::FileDataStoreListReferenceFND(
-    FileNode_WPtr_t parentFileNode)
+    FileNode_SPtr_t parentFileNode)
     : IFileNodeType(std::move(parentFileNode))
 {
 }
@@ -18,7 +18,7 @@ FileNodeListFragment_WPtr_t FileDataStoreListReferenceFND::getRef() const
 }
 
 void FileDataStoreListReferenceFND::setRef(
-    const FileNodeListFragment_WPtr_t value)
+    const FileNodeListFragment_SPtr_t value)
 {
   m_ref = value;
 }

@@ -12,7 +12,7 @@ class ChunkTerminatorFND
     : public IFileNodeType
     , public IStreamable {
 public:
-  ChunkTerminatorFND(FileNode_WPtr_t parentFileNode)
+  ChunkTerminatorFND(FileNode_SPtr_t parentFileNode)
       : IFileNodeType(std::move(parentFileNode)){};
   virtual ~ChunkTerminatorFND() = default;
 

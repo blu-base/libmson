@@ -3,7 +3,7 @@
 namespace libmson {
 namespace priv {
 
-ObjectGroupStartFND::ObjectGroupStartFND(FileNode_WPtr_t parentFileNode)
+ObjectGroupStartFND::ObjectGroupStartFND(FileNode_SPtr_t parentFileNode)
     : IFileNodeType(std::move(parentFileNode)), m_oid(ExtendedGUID())
 {
 }

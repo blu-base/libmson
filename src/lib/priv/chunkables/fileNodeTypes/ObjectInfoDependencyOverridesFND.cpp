@@ -5,7 +5,7 @@ namespace libmson {
 namespace priv {
 
 ObjectInfoDependencyOverridesFND::ObjectInfoDependencyOverridesFND(
-    FileNode_WPtr_t parentFileNode)
+    FileNode_SPtr_t parentFileNode)
     : IFileNodeType(std::move(parentFileNode))
 {
 }
@@ -26,7 +26,7 @@ void ObjectInfoDependencyOverridesFND::setData(
 }
 
 void ObjectInfoDependencyOverridesFND::setData(
-    ObjectInfoDependencyOverrideData_WPtr_t remote)
+    ObjectInfoDependencyOverrideData_SPtr_t remote)
 {
   m_ref = remote;
 }
@@ -44,7 +44,7 @@ ObjectInfoDependencyOverridesFND::getRef() const
 }
 
 void ObjectInfoDependencyOverridesFND::setRef(
-    const ObjectInfoDependencyOverrideData_WPtr_t value)
+    const ObjectInfoDependencyOverrideData_SPtr_t value)
 {
   m_ref = value;
 }

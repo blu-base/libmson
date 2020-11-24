@@ -18,7 +18,7 @@ private:
   quint32 m_RevisionRole;
 
 public:
-  RevisionRoleDeclarationFND(FileNode_WPtr_t parentFileNode);
+  RevisionRoleDeclarationFND(FileNode_SPtr_t parentFileNode);
   virtual ~RevisionRoleDeclarationFND() = default;
 
   ExtendedGUID getRid() const;

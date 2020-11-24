@@ -3,14 +3,15 @@
 
 #include <QtCore/qglobal.h>
 
-#include "../Chunkable.h"
-#include "../FileDataStoreObject.h"
 #include "IFileNodeType.h"
 #include <QUuid>
 
 
 namespace libmson {
 namespace priv {
+
+typedef std::shared_ptr<class FileDataStoreObject> FileDataStoreObject_SPtr_t;
+typedef std::weak_ptr<class FileDataStoreObject> FileDataStoreObject_WPtr_t;
 
 class FileDataStoreObjectReferenceFND : public IFileNodeType {
 private:
@@ -20,11 +21,11 @@ private:
   //  FileDataStoreObject m_blob;
 
 public:
-  FileDataStoreObjectReferenceFND(FileNode_WPtr_t parentFileNode);
+  FileDataStoreObjectReferenceFND(FileNode_SPtr_t parentFileNode);
   virtual ~FileDataStoreObjectReferenceFND() = default;
 
   FileDataStoreObject_WPtr_t getBlobRef() const;
-  void setBlobRef(const FileDataStoreObject_WPtr_t& value);
+  void setBlobRef(const FileDataStoreObject_SPtr_t& value);
 
   QUuid getGuidReference() const;
   void setGuidReference(const QUuid& value);

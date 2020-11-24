@@ -17,7 +17,7 @@ private:
   QUuid m_guid;
 
 public:
-  GlobalIdTableEntryFNDX(FileNode_WPtr_t parentFileNode);
+  GlobalIdTableEntryFNDX(FileNode_SPtr_t parentFileNode);
   virtual ~GlobalIdTableEntryFNDX() = default;
 
   quint32 getIndex() const;

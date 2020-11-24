@@ -4,7 +4,7 @@ namespace libmson {
 namespace priv {
 
 RootObjectReference2FNDX::RootObjectReference2FNDX(
-    FileNode_WPtr_t parentFileNode)
+    FileNode_SPtr_t parentFileNode)
     : IFileNodeType(std::move(parentFileNode)), m_RootRole(0)
 {
 }

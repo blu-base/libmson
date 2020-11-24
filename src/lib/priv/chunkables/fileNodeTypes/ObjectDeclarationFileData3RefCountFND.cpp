@@ -5,7 +5,7 @@ namespace libmson {
 namespace priv {
 
 ObjectDeclarationFileData3RefCountFND::ObjectDeclarationFileData3RefCountFND(
-    FileNode_WPtr_t parentFileNode)
+    FileNode_SPtr_t parentFileNode)
     : IFileNodeType(std::move(parentFileNode)), m_cRef(0)
 {
 }

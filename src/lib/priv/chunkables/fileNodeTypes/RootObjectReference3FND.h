@@ -18,7 +18,7 @@ private:
   quint32 m_RootRole;
 
 public:
-  RootObjectReference3FND(FileNode_WPtr_t parentFileNode);
+  RootObjectReference3FND(FileNode_SPtr_t parentFileNode);
   virtual ~RootObjectReference3FND() = default;
 
   // IFileNodeType interface

@@ -1,12 +1,13 @@
 #include "ReadOnlyObjectDeclaration2RefCountFND.h"
 
+#include "../FileNode.h"
 
 namespace libmson {
 namespace priv {
 
 
 ReadOnlyObjectDeclaration2RefCountFND::ReadOnlyObjectDeclaration2RefCountFND(
-    FileNode_WPtr_t parentFileNode)
+    FileNode_SPtr_t parentFileNode)
     : IFileNodeType(std::move(parentFileNode)), m_cRef()
 {
 }

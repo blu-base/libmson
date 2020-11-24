@@ -12,7 +12,7 @@ class GlobalIdTableEndFNDX
     : public IFileNodeType
     , public IStreamable {
 public:
-  GlobalIdTableEndFNDX(FileNode_WPtr_t parentFileNode)
+  GlobalIdTableEndFNDX(FileNode_SPtr_t parentFileNode)
       : IFileNodeType(std::move(parentFileNode)){};
   virtual ~GlobalIdTableEndFNDX() = default;
 

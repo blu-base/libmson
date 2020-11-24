@@ -1,13 +1,19 @@
 #ifndef READONLYOBJECTDECLARATION2LARGEREFCOUNTFND_H
 #define READONLYOBJECTDECLARATION2LARGEREFCOUNTFND_H
 
-#include "../../commonTypes/FileNodeChunkReference.h"
 #include "IFileNodeType.h"
-#include "ObjectDeclaration2LargeRefCountFND.h"
+
+#include "../objectTypes/ObjectDeclaration2Body.h"
+
 #include <QtCore/qglobal.h>
 
 namespace libmson {
 namespace priv {
+
+typedef std::shared_ptr<class ObjectSpaceObjectPropSet>
+    ObjectSpaceObjectPropSet_SPtr_t;
+typedef std::weak_ptr<class ObjectSpaceObjectPropSet>
+    ObjectSpaceObjectPropSet_WPtr_t;
 
 class ReadOnlyObjectDeclaration2LargeRefCountFND : public IFileNodeType {
 private:
@@ -18,11 +24,11 @@ private:
   QByteArray m_md5hash;
 
 public:
-  ReadOnlyObjectDeclaration2LargeRefCountFND(FileNode_WPtr_t parentFileNode);
+  ReadOnlyObjectDeclaration2LargeRefCountFND(FileNode_SPtr_t parentFileNode);
   virtual ~ReadOnlyObjectDeclaration2LargeRefCountFND() = default;
 
   ObjectSpaceObjectPropSet_WPtr_t getBlobRef();
-  void setBlobRef(const ObjectSpaceObjectPropSet_WPtr_t& blobRef);
+  void setBlobRef(const ObjectSpaceObjectPropSet_SPtr_t& blobRef);
 
   ObjectDeclaration2Body getBody() const;
   void setBody(const ObjectDeclaration2Body& body);
