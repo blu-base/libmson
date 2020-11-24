@@ -1,11 +1,6 @@
 #include "IObjectSpaceObjectStream.h"
-
-#include "ObjectSpaceObjectStreamHeader.h"
-
 #include <algorithm>
 
-#include <QDataStream>
-#include <QDebug>
 
 namespace libmson {
 namespace priv {

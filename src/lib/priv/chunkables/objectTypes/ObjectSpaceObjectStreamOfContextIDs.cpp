@@ -1,20 +1,22 @@
 #include "ObjectSpaceObjectStreamOfContextIDs.h"
 
-#include "ObjectSpaceObjectStreamHeader.h"
-
-namespace libmson{
-namespace priv{
+namespace libmson {
+namespace priv {
 
 ObjectSpaceObjectStreamOfContextIDs::ObjectSpaceObjectStreamOfContextIDs()
-    : IObjectSpaceObjectStream() {}
+    : IObjectSpaceObjectStream()
+{
+}
 
 ObjectSpaceObjectStreamOfContextIDs::ObjectSpaceObjectStreamOfContextIDs(
-    const ObjectSpaceObjectStreamHeader::OsidStreamPresence &osidStreamPresence,
-    const ObjectSpaceObjectStreamHeader::ExtendedStreamPresence
-        &extendedStreamPresence)
-    : IObjectSpaceObjectStream(osidStreamPresence, extendedStreamPresence) {}
+    const ObjectSpaceObjectStreamHeader::OsidStreamPresence& osidStreamPresence,
+    const ObjectSpaceObjectStreamHeader::ExtendedStreamPresence&
+        extendedStreamPresence)
+    : IObjectSpaceObjectStream(osidStreamPresence, extendedStreamPresence)
+{
+}
 
 ObjectSpaceObjectStreamOfContextIDs::~ObjectSpaceObjectStreamOfContextIDs() {}
 
-} //namespace priv
+} // namespace priv
 } // namespace libmson

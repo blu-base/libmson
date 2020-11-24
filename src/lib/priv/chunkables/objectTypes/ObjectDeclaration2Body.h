@@ -1,7 +1,6 @@
 #ifndef OBJECTDECLARATION2BODY_H
 #define OBJECTDECLARATION2BODY_H
 
-#include <QXmlStreamWriter>
 #include <QtCore/qglobal.h>
 
 #include "../../commonTypes/CompactID.h"

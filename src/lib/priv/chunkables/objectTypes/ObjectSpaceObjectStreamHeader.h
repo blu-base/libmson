@@ -1,7 +1,6 @@
 #ifndef OBJECTSPACEOBJECTSTREAMHEADER_H
 #define OBJECTSPACEOBJECTSTREAMHEADER_H
 
-#include <QXmlStreamWriter>
 #include <QtCore/qglobal.h>
 
 #include "../../IStreamable.h"

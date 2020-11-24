@@ -1,20 +1,22 @@
 #include "ObjectSpaceObjectStreamOfOSIDs.h"
 
-#include "ObjectSpaceObjectStreamHeader.h"
-
-namespace libmson{
-namespace priv{
+namespace libmson {
+namespace priv {
 
 ObjectSpaceObjectStreamOfOSIDs::ObjectSpaceObjectStreamOfOSIDs()
-    : IObjectSpaceObjectStream() {}
+    : IObjectSpaceObjectStream()
+{
+}
 
 ObjectSpaceObjectStreamOfOSIDs::ObjectSpaceObjectStreamOfOSIDs(
-    const ObjectSpaceObjectStreamHeader::OsidStreamPresence &osidStreamPresence,
-    const ObjectSpaceObjectStreamHeader::ExtendedStreamPresence
-        &extendedStreamPresence)
-    : IObjectSpaceObjectStream(osidStreamPresence, extendedStreamPresence) {}
+    const ObjectSpaceObjectStreamHeader::OsidStreamPresence& osidStreamPresence,
+    const ObjectSpaceObjectStreamHeader::ExtendedStreamPresence&
+        extendedStreamPresence)
+    : IObjectSpaceObjectStream(osidStreamPresence, extendedStreamPresence)
+{
+}
 
 ObjectSpaceObjectStreamOfOSIDs::~ObjectSpaceObjectStreamOfOSIDs() {}
 
-} //namespace priv
+} // namespace priv
 } // namespace libmson
