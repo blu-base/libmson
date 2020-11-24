@@ -1,14 +1,9 @@
 #ifndef IFILECHUNKREFERENCE_H
 #define IFILECHUNKREFERENCE_H
 
-#include <QtCore/qglobal.h>
-
-#include <QDataStream>
-#include <QDebug>
-
-#include <QXmlStreamWriter>
-
 #include "../IStreamable.h"
+
+#include <QtCore/qglobal.h>
 
 namespace libmson {
 namespace priv {
@@ -18,7 +13,8 @@ enum class FCR_INIT {
   NIL,
 };
 
-template <typename S, typename C> class IFileChunkReference : public IStreamable {
+template <typename S, typename C>
+class IFileChunkReference : public IStreamable {
 protected:
   S m_stp;
   C m_cb;

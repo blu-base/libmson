@@ -1,10 +1,7 @@
 #include "CompactID.h"
 
 #include <QByteArray>
-#include <QDataStream>
-#include <QDebug>
 #include <QString>
-
 #include <cmath>
 #include <string>
 

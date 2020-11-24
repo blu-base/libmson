@@ -3,12 +3,8 @@
 
 #include <QtCore/qglobal.h>
 
-#include <QDataStream>
-#include <QDebug>
-#include <QUuid>
-#include <QXmlStreamWriter>
-
 #include "../IStreamable.h"
+#include <QUuid>
 
 
 namespace libmson {
