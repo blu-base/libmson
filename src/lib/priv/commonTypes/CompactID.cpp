@@ -66,12 +66,6 @@ QString CompactID::toString() const
 //  xmlWriter.writeEndElement();
 //}
 
-
-// void CompactID::toDebugString(QDebug &dbg) const {
-//  QDebugStateSaver saver(dbg);
-//  dbg.nospace() << "CompactID(" << toString() << ')';
-//}
-
 void CompactID::deserialize(QDataStream& ds)
 {
   quint32 temp{};
