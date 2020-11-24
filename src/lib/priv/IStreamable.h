@@ -9,8 +9,9 @@ namespace priv {
 
 
 /// Non-chunkable objects, which can be trivially (de)serialized.
-/// Typically such objects do not contain any file stream points, FileNodeChunkReferences, FileNodeListFragments, etc.
-/// The latter is handled in the RevisionStoreFileParser and RevisionStoreFileWrite classes
+/// Typically such objects do not contain any file stream pointers,
+/// FileNodeChunkReferences, FileNodeListFragments, etc. The latter is handled
+/// in the RevisionStoreFileParser and RevisionStoreFileWriter classes
 class IStreamable {
 protected:
   IStreamable()          = default;
@@ -18,7 +19,7 @@ protected:
 
 private:
   /// Parsing method for unchunkable objects in the MS-ONESTORE specification
-  virtual void deserialize(QDataStream& ds)     = 0;
+  virtual void deserialize(QDataStream& ds) = 0;
   /// Writing method for unchunkable objects in the MS-ONESTORE specification
   virtual void serialize(QDataStream& ds) const = 0;
 
