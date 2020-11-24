@@ -47,7 +47,7 @@ private:
   std::vector<FileNodeListFragment_WPtr_t> m_fileNodeListFragments;
 
 public:
-  ObjectGroupList(RevisionManifest_SPtr_t parent);
+  ObjectGroupList(const RevisionManifest_SPtr_t& parent);
 
   friend class RevisionStoreFileParser;
 };

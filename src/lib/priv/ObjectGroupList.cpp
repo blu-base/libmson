@@ -5,7 +5,7 @@
 namespace libmson {
 namespace priv {
 
-ObjectGroupList::ObjectGroupList(RevisionManifest_SPtr_t parent)
+ObjectGroupList::ObjectGroupList(const RevisionManifest_SPtr_t& parent)
     : m_parent(parent)
 {
 }
