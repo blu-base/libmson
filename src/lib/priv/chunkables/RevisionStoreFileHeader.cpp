@@ -1,5 +1,7 @@
 #include "RevisionStoreFileHeader.h"
 
+//#include "TransactionLogFragment.h"
+
 namespace libmson {
 namespace priv {
 
@@ -43,10 +45,10 @@ RevisionStoreFileHeader::RevisionStoreFileHeader(
     const quint8 fNeedsDefrag, const quint8 fRepairedFile,
     const quint8 fNeedsGarbageCollect, const quint8 fHasNoEmbeddedFileObjects,
     const QUuid& guidAncestor, const quint32 crcName,
-    FileNodeListFragment_WPtr_t fcrHashedChunkList,
-    TransactionLogFragment_WPtr_t fcrTransactionLog,
-    FileNodeListFragment_WPtr_t fcrFileNodeListRoot,
-    FreeChunkListFragment_WPtr_t fcrFreeChunkList,
+    FileNodeListFragment_SPtr_t fcrHashedChunkList,
+    TransactionLogFragment_SPtr_t fcrTransactionLog,
+    FileNodeListFragment_SPtr_t fcrFileNodeListRoot,
+    FreeChunkListFragment_SPtr_t fcrFreeChunkList,
     const quint64 cbExpectedFileLength,
     const quint64 cbFreeSpaceInFreeChunkList, const QUuid& guidFileVersion,
     const quint64 nFileVersionGeneration, const QUuid& guidDenyReadFileVersion,
@@ -279,7 +281,7 @@ FileNodeListFragment_WPtr_t RevisionStoreFileHeader::getFcrHashedChunkList()
 }
 
 void RevisionStoreFileHeader::setFcrHashedChunkList(
-    FileNodeListFragment_WPtr_t value)
+    FileNodeListFragment_SPtr_t value)
 {
   m_isChanged          = true;
   m_fcrHashedChunkList = value;
@@ -291,7 +293,7 @@ TransactionLogFragment_WPtr_t RevisionStoreFileHeader::getFcrTransactionLog()
 }
 
 void RevisionStoreFileHeader::setFcrTransactionLog(
-    TransactionLogFragment_WPtr_t value)
+    TransactionLogFragment_SPtr_t value)
 {
   m_isChanged         = true;
   m_fcrTransactionLog = value;
@@ -303,7 +305,7 @@ FileNodeListFragment_WPtr_t RevisionStoreFileHeader::getFcrFileNodeListRoot()
 }
 
 void RevisionStoreFileHeader::setFcrFileNodeListRoot(
-    FileNodeListFragment_WPtr_t value)
+    FileNodeListFragment_SPtr_t value)
 {
   m_isChanged           = true;
   m_fcrFileNodeListRoot = value;
@@ -315,7 +317,7 @@ FreeChunkListFragment_WPtr_t RevisionStoreFileHeader::getFcrFreeChunkList()
 }
 
 void RevisionStoreFileHeader::setFcrFreeChunkList(
-    FreeChunkListFragment_WPtr_t value)
+    FreeChunkListFragment_SPtr_t value)
 {
   m_isChanged        = true;
   m_fcrFreeChunkList = value;

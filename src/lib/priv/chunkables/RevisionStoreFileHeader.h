@@ -8,17 +8,22 @@
 
 #include "Chunkable.h"
 
-#include "../commonTypes/FileChunkReference32.h"
-#include "../commonTypes/FileChunkReference64x32.h"
-
-#include "Chunkable.h"
-
-#include "FileNodeListFragment.h"
-#include "FreeChunkListFragment.h"
-#include "TransactionLogFragment.h"
 
 namespace libmson {
 namespace priv {
+
+typedef std::shared_ptr<class TransactionLogFragment>
+    TransactionLogFragment_SPtr_t;
+typedef std::weak_ptr<class TransactionLogFragment>
+    TransactionLogFragment_WPtr_t;
+
+typedef std::shared_ptr<class FreeChunkListFragment>
+    FreeChunkListFragment_SPtr_t;
+typedef std::weak_ptr<class FreeChunkListFragment> FreeChunkListFragment_WPtr_t;
+
+typedef std::shared_ptr<class FileNodeListFragment> FileNodeListFragment_SPtr_t;
+typedef std::weak_ptr<class FileNodeListFragment> FileNodeListFragment_WPtr_t;
+
 
 class RevisionStoreFileHeader : public Chunkable {
 
@@ -38,10 +43,10 @@ public:
       const quint8 fNeedsDefrag, const quint8 fRepairedFile,
       const quint8 fNeedsGarbageCollect, const quint8 fHasNoEmbeddedFileObjects,
       const QUuid& guidAncestor, const quint32 crcName,
-      FileNodeListFragment_WPtr_t fcrHashedChunkList,
-      TransactionLogFragment_WPtr_t fcrTransactionLog,
-      FileNodeListFragment_WPtr_t fcrFileNodeListRoot,
-      FreeChunkListFragment_WPtr_t fcrFreeChunkList,
+      FileNodeListFragment_SPtr_t fcrHashedChunkList,
+      TransactionLogFragment_SPtr_t fcrTransactionLog,
+      FileNodeListFragment_SPtr_t fcrFileNodeListRoot,
+      FreeChunkListFragment_SPtr_t fcrFreeChunkList,
       const quint64 cbExpectedFileLength,
       const quint64 cbFreeSpaceInFreeChunkList, const QUuid& guidFileVersion,
       const quint64 nFileVersionGeneration,
@@ -164,16 +169,16 @@ public:
   void setCrcName(const quint32 value);
 
   FileNodeListFragment_WPtr_t getFcrHashedChunkList();
-  void setFcrHashedChunkList(FileNodeListFragment_WPtr_t value);
+  void setFcrHashedChunkList(FileNodeListFragment_SPtr_t value);
 
   TransactionLogFragment_WPtr_t getFcrTransactionLog();
-  void setFcrTransactionLog(TransactionLogFragment_WPtr_t value);
+  void setFcrTransactionLog(TransactionLogFragment_SPtr_t value);
 
   FileNodeListFragment_WPtr_t getFcrFileNodeListRoot();
-  void setFcrFileNodeListRoot(FileNodeListFragment_WPtr_t value);
+  void setFcrFileNodeListRoot(FileNodeListFragment_SPtr_t value);
 
   FreeChunkListFragment_WPtr_t getFcrFreeChunkList();
-  void setFcrFreeChunkList(FreeChunkListFragment_WPtr_t value);
+  void setFcrFreeChunkList(FreeChunkListFragment_SPtr_t value);
 
   quint64 getCbExpectedFileLength() const;
   void setCbExpectedFileLength(const quint64 value);
