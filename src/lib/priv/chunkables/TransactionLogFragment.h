@@ -10,14 +10,12 @@
 namespace libmson {
 namespace priv {
 
-class TransactionEntry;
-
 class TransactionLogFragment;
 typedef std::shared_ptr<TransactionLogFragment> TransactionLogFragment_SPtr_t;
 typedef std::weak_ptr<TransactionLogFragment> TransactionLogFragment_WPtr_t;
 
-typedef std::shared_ptr<TransactionEntry> TransactionEntry_SPtr_t;
-typedef std::weak_ptr<TransactionEntry> TransactionEntry_WPtr_t;
+typedef std::shared_ptr<class TransactionEntry> TransactionEntry_SPtr_t;
+typedef std::weak_ptr<class TransactionEntry> TransactionEntry_WPtr_t;
 
 class TransactionLogFragment : public Chunkable {
 private:
