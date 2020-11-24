@@ -1,4 +1,5 @@
 #include "ObjectSpaceObjectStreamHeader.h"
+#include <QDebug>
 
 namespace libmson {
 namespace priv {
