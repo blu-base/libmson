@@ -23,35 +23,39 @@ private:
 
 public:
   ExtendedGUID();
-  ExtendedGUID(const QUuid &guid, const quint32 &n);
+  ExtendedGUID(const QUuid& guid, const quint32& n);
 
   //  operator=(const ExtendedGUID &guid)
 
-  QUuid &getGuid();
-  void setGuid(const QUuid &guid);
+  QUuid& getGuid();
+  void setGuid(const QUuid& guid);
 
   quint32 getN() const;
-  void setN(const quint32 &n);
+  void setN(const quint32& n);
 
   bool isValid() const;
   bool isNull() const;
 
   QString toString() const;
 
-  friend bool operator==(const ExtendedGUID &lhs,
-                         const ExtendedGUID &rhs) noexcept;
-  friend bool operator!=(const ExtendedGUID &lhs,
-                         const ExtendedGUID &rhs) noexcept;
-  friend bool operator<=(const ExtendedGUID &lhs,
-                         const ExtendedGUID &rhs) noexcept;
-  friend bool operator>=(const ExtendedGUID &lhs,
-                         const ExtendedGUID &rhs) noexcept;
+  friend bool
+  operator==(const ExtendedGUID& lhs, const ExtendedGUID& rhs) noexcept;
+  friend bool
+  operator!=(const ExtendedGUID& lhs, const ExtendedGUID& rhs) noexcept;
+  friend bool
+  operator<=(const ExtendedGUID& lhs, const ExtendedGUID& rhs) noexcept;
+  friend bool
+  operator>=(const ExtendedGUID& lhs, const ExtendedGUID& rhs) noexcept;
+  friend bool
+  operator<(const ExtendedGUID& lhs, const ExtendedGUID& rhs) noexcept;
+  friend bool
+  operator>(const ExtendedGUID& lhs, const ExtendedGUID& rhs) noexcept;
 
   static constexpr quint64 getSizeInFile() { return sizeInFile; };
 
 private:
-  virtual void deserialize(QDataStream &ds) override;
-  virtual void serialize(QDataStream &ds) const override;
+  virtual void deserialize(QDataStream& ds) override;
+  virtual void serialize(QDataStream& ds) const override;
 };
 
 

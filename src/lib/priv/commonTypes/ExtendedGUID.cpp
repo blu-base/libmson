@@ -74,6 +74,34 @@ bool operator>=(const ExtendedGUID& lhs, const ExtendedGUID& rhs) noexcept
   return (lhs.m_guid >= rhs.m_guid) && (lhs.data_n >= rhs.data_n);
 }
 
+bool operator<(const ExtendedGUID& lhs, const ExtendedGUID& rhs) noexcept
+{
+  if (lhs.m_guid < rhs.m_guid) {
+    return true;
+  }
+
+  if (lhs.m_guid == rhs.m_guid) {
+
+    return (lhs.data_n < rhs.data_n);
+  }
+
+  return false;
+}
+
+bool operator>(const ExtendedGUID& lhs, const ExtendedGUID& rhs) noexcept
+{
+  if (lhs.m_guid > rhs.m_guid) {
+    return true;
+  }
+
+  if (lhs.m_guid == rhs.m_guid) {
+
+    return (lhs.data_n > rhs.data_n);
+  }
+
+  return false;
+}
+
 void ExtendedGUID::deserialize(QDataStream& ds)
 {
 
@@ -94,10 +122,6 @@ void ExtendedGUID::serialize(QDataStream& ds) const
   ds << m_guid;
   ds << data_n;
 }
-
-// void ExtendedGUID::toDebugString(QDebug &dbg) const {
-//  dbg.noquote() << "{" << m_guid.toString() << "," << data_n << "}";
-//}
 
 } // namespace priv
 } // namespace libmson
