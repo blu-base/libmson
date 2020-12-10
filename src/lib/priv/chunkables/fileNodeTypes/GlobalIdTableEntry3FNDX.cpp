@@ -53,25 +53,6 @@ void GlobalIdTableEntry3FNDX::serialize(QDataStream& ds) const
   ds << m_iIndexCopyToStart;
 }
 
-// void GlobalIdTableEntry3FNDX::toDebugString(QDebug &dbg) const {
-//  dbg << " GlobalIdTableEntry3FNDX: \n"
-//      << " iIndexCopyFromStart: " << m_iIndexCopyFromStart << '\n'
-//      << " cEntriesToCopy:      " << m_cEntriesToCopy << '\n'
-//      << " iIndexCopyToStart:   " << m_iIndexCopyToStart << '\n';
-//}
-
-// void GlobalIdTableEntry3FNDX::writeLowLevelXml(QXmlStreamWriter &xmlWriter)
-// const {
-//  xmlWriter.writeStartElement("GlobalIdTableEntry3FNDX");
-//  xmlWriter.writeAttribute("iIndexCopyFromStart",
-//                           QString::number(m_iIndexCopyFromStart));
-//  xmlWriter.writeAttribute("cEntriesToCopy",
-//  QString::number(m_cEntriesToCopy));
-//  xmlWriter.writeAttribute("iIndexCopyToStart",
-//                           QString::number(m_iIndexCopyToStart));
-//  xmlWriter.writeEndElement();
-//}
-
 quint64 GlobalIdTableEntry3FNDX::getSizeInFile() const { return sizeInFile; }
 
 

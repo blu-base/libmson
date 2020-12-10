@@ -51,9 +51,14 @@ public:
   ExtendedGUID getGosid() const;
   void setGosid(const ExtendedGUID& value);
 
-  friend class RevisionStoreFileParser;
 
   virtual quint64 getSizeInFile() const override;
+  virtual FileNodeTypeID getType() const override
+  {
+    return FileNodeTypeID::ObjectSpaceManifestListReferenceFND;
+  };
+
+  friend class RevisionStoreFileParser;
 };
 
 } // namespace priv

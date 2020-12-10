@@ -35,9 +35,13 @@ public:
   void setData(ObjectInfoDependencyOverrideData_SPtr_t remote);
 
   virtual quint64 getSizeInFile() const override;
+  virtual FileNodeTypeID getType() const override
+  {
+    return FileNodeTypeID::ObjectInfoDependencyOverridesFND;
+  };
 
   friend class RevisionStoreFileParser;
-  friend class RevisionStoreFileWriter;
+
 
   // private:
   //  virtual void deserialize(QDataStream& ds) override;

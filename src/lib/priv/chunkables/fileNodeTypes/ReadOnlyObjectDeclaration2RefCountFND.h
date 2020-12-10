@@ -38,9 +38,12 @@ public:
 
 
   virtual quint64 getSizeInFile() const override;
+  virtual FileNodeTypeID getType() const override
+  {
+    return FileNodeTypeID::ReadOnlyObjectDeclaration2RefCountFND;
+  };
 
   friend class RevisionStoreFileParser;
-  friend class RevisionStoreFileWriter;
 
   static const constexpr quint64 md5HashSize = 16;
 };

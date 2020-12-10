@@ -45,6 +45,12 @@ public:
   void setNInstance(const quint32& value);
 
   virtual quint64 getSizeInFile() const override;
+  virtual FileNodeTypeID getType() const override
+  {
+    return FileNodeTypeID::RevisionManifestListStartFND;
+  };
+
+  friend class RevisionStoreFileParser;
 
 private:
   virtual void deserialize(QDataStream& ds) override;

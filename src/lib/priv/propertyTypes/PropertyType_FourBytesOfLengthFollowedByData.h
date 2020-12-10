@@ -24,6 +24,7 @@ public:
   void setData(const QByteArray& data);
 
   virtual quint64 getSizeInFile() const override;
+  virtual PropertyIDType getType() const override;
 
 private:
   virtual void deserialize(QDataStream& ds) override;

@@ -127,10 +127,9 @@ public:
   QUuid getGuidFile() const;
   void setGuidFile(const QUuid& value);
 
-  QUuid getGuidLegacyFileVersion() const;
-  void setGuidLegacyFileVersion(const QUuid& value);
+  QUuid getGuidLegacyFileVersion() const { return guidLegacyFileVersion; };
 
-  QUuid getGuidFileFormat() const { return QUuid(guidFileFormat); };
+  QUuid getGuidFileFormat() const { return guidFileFormat; };
 
   quint32 getFfvLastWriterVersion() const;
   void setFfvLastWriterVersion(const quint32 value);

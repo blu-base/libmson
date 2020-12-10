@@ -14,6 +14,7 @@
 #include <QUuid>
 
 #include "../../lib/priv/RevisionStoreFile.h"
+#include "../../lib/priv/RevisionStoreFileParser.h"
 
 
 #include "RSFtoXml.h"
@@ -51,11 +52,12 @@ using namespace std;
 int main(int argc, char* argv[])
 {
   QCoreApplication app(argc, argv);
-  QCoreApplication::setApplicationName("one2xml");
+  QCoreApplication::setApplicationName("rsf2xml");
   QCoreApplication::setApplicationVersion("0.0");
 
   QCommandLineParser parser;
-  parser.setApplicationDescription("Converter for MS OneNote to Xml");
+  parser.setApplicationDescription(
+      "Prints RevisionStoreFile structure of a MS OneNote file to Xml.");
   parser.addHelpOption();
   parser.addVersionOption();
 
@@ -64,52 +66,57 @@ int main(int argc, char* argv[])
                     << "file",
       "Parse from <inputfile>.", "inputfile");
   parser.addOption(fileinput);
+
   QCommandLineOption direcotryinput(
       QStringList() << "d"
                     << "dir",
       "Parse directory <dir>.", "dir");
   parser.addOption(direcotryinput);
-  QCommandLineOption recursive(
-      QStringList() << "r"
-                    << "recursive",
-      "Parse directories recursively.");
-  parser.addOption(recursive);
-  QCommandLineOption output(
-      QStringList() << "o"
-                    << "output",
-      "Write generated data into the directory <output>. "
-      "Defaults to directory of input.",
-      "output");
-  parser.addOption(output);
+
+  QCommandLineOption recursivedirecotryinput(
+      QStringList() << "D"
+                    << "Dirs",
+      "Recursively parse directory <rdir>.", "rdir");
+  parser.addOption(recursivedirecotryinput);
+
+  //  QCommandLineOption output(
+  //      QStringList() << "o"
+  //                    << "output",
+  //      "Write generated data into the directory <output>. "
+  //      "Defaults to directory of input.",
+  //      "output");
+  //  parser.addOption(output);
 
   QCommandLineOption verbosity(
       QStringList() << "b"
                     << "verbose",
-      "Sets verbosity level (0-7) <vlevel>.", "vlevel");
+      "Sets verbosity level (0-7) of QDebug", "level");
   parser.addOption(verbosity);
 
-  QCommandLineOption debugStr(
-      QStringList() << "s"
-                    << "string",
-      "Prints parsed information.");
-  parser.addOption(debugStr);
+  QCommandLineOption treeOutput(
+      QStringList() << "t"
+                    << "tree",
+      "Prints RevisionStoreFile as tree. However, might print dubplicates of "
+      "branches, when there are multiple references to the same element "
+      "(likely)...");
+  parser.addOption(treeOutput);
+
 
   // Process the actual command line arguments given by the user
   parser.process(app);
 
-  bool inputFileSet = parser.isSet(fileinput);
-  bool inputDirSet  = parser.isSet(direcotryinput);
-  bool recursiveSet = parser.isSet(recursive);
-  bool outputSet    = parser.isSet(output);
-  bool verbositySet = parser.isSet(verbosity);
-  bool debugStrSet  = parser.isSet(debugStr);
+  bool inputFileSet         = parser.isSet(fileinput);
+  bool inputDirSet          = parser.isSet(direcotryinput);
+  bool recursiveInputDirSet = parser.isSet(recursivedirecotryinput);
+  bool verbositySet         = parser.isSet(verbosity);
+  bool treeOutputSet        = parser.isSet(treeOutput);
 
   if (verbositySet) {
     qDebug().setVerbosity(parser.value(verbosity).toInt());
   }
 
   QTextStream out(stdout);
-  if (!inputFileSet && !inputDirSet) {
+  if (!inputFileSet && !inputDirSet && !recursiveInputDirSet) {
     out << "\n ERROR: No input given.\n\n";
     out << parser.helpText() << "\n";
     return 1;
@@ -128,48 +135,60 @@ int main(int argc, char* argv[])
     }
   }
 
+  // collect files onlyin specified path
   if (inputDirSet) {
     QStringList rawnames = parser.values(direcotryinput);
     for (const auto& entry : rawnames) {
       QDir dir(entry);
-      QStringList dirFiles = fileDirs(dir, recursiveSet);
+      QStringList dirFiles = fileDirs(dir, false);
+      files.append(dirFiles);
+    }
+  }
+
+  // collect files from directory tree
+  if (recursiveInputDirSet) {
+    QStringList rawnames = parser.values(recursivedirecotryinput);
+    for (const auto& entry : rawnames) {
+      QDir dir(entry);
+      QStringList dirFiles = fileDirs(dir, true);
       files.append(dirFiles);
     }
   }
 
   if (files.empty()) {
-    out << "\n ERROR: Specified input not found or didn't contain onenote "
-           "files.\n\n";
+    out << "\n ERROR: Specified input not found or input didn't contain any "
+           "onenote files.\n\n";
     return 1;
   }
 
   for (const auto& entry : files) {
 
-    QFileInfo file(entry);
+    QFileInfo fileInfo(entry);
 
-    QString outputPath;
     QString baseFileName =
-        file.fileName().left(file.fileName().lastIndexOf('.'));
+        fileInfo.fileName().left(fileInfo.fileName().lastIndexOf('.'));
 
+    // parse file
+    QFile msonFile(entry);
+    bool couldopen = msonFile.open(QIODevice::ReadOnly);
 
-    //    QUuid guid = manager.parseDocument(entry);
+    if (!couldopen) {
+      qFatal("Could not open file.");
+    }
 
-    //    if (outputSet) {
-    //      outputPath = parser.value(output);
-    //    }
-    //    else {
+    QDataStream input(&msonFile);
+    auto fileParser =
+        libmson::priv::RevisionStoreFileParser(input, baseFileName + ".one");
+    auto revisionStoreFile = fileParser.parse();
+    msonFile.close();
 
-    //      if (entry.contains("/")) {
-    //        outputPath = entry.left(entry.lastIndexOf("/"));
-    //      }
-    //      else {
-    //        outputPath = ".";
-    //      }
-    //    }
-
-
-    //    manager.generateXml(guid, outputPath + "/" + baseFileName + ".xml");
-    //    manager.removeDocument(guid);
+    QFile outputFile(baseFileName + ".xml");
+    if (treeOutputSet) {
+      RSFtoXml::writeRSFTree(outputFile, revisionStoreFile);
+    }
+    else {
+      RSFtoXml::writeRSFSequence(outputFile, revisionStoreFile);
+    }
   }
 
   return 0;

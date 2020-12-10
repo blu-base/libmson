@@ -24,6 +24,12 @@ public:
   void setDataSignatureGroup(const ExtendedGUID& DataSignatureGroup);
 
   virtual quint64 getSizeInFile() const override;
+  virtual FileNodeTypeID getType() const override
+  {
+    return FileNodeTypeID::DataSignatureGroupDefinitionFND;
+  };
+
+  friend class RevisionStoreFileParser;
 
 private:
   virtual void deserialize(QDataStream& ds) override;

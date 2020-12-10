@@ -21,6 +21,11 @@ void PropertyType_ArrayNumber::serialize(QDataStream& ds) const
   ds << m_cCIDs;
 }
 
+PropertyIDType libmson::priv::PropertyType_ArrayNumber::getType() const
+{
+  return PropertyIDType::ArrayNumber;
+}
+
 // void PropertyType_ArrayNumber::toDebugString(QDebug &dbg) const {}
 
 // void PropertyType_ArrayNumber::writeLowLevelXml(

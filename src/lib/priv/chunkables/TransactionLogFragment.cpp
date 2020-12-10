@@ -96,12 +96,6 @@ void TransactionEntry::deserialize(QDataStream& ds)
   ds >> TransactionEntrySwitch;
 }
 
-// void TransactionEntry::toDebugString(QDebug &dbg) const {
-//  dbg.noquote() << "TransactionEntry:  srcID: " << qStringHex(srcID, 8)
-//                << " transactionEntrySwitch: "
-//                << qStringHex(TransactionEntrySwitch, 8) << '\n';
-//}
-
 quint32 TransactionEntry::getSrcID() const { return srcID; }
 
 void TransactionEntry::setSrcID(const quint32& value) { srcID = value; }

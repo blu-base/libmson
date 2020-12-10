@@ -25,10 +25,10 @@ private:
 public:
   ObjectInfoDependencyOverride8() = default;
 
-  CompactID oid() const;
+  CompactID getOid() const;
   void setOid(const CompactID& oid);
 
-  quint8 cRef() const;
+  quint8 getCRef() const;
   void setCRef(const quint8& cRef);
 
   static quint64 getSizeInFile() { return 5; }

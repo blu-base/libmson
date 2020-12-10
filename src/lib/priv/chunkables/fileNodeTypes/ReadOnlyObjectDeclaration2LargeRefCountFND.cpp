@@ -64,44 +64,5 @@ void ReadOnlyObjectDeclaration2LargeRefCountFND::setCRef(const quint32& cRef)
   m_cRef = cRef;
 }
 
-
-// void ReadOnlyObjectDeclaration2LargeRefCountFND::deserialize(QDataStream &ds)
-// {
-
-//  m_base = ObjectDeclaration2LargeRefCountFND(m_stpFormat, m_cbFormat);
-//  ds >> m_base;
-
-//  m_md5hash = ds.device()->read(md5HashSize);
-//}
-
-// void ReadOnlyObjectDeclaration2LargeRefCountFND::serialize(
-//    QDataStream &ds) const {
-
-//  ds << m_base;
-//  ds << m_md5hash;
-//}
-
-// void ReadOnlyObjectDeclaration2LargeRefCountFND::toDebugString(
-//    QDebug &dbg) const {
-
-//  dbg << " ReadOnlyObjectDeclaration2LargeRefCountFND\n"
-//      << " Base:\n"
-//      << m_base << "\nmd5hash: " << m_md5hash.toHex() << '\n';
-//}
-
-// void ReadOnlyObjectDeclaration2LargeRefCountFND::writeLowLevelXml(
-//    QXmlStreamWriter &xmlWriter) const {
-
-//  xmlWriter.writeStartElement("ReadOnlyObjectDeclaration2LargeRefCountFND");
-
-//  xmlWriter << m_base;
-
-//  xmlWriter.writeStartElement("md5hash");
-//  xmlWriter.writeCharacters(m_md5hash.toHex());
-//  xmlWriter.writeEndElement();
-
-//  xmlWriter.writeEndElement();
-//}
-
 } // namespace priv
 } // namespace libmson

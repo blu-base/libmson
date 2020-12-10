@@ -46,6 +46,11 @@ quint64 PropertyType_ArrayOfPropertyValues::getSizeInFile() const
                               });
 }
 
+PropertyIDType PropertyType_ArrayOfPropertyValues::getType() const
+{
+  return PropertyIDType::ArrayOfPropertyValues;
+}
+
 void PropertyType_ArrayOfPropertyValues::deserialize(QDataStream& ds)
 {
   ds >> m_cProperties;
@@ -73,23 +78,6 @@ void PropertyType_ArrayOfPropertyValues::serialize(QDataStream& ds) const
     }
   }
 }
-
-// void PropertyType_ArrayOfPropertyValues::toDebugString(QDebug &dbg) const {}
-
-// void PropertyType_ArrayOfPropertyValues::writeLowLevelXml(
-//    QXmlStreamWriter &xmlWriter) const {
-//  xmlWriter.writeStartElement("ArrayOfPropertyValues");
-//  xmlWriter.writeAttribute("m_cProperties", QString::number(m_cProperties));
-//  xmlWriter << m_prid;
-
-//  xmlWriter.writeStartElement("PropertySets");
-//  for (const auto &entry : m_data) {
-//    xmlWriter << entry;
-//  }
-//  xmlWriter.writeEndElement();
-
-//  xmlWriter.writeEndElement();
-//}
 
 } // namespace priv
 } // namespace libmson

@@ -4,6 +4,7 @@
 namespace libmson {
 namespace priv {
 
+
 ObjectDeclarationWithRefCountBody::ObjectDeclarationWithRefCountBody()
     : m_jci(), m_odcs(), m_fReserved1(), m_fHasOidReferences(false),
       m_fHasOsidReferences(false), m_fReserved2()
@@ -23,7 +24,7 @@ void ObjectDeclarationWithRefCountBody::deserialize(QDataStream& ds)
   m_fHasOidReferences  = (temp >> 16) & 0x1;
   m_fHasOsidReferences = (temp >> 17) & 0x1;
 
-  ds.device()->skip(2u);
+  ds >> m_fReserved2;
 }
 
 void ObjectDeclarationWithRefCountBody::serialize(QDataStream& ds) const
@@ -90,31 +91,15 @@ void ObjectDeclarationWithRefCountBody::setOid(const CompactID& value)
   m_oid = value;
 }
 
-// void ObjectDeclarationWithRefCountBody::writeLowLevelXml(
-//    QXmlStreamWriter &xmlWriter) const {
-//  xmlWriter.writeStartElement("ObjectDeclarationWithRefCountBody");
-//  xmlWriter.writeAttribute("jci", qStringHex(m_jci, 2));
-//  xmlWriter.writeAttribute("odcs", qStringHex(m_odcs, 1));
-//  xmlWriter.writeAttribute("fReserved1", qStringHex(m_fReserved1, 1));
-//  xmlWriter.writeAttribute("fReserved2", qStringHex(m_fReserved2, 8));
-//  xmlWriter.writeAttribute("fHasOidReferences",
-//                           m_fHasOsidReferences ? "true" : "false");
-//  xmlWriter.writeAttribute("fHasOsidReferences",
-//                           m_fHasOsidReferences ? "true" : "false");
+quint8 ObjectDeclarationWithRefCountBody::getFReserved1() const
+{
+  return m_fReserved1;
+}
 
-//  xmlWriter << m_oid;
-
-//  xmlWriter.writeEndElement();
-//}
-
-// void ObjectDeclarationWithRefCountBody::toDebugString(QDebug &dbg) const {
-//  dbg << "ObjectDeclarationWithRefCountBody:\n"
-//      << "oid: " << m_oid << '\n'
-//      << "jci: " << m_jci << '\n'
-//      << "odcs: " << m_odcs << '\n'
-//      << "fHasOidReferences: " << m_fHasOidReferences << " fHasOsidReferences"
-//      << m_fHasOsidReferences << '\n';
-//}
+quint32 ObjectDeclarationWithRefCountBody::getFReserved2() const
+{
+  return m_fReserved2;
+}
 
 } // namespace priv
 } // namespace libmson

@@ -13,6 +13,7 @@ public:
   PropertyType_ObjectSpaceID();
 
   virtual quint64 getSizeInFile() const override { return 0; };
+  virtual PropertyIDType getType() const override;
 
 private:
   virtual void deserialize(QDataStream& ds) override;

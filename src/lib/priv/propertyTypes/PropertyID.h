@@ -2,6 +2,7 @@
 #define PROPERTYID_H
 
 #include "IProperty.h"
+#include "IPropertyType.h"
 #include <QtCore/qglobal.h>
 
 namespace libmson {
@@ -370,25 +371,6 @@ enum class PropertyIDs : quint32 {
 
 };
 
-enum class PropertyIDType : quint8 {
-  None                            = 0x0,
-  NoData                          = 0x1,
-  Bool                            = 0x2,
-  OneByteOfData                   = 0x3,
-  TwoBytesOfData                  = 0x4,
-  FourBytesOfData                 = 0x5,
-  EightBytesOfData                = 0x6,
-  FourBytesOfLengthFollowedByData = 0x7,
-  ObjectID                        = 0x8,
-  ArrayOfObjectIDs                = 0x9,
-  ObjectSpaceID                   = 0xA,
-  ArrayOfObjectSpaceIDs           = 0xB,
-  ContextID                       = 0xC,
-  ArrayOfContextIDs               = 0xD,
-  ArrayOfPropertyValues           = 0x10,
-  PropertySet                     = 0x11,
-  InvalidType                     = 0xFF,
-};
 
 class PropertyID : public IProperty {
 private:

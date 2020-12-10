@@ -21,7 +21,6 @@ public:
   RootObjectReference2FNDX(FileNode_SPtr_t parentFileNode);
   virtual ~RootObjectReference2FNDX() = default;
 
-
   CompactID getOidRoot() const;
   void setOidRoot(const CompactID& value);
 
@@ -29,6 +28,12 @@ public:
   void setRootRole(const quint32& value);
 
   virtual quint64 getSizeInFile() const override;
+  virtual FileNodeTypeID getType() const override
+  {
+    return FileNodeTypeID::RootObjectReference2FNDX;
+  };
+
+  friend class RevisionStoreFileParser;
 
 private:
   virtual void deserialize(QDataStream& ds) override;

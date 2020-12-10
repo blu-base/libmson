@@ -3,6 +3,8 @@
 #include <array>
 #include <memory>
 
+#include "utils/ChunkableUtils.h"
+
 //#include "chunkables/Chunkable.h"
 #include "chunkables/EncryptedData.h"
 #include "chunkables/FileDataStoreObject.h"
@@ -67,6 +69,8 @@
 #include "ObjectSpaceManifestList.h"
 #include "RevisionManifest.h"
 #include "RevisionManifestList.h"
+
+#include <QDebug>
 
 
 namespace libmson {
@@ -241,17 +245,21 @@ bool RevisionStoreFileWriter::writeRevisionStoreFileHeader(
   ds << header->getCrcName();
 
   // fcrHashedChunkList
-  ds << getFcr64x32FromChunk(header->getFcrHashedChunkList());
+  ds << getFcr64x32FromChunk(
+      m_revStoreFile, header->getFcrHashedChunkList(), FCR_INIT::NIL);
 
   // 0x00A0
   // fcrTransactionLog
-  ds << getFcr64x32FromChunk(header->getFcrTransactionLog());
+  ds << getFcr64x32FromChunk(
+      m_revStoreFile, header->getFcrTransactionLog(), FCR_INIT::NIL);
 
   // fcrFileNodeListRoot
-  ds << getFcr64x32FromChunk(header->getFcrFileNodeListRoot());
+  ds << getFcr64x32FromChunk(
+      m_revStoreFile, header->getFcrFileNodeListRoot(), FCR_INIT::NIL);
 
   // fcrFreeChunkList
-  ds << getFcr64x32FromChunk(header->getFcrFreeChunkList());
+  ds << getFcr64x32FromChunk(
+      m_revStoreFile, header->getFcrFreeChunkList(), FCR_INIT::NIL);
 
   // 0x00C4
   ds << header->getCbExpectedFileLength();
@@ -335,7 +343,8 @@ bool RevisionStoreFileWriter::writeTransactionLogFragment(
 
 
   ds << getFcr64x32FromChunk(
-      transactionLogFragment->getNextFragment(), FCR_INIT::ZERO);
+      m_revStoreFile, transactionLogFragment->getNextFragment(),
+      FCR_INIT::ZERO);
 
 
   quint8 zeros{};
@@ -527,18 +536,18 @@ bool RevisionStoreFileWriter::writeFileNode(
           fileNode->getFnt());
 
       ds << getFncrFromChunk(
-          cFnd->getBlobRef(), fileNode->getStpFormatEnum(),
-          fileNode->getCbFormatEnum());
+          m_revStoreFile, cFnd->getBlobRef(), fileNode->getStpFormatEnum(),
+          fileNode->getCbFormatEnum(), FCR_INIT::NIL);
 
-      ds << cFnd->m_guidReference;
+      ds << cFnd->getGuidReference();
       break;
     }
     case FileNodeTypeID::HashedChunkDescriptor2FND: {
       auto cFnd = std::static_pointer_cast<HashedChunkDescriptor2FND>(
           fileNode->getFnt());
       ds << getFncrFromChunk(
-          cFnd->getBlobRef(), fileNode->getStpFormatEnum(),
-          fileNode->getCbFormatEnum());
+          m_revStoreFile, cFnd->getBlobRef(), fileNode->getStpFormatEnum(),
+          fileNode->getCbFormatEnum(), FCR_INIT::NIL);
 
 
       auto propSet = cFnd->getBlobRef().lock();
@@ -550,9 +559,17 @@ bool RevisionStoreFileWriter::writeFileNode(
         writeObjectSpaceObjectPropSet(data_ds, propSet);
       }
 
+      //      qInfo() << "HashedChunkDescriptor2FND\nData:\n"
+      //              << data->toHex() << '\n'
+      //              << "Original Hash:\n"
+      //              << cFnd->getGuidHash().toHex();
+
       const QByteArray md5hash =
           QCryptographicHash::hash(*data, QCryptographicHash::Md5);
       cFnd->setGuidHash(md5hash);
+
+      //      qInfo() << "New Hash:\n" << md5hash.toHex() << '\n';
+
 
       ds.writeRawData(md5hash.data(), cFnd->guidHashWidth);
       break;
@@ -561,16 +578,16 @@ bool RevisionStoreFileWriter::writeFileNode(
       auto cFnd = std::static_pointer_cast<ObjectDataEncryptionKeyV2FNDX>(
           fileNode->getFnt());
       ds << getFncrFromChunk(
-          cFnd->getBlobRef(), fileNode->getStpFormatEnum(),
-          fileNode->getCbFormatEnum());
+          m_revStoreFile, cFnd->getBlobRef(), fileNode->getStpFormatEnum(),
+          fileNode->getCbFormatEnum(), FCR_INIT::NIL);
       break;
     }
     case FileNodeTypeID::ObjectDeclaration2LargeRefCountFND: {
       auto cFnd = std::static_pointer_cast<ObjectDeclaration2LargeRefCountFND>(
           fileNode->getFnt());
       ds << getFncrFromChunk(
-          cFnd->getBlobRef(), fileNode->getStpFormatEnum(),
-          fileNode->getCbFormatEnum());
+          m_revStoreFile, cFnd->getBlobRef(), fileNode->getStpFormatEnum(),
+          fileNode->getCbFormatEnum(), FCR_INIT::NIL);
       ds << cFnd->getBody();
       ds << cFnd->getCRef();
       break;
@@ -579,8 +596,8 @@ bool RevisionStoreFileWriter::writeFileNode(
       auto cFnd = std::static_pointer_cast<ObjectDeclaration2RefCountFND>(
           fileNode->getFnt());
       ds << getFncrFromChunk(
-          cFnd->getBlobRef(), fileNode->getStpFormatEnum(),
-          fileNode->getCbFormatEnum());
+          m_revStoreFile, cFnd->getBlobRef(), fileNode->getStpFormatEnum(),
+          fileNode->getCbFormatEnum(), FCR_INIT::NIL);
       ds << cFnd->getBody();
       ds << cFnd->getCRef();
       break;
@@ -589,8 +606,8 @@ bool RevisionStoreFileWriter::writeFileNode(
       auto cFnd = std::static_pointer_cast<ObjectDeclarationWithRefCount2FNDX>(
           fileNode->getFnt());
       ds << getFncrFromChunk(
-          cFnd->getObjectRef(), fileNode->getStpFormatEnum(),
-          fileNode->getCbFormatEnum());
+          m_revStoreFile, cFnd->getObjectRef(), fileNode->getStpFormatEnum(),
+          fileNode->getCbFormatEnum(), FCR_INIT::NIL);
       ds << cFnd->getBody();
       ds << cFnd->getCRef();
       break;
@@ -601,8 +618,8 @@ bool RevisionStoreFileWriter::writeFileNode(
               fileNode->getFnt());
       // base
       ds << getFncrFromChunk(
-          cFnd->getBlobRef(), fileNode->getStpFormatEnum(),
-          fileNode->getCbFormatEnum());
+          m_revStoreFile, cFnd->getBlobRef(), fileNode->getStpFormatEnum(),
+          fileNode->getCbFormatEnum(), FCR_INIT::NIL);
       ds << cFnd->getBody();
       ds << cFnd->getCRef();
 
@@ -621,24 +638,35 @@ bool RevisionStoreFileWriter::writeFileNode(
                << data->toHex();
       */
 
+      qInfo() << "ReadOnlyObjectDeclaration2LargeRefCountFND\nData: sizeMod: "
+              << propSet->getSizeInFile() % 8 << '\n'
+              << data->toHex() << '\n'
+              << "Original Hash:\n"
+              << cFnd->getMd5hash().toHex();
+
+
       const QByteArray md5hash =
           QCryptographicHash::hash(*data, QCryptographicHash::Md5);
       cFnd->setMd5hash(md5hash);
+
+      qInfo() << "New Hash:\n" << md5hash.toHex() << '\n';
 
       /*
       qDebug() << "Original Md5 hash:\n" << cFnd->getMd5hash().toHex();
       qDebug() << "Computed Md5 hash:\n" << md5hash.toHex();
       */
 
-      ds.writeRawData(md5hash.data(), cFnd->md5HashSize);
+      ds.writeRawData(
+          md5hash.data(),
+          ReadOnlyObjectDeclaration2LargeRefCountFND::md5HashSize);
     }
     case FileNodeTypeID::ReadOnlyObjectDeclaration2RefCountFND: {
       auto cFnd =
           std::static_pointer_cast<ReadOnlyObjectDeclaration2RefCountFND>(
               fileNode->getFnt());
       ds << getFncrFromChunk(
-          cFnd->getBlobRef(), fileNode->getStpFormatEnum(),
-          fileNode->getCbFormatEnum());
+          m_revStoreFile, cFnd->getBlobRef(), fileNode->getStpFormatEnum(),
+          fileNode->getCbFormatEnum(), FCR_INIT::NIL);
       ds << cFnd->getBody();
       ds << cFnd->getCRef();
 
@@ -656,9 +684,17 @@ bool RevisionStoreFileWriter::writeFileNode(
               << data->toHex();
       */
 
+      qInfo() << "ReadOnlyObjectDeclaration2RefCountFND\nData: sizeMod: "
+              << propSet->getSizeInFile() % 8 << '\n'
+              << data->toHex() << '\n'
+              << "Original Hash:\n"
+              << cFnd->getMd5hash().toHex();
+
       const QByteArray md5hash =
           QCryptographicHash::hash(*data, QCryptographicHash::Md5);
       cFnd->setMd5hash(md5hash);
+
+      qInfo() << "New Hash:\n" << md5hash.toHex() << '\n';
       /*
       qInfo() << "Original Md5 hash:\n" << cFnd->getMd5hash().toHex();
       qInfo() << "Computed Md5 hash:\n" << md5hash.toHex();
@@ -671,8 +707,8 @@ bool RevisionStoreFileWriter::writeFileNode(
       auto cFnd = std::static_pointer_cast<ObjectDeclarationWithRefCountFNDX>(
           fileNode->getFnt());
       ds << getFncrFromChunk(
-          cFnd->getObjectRef(), fileNode->getStpFormatEnum(),
-          fileNode->getCbFormatEnum());
+          m_revStoreFile, cFnd->getObjectRef(), fileNode->getStpFormatEnum(),
+          fileNode->getCbFormatEnum(), FCR_INIT::NIL);
       ds << cFnd->getBody();
       ds << cFnd->getCRef();
       break;
@@ -688,7 +724,8 @@ bool RevisionStoreFileWriter::writeFileNode(
       if (!ref.expired()) {
 
         auto fncr = getFncrFromChunk(
-            ref, fileNode->getStpFormatEnum(), fileNode->getCbFormatEnum());
+            m_revStoreFile, ref, fileNode->getStpFormatEnum(),
+            fileNode->getCbFormatEnum(), FCR_INIT::NIL);
         ds << fncr;
       }
       else {
@@ -705,8 +742,8 @@ bool RevisionStoreFileWriter::writeFileNode(
           fileNode->getFnt());
 
       ds << getFncrFromChunk(
-          cFnd->getRef(), fileNode->getStpFormatEnum(),
-          fileNode->getCbFormatEnum());
+          m_revStoreFile, cFnd->getRef(), fileNode->getStpFormatEnum(),
+          fileNode->getCbFormatEnum(), FCR_INIT::NIL);
       ds << cFnd->getOid();
 
       quint32 composite{0};
@@ -725,8 +762,8 @@ bool RevisionStoreFileWriter::writeFileNode(
           fileNode->getFnt());
 
       ds << getFncrFromChunk(
-          cFnd->getRef(), fileNode->getStpFormatEnum(),
-          fileNode->getCbFormatEnum());
+          m_revStoreFile, cFnd->getRef(), fileNode->getStpFormatEnum(),
+          fileNode->getCbFormatEnum(), FCR_INIT::NIL);
       ds << cFnd->getOid();
 
 
@@ -745,8 +782,8 @@ bool RevisionStoreFileWriter::writeFileNode(
           fileNode->getFnt());
 
       ds << getFncrFromChunk(
-          cFnd->getRef(), fileNode->getStpFormatEnum(),
-          fileNode->getCbFormatEnum());
+          m_revStoreFile, cFnd->getRef(), fileNode->getStpFormatEnum(),
+          fileNode->getCbFormatEnum(), FCR_INIT::NIL);
       break;
     }
 
@@ -754,8 +791,8 @@ bool RevisionStoreFileWriter::writeFileNode(
       auto cFnd = std::static_pointer_cast<ObjectGroupListReferenceFND>(
           fileNode->getFnt());
       ds << getFncrFromChunk(
-          cFnd->getRef(), fileNode->getStpFormatEnum(),
-          fileNode->getCbFormatEnum());
+          m_revStoreFile, cFnd->getRef(), fileNode->getStpFormatEnum(),
+          fileNode->getCbFormatEnum(), FCR_INIT::NIL);
 
       ds << cFnd->getObjectGroupID();
       break;
@@ -765,8 +802,8 @@ bool RevisionStoreFileWriter::writeFileNode(
       auto cFnd = std::static_pointer_cast<ObjectSpaceManifestListReferenceFND>(
           fileNode->getFnt());
       ds << getFncrFromChunk(
-          cFnd->getRef(), fileNode->getStpFormatEnum(),
-          fileNode->getCbFormatEnum());
+          m_revStoreFile, cFnd->getRef(), fileNode->getStpFormatEnum(),
+          fileNode->getCbFormatEnum(), FCR_INIT::NIL);
 
       ds << cFnd->getGosid();
       break;
@@ -775,8 +812,8 @@ bool RevisionStoreFileWriter::writeFileNode(
       auto cFnd = std::static_pointer_cast<RevisionManifestListReferenceFND>(
           fileNode->getFnt());
       ds << getFncrFromChunk(
-          cFnd->getRef(), fileNode->getStpFormatEnum(),
-          fileNode->getCbFormatEnum());
+          m_revStoreFile, cFnd->getRef(), fileNode->getStpFormatEnum(),
+          fileNode->getCbFormatEnum(), FCR_INIT::NIL);
       break;
     }
 
@@ -819,7 +856,8 @@ bool RevisionStoreFileWriter::writeFileNodeListFragment(
   }
 
 
-  ds << getFcr64x32FromChunk(fileNodeListFragment->getNextFragment());
+  ds << getFcr64x32FromChunk(
+      m_revStoreFile, fileNodeListFragment->getNextFragment(), FCR_INIT::NIL);
   ds << FileNodeListFragment::footer_magic_id;
 
   return true;
@@ -835,11 +873,13 @@ bool RevisionStoreFileWriter::writeFreeChunkListFragment(
   }
 
 
-  ds << getFcr64x32FromChunk(freeChunklistFragment->getFcrNextFragment());
+  ds << getFcr64x32FromChunk(
+      m_revStoreFile, freeChunklistFragment->getFcrNextFragment(),
+      FCR_INIT::NIL);
 
   for (const auto& entry : freeChunklistFragment->getFcrFreeChunks()) {
     if (!entry.expired()) {
-      ds << getFcr64FromChunk(entry);
+      ds << getFcr64FromChunk(m_revStoreFile, entry, FCR_INIT::NIL);
     }
   }
 
@@ -899,10 +939,10 @@ bool RevisionStoreFileWriter::writeObjectSpaceObjectPropSet(
   }
 
   ds << propSet->getOIDs();
-  if (propSet->getOIDs().header().OsidStream_isNotPresent() == false) {
+  if (propSet->getOIDs().getHeader().isOsidStreamNotPresent() == false) {
     ds << propSet->getOSIDs();
 
-    if (propSet->getOSIDs().header().ExtendedStream_isPresent() == true) {
+    if (propSet->getOSIDs().getHeader().isExtendedStreamPresent() == true) {
       ds << propSet->getContextIDs();
     }
   }
@@ -929,10 +969,10 @@ bool RevisionStoreFileWriter::writeObjectSpaceObjectPropSetUnpadded(
   }
 
   ds << propSet->getOIDs();
-  if (propSet->getOIDs().header().OsidStream_isNotPresent() == false) {
+  if (propSet->getOIDs().getHeader().isOsidStreamNotPresent() == false) {
     ds << propSet->getOSIDs();
 
-    if (propSet->getOSIDs().header().ExtendedStream_isPresent() == true) {
+    if (propSet->getOSIDs().getHeader().isExtendedStreamPresent() == true) {
       ds << propSet->getContextIDs();
     }
   }
@@ -1017,113 +1057,6 @@ void RevisionStoreFileWriter::computeTransactionEntryCRCs()
   }
 }
 
-quint64 RevisionStoreFileWriter::stpFromChunk(Chunkable_WPtr_t chunk)
-{
-  if (chunk.expired()) {
-    return UINT64_MAX;
-  }
-  else {
-    auto lchunk = chunk.lock();
-
-    // if chunk is a FileNode, we must first sum up to the parent
-    // FileNodeListFragment
-    if (lchunk->type() == RevisionStoreChunkType::FileNode) {
-      quint64 stp = 0;
-      auto fileNodeListFragmentChunk =
-          std::static_pointer_cast<FileNode>(lchunk)->getParent().lock();
-
-      quint64 subtotal =
-          stpTillIterator(m_revStoreFile->chunks(), fileNodeListFragmentChunk);
-
-      // now summing up within the FileNodeListFragment
-      stp += FileNodeListFragment::headerSize;
-
-
-      auto fileNodes = fileNodeListFragmentChunk->getFileNodes();
-
-      subtotal += stpTillIterator(fileNodes, lchunk);
-
-      if (subtotal != UINT64_MAX) {
-        return stp + subtotal;
-      }
-      else {
-        return UINT64_MAX;
-      }
-    }
-    else {
-      return stpTillIterator(m_revStoreFile->chunks(), chunk);
-    }
-  }
-}
-
-template <typename Chunkably_SPtr_t>
-quint64 RevisionStoreFileWriter::stpTillIterator(
-    std::list<Chunkably_SPtr_t>& list, Chunkable_WPtr_t chunk)
-{
-  if (chunk.expired()) {
-    return UINT64_MAX;
-  }
-  else {
-    auto lchunk = chunk.lock();
-
-    auto it = std::find(list.begin(), list.end(), lchunk);
-
-    auto addCb = [](quint64 a, Chunkably_SPtr_t b) {
-      return std::move(a) + b->getSizeInFile();
-    };
-
-    return std::accumulate(
-        list.begin(), it, RevisionStoreFileHeader::sizeInFile, addCb);
-  }
-}
-
-FileChunkReference64x32 RevisionStoreFileWriter::getFcr64x32FromChunk(
-    Chunkable_WPtr_t chunk, FCR_INIT preferedState)
-{
-  if (chunk.expired()) {
-    return FileChunkReference64x32(preferedState);
-  }
-  else {
-    auto lchunk = chunk.lock();
-    quint64 stp = stpFromChunk(chunk);
-    return FileChunkReference64x32(stp, lchunk->getSizeInFile());
-  }
-}
-
-FileChunkReference64 RevisionStoreFileWriter::getFcr64FromChunk(
-    Chunkable_WPtr_t chunk, FCR_INIT preferedState)
-{
-  if (chunk.expired()) {
-    return FileChunkReference64(preferedState);
-  }
-  else {
-    auto lchunk = chunk.lock();
-    quint64 stp = stpFromChunk(chunk);
-    return FileChunkReference64(stp, lchunk->getSizeInFile());
-  }
-}
-
-FileNodeChunkReference RevisionStoreFileWriter::getFncrFromChunk(
-    Chunkable_WPtr_t chunk, FNCR_STP_FORMAT stpFormat, FNCR_CB_FORMAT cbFormat,
-    FCR_INIT preferedState)
-{
-  if (chunk.expired()) {
-    return FileNodeChunkReference(
-        FNCR_STP_FORMAT::UNCOMPRESED_8BYTE, FNCR_CB_FORMAT::UNCOMPRESED_4BYTE,
-        preferedState);
-  }
-  else {
-    auto lchunk = chunk.lock();
-
-    FileNodeChunkReference fncr(stpFormat, cbFormat, preferedState);
-
-    fncr.setStp(stpFromChunk(lchunk));
-    fncr.setCb(lchunk->getSizeInFile());
-
-
-    return fncr;
-  }
-}
 
 } // namespace priv
 } // namespace libmson

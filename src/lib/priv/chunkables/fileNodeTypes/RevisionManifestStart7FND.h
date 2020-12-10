@@ -55,6 +55,12 @@ public:
   ExtendedGUID getRid() const;
 
   virtual quint64 getSizeInFile() const override;
+  virtual FileNodeTypeID getType() const override
+  {
+    return FileNodeTypeID::RevisionManifestStart7FND;
+  };
+
+  friend class RevisionStoreFileParser;
 
 private:
   virtual void deserialize(QDataStream& ds) override;

@@ -46,6 +46,9 @@ public:
   bool isSTPcompressed();
   bool isCBcompressed();
 
+  FNCR_STP_FORMAT getStpFormat() const;
+  FNCR_CB_FORMAT getCbFormat() const;
+
   quint64 getSizeInFile() const;
 
 

@@ -66,20 +66,5 @@ void RevisionManifestStart7FND::serialize(QDataStream& ds) const
 }
 
 
-// void RevisionManifestStart7FND::toDebugString(QDebug &dbg) const {
-//  dbg << " RevisionManifestStart7FND:\n"
-//      << " base: " << m_base << "\n gctxid: " << m_gctxid << '\n';
-//}
-// void RevisionManifestStart7FND::writeLowLevelXml(QXmlStreamWriter &xmlWriter)
-// const {
-//  xmlWriter.writeStartElement("RevisionManifestStart7FND");
-
-//  xmlWriter << m_base;
-
-//  xmlWriter << m_gctxid;
-
-//  xmlWriter.writeEndElement();
-//}
-
 } // namespace priv
 } // namespace libmson

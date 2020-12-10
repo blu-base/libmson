@@ -40,11 +40,13 @@ public:
   void setMd5hash(const QByteArray& value);
 
   virtual quint64 getSizeInFile() const override;
+  virtual FileNodeTypeID getType() const override
+  {
+    return FileNodeTypeID::ReadOnlyObjectDeclaration2LargeRefCountFND;
+  };
 
   friend class RevisionStoreFileParser;
-  friend class RevisionStoreFileWriter;
 
-private:
   static const quint64 md5HashSize = 16;
 };
 

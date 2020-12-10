@@ -72,27 +72,5 @@ CompactID ObjectDeclaration2Body::getOid() const { return m_oid; }
 
 void ObjectDeclaration2Body::setOid(const CompactID& value) { m_oid = value; }
 
-// void ObjectDeclaration2Body::writeLowLevelXml(
-//    QXmlStreamWriter &xmlWriter) const {
-//  xmlWriter.writeStartElement("ObjectDeclaration2Body");
-//  xmlWriter.writeAttribute("fHasOidReferences",
-//                           m_fHasOidReferences ? "true" : "false");
-//  xmlWriter.writeAttribute("fHasOsidReferences",
-//                           m_fHasOsidReferences ? "true" : "false");
-
-//  xmlWriter << m_oid;
-//  xmlWriter << m_jcid;
-
-//  xmlWriter.writeEndElement();
-//}
-
-// void ObjectDeclaration2Body::toDebugString(QDebug &dbg) const {
-//  dbg << "  ObjectDeclaration2Body:"
-//      << " HasOid: " << m_fHasOidReferences
-//      << " HasOsid: " << m_fHasOsidReferences << '\n'
-//      << "  oid:  " << m_oid << '\n'
-//      << m_jcid;
-//}
-
 } // namespace priv
 } // namespace libmson

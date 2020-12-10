@@ -20,6 +20,7 @@ public:
   void setData(const CompactID& data);
 
   virtual quint64 getSizeInFile() const override { return sizeInFile; };
+  virtual PropertyIDType getType() const override;
 
 private:
   virtual void deserialize(QDataStream& ds) override;

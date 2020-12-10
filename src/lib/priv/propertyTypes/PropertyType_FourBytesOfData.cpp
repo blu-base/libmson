@@ -3,6 +3,9 @@
 namespace libmson {
 namespace priv {
 
+PropertyType_FourBytesOfData::PropertyType_FourBytesOfData() {}
+
+
 QByteArray PropertyType_FourBytesOfData::data() const { return m_data; }
 
 void PropertyType_FourBytesOfData::setData(const QByteArray& data)
@@ -11,7 +14,10 @@ void PropertyType_FourBytesOfData::setData(const QByteArray& data)
 }
 
 
-PropertyType_FourBytesOfData::PropertyType_FourBytesOfData() {}
+PropertyIDType PropertyType_FourBytesOfData::getType() const
+{
+  return PropertyIDType::FourBytesOfData;
+}
 
 void PropertyType_FourBytesOfData::deserialize(QDataStream& ds)
 {
@@ -24,15 +30,6 @@ void PropertyType_FourBytesOfData::serialize(QDataStream& ds) const
 
   ds.writeRawData(m_data.data(), 4);
 }
-
-// void PropertyType_FourBytesOfData::toDebugString(QDebug &dbg) const {}
-
-// void PropertyType_FourBytesOfData::writeLowLevelXml(
-//    QXmlStreamWriter &xmlWriter) const {
-//  xmlWriter.writeStartElement("FourBytesOfData");
-//  xmlWriter.writeCharacters(m_data.toHex());
-//  xmlWriter.writeEndElement();
-//}
 
 } // namespace priv
 } // namespace libmson

@@ -23,9 +23,12 @@ public:
   void setBlobRef(const EncryptedData_SPtr_t& value);
 
   virtual quint64 getSizeInFile() const override;
+  virtual FileNodeTypeID getType() const override
+  {
+    return FileNodeTypeID::ObjectDataEncryptionKeyV2FNDX;
+  };
 
   friend class RevisionStoreFileParser;
-  friend class RevisionStoreFileWriter;
 };
 
 } // namespace priv

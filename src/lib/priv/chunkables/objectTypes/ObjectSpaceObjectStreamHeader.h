@@ -33,16 +33,16 @@ public:
       const quint32& count, const OsidStreamPresence& osidStreamPresence,
       const ExtendedStreamPresence& extendedStreamPresence);
 
-  quint32 count() const;
+  quint32 getCount() const;
   void setCount(const quint32& count);
 
   bool incrementCount();
   bool decrementCount();
 
-  bool ExtendedStream_isPresent() const;
+  bool isExtendedStreamPresent() const;
   void setExtendedStreamsPresence(
       const ExtendedStreamPresence& extendedStreamPresence);
-  bool OsidStream_isNotPresent() const;
+  bool isOsidStreamNotPresent() const;
   void setOsidStreamPresence(const OsidStreamPresence& osidStreamPresence);
 
   static quint64 getSizeInFile() { return sizeInFile; }

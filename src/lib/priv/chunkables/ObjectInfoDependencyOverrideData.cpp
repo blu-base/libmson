@@ -11,7 +11,7 @@ ObjectInfoDependencyOverrideData::ObjectInfoDependencyOverrideData(
 }
 
 
-quint32 ObjectInfoDependencyOverrideData::c8BitOverrides() const
+quint32 ObjectInfoDependencyOverrideData::getC8BitOverrides() const
 {
   return m_c8BitOverrides;
 }
@@ -23,7 +23,7 @@ void ObjectInfoDependencyOverrideData::setC8BitOverrides(
   m_c8BitOverrides = c8BitOverrides;
 }
 
-quint32 ObjectInfoDependencyOverrideData::c32BitOverrides() const
+quint32 ObjectInfoDependencyOverrideData::getC32BitOverrides() const
 {
   return m_c32BitOverrides;
 }
@@ -35,7 +35,7 @@ void ObjectInfoDependencyOverrideData::setC32BitOverrides(
   m_c32BitOverrides = c32BitOverrides;
 }
 
-quint32 ObjectInfoDependencyOverrideData::crc() const { return m_crc; }
+quint32 ObjectInfoDependencyOverrideData::getCrc() const { return m_crc; }
 
 void ObjectInfoDependencyOverrideData::setCrc(const quint32& crc)
 {
@@ -44,7 +44,7 @@ void ObjectInfoDependencyOverrideData::setCrc(const quint32& crc)
 }
 
 std::vector<ObjectInfoDependencyOverride8>
-ObjectInfoDependencyOverrideData::Overrides1() const
+ObjectInfoDependencyOverrideData::getOverrides1() const
 {
   return m_Overrides1;
 }
@@ -57,7 +57,7 @@ void ObjectInfoDependencyOverrideData::setOverrides1(
 }
 
 std::vector<ObjectInfoDependencyOverride32>
-ObjectInfoDependencyOverrideData::Overrides2() const
+ObjectInfoDependencyOverrideData::getOverrides2() const
 {
   return m_Overrides2;
 }
@@ -121,39 +121,6 @@ RevisionStoreChunkType ObjectInfoDependencyOverrideData::getType() const
 {
   return RevisionStoreChunkType::ObjectInfoDependencyOverrideData;
 }
-
-// void ObjectInfoDependencyOverrideData::toDebugString(QDebug &dbg) const {}
-
-// void ObjectInfoDependencyOverrideData::writeLowLevelXml(
-//    QXmlStreamWriter &xmlWriter) const {
-//  xmlWriter.writeStartElement("ObjectInfoDependencyOverrideData");
-
-//  xmlWriter.writeStartElement("c8BitOverrides");
-//  xmlWriter.writeCharacters(QString::number(m_c8BitOverrides));
-//  xmlWriter.writeEndElement();
-
-//  xmlWriter.writeStartElement("c32BitOverrides");
-//  xmlWriter.writeCharacters(QString::number(m_c32BitOverrides));
-//  xmlWriter.writeEndElement();
-
-//  xmlWriter.writeStartElement("crc");
-//  xmlWriter.writeCharacters(qStringHex(m_crc, 8));
-//  xmlWriter.writeEndElement();
-
-//  xmlWriter.writeStartElement("Overrides1");
-//  for (auto entry : m_Overrides1) {
-//    xmlWriter << entry;
-//  }
-//  xmlWriter.writeEndElement();
-
-//  xmlWriter.writeStartElement("Overrides2");
-//  for (auto entry : m_Overrides1) {
-//    xmlWriter << entry;
-//  }
-//  xmlWriter.writeEndElement();
-
-//  xmlWriter.writeEndElement();
-//}
 
 } // namespace priv
 } // namespace libmson

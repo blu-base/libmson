@@ -27,6 +27,12 @@ public:
   void setGuid(const QUuid& value);
 
   virtual quint64 getSizeInFile() const override;
+  virtual FileNodeTypeID getType() const override
+  {
+    return FileNodeTypeID::GlobalIdTableEntryFNDX;
+  };
+
+  friend class RevisionStoreFileParser;
 
 private:
   virtual void deserialize(QDataStream& ds) override;

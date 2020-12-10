@@ -21,8 +21,10 @@
 #include "chunkables/TransactionLogFragment.h"
 #include "chunkables/UnknownBlob.h"
 
+#include "chunkables/fileNodeTypes/FileNodeTypes.h"
 #include "chunkables/fileNodeTypes/IFileNodeType.h"
 
+#include "ObjectGroupList.h"
 #include "ObjectSpaceManifestList.h"
 #include "RevisionManifest.h"
 #include "RevisionManifestList.h"
@@ -31,6 +33,10 @@
 namespace libmson {
 namespace priv {
 
+/**
+ * @brief Parser for MS Onenote files according to the MS-ONESTORE spec
+ * this only includes file versions as early as Onenote 2010
+ */
 class RevisionStoreFileParser {
 private:
   QDataStream& m_ds;
@@ -76,7 +82,7 @@ private:
   void parseFreeChunkListFragments(
       QDataStream& ds, const FreeChunkListFragment_WPtr_t& firstFragment);
 
-  void parseFreeChunk(QDataStream& ds, const FreeChunk_SPtr_t& freeChunk);
+  void parseFreeChunk(const FreeChunk_SPtr_t& freeChunk);
 
   void parseObjectInfoDependencyOverrideData(
       QDataStream& ds,
@@ -102,44 +108,100 @@ private:
   IFileNodeType_SPtr_t
   parseFileNodeType(QDataStream& ds, const FileNode_SPtr_t& fn);
 
+  void registerFileNodeData(const FileNode_SPtr_t& fn);
+
+
   // type 0
-  /// \todo pull out Streamable from other FNDs
+  ChunkTerminatorFND_SPtr_t parseChunkTerminatorFND(const FileNode_SPtr_t& fn);
+  DataSignatureGroupDefinitionFND_SPtr_t parseDataSignatureGroupDefinitionFND(
+      QDataStream& ds, const FileNode_SPtr_t& fn);
+  GlobalIdTableEndFNDX_SPtr_t
+  parseGlobalIdTableEndFNDX(const FileNode_SPtr_t& fn);
+  GlobalIdTableEntry2FNDX_SPtr_t
+  parseGlobalIdTableEntry2FNDX(QDataStream& ds, const FileNode_SPtr_t& fn);
+  GlobalIdTableEntry3FNDX_SPtr_t
+  parseGlobalIdTableEntry3FNDX(QDataStream& ds, const FileNode_SPtr_t& fn);
+  GlobalIdTableEntryFNDX_SPtr_t
+  parseGlobalIdTableEntryFNDX(QDataStream& ds, const FileNode_SPtr_t& fn);
+  GlobalIdTableStart2FND_SPtr_t
+  parseGlobalIdTableStart2FND(const FileNode_SPtr_t& fn);
+  GlobalIdTableStartFNDX_SPtr_t
+  parseGlobalIdTableStartFNDX(QDataStream& ds, const FileNode_SPtr_t& fn);
+  ObjectDeclarationFileData3LargeRefCountFND_SPtr_t
+  parseObjectDeclarationFileData3LargeRefCountFND(
+      QDataStream& ds, const FileNode_SPtr_t& fn);
+  ObjectDeclarationFileData3RefCountFND_SPtr_t
+  parseObjectDeclarationFileData3RefCountFND(
+      QDataStream& ds, const FileNode_SPtr_t& fn);
+  ObjectGroupEndFND_SPtr_t parseObjectGroupEndFND(const FileNode_SPtr_t& fn);
+  ObjectGroupStartFND_SPtr_t
+  parseObjectGroupStartFND(QDataStream& ds, const FileNode_SPtr_t& fn);
+  ObjectSpaceManifestListStartFND_SPtr_t parseObjectSpaceManifestListStartFND(
+      QDataStream& ds, const FileNode_SPtr_t& fn);
+  ObjectSpaceManifestRootFND_SPtr_t
+  parseObjectSpaceManifestRootFND(QDataStream& ds, const FileNode_SPtr_t& fn);
+  RevisionManifestEndFND_SPtr_t
+  parseRevisionManifestEndFND(const FileNode_SPtr_t& fn);
+  RevisionManifestListStartFND_SPtr_t
+  parseRevisionManifestListStartFND(QDataStream& ds, const FileNode_SPtr_t& fn);
+  RevisionManifestStart4FND_SPtr_t
+  parseRevisionManifestStart4FND(QDataStream& ds, const FileNode_SPtr_t& fn);
+  RevisionManifestStart6FND_SPtr_t
+  parseRevisionManifestStart6FND(QDataStream& ds, const FileNode_SPtr_t& fn);
+  RevisionManifestStart7FND_SPtr_t
+  parseRevisionManifestStart7FND(QDataStream& ds, const FileNode_SPtr_t& fn);
+  RevisionRoleAndContextDeclarationFND_SPtr_t
+  parseRevisionRoleAndContextDeclarationFND(
+      QDataStream& ds, const FileNode_SPtr_t& fn);
+  RevisionRoleDeclarationFND_SPtr_t
+  parseRevisionRoleDeclarationFND(QDataStream& ds, const FileNode_SPtr_t& fn);
+  RootObjectReference2FNDX_SPtr_t
+  parseRootObjectReference2FNDX(QDataStream& ds, const FileNode_SPtr_t& fn);
+  RootObjectReference3FND_SPtr_t
+  parseRootObjectReference3FND(QDataStream& ds, const FileNode_SPtr_t& fn);
 
   // type 1
-  IFileNodeType_SPtr_t parseFileDataStoreObjectReferenceFND(
+  FileDataStoreObjectReferenceFND_SPtr_t parseFileDataStoreObjectReferenceFND(
       QDataStream& ds, const FileNode_SPtr_t& fn);
-  IFileNodeType_SPtr_t
+  HashedChunkDescriptor2FND_SPtr_t
   parseHashedChunkDescriptor2FND(QDataStream& ds, const FileNode_SPtr_t& fn);
-  IFileNodeType_SPtr_t parseObjectDataEncryptionKeyV2FNDX(
+  ObjectDataEncryptionKeyV2FNDX_SPtr_t parseObjectDataEncryptionKeyV2FNDX(
       QDataStream& ds, const FileNode_SPtr_t& fn);
-  IFileNodeType_SPtr_t parseObjectDeclaration2LargeRefCountFND(
+  ObjectDeclaration2LargeRefCountFND_SPtr_t
+  parseObjectDeclaration2LargeRefCountFND(
       QDataStream& ds, const FileNode_SPtr_t& fn);
-  IFileNodeType_SPtr_t parseObjectDeclaration2RefCountFND(
+  ObjectDeclaration2RefCountFND_SPtr_t parseObjectDeclaration2RefCountFND(
       QDataStream& ds, const FileNode_SPtr_t& fn);
-  IFileNodeType_SPtr_t parseObjectDeclarationWithRefCount2FNDX(
+  ObjectDeclarationWithRefCount2FNDX_SPtr_t
+  parseObjectDeclarationWithRefCount2FNDX(
       QDataStream& ds, const FileNode_SPtr_t& fn);
-  IFileNodeType_SPtr_t parseReadOnlyObjectDeclaration2LargeRefCountFND(
+  ReadOnlyObjectDeclaration2LargeRefCountFND_SPtr_t
+  parseReadOnlyObjectDeclaration2LargeRefCountFND(
       QDataStream& ds, const FileNode_SPtr_t& fn);
-  IFileNodeType_SPtr_t parseReadOnlyObjectDeclaration2RefCountFND(
+  ReadOnlyObjectDeclaration2RefCountFND_SPtr_t
+  parseReadOnlyObjectDeclaration2RefCountFND(
       QDataStream& ds, const FileNode_SPtr_t& fn);
-  IFileNodeType_SPtr_t parseObjectDeclarationWithRefCountFNDX(
+  ObjectDeclarationWithRefCountFNDX_SPtr_t
+  parseObjectDeclarationWithRefCountFNDX(
       QDataStream& ds, const FileNode_SPtr_t& fn);
-  IFileNodeType_SPtr_t parseObjectInfoDependencyOverridesFND(
+  ObjectInfoDependencyOverridesFND_SPtr_t parseObjectInfoDependencyOverridesFND(
       QDataStream& ds, const FileNode_SPtr_t& fn);
-  IFileNodeType_SPtr_t parseObjectRevisionWithRefCount2FNDX(
+  ObjectRevisionWithRefCount2FNDX_SPtr_t parseObjectRevisionWithRefCount2FNDX(
       QDataStream& ds, const FileNode_SPtr_t& fn);
-  IFileNodeType_SPtr_t parseObjectRevisionWithRefCountFNDX(
+  ObjectRevisionWithRefCountFNDX_SPtr_t parseObjectRevisionWithRefCountFNDX(
       QDataStream& ds, const FileNode_SPtr_t& fn);
 
   // type 2
-  IFileNodeType_SPtr_t parseFileDataStoreListReferenceFND(
+  FileDataStoreListReferenceFND_SPtr_t parseFileDataStoreListReferenceFND(
       QDataStream& ds, const FileNode_SPtr_t& fn);
-  IFileNodeType_SPtr_t
+  ObjectGroupListReferenceFND_SPtr_t
   parseObjectGroupListReferenceFND(QDataStream& ds, const FileNode_SPtr_t& fn);
-  IFileNodeType_SPtr_t parseObjectSpaceManifestListReferenceFND(
+  ObjectSpaceManifestListReferenceFND_SPtr_t
+  parseObjectSpaceManifestListReferenceFND(
       QDataStream& ds, const FileNode_SPtr_t& fn);
-  IFileNodeType_SPtr_t parseRevisionManifestListReferenceFND(
+  RevisionManifestListReferenceFND_SPtr_t parseRevisionManifestListReferenceFND(
       QDataStream& ds, const FileNode_SPtr_t& fn);
+
 
   // Other non-chunkables ------------------------------------------------------
 
@@ -178,6 +240,16 @@ private:
   template <class Chunkably>
   std::shared_ptr<Chunkably> insertChunkSorted(
       std::list<Chunkable_SPtr_t>& chunkList, std::shared_ptr<Chunkably> chunk);
+
+
+  // copied from tika
+  void registerRevisionManifestList(
+      const ExtendedGUID& guid, const FileNode_SPtr_t& fn);
+  void registerRevisionManifest(const FileNode_SPtr_t& fn);
+
+  void registerAdditionalRevisionRole(
+      const ExtendedGUID& guid, const quint32 revisionRole,
+      const ExtendedGUID& gctxid);
 };
 
 } // namespace priv

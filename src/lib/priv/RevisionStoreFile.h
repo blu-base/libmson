@@ -30,7 +30,9 @@
 #include "commonTypes/ExtendedGUID.h"
 
 #include "ObjectSpaceManifestList.h"
-
+#include "Revision.h"
+#include "RevisionManifest.h"
+#include "RevisionManifestList.h"
 
 namespace libmson {
 namespace priv {
@@ -96,6 +98,25 @@ private:
   FileNode_WPtr_t m_fileDataStoreListReference;
 
   QMap<quint32, quint32> m_fileNodeCountMapping;
+
+
+  /* ------------------------------------------------------------------------ */
+  // from tika
+
+  std::list<ExtendedGUID> m_revisionOrder;
+  std::map<ExtendedGUID, Revision> m_revisionsMap;
+  std::map<ExtendedGUID, FileNode_WPtr_t> m_revisionManifestListsMap;
+
+  std::map<ExtendedGUID, Chunkable_SPtr_t> m_guidToRefMap;
+
+  std::map<ExtendedGUID, FileNode_WPtr_t> m_guidToObjectMap;
+
+  std::map<ExtendedGUID, std::pair<quint32, ExtendedGUID>> m_revisionRolesMap;
+
+  ExtendedGUID m_currentRevision;
+
+
+  /* ------------------------------------------------------------------------ */
 
 
   /// A list of Chunkables which have not been parsed during walking the

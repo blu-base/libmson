@@ -45,13 +45,5 @@ void ObjectDeclaration2LargeRefCountFND::setBlobRef(
   m_blobRef = blobRef;
 }
 
-// void ObjectDeclaration2LargeRefCountFND::serialize(QDataStream& ds) const
-//{
-//  ds << m_blobRef;
-//  ds << m_body;
-//  ds << m_cRef;
-//}
-
-
 } // namespace priv
 } // namespace libmson

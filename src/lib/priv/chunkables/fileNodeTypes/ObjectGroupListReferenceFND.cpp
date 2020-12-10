@@ -39,32 +39,5 @@ void ObjectGroupListReferenceFND::setRef(const FileNodeListFragment_SPtr_t& ref)
   m_ref = ref;
 }
 
-// void ObjectGroupListReferenceFND::deserialize(QDataStream &ds) {
-//  ds >> m_ref;
-//  ds >> m_ObjectGroupID;
-//}
-
-// void ObjectGroupListReferenceFND::serialize(QDataStream &ds) const {
-//  ds << m_ref;
-//  ds << m_ObjectGroupID;
-//}
-
-// void ObjectGroupListReferenceFND::toDebugString(QDebug &dbg) const {
-//  dbg << " ObjectGroupListReferenceFND:\n"
-//      << " ref:           " << m_ref << '\n'
-//      << " ObjectGroupID: " << m_ObjectGroupID << '\n';
-//}
-
-// void ObjectGroupListReferenceFND::writeLowLevelXml(
-//    QXmlStreamWriter &xmlWriter) const {
-//  xmlWriter.writeStartElement("ObjectGroupListReferenceFND");
-
-//  xmlWriter << m_ref;
-
-//  xmlWriter << m_ObjectGroupID;
-
-//  xmlWriter.writeEndElement();
-//}
-
 } // namespace priv
 } // namespace libmson

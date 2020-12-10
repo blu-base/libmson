@@ -1,12 +1,18 @@
 #include "RevisionManifestList.h"
 
-//#include "ObjectSpaceManifestList.h"
+#include "ObjectSpaceManifestList.h"
+
+//#include "ObjectGroupList.h"
+//#include "RevisionManifest.h"
+//#include "chunkables/FileNode.h"
+//#include "chunkables/FileNodeListFragment.h"
+
 
 namespace libmson {
 namespace priv {
 
 RevisionManifestList::RevisionManifestList(
-    const std::shared_ptr<ObjectSpaceManifestList>& parent)
+    const ObjectSpaceManifestList_SPtr_t& parent)
     : m_parent(parent)
 {
 }

@@ -26,10 +26,10 @@ protected:
 public:
   virtual ~IObjectSpaceObjectStream();
 
-  ObjectSpaceObjectStreamHeader header() const;
+  ObjectSpaceObjectStreamHeader getHeader() const;
   void setHeader(const ObjectSpaceObjectStreamHeader& header);
 
-  std::vector<CompactID> body() const;
+  std::vector<CompactID> getBody() const;
   void setBody(const std::vector<CompactID>& body);
 
   /**

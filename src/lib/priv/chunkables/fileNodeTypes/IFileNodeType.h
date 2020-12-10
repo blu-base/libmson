@@ -5,6 +5,7 @@
 #include <memory>
 #include <utility> /* to be used by FND implementations for std::move*/
 
+#include "FileNodeTypeIDs.h"
 
 namespace libmson {
 namespace priv {
@@ -31,7 +32,8 @@ protected:
 public:
   IFileNodeType(FileNode_SPtr_t parentFileNode);
 
-  virtual quint64 getSizeInFile() const = 0;
+  virtual quint64 getSizeInFile() const  = 0;
+  virtual FileNodeTypeID getType() const = 0;
 };
 
 typedef std::shared_ptr<IFileNodeType> IFileNodeType_SPtr_t;

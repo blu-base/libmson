@@ -36,10 +36,16 @@ public:
   ObjectSpaceManifestListStartFND(FileNode_SPtr_t parentFileNode);
   virtual ~ObjectSpaceManifestListStartFND() = default;
 
-  ExtendedGUID gosid() const;
+  ExtendedGUID getGosid() const;
   void setGosid(const ExtendedGUID& value);
 
   virtual quint64 getSizeInFile() const override;
+  virtual FileNodeTypeID getType() const override
+  {
+    return FileNodeTypeID::ObjectSpaceManifestListStartFND;
+  };
+
+  friend class RevisionStoreFileParser;
 
 private:
   virtual void deserialize(QDataStream& ds) override;

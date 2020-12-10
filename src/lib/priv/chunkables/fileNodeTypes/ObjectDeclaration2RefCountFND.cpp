@@ -47,12 +47,6 @@ quint64 ObjectDeclaration2RefCountFND::getSizeInFile() const
          ObjectDeclaration2Body::getSizeInFile() + 1;
 }
 
-// void ObjectDeclaration2RefCountFND::serialize(QDataStream& ds) const
-//{
-//  ds << m_blobRef;
-//  ds << m_body;
-//  ds << m_cRef;
-//}
 
 } // namespace priv
 } // namespace libmson

@@ -4,7 +4,7 @@
 namespace libmson {
 namespace priv {
 
-quint32 ObjectSpaceObjectStreamHeader::count() const { return m_count; }
+quint32 ObjectSpaceObjectStreamHeader::getCount() const { return m_count; }
 
 void ObjectSpaceObjectStreamHeader::setCount(const quint32& count)
 {
@@ -38,7 +38,7 @@ bool ObjectSpaceObjectStreamHeader::decrementCount()
   }
 }
 
-bool ObjectSpaceObjectStreamHeader::ExtendedStream_isPresent() const
+bool ObjectSpaceObjectStreamHeader::isExtendedStreamPresent() const
 {
   return m_ExtendedStreamsPresent;
 }
@@ -49,7 +49,7 @@ void ObjectSpaceObjectStreamHeader::setExtendedStreamsPresence(
   m_ExtendedStreamsPresent = static_cast<bool>(extendedStreamPresence);
 }
 
-bool ObjectSpaceObjectStreamHeader::OsidStream_isNotPresent() const
+bool ObjectSpaceObjectStreamHeader::isOsidStreamNotPresent() const
 {
   return m_OsidStreamNotPresent;
 }

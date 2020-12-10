@@ -75,7 +75,11 @@ public:
   bool getFHasOsidReferences() const;
   void setFHasOsidReferences(bool value);
 
+  quint8 getFReserved1() const;
+  quint32 getFReserved2() const;
+
   static quint64 getSizeInFile();
+
 
 private:
   static const quint64 sizeInFile;

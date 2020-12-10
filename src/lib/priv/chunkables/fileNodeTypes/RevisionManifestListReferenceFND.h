@@ -35,11 +35,13 @@ public:
   FileNodeListFragment_WPtr_t getRef() const;
   void setRef(const FileNodeListFragment_SPtr_t value);
 
+  virtual quint64 getSizeInFile() const override;
+  virtual FileNodeTypeID getType() const override
+  {
+    return FileNodeTypeID::RevisionManifestListReferenceFND;
+  };
 
   friend class RevisionStoreFileParser;
-  friend class RevisionStoreFileWriter;
-
-  virtual quint64 getSizeInFile() const override;
 };
 
 } // namespace priv

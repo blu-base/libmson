@@ -4,6 +4,9 @@
 namespace libmson {
 namespace priv {
 
+PropertyType_TwoBytesOfData::PropertyType_TwoBytesOfData() {}
+
+
 QByteArray PropertyType_TwoBytesOfData::data() const { return m_data; }
 
 void PropertyType_TwoBytesOfData::setData(const QByteArray& data)
@@ -12,7 +15,10 @@ void PropertyType_TwoBytesOfData::setData(const QByteArray& data)
 }
 
 
-PropertyType_TwoBytesOfData::PropertyType_TwoBytesOfData() {}
+PropertyIDType PropertyType_TwoBytesOfData::getType() const
+{
+  return PropertyIDType::TwoBytesOfData;
+}
 
 void PropertyType_TwoBytesOfData::deserialize(QDataStream& ds)
 {

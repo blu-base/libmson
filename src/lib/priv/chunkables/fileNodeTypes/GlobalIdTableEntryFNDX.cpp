@@ -27,24 +27,6 @@ void GlobalIdTableEntryFNDX::serialize(QDataStream& ds) const
   ds << m_guid;
 }
 
-// void GlobalIdTableEntryFNDX::toDebugString(QDebug &dbg) const {
-//  dbg << " GlobalIdTableEntryFNDX: \n"
-//      << " Index: " << m_index << '\n'
-//      << " GUID:  " << m_guid << '\n';
-//}
-
-// void GlobalIdTableEntryFNDX::writeLowLevelXml(QXmlStreamWriter &xmlWriter)
-// const {
-//  xmlWriter.writeStartElement("GlobalIdTableEntryFNDX");
-//  xmlWriter.writeAttribute("index", QString::number(m_index));
-
-//  xmlWriter.writeStartElement("guid");
-//  xmlWriter.writeCharacters(m_guid.toString());
-//  xmlWriter.writeEndElement();
-
-//  xmlWriter.writeEndElement();
-//}
-
 quint64 GlobalIdTableEntryFNDX::getSizeInFile() const { return sizeInFile; }
 
 

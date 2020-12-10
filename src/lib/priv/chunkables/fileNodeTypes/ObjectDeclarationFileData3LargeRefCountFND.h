@@ -25,22 +25,28 @@ public:
   ObjectDeclarationFileData3LargeRefCountFND(FileNode_SPtr_t parentFileNode);
   virtual ~ObjectDeclarationFileData3LargeRefCountFND() = default;
 
-  CompactID oid() const;
+  CompactID getOid() const;
   void setOid(const CompactID& oid);
 
-  JCID jcid() const;
+  JCID getJcid() const;
   void setJcid(const JCID& jcid);
 
-  quint32 cRef() const;
+  quint32 getCRef() const;
   void setCRef(const quint32& cRef);
 
-  StringInStorageBuffer FileDataReference() const;
+  StringInStorageBuffer getFileDataReference() const;
   void setFileDataReference(const StringInStorageBuffer& FileDataReference);
 
-  StringInStorageBuffer Extension() const;
+  StringInStorageBuffer getExtension() const;
   void setExtension(const StringInStorageBuffer& Extension);
 
   virtual quint64 getSizeInFile() const override;
+  virtual FileNodeTypeID getType() const override
+  {
+    return FileNodeTypeID::ObjectDeclarationFileData3LargeRefCountFND;
+  };
+
+  friend class RevisionStoreFileParser;
 
 private:
   virtual void deserialize(QDataStream& ds) override;

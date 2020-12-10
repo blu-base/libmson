@@ -17,6 +17,10 @@ public:
   virtual ~GlobalIdTableEndFNDX() = default;
 
   virtual quint64 getSizeInFile() const override { return 0; };
+  virtual FileNodeTypeID getType() const override
+  {
+    return FileNodeTypeID::GlobalIdTableEndFNDX;
+  };
 
 private:
   virtual void deserialize(QDataStream& ds) override{};

@@ -68,26 +68,5 @@ void RevisionManifestStart6FND::serialize(QDataStream& ds) const
   ds << m_odcsDefault;
 }
 
-// void RevisionManifestStart6FND::toDebugString(QDebug &dbg) const {
-//  dbg << " RevisionManifestStart6FND:\n"
-//      << " rid:          " << m_rid << '\n'
-//      << " ridDependent: " << m_ridDependent << '\n'
-//      << " revisionRole: " << m_revisionRole << '\n'
-//      << " odcsDefault:  " << m_odcsDefault << '\n';
-//}
-
-// void RevisionManifestStart6FND::writeLowLevelXml(
-//    QXmlStreamWriter &xmlWriter) const {
-//  xmlWriter.writeStartElement("RevisionManifestStart6FND");
-
-//  xmlWriter.writeAttribute("revisionRole", QString::number(m_revisionRole));
-//  xmlWriter.writeAttribute("odcsDefault", QString::number(m_revisionRole));
-
-//  xmlWriter << m_rid;
-//  xmlWriter << m_ridDependent;
-
-//  xmlWriter.writeEndElement();
-//}
-
 } // namespace priv
 } // namespace libmson

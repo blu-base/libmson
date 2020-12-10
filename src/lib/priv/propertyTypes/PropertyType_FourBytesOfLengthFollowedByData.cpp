@@ -50,17 +50,10 @@ void PropertyType_FourBytesOfLengthFollowedByData::serialize(
   ds.writeRawData(m_data.data(), m_cb);
 }
 
-// void PropertyType_FourBytesOfLengthFollowedByData::toDebugString(
-//    QDebug &dbg) const {}
-
-// void PropertyType_FourBytesOfLengthFollowedByData::writeLowLevelXml(
-//    QXmlStreamWriter &xmlWriter) const {
-//  xmlWriter.writeStartElement("FourBytesOfLengthFollowedByData");
-//  xmlWriter.writeAttribute("cb", QString::number(m_cb));
-//  xmlWriter.writeCharacters(m_data.toHex());
-//  xmlWriter.writeEndElement();
-//}
-
+PropertyIDType PropertyType_FourBytesOfLengthFollowedByData::getType() const
+{
+  return PropertyIDType::FourBytesOfLengthFollowedByData;
+}
 
 } // namespace priv
 } // namespace libmson

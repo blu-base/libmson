@@ -1,51 +1,18 @@
 #include "RevisionStoreFileParser.h"
 
-#include "chunkables/fileNodeTypes/ChunkTerminatorFND.h"
-#include "chunkables/fileNodeTypes/DataSignatureGroupDefinitionFND.h"
-#include "chunkables/fileNodeTypes/FileDataStoreListReferenceFND.h"
-#include "chunkables/fileNodeTypes/FileDataStoreObjectReferenceFND.h"
-#include "chunkables/fileNodeTypes/GlobalIdTableEndFNDX.h"
-#include "chunkables/fileNodeTypes/GlobalIdTableEntry2FNDX.h"
-#include "chunkables/fileNodeTypes/GlobalIdTableEntry3FNDX.h"
-#include "chunkables/fileNodeTypes/GlobalIdTableEntryFNDX.h"
-#include "chunkables/fileNodeTypes/GlobalIdTableStart2FND.h"
-#include "chunkables/fileNodeTypes/GlobalIdTableStartFNDX.h"
-#include "chunkables/fileNodeTypes/HashedChunkDescriptor2FND.h"
-#include "chunkables/fileNodeTypes/ObjectDataEncryptionKeyV2FNDX.h"
-#include "chunkables/fileNodeTypes/ObjectDeclaration2LargeRefCountFND.h"
-#include "chunkables/fileNodeTypes/ObjectDeclaration2RefCountFND.h"
-#include "chunkables/fileNodeTypes/ObjectDeclarationFileData3LargeRefCountFND.h"
-#include "chunkables/fileNodeTypes/ObjectDeclarationFileData3RefCountFND.h"
-#include "chunkables/fileNodeTypes/ObjectDeclarationWithRefCount2FNDX.h"
-#include "chunkables/fileNodeTypes/ObjectDeclarationWithRefCountFNDX.h"
-#include "chunkables/fileNodeTypes/ObjectGroupEndFND.h"
-#include "chunkables/fileNodeTypes/ObjectGroupListReferenceFND.h"
-#include "chunkables/fileNodeTypes/ObjectGroupStartFND.h"
-#include "chunkables/fileNodeTypes/ObjectInfoDependencyOverridesFND.h"
-#include "chunkables/fileNodeTypes/ObjectRevisionWithRefCount2FNDX.h"
-#include "chunkables/fileNodeTypes/ObjectRevisionWithRefCountFNDX.h"
-#include "chunkables/fileNodeTypes/ObjectSpaceManifestListReferenceFND.h"
-#include "chunkables/fileNodeTypes/ObjectSpaceManifestListStartFND.h"
-#include "chunkables/fileNodeTypes/ObjectSpaceManifestRootFND.h"
-#include "chunkables/fileNodeTypes/ReadOnlyObjectDeclaration2LargeRefCountFND.h"
-#include "chunkables/fileNodeTypes/ReadOnlyObjectDeclaration2RefCountFND.h"
-#include "chunkables/fileNodeTypes/RevisionManifestEndFND.h"
-#include "chunkables/fileNodeTypes/RevisionManifestListReferenceFND.h"
-#include "chunkables/fileNodeTypes/RevisionManifestListStartFND.h"
-#include "chunkables/fileNodeTypes/RevisionManifestStart4FND.h"
-#include "chunkables/fileNodeTypes/RevisionManifestStart6FND.h"
-#include "chunkables/fileNodeTypes/RevisionManifestStart7FND.h"
-#include "chunkables/fileNodeTypes/RevisionRoleAndContextDeclarationFND.h"
-#include "chunkables/fileNodeTypes/RevisionRoleDeclarationFND.h"
-#include "chunkables/fileNodeTypes/RootObjectReference2FNDX.h"
-#include "chunkables/fileNodeTypes/RootObjectReference3FND.h"
+
+#include "chunkables/fileNodeTypes/FileNodeTypes.h"
 
 #include "utils/ChunkableUtils.h"
 #include "utils/Helper.h"
 
+#include "ObjectGroupList.h"
 #include "ObjectSpaceManifestList.h"
 #include "RevisionManifest.h"
-#include "RevisionManifestList.h"
+
+#include <iterator>
+
+#include <QDebug>
 
 namespace libmson {
 namespace priv {
@@ -285,6 +252,9 @@ std::shared_ptr<RevisionStoreFile> RevisionStoreFileParser::parse()
   return m_file;
 }
 
+
+// -----------------------------------------------------------------------------
+
 void RevisionStoreFileParser::parseChunk(
     QDataStream& ds, const Chunkable_SPtr_t& chunk)
 {
@@ -311,7 +281,7 @@ void RevisionStoreFileParser::parseChunk(
     break;
   }
   case RevisionStoreChunkType::FreeChunk: {
-    parseFreeChunk(ds, std::static_pointer_cast<FreeChunk>(chunk));
+    parseFreeChunk(std::static_pointer_cast<FreeChunk>(chunk));
     break;
   }
   case RevisionStoreChunkType::TransactionLogFragment: {
@@ -349,6 +319,8 @@ void RevisionStoreFileParser::parseChunk(
   }
 }
 
+// -----------------------------------------------------------------------------
+
 void RevisionStoreFileParser::parseEncryptedData(
     QDataStream& ds, const EncryptedData_WPtr_t& chunk)
 {
@@ -385,6 +357,8 @@ void RevisionStoreFileParser::parseEncryptedData(
     ds.device()->seek(originalStp);
   }
 }
+
+// -----------------------------------------------------------------------------
 
 RevisionStoreFileHeader_WPtr_t
 RevisionStoreFileParser::parseRevisionStoreFileHeader(QDataStream& ds)
@@ -556,6 +530,8 @@ RevisionStoreFileParser::parseRevisionStoreFileHeader(QDataStream& ds)
   return header;
 }
 
+// -----------------------------------------------------------------------------
+
 
 FileNode_SPtr_t RevisionStoreFileParser::parseFileNode(
     QDataStream& ds, const FileNode_SPtr_t& fileNode)
@@ -586,8 +562,13 @@ FileNode_SPtr_t RevisionStoreFileParser::parseFileNode(
   fn->fnt = parseFileNodeType(ds, fn);
 
   fn->m_isParsed = true;
+
+  registerFileNodeData(fn);
+
   return fn;
 }
+
+// -----------------------------------------------------------------------------
 
 
 void RevisionStoreFileParser::parseFileDataStoreObject(
@@ -610,6 +591,8 @@ void RevisionStoreFileParser::parseFileDataStoreObject(
     ds.device()->seek(originalStp);
   }
 }
+
+// -----------------------------------------------------------------------------
 
 void RevisionStoreFileParser::parseFreeChunkListFragments(
     QDataStream& ds, const FreeChunkListFragment_WPtr_t& firstFragment)
@@ -663,11 +646,13 @@ void RevisionStoreFileParser::parseFreeChunkListFragments(
   ds.device()->seek(originalStp);
 }
 
-void RevisionStoreFileParser::parseFreeChunk(
-    QDataStream& ds, const FreeChunk_SPtr_t& freeChunk)
+// -----------------------------------------------------------------------------
+
+void RevisionStoreFileParser::parseFreeChunk(const FreeChunk_SPtr_t& freeChunk)
 {
   freeChunk->m_isParsed = true;
 }
+// -----------------------------------------------------------------------------
 
 void RevisionStoreFileParser::parseObjectInfoDependencyOverrideData(
     QDataStream& ds, const ObjectInfoDependencyOverrideData_SPtr_t& objectInfo)
@@ -688,6 +673,8 @@ void RevisionStoreFileParser::parseObjectInfoDependencyOverrideData(
   }
 }
 
+// -----------------------------------------------------------------------------
+
 ObjectSpaceObjectPropSet_SPtr_t
 RevisionStoreFileParser::parseObjectSpaceObjectPropSet(
     QDataStream& ds, const ObjectSpaceObjectPropSet_SPtr_t& objectPropSet)
@@ -699,10 +686,10 @@ RevisionStoreFileParser::parseObjectSpaceObjectPropSet(
   quint64 propSetStart = ds.device()->pos();
   ds >> objectPropSet->m_OIDs;
 
-  if (objectPropSet->m_OIDs.header().OsidStream_isNotPresent() == false) {
+  if (objectPropSet->m_OIDs.getHeader().isOsidStreamNotPresent() == false) {
     ds >> objectPropSet->m_OSIDs;
 
-    if (objectPropSet->m_OSIDs.header().ExtendedStream_isPresent() == true) {
+    if (objectPropSet->m_OSIDs.getHeader().isExtendedStreamPresent() == true) {
       ds >> objectPropSet->m_ContextIDs;
     }
   }
@@ -718,6 +705,8 @@ RevisionStoreFileParser::parseObjectSpaceObjectPropSet(
 
   return objectPropSet;
 }
+
+// -----------------------------------------------------------------------------
 
 FileNodeListFragment_SPtr_t RevisionStoreFileParser::parseFileNodeListFragment(
     QDataStream& ds, const FileNodeListFragment_SPtr_t& fragment)
@@ -747,7 +736,7 @@ FileNodeListFragment_SPtr_t RevisionStoreFileParser::parseFileNodeListFragment(
   quint64 headerTest;
   ds >> headerTest;
   if (headerTest != FileNodeListFragment::header_magic_id) {
-    qFatal("FileNodeListFragment header is invalid.");
+    qWarning("FileNodeListFragment header is invalid.");
   }
 
   ds >> fragment->m_fileNodeListID;
@@ -852,6 +841,8 @@ FileNodeListFragment_SPtr_t RevisionStoreFileParser::parseFileNodeListFragment(
   return FileNodeListFragment_SPtr_t();
 }
 
+// -----------------------------------------------------------------------------
+
 std::vector<FileNodeListFragment_WPtr_t>
 RevisionStoreFileParser::parseFileNodeList(
     QDataStream& ds, const FileNodeListFragment_WPtr_t& firstFragment)
@@ -879,6 +870,8 @@ RevisionStoreFileParser::parseFileNodeList(
   ds.device()->seek(originalStp);
   return vec;
 }
+
+// -----------------------------------------------------------------------------
 
 bool RevisionStoreFileParser::parseTransactionLogFragment(
     QDataStream& ds, const TransactionLogFragment_SPtr_t& firstFragment)
@@ -1007,6 +1000,9 @@ bool RevisionStoreFileParser::parseTransactionLogFragment(
   return true;
 }
 
+
+// -----------------------------------------------------------------------------
+
 void RevisionStoreFileParser::parseUnknownBlob(
     QDataStream& ds, const UnknownBlob_SPtr_t& unknownBlob)
 {
@@ -1021,6 +1017,116 @@ void RevisionStoreFileParser::parseUnknownBlob(
   ds.device()->seek(originalStp);
 }
 
+void RevisionStoreFileParser::registerFileNodeData(const FileNode_SPtr_t& fn)
+{
+  //  Q_ASSERT(
+  //      fn->getFileNodeTypeID() == FileNodeTypeID::GlobalIdTableEntry2FNDX ||
+  //      fn->getFileNodeTypeID() == FileNodeTypeID::GlobalIdTableEntry3FNDX ||
+  //      fn->getFileNodeTypeID() == FileNodeTypeID::GlobalIdTableEntryFNDX ||
+  //      fn->getFileNodeTypeID() ==
+  //      FileNodeTypeID::RevisionManifestListStartFND ||
+  //      fn->getFileNodeTypeID() == FileNodeTypeID::RevisionManifestStart4FND
+  //      || fn->getFileNodeTypeID() ==
+  //      FileNodeTypeID::RevisionManifestStart6FND || fn->getFileNodeTypeID()
+  //      ==
+  //          FileNodeTypeID::RevisionRoleAndContextDeclarationFND ||
+  //      fn->getFileNodeTypeID() ==
+  //      FileNodeTypeID::RevisionRoleDeclarationFND);
+
+  switch (fn->getFileNodeTypeID()) {
+  case FileNodeTypeID::GlobalIdTableEntry2FNDX: {
+    auto fnd = std::static_pointer_cast<GlobalIdTableEntry2FNDX>(fn->getFnt());
+    auto dependentRevision =
+        m_file->m_revisionsMap.at(m_file->m_currentRevision).getDependent();
+
+    auto guid = m_file->m_revisionsMap.at(dependentRevision)
+                    .m_globalId.at(fnd->m_iIndexMapFrom);
+
+    if (guid.isNull()) {
+      qWarning() << "GlobalIdTableEntry2FNDX could not find indexMapFrom GUID";
+    }
+
+    auto& rev = m_file->m_revisionsMap.at(m_file->m_currentRevision);
+    rev.m_globalId.insert_or_assign(fnd->m_iIndexMapTo, guid);
+
+    break;
+  }
+  case FileNodeTypeID::GlobalIdTableEntry3FNDX: {
+    auto fnd = std::static_pointer_cast<GlobalIdTableEntry3FNDX>(fn->getFnt());
+    const auto& dependentRevision =
+        m_file->m_revisionsMap.at(m_file->m_currentRevision).getDependent();
+
+
+    for (size_t i = 0; i < fnd->m_cEntriesToCopy; i++) {
+      auto& globalIdMap =
+          m_file->m_revisionsMap.at(dependentRevision).m_globalId;
+      const auto& guid = globalIdMap.at(fnd->m_iIndexCopyFromStart + i);
+
+      auto& currentIdMap =
+          m_file->m_revisionsMap.at(m_file->m_currentRevision).m_globalId;
+
+      currentIdMap.insert_or_assign(fnd->m_iIndexCopyToStart + i, guid);
+    }
+
+    break;
+  }
+  case FileNodeTypeID::GlobalIdTableEntryFNDX: {
+    auto fnd  = std::static_pointer_cast<GlobalIdTableEntryFNDX>(fn->getFnt());
+    auto& rev = m_file->m_revisionsMap.at(m_file->m_currentRevision);
+    rev.m_globalId.insert_or_assign(fnd->m_index, fnd->m_guid);
+    break;
+  }
+  case FileNodeTypeID::RevisionManifestListStartFND: {
+    auto fnd =
+        std::static_pointer_cast<RevisionManifestListStartFND>(fn->getFnt());
+    registerRevisionManifestList(fnd->m_gosid, fn);
+    break;
+  }
+  case FileNodeTypeID::RevisionManifestStart4FND: {
+    registerRevisionManifest(fn);
+    break;
+  }
+  case FileNodeTypeID::RevisionManifestStart6FND: {
+    auto fnd =
+        std::static_pointer_cast<RevisionManifestStart6FND>(fn->getFnt());
+    registerAdditionalRevisionRole(
+        fnd->m_rid, fnd->m_revisionRole, fnd->m_ridDependent);
+    registerRevisionManifest(fn);
+    break;
+  }
+  case FileNodeTypeID::RevisionRoleAndContextDeclarationFND: {
+    auto fnd = std::static_pointer_cast<RevisionRoleAndContextDeclarationFND>(
+        fn->getFnt());
+    registerAdditionalRevisionRole(
+        fnd->m_base.m_rid, fnd->m_base.m_RevisionRole, fnd->m_gctxid);
+    break;
+  }
+  case FileNodeTypeID::RevisionRoleDeclarationFND: {
+    auto fnd =
+        std::static_pointer_cast<RevisionRoleDeclarationFND>(fn->getFnt());
+    registerAdditionalRevisionRole(
+        fnd->m_rid, fnd->m_RevisionRole, ExtendedGUID());
+    break;
+  }
+
+  case FileNodeTypeID::FileDataStoreObjectReferenceFND: {
+
+    auto fnd =
+        std::static_pointer_cast<FileDataStoreObjectReferenceFND>(fn->getFnt());
+    m_file->m_guidToRefMap.insert_or_assign(
+        ExtendedGUID(fnd->getGuidReference(), 0),
+        std::static_pointer_cast<Chunkable>(fnd->getBlobRef().lock()));
+    break;
+  }
+  default: {
+    // nothing to do
+    break;
+  }
+  }
+}
+
+// -----------------------------------------------------------------------------
+
 
 std::shared_ptr<IFileNodeType> RevisionStoreFileParser::parseFileNodeType(
     QDataStream& ds, const FileNode_SPtr_t& fn)
@@ -1028,125 +1134,78 @@ std::shared_ptr<IFileNodeType> RevisionStoreFileParser::parseFileNodeType(
 
   switch (fn->getFileNodeTypeID()) {
 
-    // type 0
+    // type 0 ------------------------------------------------------------------
   case FileNodeTypeID::ChunkTerminatorFND: {
-    auto thisFnt = std::make_shared<ChunkTerminatorFND>(fn);
-    ds >> *thisFnt;
-    return thisFnt;
+    return parseChunkTerminatorFND(fn);
   }
   case FileNodeTypeID::DataSignatureGroupDefinitionFND: {
-    auto thisFnt = std::make_shared<DataSignatureGroupDefinitionFND>(fn);
-    ds >> *thisFnt;
-    return thisFnt;
+    return parseDataSignatureGroupDefinitionFND(ds, fn);
   }
   case FileNodeTypeID::GlobalIdTableEndFNDX: {
-    auto thisFnt = std::make_shared<GlobalIdTableEndFNDX>(fn);
-    ds >> *thisFnt;
-    return thisFnt;
+    return parseGlobalIdTableEndFNDX(fn);
   }
   case FileNodeTypeID::GlobalIdTableEntry2FNDX: {
-    auto thisFnt = std::make_shared<GlobalIdTableEntry2FNDX>(fn);
-    ds >> *thisFnt;
-    return thisFnt;
+    return parseGlobalIdTableEntry2FNDX(ds, fn);
   }
   case FileNodeTypeID::GlobalIdTableEntry3FNDX: {
-    auto thisFnt = std::make_shared<GlobalIdTableEntry3FNDX>(fn);
-    ds >> *thisFnt;
-    return thisFnt;
+    return parseGlobalIdTableEntry3FNDX(ds, fn);
   }
   case FileNodeTypeID::GlobalIdTableEntryFNDX: {
-    auto thisFnt = std::make_shared<GlobalIdTableEntryFNDX>(fn);
-    ds >> *thisFnt;
-    return thisFnt;
+    return parseGlobalIdTableEntryFNDX(ds, fn);
   }
   case FileNodeTypeID::GlobalIdTableStart2FND: {
-    auto thisFnt = std::make_shared<GlobalIdTableStart2FND>(fn);
-    ds >> *thisFnt;
-    return thisFnt;
+    return parseGlobalIdTableStart2FND(fn);
   }
   case FileNodeTypeID::GlobalIdTableStartFNDX: {
-    auto thisFnt = std::make_shared<GlobalIdTableStartFNDX>(fn);
-    ds >> *thisFnt;
-    return thisFnt;
+    return parseGlobalIdTableStartFNDX(ds, fn);
   }
   case FileNodeTypeID::ObjectDeclarationFileData3LargeRefCountFND: {
-    auto thisFnt =
-        std::make_shared<ObjectDeclarationFileData3LargeRefCountFND>(fn);
-    ds >> *thisFnt;
-    return thisFnt;
+    return parseObjectDeclarationFileData3LargeRefCountFND(ds, fn);
   }
   case FileNodeTypeID::ObjectDeclarationFileData3RefCountFND: {
-    auto thisFnt = std::make_shared<ObjectDeclarationFileData3RefCountFND>(fn);
-    ds >> *thisFnt;
-    return thisFnt;
+    return parseObjectDeclarationFileData3RefCountFND(ds, fn);
   }
   case FileNodeTypeID::ObjectGroupEndFND: {
-    auto thisFnt = std::make_shared<ObjectGroupEndFND>(fn);
-    ds >> *thisFnt;
-    return thisFnt;
+    return parseObjectGroupEndFND(fn);
   }
   case FileNodeTypeID::ObjectGroupStartFND: {
-    auto thisFnt = std::make_shared<ObjectGroupStartFND>(fn);
-    ds >> *thisFnt;
-    return thisFnt;
+    return parseObjectGroupStartFND(ds, fn);
   }
   case FileNodeTypeID::ObjectSpaceManifestListStartFND: {
-    auto thisFnt = std::make_shared<ObjectSpaceManifestListStartFND>(fn);
-    ds >> *thisFnt;
-    return thisFnt;
+    return parseObjectSpaceManifestListStartFND(ds, fn);
   }
   case FileNodeTypeID::ObjectSpaceManifestRootFND: {
-    auto thisFnt = std::make_shared<ObjectSpaceManifestRootFND>(fn);
-    ds >> *thisFnt;
-    return thisFnt;
+    return parseObjectSpaceManifestRootFND(ds, fn);
   }
   case FileNodeTypeID::RevisionManifestEndFND: {
-    auto thisFnt = std::make_shared<RevisionManifestEndFND>(fn);
-    ds >> *thisFnt;
-    return thisFnt;
+    return parseRevisionManifestEndFND(fn);
   }
   case FileNodeTypeID::RevisionManifestListStartFND: {
-    auto thisFnt = std::make_shared<RevisionManifestListStartFND>(fn);
-    ds >> *thisFnt;
-    return thisFnt;
+    return parseRevisionManifestListStartFND(ds, fn);
   }
   case FileNodeTypeID::RevisionManifestStart4FND: {
-    auto thisFnt = std::make_shared<RevisionManifestStart4FND>(fn);
-    ds >> *thisFnt;
-    return thisFnt;
+    return parseRevisionManifestStart4FND(ds, fn);
   }
   case FileNodeTypeID::RevisionManifestStart6FND: {
-    auto thisFnt = std::make_shared<RevisionManifestStart6FND>(fn);
-    ds >> *thisFnt;
-    return thisFnt;
+    return parseRevisionManifestStart6FND(ds, fn);
   }
   case FileNodeTypeID::RevisionManifestStart7FND: {
-    auto thisFnt = std::make_shared<RevisionManifestStart7FND>(fn);
-    ds >> *thisFnt;
-    return thisFnt;
+    return parseRevisionManifestStart7FND(ds, fn);
   }
   case FileNodeTypeID::RevisionRoleAndContextDeclarationFND: {
-    auto thisFnt = std::make_shared<RevisionRoleAndContextDeclarationFND>(fn);
-    ds >> *thisFnt;
-    return thisFnt;
+    return parseRevisionRoleAndContextDeclarationFND(ds, fn);
   }
   case FileNodeTypeID::RevisionRoleDeclarationFND: {
-    auto thisFnt = std::make_shared<RevisionRoleDeclarationFND>(fn);
-    ds >> *thisFnt;
-    return thisFnt;
+    return parseRevisionRoleDeclarationFND(ds, fn);
   }
   case FileNodeTypeID::RootObjectReference2FNDX: {
-    auto thisFnt = std::make_shared<RootObjectReference2FNDX>(fn);
-    ds >> *thisFnt;
-    return thisFnt;
+    return parseRootObjectReference2FNDX(ds, fn);
   }
   case FileNodeTypeID::RootObjectReference3FND: {
-    auto thisFnt = std::make_shared<RootObjectReference3FND>(fn);
-    ds >> *thisFnt;
-    return thisFnt;
+    return parseRootObjectReference3FND(ds, fn);
   }
 
-  // type 1
+  // type 1 ------------------------------------------------------------------
   case FileNodeTypeID::FileDataStoreObjectReferenceFND: {
     return parseFileDataStoreObjectReferenceFND(ds, fn);
   }
@@ -1184,7 +1243,7 @@ std::shared_ptr<IFileNodeType> RevisionStoreFileParser::parseFileNodeType(
     return parseObjectRevisionWithRefCountFNDX(ds, fn);
   }
 
-    // type 2
+  // type 2 --------------------------------------------------------------------
   case FileNodeTypeID::FileDataStoreListReferenceFND: {
     return parseFileDataStoreListReferenceFND(ds, fn);
   }
@@ -1197,6 +1256,7 @@ std::shared_ptr<IFileNodeType> RevisionStoreFileParser::parseFileNodeType(
   case FileNodeTypeID::RevisionManifestListReferenceFND: {
     return parseRevisionManifestListReferenceFND(ds, fn);
   }
+
 
   // needed to let FileNodeListFragment parser break out from loop
   case FileNodeTypeID::NullFnd: {
@@ -1212,8 +1272,347 @@ std::shared_ptr<IFileNodeType> RevisionStoreFileParser::parseFileNodeType(
 }
 
 // FileNodeType parsers ------------------------------------------------------
+// type 0 --------------------------------------------------------------------
+ChunkTerminatorFND_SPtr_t
+RevisionStoreFileParser::parseChunkTerminatorFND(const FileNode_SPtr_t& fn)
+{
+  Q_ASSERT(fn->getFileNodeTypeID() == FileNodeTypeID::ChunkTerminatorFND);
 
-IFileNodeType_SPtr_t
+  auto fnd = std::make_shared<ChunkTerminatorFND>(fn);
+
+  // no data
+
+  return fnd;
+}
+
+DataSignatureGroupDefinitionFND_SPtr_t
+RevisionStoreFileParser::parseDataSignatureGroupDefinitionFND(
+    QDataStream& ds, const FileNode_SPtr_t& fn)
+{
+  Q_ASSERT(
+      fn->getFileNodeTypeID() ==
+      FileNodeTypeID::DataSignatureGroupDefinitionFND);
+
+  auto fnd = std::make_shared<DataSignatureGroupDefinitionFND>(fn);
+
+  ds >> fnd->m_dataSignatureGroup;
+
+  return fnd;
+}
+
+GlobalIdTableEndFNDX_SPtr_t
+RevisionStoreFileParser::parseGlobalIdTableEndFNDX(const FileNode_SPtr_t& fn)
+{
+  Q_ASSERT(fn->getFileNodeTypeID() == FileNodeTypeID::GlobalIdTableEndFNDX);
+
+  auto fnd = std::make_shared<GlobalIdTableEndFNDX>(fn);
+
+  // no data
+
+  return fnd;
+}
+
+GlobalIdTableEntry2FNDX_SPtr_t
+RevisionStoreFileParser::parseGlobalIdTableEntry2FNDX(
+    QDataStream& ds, const FileNode_SPtr_t& fn)
+{
+  Q_ASSERT(fn->getFileNodeTypeID() == FileNodeTypeID::GlobalIdTableEntry2FNDX);
+
+  auto fnd = std::make_shared<GlobalIdTableEntry2FNDX>(fn);
+
+  ds >> fnd->m_iIndexMapFrom;
+  ds >> fnd->m_iIndexMapTo;
+
+
+  return fnd;
+}
+
+GlobalIdTableEntry3FNDX_SPtr_t
+RevisionStoreFileParser::parseGlobalIdTableEntry3FNDX(
+    QDataStream& ds, const FileNode_SPtr_t& fn)
+{
+  Q_ASSERT(fn->getFileNodeTypeID() == FileNodeTypeID::GlobalIdTableEntry3FNDX);
+
+  auto fnd = std::make_shared<GlobalIdTableEntry3FNDX>(fn);
+
+  ds >> fnd->m_iIndexCopyFromStart;
+  ds >> fnd->m_cEntriesToCopy;
+  ds >> fnd->m_iIndexCopyToStart;
+
+
+  return fnd;
+}
+
+GlobalIdTableEntryFNDX_SPtr_t
+RevisionStoreFileParser::parseGlobalIdTableEntryFNDX(
+    QDataStream& ds, const FileNode_SPtr_t& fn)
+{
+  Q_ASSERT(fn->getFileNodeTypeID() == FileNodeTypeID::GlobalIdTableEntryFNDX);
+
+  auto fnd = std::make_shared<GlobalIdTableEntryFNDX>(fn);
+
+  ds >> fnd->m_index;
+  ds >> fnd->m_guid;
+
+
+  return fnd;
+}
+
+GlobalIdTableStart2FND_SPtr_t
+RevisionStoreFileParser::parseGlobalIdTableStart2FND(const FileNode_SPtr_t& fn)
+{
+  Q_ASSERT(fn->getFileNodeTypeID() == FileNodeTypeID::GlobalIdTableStart2FND);
+
+  auto fnd = std::make_shared<GlobalIdTableStart2FND>(fn);
+
+  // no data
+
+  return fnd;
+}
+
+GlobalIdTableStartFNDX_SPtr_t
+RevisionStoreFileParser::parseGlobalIdTableStartFNDX(
+    QDataStream& ds, const FileNode_SPtr_t& fn)
+{
+  Q_ASSERT(fn->getFileNodeTypeID() == FileNodeTypeID::GlobalIdTableStartFNDX);
+
+  auto fnd = std::make_shared<GlobalIdTableStartFNDX>(fn);
+
+  ds >> fnd->m_reserved;
+
+  return fnd;
+}
+
+ObjectDeclarationFileData3LargeRefCountFND_SPtr_t
+RevisionStoreFileParser::parseObjectDeclarationFileData3LargeRefCountFND(
+    QDataStream& ds, const FileNode_SPtr_t& fn)
+{
+  Q_ASSERT(
+      fn->getFileNodeTypeID() ==
+      FileNodeTypeID::ObjectDeclarationFileData3LargeRefCountFND);
+
+  auto fnd = std::make_shared<ObjectDeclarationFileData3LargeRefCountFND>(fn);
+
+  ds >> fnd->m_oid;
+  ds >> fnd->m_jcid;
+  ds >> fnd->m_cRef;
+  ds >> fnd->m_FileDataReference;
+  ds >> fnd->m_Extension;
+
+  return fnd;
+}
+
+ObjectDeclarationFileData3RefCountFND_SPtr_t
+RevisionStoreFileParser::parseObjectDeclarationFileData3RefCountFND(
+    QDataStream& ds, const FileNode_SPtr_t& fn)
+{
+  Q_ASSERT(
+      fn->getFileNodeTypeID() ==
+      FileNodeTypeID::ObjectDeclarationFileData3RefCountFND);
+
+  auto fnd = std::make_shared<ObjectDeclarationFileData3RefCountFND>(fn);
+
+  ds >> fnd->m_oid;
+  ds >> fnd->m_jcid;
+  ds >> fnd->m_cRef;
+  ds >> fnd->m_FileDataReference;
+  ds >> fnd->m_Extension;
+
+  return fnd;
+}
+
+ObjectGroupEndFND_SPtr_t
+RevisionStoreFileParser::parseObjectGroupEndFND(const FileNode_SPtr_t& fn)
+{
+  Q_ASSERT(fn->getFileNodeTypeID() == FileNodeTypeID::ObjectGroupEndFND);
+
+  auto fnd = std::make_shared<ObjectGroupEndFND>(fn);
+
+  // nodata
+
+  return fnd;
+}
+
+ObjectGroupStartFND_SPtr_t RevisionStoreFileParser::parseObjectGroupStartFND(
+    QDataStream& ds, const FileNode_SPtr_t& fn)
+{
+  Q_ASSERT(fn->getFileNodeTypeID() == FileNodeTypeID::ObjectGroupStartFND);
+
+  auto fnd = std::make_shared<ObjectGroupStartFND>(fn);
+
+  ds >> fnd->m_oid;
+
+  return fnd;
+}
+
+ObjectSpaceManifestListStartFND_SPtr_t
+RevisionStoreFileParser::parseObjectSpaceManifestListStartFND(
+    QDataStream& ds, const FileNode_SPtr_t& fn)
+{
+  Q_ASSERT(
+      fn->getFileNodeTypeID() ==
+      FileNodeTypeID::ObjectSpaceManifestListStartFND);
+
+  auto fnd = std::make_shared<ObjectSpaceManifestListStartFND>(fn);
+
+  ds >> fnd->m_gosid;
+
+  return fnd;
+}
+
+ObjectSpaceManifestRootFND_SPtr_t
+RevisionStoreFileParser::parseObjectSpaceManifestRootFND(
+    QDataStream& ds, const FileNode_SPtr_t& fn)
+{
+  Q_ASSERT(
+      fn->getFileNodeTypeID() == FileNodeTypeID::ObjectSpaceManifestRootFND);
+
+  auto fnd = std::make_shared<ObjectSpaceManifestRootFND>(fn);
+
+  ds >> fnd->m_gosidRoot;
+
+  return fnd;
+}
+
+RevisionManifestEndFND_SPtr_t
+RevisionStoreFileParser::parseRevisionManifestEndFND(const FileNode_SPtr_t& fn)
+{
+  Q_ASSERT(fn->getFileNodeTypeID() == FileNodeTypeID::RevisionManifestEndFND);
+
+  auto fnd = std::make_shared<RevisionManifestEndFND>(fn);
+
+  // no data
+
+  return fnd;
+}
+
+RevisionManifestListStartFND_SPtr_t
+RevisionStoreFileParser::parseRevisionManifestListStartFND(
+    QDataStream& ds, const FileNode_SPtr_t& fn)
+{
+  Q_ASSERT(
+      fn->getFileNodeTypeID() == FileNodeTypeID::RevisionManifestListStartFND);
+
+  auto fnd = std::make_shared<RevisionManifestListStartFND>(fn);
+
+  ds >> fnd->m_gosid;
+  ds >> fnd->m_nInstance;
+
+
+  return fnd;
+}
+
+RevisionManifestStart4FND_SPtr_t
+RevisionStoreFileParser::parseRevisionManifestStart4FND(
+    QDataStream& ds, const FileNode_SPtr_t& fn)
+{
+  Q_ASSERT(
+      fn->getFileNodeTypeID() == FileNodeTypeID::RevisionManifestStart4FND);
+
+  auto fnd = std::make_shared<RevisionManifestStart4FND>(fn);
+
+  ds >> fnd->m_rid;
+  ds >> fnd->m_ridDependent;
+  ds >> fnd->m_timeCreation;
+  ds >> fnd->m_revisionRole;
+  ds >> fnd->m_odcsDefault;
+
+  return fnd;
+}
+
+RevisionManifestStart6FND_SPtr_t
+RevisionStoreFileParser::parseRevisionManifestStart6FND(
+    QDataStream& ds, const FileNode_SPtr_t& fn)
+{
+  Q_ASSERT(
+      fn->getFileNodeTypeID() == FileNodeTypeID::RevisionManifestStart6FND);
+
+  auto fnd = std::make_shared<RevisionManifestStart6FND>(fn);
+
+  ds >> fnd->m_rid;
+  ds >> fnd->m_ridDependent;
+  ds >> fnd->m_revisionRole;
+  ds >> fnd->m_odcsDefault;
+
+  return fnd;
+}
+
+RevisionManifestStart7FND_SPtr_t
+RevisionStoreFileParser::parseRevisionManifestStart7FND(
+    QDataStream& ds, const FileNode_SPtr_t& fn)
+{
+  Q_ASSERT(
+      fn->getFileNodeTypeID() == FileNodeTypeID::RevisionManifestStart7FND);
+
+  auto fnd = std::make_shared<RevisionManifestStart7FND>(fn);
+
+  ds >> fnd->m_base;
+  ds >> fnd->m_gctxid;
+
+  return fnd;
+}
+
+RevisionRoleAndContextDeclarationFND_SPtr_t
+RevisionStoreFileParser::parseRevisionRoleAndContextDeclarationFND(
+    QDataStream& ds, const FileNode_SPtr_t& fn)
+{
+  Q_ASSERT(
+      fn->getFileNodeTypeID() ==
+      FileNodeTypeID::RevisionRoleAndContextDeclarationFND);
+
+  auto fnd = std::make_shared<RevisionRoleAndContextDeclarationFND>(fn);
+
+  ds >> fnd->m_base;
+  ds >> fnd->m_gctxid;
+
+  return fnd;
+}
+
+RevisionRoleDeclarationFND_SPtr_t
+RevisionStoreFileParser::parseRevisionRoleDeclarationFND(
+    QDataStream& ds, const FileNode_SPtr_t& fn)
+{
+  Q_ASSERT(
+      fn->getFileNodeTypeID() == FileNodeTypeID::RevisionRoleDeclarationFND);
+
+  auto fnd = std::make_shared<RevisionRoleDeclarationFND>(fn);
+
+  ds >> fnd->m_rid;
+  ds >> fnd->m_RevisionRole;
+
+  return fnd;
+}
+
+RootObjectReference2FNDX_SPtr_t
+RevisionStoreFileParser::parseRootObjectReference2FNDX(
+    QDataStream& ds, const FileNode_SPtr_t& fn)
+{
+  Q_ASSERT(fn->getFileNodeTypeID() == FileNodeTypeID::RootObjectReference2FNDX);
+
+  auto fnd = std::make_shared<RootObjectReference2FNDX>(fn);
+
+  ds >> fnd->m_oidRoot;
+  ds >> fnd->m_RootRole;
+
+  return fnd;
+}
+
+RootObjectReference3FND_SPtr_t
+RevisionStoreFileParser::parseRootObjectReference3FND(
+    QDataStream& ds, const FileNode_SPtr_t& fn)
+{
+  Q_ASSERT(fn->getFileNodeTypeID() == FileNodeTypeID::RootObjectReference3FND);
+
+  auto fnd = std::make_shared<RootObjectReference3FND>(fn);
+
+  ds >> fnd->m_oidRoot;
+  ds >> fnd->m_RootRole;
+
+  return fnd;
+}
+
+// type 1 --------------------------------------------------------------------
+FileDataStoreObjectReferenceFND_SPtr_t
 RevisionStoreFileParser::parseFileDataStoreObjectReferenceFND(
     QDataStream& ds, const FileNode_SPtr_t& fn)
 {
@@ -1221,49 +1620,48 @@ RevisionStoreFileParser::parseFileDataStoreObjectReferenceFND(
       fn->getFileNodeTypeID() ==
       FileNodeTypeID::FileDataStoreObjectReferenceFND);
 
-  auto currentFnt = std::make_shared<FileDataStoreObjectReferenceFND>(fn);
+  auto fnd = std::make_shared<FileDataStoreObjectReferenceFND>(fn);
 
-  currentFnt->m_blobRef =
-      parseFileNodeChunkReference<FileDataStoreObject>(ds, fn);
+  fnd->m_blobRef = parseFileNodeChunkReference<FileDataStoreObject>(ds, fn);
 
-  ds >> currentFnt->m_guidReference;
+  ds >> fnd->m_guidReference;
 
-  return currentFnt;
+  return fnd;
 }
 
-IFileNodeType_SPtr_t RevisionStoreFileParser::parseHashedChunkDescriptor2FND(
+HashedChunkDescriptor2FND_SPtr_t
+RevisionStoreFileParser::parseHashedChunkDescriptor2FND(
     QDataStream& ds, const FileNode_SPtr_t& fn)
 {
   Q_ASSERT(
       fn->getFileNodeTypeID() == FileNodeTypeID::HashedChunkDescriptor2FND);
 
-  auto currentFnt = std::make_shared<HashedChunkDescriptor2FND>(fn);
+  auto fnd = std::make_shared<HashedChunkDescriptor2FND>(fn);
 
-  currentFnt->m_blobRef =
+  fnd->m_blobRef =
       parseFileNodeChunkReference<ObjectSpaceObjectPropSet>(ds, fn);
 
 
-  currentFnt->m_guidHash =
-      ds.device()->read(HashedChunkDescriptor2FND::guidHashWidth);
+  fnd->m_guidHash = ds.device()->read(HashedChunkDescriptor2FND::guidHashWidth);
 
-  return currentFnt;
+  return fnd;
 }
 
-IFileNodeType_SPtr_t
+ObjectDataEncryptionKeyV2FNDX_SPtr_t
 RevisionStoreFileParser::parseObjectDataEncryptionKeyV2FNDX(
     QDataStream& ds, const FileNode_SPtr_t& fn)
 {
   Q_ASSERT(
       fn->getFileNodeTypeID() == FileNodeTypeID::ObjectDataEncryptionKeyV2FNDX);
 
-  auto currentFnt = std::make_shared<ObjectDataEncryptionKeyV2FNDX>(fn);
+  auto fnd = std::make_shared<ObjectDataEncryptionKeyV2FNDX>(fn);
 
-  currentFnt->m_blobRef = parseFileNodeChunkReference<EncryptedData>(ds, fn);
+  fnd->m_blobRef = parseFileNodeChunkReference<EncryptedData>(ds, fn);
 
-  return currentFnt;
+  return fnd;
 }
 
-IFileNodeType_SPtr_t
+ObjectDeclaration2LargeRefCountFND_SPtr_t
 RevisionStoreFileParser::parseObjectDeclaration2LargeRefCountFND(
     QDataStream& ds, const FileNode_SPtr_t& fn)
 {
@@ -1271,38 +1669,38 @@ RevisionStoreFileParser::parseObjectDeclaration2LargeRefCountFND(
       fn->getFileNodeTypeID() ==
       FileNodeTypeID::ObjectDeclaration2LargeRefCountFND);
 
-  auto currentFnt = std::make_shared<ObjectDeclaration2LargeRefCountFND>(fn);
+  auto fnd = std::make_shared<ObjectDeclaration2LargeRefCountFND>(fn);
 
-  currentFnt->m_blobRef =
+  fnd->m_blobRef =
       parseFileNodeChunkReference<ObjectSpaceObjectPropSet>(ds, fn);
 
 
-  ds >> currentFnt->m_body;
-  ds >> currentFnt->m_cRef;
+  ds >> fnd->m_body;
+  ds >> fnd->m_cRef;
 
-  return currentFnt;
+  return fnd;
 }
 
-IFileNodeType_SPtr_t
+ObjectDeclaration2RefCountFND_SPtr_t
 RevisionStoreFileParser::parseObjectDeclaration2RefCountFND(
     QDataStream& ds, const FileNode_SPtr_t& fn)
 {
   Q_ASSERT(
       fn->getFileNodeTypeID() == FileNodeTypeID::ObjectDeclaration2RefCountFND);
 
-  auto currentFnt = std::make_shared<ObjectDeclaration2RefCountFND>(fn);
+  auto fnd = std::make_shared<ObjectDeclaration2RefCountFND>(fn);
 
-  currentFnt->m_blobRef =
+  fnd->m_blobRef =
       parseFileNodeChunkReference<ObjectSpaceObjectPropSet>(ds, fn);
 
 
-  ds >> currentFnt->m_body;
-  ds >> currentFnt->m_cRef;
+  ds >> fnd->m_body;
+  ds >> fnd->m_cRef;
 
-  return currentFnt;
+  return fnd;
 }
 
-IFileNodeType_SPtr_t
+ObjectDeclarationWithRefCount2FNDX_SPtr_t
 RevisionStoreFileParser::parseObjectDeclarationWithRefCount2FNDX(
     QDataStream& ds, const FileNode_SPtr_t& fn)
 {
@@ -1310,19 +1708,19 @@ RevisionStoreFileParser::parseObjectDeclarationWithRefCount2FNDX(
       fn->getFileNodeTypeID() ==
       FileNodeTypeID::ObjectDeclarationWithRefCount2FNDX);
 
-  auto currentFnt = std::make_shared<ObjectDeclarationWithRefCount2FNDX>(fn);
+  auto fnd = std::make_shared<ObjectDeclarationWithRefCount2FNDX>(fn);
 
-  currentFnt->m_objectRef =
+  fnd->m_objectRef =
       parseFileNodeChunkReference<ObjectSpaceObjectPropSet>(ds, fn);
 
 
-  ds >> currentFnt->m_body;
-  ds >> currentFnt->m_cRef;
+  ds >> fnd->m_body;
+  ds >> fnd->m_cRef;
 
-  return currentFnt;
+  return fnd;
 }
 
-IFileNodeType_SPtr_t
+ReadOnlyObjectDeclaration2LargeRefCountFND_SPtr_t
 RevisionStoreFileParser::parseReadOnlyObjectDeclaration2LargeRefCountFND(
     QDataStream& ds, const FileNode_SPtr_t& fn)
 {
@@ -1330,23 +1728,22 @@ RevisionStoreFileParser::parseReadOnlyObjectDeclaration2LargeRefCountFND(
       fn->getFileNodeTypeID() ==
       FileNodeTypeID::ReadOnlyObjectDeclaration2LargeRefCountFND);
 
-  auto currentFnt =
-      std::make_shared<ReadOnlyObjectDeclaration2LargeRefCountFND>(fn);
+  auto fnd = std::make_shared<ReadOnlyObjectDeclaration2LargeRefCountFND>(fn);
 
-  currentFnt->m_blobRef =
+  fnd->m_blobRef =
       parseFileNodeChunkReference<ObjectSpaceObjectPropSet>(ds, fn);
 
 
-  ds >> currentFnt->m_body;
-  ds >> currentFnt->m_cRef;
+  ds >> fnd->m_body;
+  ds >> fnd->m_cRef;
 
-  currentFnt->setMd5hash(ds.device()->read(
+  fnd->setMd5hash(ds.device()->read(
       ReadOnlyObjectDeclaration2LargeRefCountFND::md5HashSize));
 
-  return currentFnt;
+  return fnd;
 }
 
-IFileNodeType_SPtr_t
+ReadOnlyObjectDeclaration2RefCountFND_SPtr_t
 RevisionStoreFileParser::parseReadOnlyObjectDeclaration2RefCountFND(
     QDataStream& ds, const FileNode_SPtr_t& fn)
 {
@@ -1354,22 +1751,22 @@ RevisionStoreFileParser::parseReadOnlyObjectDeclaration2RefCountFND(
       fn->getFileNodeTypeID() ==
       FileNodeTypeID::ReadOnlyObjectDeclaration2RefCountFND);
 
-  auto currentFnt = std::make_shared<ReadOnlyObjectDeclaration2RefCountFND>(fn);
+  auto fnd = std::make_shared<ReadOnlyObjectDeclaration2RefCountFND>(fn);
 
-  currentFnt->m_blobRef =
+  fnd->m_blobRef =
       parseFileNodeChunkReference<ObjectSpaceObjectPropSet>(ds, fn);
 
 
-  ds >> currentFnt->m_body;
-  ds >> currentFnt->m_cRef;
+  ds >> fnd->m_body;
+  ds >> fnd->m_cRef;
 
-  currentFnt->setMd5hash(ds.device()->read(
+  fnd->setMd5hash(ds.device()->read(
       ReadOnlyObjectDeclaration2LargeRefCountFND::md5HashSize));
 
-  return currentFnt;
+  return fnd;
 }
 
-IFileNodeType_SPtr_t
+ObjectDeclarationWithRefCountFNDX_SPtr_t
 RevisionStoreFileParser::parseObjectDeclarationWithRefCountFNDX(
     QDataStream& ds, const FileNode_SPtr_t& fn)
 {
@@ -1377,18 +1774,18 @@ RevisionStoreFileParser::parseObjectDeclarationWithRefCountFNDX(
       fn->getFileNodeTypeID() ==
       FileNodeTypeID::ObjectDeclarationWithRefCountFNDX);
 
-  auto currentFnt = std::make_shared<ObjectDeclarationWithRefCountFNDX>(fn);
+  auto fnd = std::make_shared<ObjectDeclarationWithRefCountFNDX>(fn);
 
-  currentFnt->m_objectRef =
+  fnd->m_objectRef =
       parseFileNodeChunkReference<ObjectSpaceObjectPropSet>(ds, fn);
 
-  ds >> currentFnt->m_body;
-  ds >> currentFnt->m_cRef;
+  ds >> fnd->m_body;
+  ds >> fnd->m_cRef;
 
-  return currentFnt;
+  return fnd;
 }
 
-IFileNodeType_SPtr_t
+ObjectInfoDependencyOverridesFND_SPtr_t
 RevisionStoreFileParser::parseObjectInfoDependencyOverridesFND(
     QDataStream& ds, const FileNode_SPtr_t& fn)
 {
@@ -1396,19 +1793,19 @@ RevisionStoreFileParser::parseObjectInfoDependencyOverridesFND(
       fn->getFileNodeTypeID() ==
       FileNodeTypeID::ObjectInfoDependencyOverridesFND);
 
-  auto currentFnt = std::make_shared<ObjectInfoDependencyOverridesFND>(fn);
+  auto fnd = std::make_shared<ObjectInfoDependencyOverridesFND>(fn);
 
-  currentFnt->m_ref =
+  fnd->m_ref =
       parseFileNodeChunkReference<ObjectInfoDependencyOverrideData>(ds, fn);
 
-  if (currentFnt->m_ref.lock() == nullptr) {
-    ds >> currentFnt->m_data;
+  if (fnd->m_ref.lock() == nullptr) {
+    ds >> fnd->m_data;
   }
 
-  return currentFnt;
+  return fnd;
 }
 
-IFileNodeType_SPtr_t
+ObjectRevisionWithRefCount2FNDX_SPtr_t
 RevisionStoreFileParser::parseObjectRevisionWithRefCount2FNDX(
     QDataStream& ds, const FileNode_SPtr_t& fn)
 {
@@ -1416,25 +1813,23 @@ RevisionStoreFileParser::parseObjectRevisionWithRefCount2FNDX(
       fn->getFileNodeTypeID() ==
       FileNodeTypeID::ObjectRevisionWithRefCount2FNDX);
 
-  auto currentFnt = std::make_shared<ObjectRevisionWithRefCount2FNDX>(fn);
+  auto fnd = std::make_shared<ObjectRevisionWithRefCount2FNDX>(fn);
 
-  currentFnt->m_ref =
-      parseFileNodeChunkReference<ObjectSpaceObjectPropSet>(ds, fn);
+  fnd->m_ref = parseFileNodeChunkReference<ObjectSpaceObjectPropSet>(ds, fn);
 
-  ds >> currentFnt->m_oid;
+  ds >> fnd->m_oid;
 
   quint32 composite = 0;
   ds >> composite;
-  currentFnt->m_fHasOidReferences = static_cast<bool>(composite & 0x1u);
-  currentFnt->m_fHasOsidReferences =
-      static_cast<bool>((composite & 0x2u) >> 1u);
+  fnd->m_fHasOidReferences  = static_cast<bool>(composite & 0x1u);
+  fnd->m_fHasOsidReferences = static_cast<bool>((composite & 0x2u) >> 1u);
 
-  ds >> currentFnt->m_cRef;
+  ds >> fnd->m_cRef;
 
-  return currentFnt;
+  return fnd;
 }
 
-IFileNodeType_SPtr_t
+ObjectRevisionWithRefCountFNDX_SPtr_t
 RevisionStoreFileParser::parseObjectRevisionWithRefCountFNDX(
     QDataStream& ds, const FileNode_SPtr_t& fn)
 {
@@ -1442,54 +1837,54 @@ RevisionStoreFileParser::parseObjectRevisionWithRefCountFNDX(
       fn->getFileNodeTypeID() ==
       FileNodeTypeID::ObjectRevisionWithRefCountFNDX);
 
-  auto currentFnt = std::make_shared<ObjectRevisionWithRefCountFNDX>(fn);
+  auto fnd = std::make_shared<ObjectRevisionWithRefCountFNDX>(fn);
 
-  currentFnt->m_ref =
-      parseFileNodeChunkReference<ObjectSpaceObjectPropSet>(ds, fn);
+  fnd->m_ref = parseFileNodeChunkReference<ObjectSpaceObjectPropSet>(ds, fn);
 
-  ds >> currentFnt->m_oid;
+  ds >> fnd->m_oid;
 
 
   /// \todo use temporary storage before assigning just as above
-  ds >> currentFnt->m_cRef;
-  currentFnt->m_fHasOidReferences  = ((currentFnt->m_cRef & 0x1u) != 0u);
-  currentFnt->m_fHasOsidReferences = ((currentFnt->m_cRef & 0x2u) != 0u);
-  currentFnt->m_cRef >>= 2u;
+  ds >> fnd->m_cRef;
+  fnd->m_fHasOidReferences  = ((fnd->m_cRef & 0x1u) != 0u);
+  fnd->m_fHasOsidReferences = ((fnd->m_cRef & 0x2u) != 0u);
+  fnd->m_cRef >>= 2u;
 
-  return currentFnt;
+  return fnd;
 }
 
-// type 2
-IFileNodeType_SPtr_t
+// type 2 --------------------------------------------------------------------
+FileDataStoreListReferenceFND_SPtr_t
 RevisionStoreFileParser::parseFileDataStoreListReferenceFND(
     QDataStream& ds, const FileNode_SPtr_t& fn)
 {
   Q_ASSERT(
       fn->getFileNodeTypeID() == FileNodeTypeID::FileDataStoreListReferenceFND);
 
-  auto currentFnt = std::make_shared<FileDataStoreListReferenceFND>(fn);
+  auto fnd = std::make_shared<FileDataStoreListReferenceFND>(fn);
 
-  currentFnt->m_ref = parseFileNodeChunkReference<FileNodeListFragment>(ds, fn);
+  fnd->m_ref = parseFileNodeChunkReference<FileNodeListFragment>(ds, fn);
 
-  return currentFnt;
+  return fnd;
 }
 
-IFileNodeType_SPtr_t RevisionStoreFileParser::parseObjectGroupListReferenceFND(
+ObjectGroupListReferenceFND_SPtr_t
+RevisionStoreFileParser::parseObjectGroupListReferenceFND(
     QDataStream& ds, const FileNode_SPtr_t& fn)
 {
   Q_ASSERT(
       fn->getFileNodeTypeID() == FileNodeTypeID::ObjectGroupListReferenceFND);
 
-  auto currentFnt = std::make_shared<ObjectGroupListReferenceFND>(fn);
+  auto fnd = std::make_shared<ObjectGroupListReferenceFND>(fn);
 
-  currentFnt->m_ref = parseFileNodeChunkReference<FileNodeListFragment>(ds, fn);
+  fnd->m_ref = parseFileNodeChunkReference<FileNodeListFragment>(ds, fn);
 
-  ds >> currentFnt->m_ObjectGroupID;
+  ds >> fnd->m_ObjectGroupID;
 
-  return currentFnt;
+  return fnd;
 }
 
-IFileNodeType_SPtr_t
+ObjectSpaceManifestListReferenceFND_SPtr_t
 RevisionStoreFileParser::parseObjectSpaceManifestListReferenceFND(
     QDataStream& ds, const FileNode_SPtr_t& fn)
 {
@@ -1497,16 +1892,16 @@ RevisionStoreFileParser::parseObjectSpaceManifestListReferenceFND(
       fn->getFileNodeTypeID() ==
       FileNodeTypeID::ObjectSpaceManifestListReferenceFND);
 
-  auto currentFnt = std::make_shared<ObjectSpaceManifestListReferenceFND>(fn);
+  auto fnd = std::make_shared<ObjectSpaceManifestListReferenceFND>(fn);
 
-  currentFnt->m_ref = parseFileNodeChunkReference<FileNodeListFragment>(ds, fn);
+  fnd->m_ref = parseFileNodeChunkReference<FileNodeListFragment>(ds, fn);
 
-  ds >> currentFnt->m_gosid;
+  ds >> fnd->m_gosid;
 
-  return currentFnt;
+  return fnd;
 }
 
-IFileNodeType_SPtr_t
+RevisionManifestListReferenceFND_SPtr_t
 RevisionStoreFileParser::parseRevisionManifestListReferenceFND(
     QDataStream& ds, const FileNode_SPtr_t& fn)
 {
@@ -1514,14 +1909,15 @@ RevisionStoreFileParser::parseRevisionManifestListReferenceFND(
       fn->getFileNodeTypeID() ==
       FileNodeTypeID::RevisionManifestListReferenceFND);
 
-  auto currentFnt = std::make_shared<RevisionManifestListReferenceFND>(fn);
+  auto fnd = std::make_shared<RevisionManifestListReferenceFND>(fn);
 
-  currentFnt->m_ref = parseFileNodeChunkReference<FileNodeListFragment>(ds, fn);
+  fnd->m_ref = parseFileNodeChunkReference<FileNodeListFragment>(ds, fn);
 
-  return currentFnt;
+  return fnd;
 }
 
-// Other non-chunkables ------------------------------------------------------
+
+// Other non-chunkables --------------------------------------------------------
 
 
 ObjectSpaceManifestList_SPtr_t
@@ -1708,7 +2104,7 @@ std::shared_ptr<ObjectGroupList> RevisionStoreFileParser::parseObjectGroupList(
 }
 
 
-// Utility functions ---------------------------------------------------------
+// Utility functions -----------------------------------------------------------
 
 template <class Chunkably>
 std::shared_ptr<Chunkably> RevisionStoreFileParser::parseFileNodeChunkReference(
@@ -1784,6 +2180,66 @@ std::shared_ptr<Chunkably> RevisionStoreFileParser::insertChunkSorted(
   chunkList.push_front(chunk);
 
   return chunk;
+}
+
+void RevisionStoreFileParser::registerRevisionManifestList(
+    const ExtendedGUID& guid, const FileNode_SPtr_t& fn)
+{
+  m_file->m_revisionManifestListsMap.insert({guid, fn});
+  m_file->m_revisionOrder.push_back(guid);
+}
+
+void RevisionStoreFileParser::registerRevisionManifest(
+    const FileNode_SPtr_t& fn)
+{
+  Q_ASSERT(
+      fn->getFileNodeTypeID() == FileNodeTypeID::RevisionManifestStart4FND ||
+      fn->getFileNodeTypeID() == FileNodeTypeID::RevisionManifestStart6FND ||
+      fn->getFileNodeTypeID() == FileNodeTypeID::RevisionManifestStart7FND);
+
+  ExtendedGUID thisGosid;
+  ExtendedGUID thisDependent;
+
+  if (fn->getFileNodeTypeID() == FileNodeTypeID::RevisionManifestStart4FND) {
+    auto thisFnd =
+        std::static_pointer_cast<RevisionManifestStart4FND>(fn->getFnt());
+
+    thisGosid     = thisFnd->getRid();
+    thisDependent = thisFnd->getRidDependent();
+  }
+  else if (
+      fn->getFileNodeTypeID() == FileNodeTypeID::RevisionManifestStart6FND) {
+    auto thisFnd =
+        std::static_pointer_cast<RevisionManifestStart6FND>(fn->getFnt());
+
+    thisGosid     = thisFnd->getRid();
+    thisDependent = thisFnd->getRidDependent();
+  }
+  else if (
+      fn->getFileNodeTypeID() == FileNodeTypeID::RevisionManifestStart7FND) {
+    auto thisFnd =
+        std::static_pointer_cast<RevisionManifestStart7FND>(fn->getFnt());
+
+    thisGosid     = thisFnd->getRid();
+    thisDependent = thisFnd->getRidDependent();
+  }
+
+
+  m_file->m_revisionsMap.try_emplace(thisGosid, Revision());
+
+  Revision& toModify = m_file->m_revisionsMap.at(thisGosid);
+
+  //  toModify.m_gosid = thisGosid;  /* seems unnecessary */
+
+  toModify.m_dependent      = thisDependent;
+  m_file->m_currentRevision = thisGosid;
+}
+
+void RevisionStoreFileParser::registerAdditionalRevisionRole(
+    const ExtendedGUID& guid, const quint32 revisionRole,
+    const ExtendedGUID& gctxid)
+{
+  m_file->m_revisionRolesMap.insert({guid, {revisionRole, gctxid}});
 }
 
 

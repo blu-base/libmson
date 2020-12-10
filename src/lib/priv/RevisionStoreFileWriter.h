@@ -63,21 +63,6 @@ private:
 
 
   // write utilities
-  quint64 stpFromChunk(Chunkable_WPtr_t chunk);
-
-  template <typename Chunkably_SPtr_t>
-  quint64
-  stpTillIterator(std::list<Chunkably_SPtr_t>& list, Chunkable_WPtr_t chunk);
-
-  FileChunkReference64x32 getFcr64x32FromChunk(
-      Chunkable_WPtr_t chunk, FCR_INIT preferedState = FCR_INIT::NIL);
-
-  FileChunkReference64 getFcr64FromChunk(
-      Chunkable_WPtr_t chunk, FCR_INIT preferedState = FCR_INIT::NIL);
-
-  FileNodeChunkReference getFncrFromChunk(
-      Chunkable_WPtr_t chunk, FNCR_STP_FORMAT stpFormat,
-      FNCR_CB_FORMAT cbFormat, FCR_INIT preferedState = FCR_INIT::NIL);
 
 
   /// utility function, which recomputes the sentinal entries' crc sums

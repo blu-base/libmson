@@ -47,9 +47,12 @@ public:
 
 
   virtual quint64 getSizeInFile() const override;
+  virtual FileNodeTypeID getType() const override
+  {
+    return FileNodeTypeID::ObjectRevisionWithRefCount2FNDX;
+  };
 
   friend class RevisionStoreFileParser;
-  friend class RevisionStoreFileWriter;
 
 private:
   //  virtual void deserialize(QDataStream& ds) override;

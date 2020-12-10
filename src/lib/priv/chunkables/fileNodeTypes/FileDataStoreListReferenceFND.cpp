@@ -23,33 +23,6 @@ void FileDataStoreListReferenceFND::setRef(
   m_ref = value;
 }
 
-// void FileDataStoreListReferenceFND::deserialize(QDataStream& ds)
-//{
-//  ds >> m_ref;
-
-//  m_StoreList = FileNodeListFragment(m_ref);
-//  ds >> m_StoreList;
-//}
-
-// void FileDataStoreListReferenceFND::serialize(QDataStream& ds) const { ds <<
-// m_ref; }
-
-// void FileDataStoreListReferenceFND::toDebugString(QDebug& dbg) const
-//{
-//  dbg << " FileDataStoreObjectReferenceFND:\n"
-//      << " ref: " << m_ref << '\n';
-//}
-
-// void FileDataStoreListReferenceFND::writeLowLevelXml(QXmlStreamWriter&
-// xmlWriter) const
-//{
-//  xmlWriter.writeStartElement("FileDataStoreListReferenceFND");
-//  xmlWriter << m_ref;
-
-//  xmlWriter << m_StoreList;
-//  xmlWriter.writeEndElement();
-//}
-
 quint64 FileDataStoreListReferenceFND::getSizeInFile() const
 {
   return m_parent.lock()->getFileNodeChunkReferenceSize();

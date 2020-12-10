@@ -1,0 +1,9 @@
+QXmlStreamWriter& writeBodyTextAlignment(const BodyTextAlignment& obj, QXmlStreamWriter& xmlWriter);
+QXmlStreamWriter& writeColorRef(const ColorRef& obj, QXmlStreamWriter& xmlWriter);
+QXmlStreamWriter& writeFileTime(const FileTime& obj, QXmlStreamWriter& xmlWriter);
+QXmlStreamWriter& writeLayoutAlignment(const LayoutAlignment& obj, QXmlStreamWriter& xmlWriter);
+QXmlStreamWriter& writeLCID(const LCID& obj, QXmlStreamWriter& xmlWriter);
+QXmlStreamWriter& writeListMSAAIndex(const ListMSAAIndex& obj, QXmlStreamWriter& xmlWriter);
+QXmlStreamWriter& writeNoteTagShape(const NoteTagShape& obj, QXmlStreamWriter& xmlWriter);
+QXmlStreamWriter& writePageSize(const PageSize& obj, QXmlStreamWriter& xmlWriter);
+QXmlStreamWriter& writeTime32(const Time32& obj, QXmlStreamWriter& xmlWriter);

@@ -49,40 +49,5 @@ quint64 ObjectDeclarationWithRefCount2FNDX::getSizeInFile() const
          m_body.getSizeInFile() + sizeof(m_cRef);
 }
 
-// void ObjectDeclarationWithRefCount2FNDX::deserialize(QDataStream &ds) {
-//  ds >> m_objectRef;
-//  ds >> m_body;
-//  ds >> m_cRef;
-
-//  m_blob = ObjectSpaceObjectPropSet(ds, m_objectRef);
-//}
-
-// void ObjectDeclarationWithRefCount2FNDX::serialize(QDataStream &ds) const {
-//  ds << m_objectRef;
-//  ds << m_body;
-//  ds << m_cRef;
-//}
-
-// void ObjectDeclarationWithRefCount2FNDX::toDebugString(QDebug &dbg) const {
-//  dbg << " ObjectDeclarationWithRefCount2FNDX:\n"
-//      << " objectRef: " << m_objectRef << '\n'
-//      << " body: " << m_body << '\n'
-//      << " cRef: " << m_cRef << '\n';
-//}
-
-// void ObjectDeclarationWithRefCount2FNDX::writeLowLevelXml(
-//    QXmlStreamWriter &xmlWriter) const {
-//  xmlWriter.writeStartElement("ObjectDeclarationWithRefCount2FNDX");
-
-//  xmlWriter.writeAttribute("cRef", qStringHex(m_cRef, 8));
-
-//  xmlWriter << m_objectRef;
-//  xmlWriter << m_body;
-
-//  xmlWriter << m_blob;
-
-//  xmlWriter.writeEndElement();
-//}
-
 } // namespace priv
 } // namespace libmson

@@ -3,29 +3,31 @@
 namespace libmson {
 namespace priv {
 
-uint8_t PropertyType_OneByteOfData::data() const { return m_data; }
+QByteArray PropertyType_OneByteOfData::data() const { return m_data; }
 
-void PropertyType_OneByteOfData::setData(const uint8_t data) { m_data = data; }
+void PropertyType_OneByteOfData::setData(const QByteArray& data)
+{
+  m_data = data;
+}
 
 
 PropertyType_OneByteOfData::PropertyType_OneByteOfData() : m_data() {}
 
-void PropertyType_OneByteOfData::deserialize(QDataStream& ds) { ds >> m_data; }
+PropertyIDType PropertyType_OneByteOfData::getType() const
+{
+  return PropertyIDType::OneByteOfData;
+}
+
+void PropertyType_OneByteOfData::deserialize(QDataStream& ds)
+{
+
+  m_data = ds.device()->read(1);
+}
 
 void PropertyType_OneByteOfData::serialize(QDataStream& ds) const
 {
-  ds << m_data;
+  ds.writeRawData(m_data.data(), 1);
 }
-
-// void PropertyType_OneByteOfData::writeLowLevelXml(
-//    QXmlStreamWriter &xmlWriter) const {
-//  xmlWriter.writeStartElement("OneByteOfData");
-//  xmlWriter.writeCharacters(m_data.toHex());
-//  xmlWriter.writeEndElement();
-//}
-
-
-// void PropertyType_OneByteOfData::toDebugString(QDebug &dbg) const {}
 
 } // namespace priv
 } // namespace libmson

@@ -33,9 +33,12 @@ public:
   void setGuidHash(const QByteArray& guidHash);
 
   virtual quint64 getSizeInFile() const override;
+  virtual FileNodeTypeID getType() const override
+  {
+    return FileNodeTypeID::HashedChunkDescriptor2FND;
+  };
 
   friend class RevisionStoreFileParser;
-  friend class RevisionStoreFileWriter;
 
   static const quint8 guidHashWidth = 16;
 };

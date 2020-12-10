@@ -40,22 +40,6 @@ void GlobalIdTableEntry2FNDX::serialize(QDataStream& ds) const
   ds << m_iIndexMapTo;
 }
 
-// void GlobalIdTableEntry2FNDX::toDebugString(QDebug& dbg) const
-//{
-//  dbg << " GlobalIdTableEntry2FNDX: \n"
-//      << " iIndexMapFrom: " << m_iIndexMapFrom
-//      << " iIndexMapTo: " << m_iIndexMapTo << '\n';
-//}
-
-// void GlobalIdTableEntry2FNDX::writeLowLevelXml(
-//    QXmlStreamWriter& xmlWriter) const
-//{
-//  xmlWriter.writeStartElement("GlobalIdTableEntry2FNDX");
-//  xmlWriter.writeAttribute("iIndexMapFrom", QString::number(m_iIndexMapFrom));
-//  xmlWriter.writeAttribute("iIndexMapTo", QString::number(m_iIndexMapTo));
-//  xmlWriter.writeEndElement();
-//}
-
 quint64 GlobalIdTableEntry2FNDX::getSizeInFile() const { return sizeInFile; }
 
 } // namespace priv

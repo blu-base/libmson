@@ -9,7 +9,10 @@ ObjectSpaceManifestListStartFND::ObjectSpaceManifestListStartFND(
 {
 }
 
-ExtendedGUID ObjectSpaceManifestListStartFND::gosid() const { return m_gosid; }
+ExtendedGUID ObjectSpaceManifestListStartFND::getGosid() const
+{
+  return m_gosid;
+}
 
 void ObjectSpaceManifestListStartFND::setGosid(const ExtendedGUID& value)
 {
@@ -30,14 +33,6 @@ void ObjectSpaceManifestListStartFND::serialize(QDataStream& ds) const
 {
   ds << m_gosid;
 }
-
-// void ObjectSpaceManifestListStartFND::writeLowLevelXml(
-//    QXmlStreamWriter& xmlWriter) const
-//{
-//  xmlWriter.writeStartElement("ObjectSpaceManifestListStartFND");
-//  xmlWriter << m_gosid;
-//  xmlWriter.writeEndElement();
-//}
 
 } // namespace priv
 } // namespace libmson

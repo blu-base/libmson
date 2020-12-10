@@ -5,7 +5,20 @@
 namespace libmson {
 namespace priv {
 
-ObjectSpaceObjectStreamHeader IObjectSpaceObjectStream::header() const
+IObjectSpaceObjectStream::IObjectSpaceObjectStream() : m_header(), m_body() {}
+
+IObjectSpaceObjectStream::IObjectSpaceObjectStream(
+    const ObjectSpaceObjectStreamHeader::OsidStreamPresence& osidStreamPresence,
+    const ObjectSpaceObjectStreamHeader::ExtendedStreamPresence&
+        extendedStreamPresence)
+    : m_header(osidStreamPresence, extendedStreamPresence), m_body()
+{
+}
+
+IObjectSpaceObjectStream::~IObjectSpaceObjectStream() {}
+
+
+ObjectSpaceObjectStreamHeader IObjectSpaceObjectStream::getHeader() const
 {
   return m_header;
 }
@@ -16,7 +29,10 @@ void IObjectSpaceObjectStream::setHeader(
   m_header = header;
 }
 
-std::vector<CompactID> IObjectSpaceObjectStream::body() const { return m_body; }
+std::vector<CompactID> IObjectSpaceObjectStream::getBody() const
+{
+  return m_body;
+}
 
 void IObjectSpaceObjectStream::setBody(const std::vector<CompactID>& body)
 {
@@ -26,7 +42,7 @@ void IObjectSpaceObjectStream::setBody(const std::vector<CompactID>& body)
 
 bool IObjectSpaceObjectStream::pushbackToBody(const CompactID& entry)
 {
-  if (m_header.count() < 0xFFFFFF) {
+  if (m_header.getCount() < 0xFFFFFF) {
     m_body.push_back(entry);
     m_header.incrementCount();
     return true;
@@ -100,29 +116,20 @@ const quint64 IObjectSpaceObjectStream::sizeInFileBase =
 
 quint64 IObjectSpaceObjectStream::getSizeInFile() const
 {
-  return sizeInFileBase + m_header.count() * CompactID::getSizeInFile();
+  return sizeInFileBase + m_header.getCount() * CompactID::getSizeInFile();
 }
 
-IObjectSpaceObjectStream::IObjectSpaceObjectStream() : m_header(), m_body() {}
-
-IObjectSpaceObjectStream::IObjectSpaceObjectStream(
-    const ObjectSpaceObjectStreamHeader::OsidStreamPresence& osidStreamPresence,
-    const ObjectSpaceObjectStreamHeader::ExtendedStreamPresence&
-        extendedStreamPresence)
-    : m_header(osidStreamPresence, extendedStreamPresence), m_body()
-{
-}
-
-IObjectSpaceObjectStream::~IObjectSpaceObjectStream() {}
 
 void IObjectSpaceObjectStream::deserialize(QDataStream& ds)
 {
   ds >> m_header;
 
   std::vector<CompactID> ids{};
-  ids.reserve(m_header.count());
+  auto count = m_header.getCount();
 
-  for (quint32 i{0}; i < m_header.count(); i++) {
+  ids.reserve(count);
+
+  for (quint32 i{0}; i < count; i++) {
     CompactID entry;
     ds >> entry;
     ids.push_back(entry);
@@ -135,34 +142,10 @@ void IObjectSpaceObjectStream::serialize(QDataStream& ds) const
   /// \todo update header count from contents of m_bofy
   ds << m_header;
 
-  for (quint32 i{0}; i < m_header.count(); i++) {
+  for (quint32 i{0}; i < m_header.getCount(); i++) {
     ds << m_body[i];
   }
 }
-
-
-// void IObjectSpaceObjectStream::writeLowLevelXml(
-//    QXmlStreamWriter &xmlWriter) const {
-//  //    xmlWriter.writeStartElement("IObjectSpaceObjectStream");
-//  xmlWriter << m_header;
-
-//  xmlWriter.writeStartElement("CompactIDs");
-//  for (const auto &entry : m_body) {
-//    xmlWriter << entry;
-//  }
-//  xmlWriter.writeEndElement();
-//  //    xmlWriter.writeEndElement();
-//}
-
-// void IObjectSpaceObjectStream::toDebugString(QDebug &dbg) const {
-
-//  dbg << "ObjectSpaceOpbjectStream:\n";
-//  dbg << m_header;
-
-//  for (quint32 i(0); i < m_body.size(); i++) {
-//    dbg << m_body[i];
-//  }
-//}
 
 } // namespace priv
 } // namespace libmson

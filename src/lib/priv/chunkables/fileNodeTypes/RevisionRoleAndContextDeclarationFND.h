@@ -33,6 +33,12 @@ public:
   quint32 getRevisionRole() const;
 
   virtual quint64 getSizeInFile() const override;
+  virtual FileNodeTypeID getType() const override
+  {
+    return FileNodeTypeID::RevisionRoleAndContextDeclarationFND;
+  };
+
+  friend class RevisionStoreFileParser;
 
 private:
   virtual void deserialize(QDataStream& ds) override;

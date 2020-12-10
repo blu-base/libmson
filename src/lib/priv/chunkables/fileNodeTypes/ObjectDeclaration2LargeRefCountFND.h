@@ -35,9 +35,12 @@ public:
   void setCRef(const quint32& cRef);
 
   virtual quint64 getSizeInFile() const override;
+  virtual FileNodeTypeID getType() const override
+  {
+    return FileNodeTypeID::ObjectDeclaration2LargeRefCountFND;
+  };
 
   friend class RevisionStoreFileParser;
-  friend class RevisionStoreFileWriter;
 };
 
 } // namespace priv

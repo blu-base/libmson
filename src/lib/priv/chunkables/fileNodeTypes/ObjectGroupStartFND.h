@@ -20,10 +20,16 @@ public:
   ObjectGroupStartFND(FileNode_SPtr_t parentFileNode);
   virtual ~ObjectGroupStartFND() = default;
 
-  ExtendedGUID oid() const;
+  ExtendedGUID getOid() const;
   void setOid(const ExtendedGUID& oid);
 
   virtual quint64 getSizeInFile() const override;
+  virtual FileNodeTypeID getType() const override
+  {
+    return FileNodeTypeID::ObjectGroupStartFND;
+  };
+
+  friend class RevisionStoreFileParser;
 
 private:
   virtual void deserialize(QDataStream& ds) override;

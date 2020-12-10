@@ -41,10 +41,15 @@ public:
   bool getFHasOsidReferences() const;
   void setFHasOsidReferences(bool value);
 
-  friend class RevisionStoreFileParser;
-  friend class RevisionStoreFileWriter;
 
   virtual quint64 getSizeInFile() const override;
+  virtual FileNodeTypeID getType() const override
+  {
+    return FileNodeTypeID::ObjectRevisionWithRefCountFNDX;
+  };
+
+  friend class RevisionStoreFileParser;
+
 
 private:
   static const quint64 sizeInFileBase = 5;

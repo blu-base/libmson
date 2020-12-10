@@ -31,13 +31,17 @@ public:
   void setGuidReference(const QUuid& value);
 
   virtual quint64 getSizeInFile() const override;
+  virtual FileNodeTypeID getType() const override
+  {
+    return FileNodeTypeID::FileDataStoreObjectReferenceFND;
+  };
 
   // private:
   //  virtual void deserialize(QDataStream& ds) override;
   //  virtual void serialize(QDataStream& ds) const override;
 
   friend class RevisionStoreFileParser;
-  friend class RevisionStoreFileWriter;
+
 
   static const quint64 sizeOfGUID = 16;
 };

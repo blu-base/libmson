@@ -91,11 +91,11 @@ quint64 ObjectSpaceObjectPropSet::unPaddedCb() const
 {
   quint32 size = m_OIDs.getSizeInFile();
 
-  if (m_OIDs.header().OsidStream_isNotPresent() == false) {
+  if (m_OIDs.getHeader().isOsidStreamNotPresent() == false) {
     size += m_OSIDs.getSizeInFile();
 
 
-    if (m_OSIDs.header().ExtendedStream_isPresent() == true) {
+    if (m_OSIDs.getHeader().isExtendedStreamPresent() == true) {
       size += m_ContextIDs.getSizeInFile();
     }
   }

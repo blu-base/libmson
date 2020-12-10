@@ -46,20 +46,20 @@ public:
   ObjectInfoDependencyOverrideData(
       const quint64 initialStp = 0, const quint64 initialCb = 0);
 
-  quint32 c8BitOverrides() const;
+  quint32 getC8BitOverrides() const;
   void setC8BitOverrides(const quint32& c8BitOverrides);
 
-  quint32 c32BitOverrides() const;
+  quint32 getC32BitOverrides() const;
   void setC32BitOverrides(const quint32& c32BitOverrides);
 
-  quint32 crc() const;
+  quint32 getCrc() const;
   void setCrc(const quint32& crc);
 
-  std::vector<ObjectInfoDependencyOverride8> Overrides1() const;
+  std::vector<ObjectInfoDependencyOverride8> getOverrides1() const;
   void
   setOverrides1(const std::vector<ObjectInfoDependencyOverride8>& Overrides1);
 
-  std::vector<ObjectInfoDependencyOverride32> Overrides2() const;
+  std::vector<ObjectInfoDependencyOverride32> getOverrides2() const;
   void
   setOverrides2(const std::vector<ObjectInfoDependencyOverride32>& Overrides2);
 

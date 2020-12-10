@@ -17,12 +17,16 @@ public:
   virtual ~ChunkTerminatorFND() = default;
 
   virtual quint64 getSizeInFile() const override { return 0; };
-
+  virtual FileNodeTypeID getType() const override
+  {
+    return FileNodeTypeID::ChunkTerminatorFND;
+  };
 
 private:
   virtual void deserialize(QDataStream& ds) override{};
   virtual void serialize(QDataStream& ds) const override{};
 };
+
 
 } // namespace priv
 } // namespace libmson

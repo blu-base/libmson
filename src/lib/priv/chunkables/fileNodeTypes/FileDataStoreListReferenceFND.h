@@ -26,10 +26,13 @@ public:
 
   std::shared_ptr<FileNodeListFragment> getStoreList();
 
-  friend class RevisionStoreFileParser;
-  friend class RevisionStoreFileWriter;
-
   virtual quint64 getSizeInFile() const override;
+  virtual FileNodeTypeID getType() const override
+  {
+    return FileNodeTypeID::FileDataStoreListReferenceFND;
+  };
+
+  friend class RevisionStoreFileParser;
 };
 
 } // namespace priv

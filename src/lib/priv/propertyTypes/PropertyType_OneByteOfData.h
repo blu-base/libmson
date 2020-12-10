@@ -10,15 +10,16 @@ namespace priv {
 
 class PropertyType_OneByteOfData : public IPropertyType {
 private:
-  uint8_t m_data;
+  QByteArray m_data;
 
 public:
   PropertyType_OneByteOfData();
 
-  uint8_t data() const;
-  void setData(const uint8_t data);
+  QByteArray data() const;
+  void setData(const QByteArray& data);
 
   virtual quint64 getSizeInFile() const override { return sizeInFile; };
+  virtual PropertyIDType getType() const override;
 
 private:
   virtual void deserialize(QDataStream& ds) override;

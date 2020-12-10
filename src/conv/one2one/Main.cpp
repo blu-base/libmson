@@ -206,7 +206,7 @@ int main(int argc, char* argv[])
 
   // libmson::FreeChunk;
 
-  QFile msonOut(entry + ".new");
+  QFile msonOut(file.path() + "/" + baseFileName + ".new.one");
   msonOut.open(QIODevice::WriteOnly);
   QDataStream outStream(&msonOut);
   auto writer = libmson::priv::RevisionStoreFileWriter(mson);

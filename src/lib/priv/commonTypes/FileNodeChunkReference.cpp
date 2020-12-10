@@ -380,24 +380,14 @@ void FileNodeChunkReference::serialize(QDataStream& ds) const
   }
 }
 
-// void FileNodeChunkReference::toDebugString(QDebug& dbg) const
-//{
-//  dbg.noquote();
-//  dbg << "FileNodeChunkReference(";
-//  if (is_fcrNil()) {
-//    dbg << "fcrNil";
-//  }
-//  else if (is_fcrZero()) {
-//    dbg << "fcrZero";
-//  }
-//  else {
-//    dbg << "stp: " << qStringHex(stp(), 16) << ", cb: " << qStringHex(cb(),
-//    16);
-//  };
+FNCR_STP_FORMAT FileNodeChunkReference::getStpFormat() const 
+{
+    return m_stpFormat;
+}
 
-//  dbg << ", stp/cb format: " << static_cast<quint8>(m_stpFormat) << "/" <<
-//  static_cast<quint8>(m_cbFormat) << ")";
-//}
+FNCR_CB_FORMAT FileNodeChunkReference::getCbFormat() const {
+    return m_cbFormat;
+}
 
 } // namespace priv
 } // namespace libmson
