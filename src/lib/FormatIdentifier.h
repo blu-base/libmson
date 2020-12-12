@@ -44,12 +44,12 @@ public:
   ~FormatIdentifier();
 
   // movable:
-  FormatIdentifier(FormatIdentifier&& rhs) noexcept;
-  FormatIdentifier& operator=(FormatIdentifier&& rhs) noexcept;
+  FormatIdentifier(FormatIdentifier&& rhs) = delete ;
+  FormatIdentifier& operator=(FormatIdentifier&& rhs) = delete ;
 
   // and copyable
-  FormatIdentifier(const FormatIdentifier& rhs);
-  FormatIdentifier& operator=(const FormatIdentifier& rhs);
+  FormatIdentifier(const FormatIdentifier& rhs) = delete ;
+  FormatIdentifier& operator=(const FormatIdentifier& rhs) = delete ;
 
 
   /** returns recoqnized Format*/
