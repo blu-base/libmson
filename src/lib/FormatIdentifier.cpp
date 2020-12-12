@@ -122,7 +122,7 @@ public:
     m_isParsed = false;
   }
 
-private:
+
   void parseFile()
   {
     // Check if fileName input can be inspected
@@ -273,6 +273,7 @@ private:
     setDefaults();
     m_isParsed = true;
   };
+private:
 
   template <size_t N>
   bool compareBuffWithRefArray(
@@ -311,6 +312,15 @@ FormatIdentifier::FormatIdentifier()
 FormatIdentifier::FormatIdentifier(const std::string& fileName)
     : p{std::make_unique<FormatIdentifier::Impl>(fileName)}
 {
+}
+
+OnFormat FormatIdentifier::getFormat() { return p->getFormat(); }
+
+Supported FormatIdentifier::getSupported() { return p->getSupported(); }
+
+bool FormatIdentifier::isSupported()
+{
+  return p->getSupported() == Supported::Yes;
 }
 
 std::string FormatIdentifier::getFileName() { return p->getFileName(); }
