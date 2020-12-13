@@ -236,16 +236,16 @@ public:
       if (varWidthByte == 0) {
         packageStoreFileFormat_offset += 1;
       }
-      else if (varWidthByte >= 4u) {
+      else if ( (varWidthByte & 0x7) == 4u) {
         packageStoreFileFormat_offset += 17;
       }
-      else if (varWidthByte >= 32u) {
+      else if ((varWidthByte & 0x3F) == 32u) {
         packageStoreFileFormat_offset += 18;
       }
-      else if (varWidthByte >= 64u) {
+      else if ((varWidthByte & 0x7F) == 64u) {
         packageStoreFileFormat_offset += 19;
       }
-      else if (varWidthByte == 128u) {
+      else if (varWidthByte  == 128u) {
         packageStoreFileFormat_offset += 21;
       }
 
@@ -273,8 +273,8 @@ public:
     setDefaults();
     m_isParsed = true;
   };
-private:
 
+private:
   template <size_t N>
   bool compareBuffWithRefArray(
       std::array<char, 0x400>& buff, std::array<uint8_t, N> ref,
@@ -301,7 +301,6 @@ private:
 
     return isEqual;
   }
-
 };
 
 
