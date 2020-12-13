@@ -5,7 +5,7 @@ namespace priv {
 
 RevisionManifestStart7FND::RevisionManifestStart7FND(
     FileNode_SPtr_t parentFileNode)
-    : IFileNodeType(std::move(parentFileNode)), m_base(parentFileNode)
+    : IFileNodeType(parentFileNode), m_base(parentFileNode)
 {
 }
 

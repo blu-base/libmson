@@ -5,7 +5,7 @@ namespace priv {
 
 RevisionRoleAndContextDeclarationFND::RevisionRoleAndContextDeclarationFND(
     FileNode_SPtr_t parentFileNode)
-    : IFileNodeType(std::move(parentFileNode)), m_base(parentFileNode)
+    : IFileNodeType(parentFileNode), m_base(parentFileNode)
 {
 }
 
