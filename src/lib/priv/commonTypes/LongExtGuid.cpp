@@ -45,13 +45,13 @@ void LongExtGuid::deserialize(QDataStream& ds)
   else if (typeByte == 128) {
     ds >> m_guid;
     if (m_guid == QUuid()) {
-      qWarning("SerialNumber likely formatted incorrectly. Guid is zero, while "
-               "type indicates non-zero. ");
+      qWarning("LongExtGuid (SerialNumber) likely formatted incorrectly. Guid "
+               "is zero, while type indicates non-zero. ");
     }
     ds >> m_serialNumber;
   }
   else {
-    qFatal("Error: SerialNumber (LongExtGuid) is formatted incorrectly");
+    qFatal("Error: LongExtGuid (SerialNumber) is formatted incorrectly");
   }
 }
 
