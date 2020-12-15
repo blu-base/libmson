@@ -93,12 +93,14 @@ void CompactExtGuid::deserialize(QDataStream& ds)
 
   if (varWidthByte == 0) {
     newBase = priv::ExtendedGUID(QUuid(), 0);
+    m_type  = CompactExtGuidWidth::CompressedNull;
   }
   else if ((varWidthByte & 0x7) == 4u) {
     QUuid guid;
     ds >> guid;
 
     newBase = priv::ExtendedGUID(guid, varWidthByte >> 3);
+    m_type  = CompactExtGuidWidth::CompressedN5Bit;
   }
   else if ((varWidthByte & 0x3F) == 32u) {
     uint8_t nFragment;
@@ -110,6 +112,7 @@ void CompactExtGuid::deserialize(QDataStream& ds)
     ds >> guid;
 
     newBase = priv::ExtendedGUID(guid, n);
+    m_type  = CompactExtGuidWidth::CompressedN10Bit;
   }
   else if ((varWidthByte & 0x7F) == 64u) {
     uint16_t nFragment;
@@ -121,6 +124,7 @@ void CompactExtGuid::deserialize(QDataStream& ds)
     ds >> guid;
 
     newBase = priv::ExtendedGUID(guid, n);
+    m_type  = CompactExtGuidWidth::CompressedN17Bit;
   }
   else if (varWidthByte == 128u) {
     uint32_t n;
@@ -130,6 +134,7 @@ void CompactExtGuid::deserialize(QDataStream& ds)
     ds >> guid;
 
     newBase = priv::ExtendedGUID(guid, n);
+    m_type  = CompactExtGuidWidth::Uncompressed;
   }
 
   m_base = newBase;
