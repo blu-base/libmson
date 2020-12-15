@@ -10,7 +10,7 @@ ExtendedGUID::ExtendedGUID(const QUuid& guid, const quint32& n)
 {
 }
 
-QUuid& ExtendedGUID::getGuid() { return this->m_guid; }
+QUuid ExtendedGUID::getGuid() const { return m_guid; }
 
 void ExtendedGUID::setGuid(const QUuid& guid) { m_guid = guid; }
 
@@ -20,7 +20,8 @@ void ExtendedGUID::setN(const quint32& n) { data_n = n; }
 
 bool ExtendedGUID::isValid() const
 {
-  if (m_guid.toString() == "{00000000-0000-0000-0000-000000000000}") {
+  if (m_guid.toString() == "{00000000-0000-0000-0000-000000000000}" &&
+      data_n == 0) {
     if (data_n != 0) {
       return false;
     }

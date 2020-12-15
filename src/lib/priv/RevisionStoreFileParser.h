@@ -93,7 +93,7 @@ private:
 
   /// parses the header, adds the containers to m_file and returns the pointer
   /// to the header container
-  RevisionStoreFileHeader_WPtr_t parseRevisionStoreFileHeader(QDataStream& ds);
+  RevisionStoreFileHeader_SPtr_t parseRevisionStoreFileHeader(QDataStream& ds);
 
   bool parseTransactionLogFragment(
       QDataStream& ds, const TransactionLogFragment_SPtr_t& firstFragment);

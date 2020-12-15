@@ -23,7 +23,7 @@ public:
 
   //  operator=(const ExtendedGUID &guid)
 
-  QUuid& getGuid();
+  QUuid getGuid() const;
   void setGuid(const QUuid& guid);
 
   quint32 getN() const;

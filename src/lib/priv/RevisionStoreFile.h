@@ -116,6 +116,10 @@ private:
   ExtendedGUID m_currentRevision;
 
 
+  // for testing
+  std::list<ExtendedGUID> allExtendedGUID;
+
+
   /* ------------------------------------------------------------------------ */
 
 

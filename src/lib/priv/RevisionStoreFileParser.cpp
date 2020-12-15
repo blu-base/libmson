@@ -27,7 +27,7 @@ RevisionStoreFileParser::RevisionStoreFileParser(
 
 std::shared_ptr<RevisionStoreFile> RevisionStoreFileParser::parse()
 {
-  auto header = parseRevisionStoreFileHeader(m_ds).lock();
+  auto header = parseRevisionStoreFileHeader(m_ds);
 
 
   // Parsing TransactionLog
@@ -360,13 +360,13 @@ void RevisionStoreFileParser::parseEncryptedData(
 
 // -----------------------------------------------------------------------------
 
-RevisionStoreFileHeader_WPtr_t
+RevisionStoreFileHeader_SPtr_t
 RevisionStoreFileParser::parseRevisionStoreFileHeader(QDataStream& ds)
 {
 
   if (ds.device()->bytesAvailable() < 0x400) {
     qWarning("File size insufficient to be OneNote file.");
-    return RevisionStoreFileHeader_WPtr_t();
+    return RevisionStoreFileHeader_SPtr_t();
   }
   // if byte order is big endian, change to little endian
   if (ds.byteOrder() == QDataStream::BigEndian) {
@@ -390,7 +390,7 @@ RevisionStoreFileParser::parseRevisionStoreFileHeader(QDataStream& ds)
   ds >> header->m_guidFileFormat;
   if (header->guidFileFormat != RevisionStoreFileHeader::guidFileFormat) {
     qWarning("guidFileFormat of the RevisionStoreFileHeader is invalid.");
-    return RevisionStoreFileHeader_WPtr_t();
+    return RevisionStoreFileHeader_SPtr_t();
   }
   ds >> header->m_ffvLastWriterVersion;
   ds >> header->m_ffvOldestWriterVersion;
@@ -1353,7 +1353,6 @@ RevisionStoreFileParser::parseGlobalIdTableEntryFNDX(
 
   ds >> fnd->m_index;
   ds >> fnd->m_guid;
-
 
   return fnd;
 }

@@ -1838,7 +1838,7 @@ RSFtoXml::writeCompactID(const CompactID& obj, QXmlStreamWriter& xmlWriter)
   xmlWriter.writeStartElement("CompactID");
 
   xmlWriter.writeAttribute("guidIndex", qStringHex(obj.getGuidIndex(), 12));
-  xmlWriter.writeAttribute("n", qStringHex(obj.getN(), 2));
+  xmlWriter.writeAttribute("n", QString::number(obj.getN()));
 
   xmlWriter.writeEndElement();
 
