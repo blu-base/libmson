@@ -18,6 +18,11 @@ CompactExtGuid CellId::getExguid2() const { return m_exguid2; }
 
 void CellId::setExguid2(const CompactExtGuid& exguid2) { m_exguid2 = exguid2; }
 
+quint64 CellId::getSizeInFile() const
+{
+  return m_exguid1.getSizeInFile() + m_exguid2.getSizeInFile();
+}
+
 
 void CellId::deserialize(QDataStream& ds)
 {

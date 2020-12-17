@@ -10,8 +10,7 @@
 namespace libmson {
 namespace packStore {
 
-class CellId : public priv::IStreamable
-{
+class CellId : public priv::IStreamable {
 private:
   CompactExtGuid m_exguid1;
   CompactExtGuid m_exguid2;
@@ -24,12 +23,13 @@ public:
   CompactExtGuid getExguid2() const;
   void setExguid2(const CompactExtGuid& exguid2);
 
+  quint64 getSizeInFile() const;
+
   // IStreamable interface
 private:
   virtual void deserialize(QDataStream& ds) override;
   virtual void serialize(QDataStream& ds) const override;
 };
-
 
 
 } // namespace packStore

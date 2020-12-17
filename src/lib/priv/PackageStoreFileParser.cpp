@@ -144,7 +144,19 @@ PackageStoreFileParser::parseDataElementTree(QDataStream& ds)
     ds >> *packageStart;
     composite->m_header = packageStart;
 
+    qint64 currentPos = ds.device()->pos();
+
+
+    if (composite->getHeader()->getType() == StreamObjectType::DataElement) {
+      composite->m_dataElement =
+          parseDataElement(composite->m_header->getLength(), ds);
+    }
+
+    /// \todo remove temporary parsing of raw data (also duplicate parse)
+    ds.device()->seek(currentPos);
     composite->m_data = ds.device()->read(composite->m_header->getLength());
+
+
     vec.push_back(composite);
     if (packStore::compoundType.at(packageStart->getType()) == 1) {
       composite->m_children = parseDataElementTree(ds);
@@ -165,6 +177,82 @@ PackageStoreFileParser::parseDataElementTree(QDataStream& ds)
 
 
   return vec;
+}
+
+DataElement_SPtr_t
+PackageStoreFileParser::parseDataElement(quint64 length, QDataStream& ds)
+{
+  qint64 originalPos = ds.device()->pos();
+
+  auto element = std::make_shared<DataElement>();
+
+  ds >> element->m_dataElementExtGuid;
+  ds >> element->m_serialNumber;
+  ds >> element->m_dataElementType;
+
+  switch (static_cast<DataElementType>(element->m_dataElementType.getValue())) {
+  case DataElementType::StorageIndex: {
+    element->m_body = parseStorageIndex(ds);
+    break;
+  }
+  case DataElementType::StorageManifest: {
+    element->m_body = parseStorageManifest(ds);
+    break;
+  }
+  case DataElementType::CellManifest: {
+    element->m_body = parseCellManifest(ds);
+    break;
+  }
+  case DataElementType::RevisionManifest: {
+    element->m_body = parseRevisionManifest(ds);
+    break;
+  }
+  default:
+    /// \todo remove temporary skipping of data
+    ds.device()->seek(originalPos + length);
+    break;
+  }
+
+
+  return element;
+}
+
+StorageIndex_SPtr_t PackageStoreFileParser::parseStorageIndex(QDataStream& ds)
+{
+  auto storageIndex = std::make_shared<StorageIndex>();
+
+  ds >> *storageIndex;
+
+  return storageIndex;
+}
+
+StorageManifest_SPtr_t
+PackageStoreFileParser::parseStorageManifest(QDataStream& ds)
+{
+  auto manifest = std::make_shared<StorageManifest>();
+
+  ds >> *manifest;
+
+  return manifest;
+}
+
+CellManifest_SPtr_t PackageStoreFileParser::parseCellManifest(QDataStream& ds)
+{
+  auto manifest = std::make_shared<CellManifest>();
+
+  ds >> *manifest;
+
+  return manifest;
+}
+
+RevisionManifest_SPtr_t
+PackageStoreFileParser::parseRevisionManifest(QDataStream& ds)
+{
+  auto manifest = std::make_shared<RevisionManifest>();
+
+  ds >> *manifest;
+
+  return manifest;
 }
 
 

@@ -28,7 +28,18 @@ public:
 
   quint64 getSizeInFile() const;
 
+  /** computes size a StreamObjectHeader would have with the given parameters
+   * length, and type.
+   * @var length specifies the sizeInFile the StreamObjectHeader would
+   * reference.
+   * @var type specifies the type of data the StreamObjectHeader would
+   * reference.
+   */
+  static quint64
+  getSizeInFile(const quint64& length, const StreamObjectType& type);
+
   static QString typeToString(const StreamObjectType& type);
+
 
 private:
   StreamObjectType m_type;

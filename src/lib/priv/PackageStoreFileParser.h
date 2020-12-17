@@ -9,6 +9,11 @@
 #include "packageTypes/PackagingStructure.h"
 #include "packageTypes/StreamObjectHeader.h"
 
+#include "packageTypes/CellManifest.h"
+#include "packageTypes/RevisionManifest.h"
+#include "packageTypes/StorageIndex.h"
+#include "packageTypes/StorageManifest.h"
+
 namespace libmson {
 namespace packStore {
 
@@ -36,6 +41,17 @@ private:
   DataElementPackage_SPtr_t parseDataElementPackage(QDataStream& ds);
 
   std::vector<DataElementPackage_SPtr_t> parseDataElementTree(QDataStream& ds);
+
+
+  /*--------------------------------------------------------------------------*/
+  /* data element types */
+  /*--------------------------------------------------------------------------*/
+  DataElement_SPtr_t parseDataElement(quint64 length, QDataStream& ds);
+  /*--------------------------------------------------------------------------*/
+  StorageIndex_SPtr_t parseStorageIndex(QDataStream& ds);
+  StorageManifest_SPtr_t parseStorageManifest(QDataStream& ds);
+  CellManifest_SPtr_t parseCellManifest(QDataStream& ds);
+  RevisionManifest_SPtr_t parseRevisionManifest(QDataStream& ds);
 };
 
 } // namespace packStore

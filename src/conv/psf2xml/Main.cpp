@@ -171,7 +171,7 @@ int main(int argc, char* argv[])
     auto packageStoreFile = fileParser.parse();
     msonFile.close();
 
-    QFile outputFile(baseFileName + ".xml");
+    QFile outputFile(fileInfo.path() + "/" + baseFileName + ".xml");
     PSFtoXml::writeSequence(outputFile, packageStoreFile);
   }
 

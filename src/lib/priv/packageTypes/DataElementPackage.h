@@ -22,6 +22,8 @@ private:
 
   QByteArray m_data;
 
+  DataElement_SPtr_t m_dataElement;
+
   std::vector<DataElementPackage_SPtr_t> m_children;
 
   // for Debug purpose
@@ -46,6 +48,8 @@ public:
   std::vector<DataElementPackage_SPtr_t> getChildren() const;
   std::vector<DataElementPackage_SPtr_t>& children();
   void setChildren(const std::vector<DataElementPackage_SPtr_t>& children);
+  DataElement_SPtr_t getDataElement() const;
+  void setDataElement(const DataElement_SPtr_t& dataElement);
 };
 
 

@@ -52,6 +52,18 @@ quint64 StreamObjectHeader::getSizeInFile() const
   }
 }
 
+quint64 StreamObjectHeader::getSizeInFile(
+    const quint64& length, const StreamObjectType& type)
+{
+  uint16_t typeBits = static_cast<uint16_t>(type);
+  if (length < 127 && (typeBits >> 6) == 0) {
+    return 2;
+  }
+  else {
+    return 4;
+  }
+}
+
 QString StreamObjectHeader::typeToString(const StreamObjectType& type)
 {
   switch (type) {
@@ -115,8 +127,8 @@ QString StreamObjectHeader::typeToString(const StreamObjectType& type)
   case StreamObjectType::ObjectGroupObjectDeclare:
     return "ObjectGroupObjectDeclare";
 
-  case StreamObjectType::RevisionManifestObjectGroupReferences:
-    return "RevisionManifestObjectGroupReferences";
+  case StreamObjectType::RevisionManifestObjectGroupReference:
+    return "RevisionManifestObjectGroupReference";
 
   case StreamObjectType::RevisionManifest:
     return "RevisionManifest";
@@ -286,7 +298,7 @@ QString StreamObjectHeader::typeToString(const StreamObjectType& type)
 
   case StreamObjectType::Invalid:
   default:
-    return "Invalid";
+    return QString::number(static_cast<uint16_t>(type), 16);
   }
 }
 

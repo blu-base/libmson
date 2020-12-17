@@ -136,6 +136,9 @@ void CompactExtGuid::deserialize(QDataStream& ds)
     newBase = priv::ExtendedGUID(guid, n);
     m_type  = CompactExtGuidWidth::Uncompressed;
   }
+  else {
+    qFatal("Incorrectly Formatted CompactExtGuid");
+  }
 
   m_base = newBase;
 }

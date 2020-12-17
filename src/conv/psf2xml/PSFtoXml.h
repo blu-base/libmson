@@ -10,6 +10,14 @@
 #include "../../lib/priv/PackageStoreFile.h"
 #include "../../lib/priv/packageTypes/PackagingStructure.h"
 
+
+#include "../../lib/priv/packageTypes/CellManifest.h"
+#include "../../lib/priv/packageTypes/DataElement.h"
+#include "../../lib/priv/packageTypes/DataElementBody.h"
+#include "../../lib/priv/packageTypes/RevisionManifest.h"
+#include "../../lib/priv/packageTypes/StorageIndex.h"
+#include "../../lib/priv/packageTypes/StorageManifest.h"
+
 #include "../../lib/priv/chunkables/ObjectSpaceObjectPropSet.h"
 
 #include "../../lib/priv/commonTypes/CompactExtGuid.h"
@@ -66,9 +74,60 @@ private:
       const packStore::StreamObjectHeader_SPtr_t& obj,
       QXmlStreamWriter& xmlWriter);
 
+  /*--------------------------------------------------------------------------*/
+  /* package Types*/
+  /*--------------------------------------------------------------------------*/
+
   static QXmlStreamWriter& writeDataElementPackage(
       const packStore::DataElementPackage& obj, QXmlStreamWriter& xmlWriter);
 
+  static QXmlStreamWriter& writeDataElement(
+      const packStore::DataElement_SPtr_t& obj, QXmlStreamWriter& xmlWriter);
+
+  static QXmlStreamWriter& writeStorageIndex(
+      const packStore::StorageIndex_SPtr_t& obj, QXmlStreamWriter& xmlWriter);
+
+  static QXmlStreamWriter& writeStorageManifest(
+      const packStore::StorageManifest_SPtr_t& obj,
+      QXmlStreamWriter& xmlWriter);
+
+  static QXmlStreamWriter& writeCellManifest(
+      const packStore::CellManifest_SPtr_t& obj, QXmlStreamWriter& xmlWriter);
+
+
+  static QXmlStreamWriter& writeRevisionManifest(
+      const packStore::RevisionManifest_SPtr_t& obj,
+      QXmlStreamWriter& xmlWriter);
+
+
+  /*--------------------------------------------------------------------------*/
+  /* stream object Types*/
+  /*--------------------------------------------------------------------------*/
+  static QXmlStreamWriter& writeStorageIndexManifestMapping(
+      const packStore::streamObj::StorageIndexManifestMapping_SPtr_t& obj,
+      QXmlStreamWriter& xmlWriter);
+  static QXmlStreamWriter& writeStorageIndexCellMapping(
+      const packStore::streamObj::StorageIndexCellMapping_SPtr_t& obj,
+      QXmlStreamWriter& xmlWriter);
+  static QXmlStreamWriter& writeStorageIndexRevisionMapping(
+      const packStore::streamObj::StorageIndexRevisionMapping_SPtr_t& obj,
+      QXmlStreamWriter& xmlWriter);
+  static QXmlStreamWriter& writeRootDeclare(
+      const packStore::streamObj::StorageManifestRootDeclare_SPtr_t& obj,
+      QXmlStreamWriter& xmlWriter);
+  static QXmlStreamWriter& writeCellManifestCurrentRevision(
+      const packStore::streamObj::CellManifestCurrentRevision_SPtr_t& obj,
+      QXmlStreamWriter& xmlWriter);
+  static QXmlStreamWriter& writeRevisionManifest(
+      const packStore::streamObj::RevisionManifest_SPtr_t& obj,
+      QXmlStreamWriter& xmlWriter);
+  static QXmlStreamWriter& writeRevisionManifestObjectGroupReference(
+      const packStore::streamObj::RevisionManifestObjectGroupReference_SPtr_t&
+          obj,
+      QXmlStreamWriter& xmlWriter);
+  static QXmlStreamWriter& writeRevisionManifestRootDeclare(
+      const packStore::streamObj::RevisionManifestRootDeclare_SPtr_t& obj,
+      QXmlStreamWriter& xmlWriter);
 
   /*--------------------------------------------------------------------------*/
   /* common Types*/
@@ -82,6 +141,12 @@ private:
 
   static QXmlStreamWriter& writeCompactExtGuid(
       const packStore::CompactExtGuid& obj, QXmlStreamWriter& xmlWriter);
+  static QXmlStreamWriter& writeLongExtGuid(
+      const packStore::LongExtGuid& obj, QXmlStreamWriter& xmlWriter);
+
+  static QXmlStreamWriter&
+  writeCellId(const packStore::CellId& obj, QXmlStreamWriter& xmlWriter);
+
 
   /*--------------------------------------------------------------------------*/
   // property Types

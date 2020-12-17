@@ -21,6 +21,16 @@ void DataElementPackage::setChildren(
   m_children = children;
 }
 
+DataElement_SPtr_t DataElementPackage::getDataElement() const
+{
+  return m_dataElement;
+}
+
+void DataElementPackage::setDataElement(const DataElement_SPtr_t& dataElement)
+{
+  m_dataElement = dataElement;
+}
+
 DataElementPackage::DataElementPackage() {}
 
 StreamObjectHeader_SPtr_t DataElementPackage::getHeader() const

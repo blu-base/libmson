@@ -3,6 +3,15 @@
 #include "../../lib/priv/utils/ChunkableUtils.h"
 #include "../../lib/priv/utils/Helper.h"
 
+#include "../../lib/priv/commonTypes/CellId.h"
+#include "../../lib/priv/packageTypes/DataElement.h"
+#include "../../lib/priv/packageTypes/StorageIndex.h"
+#include "../../lib/priv/packageTypes/StorageManifest.h"
+#include "../../lib/priv/packageTypes/StreamObjectHeader.h"
+
+#include "../../lib/priv/packageTypes/streamObjects/StorageManifestRootDeclare.h"
+
+
 #include <QDataStream>
 #include <QDebug>
 #include <QXmlStreamWriter>
@@ -89,10 +98,11 @@ QXmlStreamWriter& PSFtoXml::writeStreamObjectHeader(
   xmlWriter.writeStartElement("StreamObjectHeader");
 
   xmlWriter.writeStartElement("type");
-  xmlWriter.writeAttribute(
-      "compound", QString::number(packStore::compoundType.at(obj->getType())));
-  xmlWriter.writeCharacters(
-      packStore::StreamObjectHeader::typeToString(obj->getType()));
+  //  xmlWriter.writeAttribute(
+  //      "compound",
+  //      QString::number(packStore::compoundType.at(obj->getType())));
+  //  xmlWriter.writeCharacters(
+  //      packStore::StreamObjectHeader::typeToString(obj->getType()));
   xmlWriter.writeEndElement();
 
   xmlWriter.writeStartElement("length");
@@ -114,20 +124,325 @@ QXmlStreamWriter& PSFtoXml::writeDataElementPackage(
       packStore::StreamObjectHeader::typeToString(obj.getHeader()->getType()));
   xmlWriter.writeAttribute(
       "length", QString::number(obj.getHeader()->getLength()));
-  xmlWriter.writeAttribute(
-      "compound",
-      packStore::compoundType.at(obj.getHeader()->getType()) ? "True" : "");
+
+  if (packStore::compoundType.at(obj.getHeader()->getType())) {
+    xmlWriter.writeAttribute("compound", "True");
+  }
 
   //  writeStreamObjectHeader(obj.getHeader(), xmlWriter);
 
-  xmlWriter.writeStartElement("Data");
-  xmlWriter.writeComment(obj.getData().toHex());
-  xmlWriter.writeEndElement();
+  if (obj.getHeader()->getType() == packStore::StreamObjectType::DataElement) {
+    writeDataElement(obj.getDataElement(), xmlWriter);
+  }
+
+  //  xmlWriter.writeStartElement("Data");
+  //  xmlWriter.writeComment(obj.getData().toHex());
+  //  xmlWriter.writeEndElement();
 
   xmlWriter.writeStartElement("DataElements");
   for (const auto& entry : obj.getChildren()) {
     writeDataElementPackage(*entry, xmlWriter);
   }
+  xmlWriter.writeEndElement();
+
+  xmlWriter.writeEndElement();
+
+  return xmlWriter;
+}
+
+QXmlStreamWriter& PSFtoXml::writeDataElement(
+    const packStore::DataElement_SPtr_t& obj, QXmlStreamWriter& xmlWriter)
+{
+  xmlWriter.writeStartElement("DataElement");
+
+  xmlWriter.writeStartElement("dataElementExtGuid");
+  writeCompactExtGuid(obj->getDataElementExtGuid(), xmlWriter);
+  xmlWriter.writeEndElement();
+
+  xmlWriter.writeStartElement("serialNumber");
+  writeLongExtGuid(obj->getSerialNumber(), xmlWriter);
+  xmlWriter.writeEndElement();
+
+  xmlWriter.writeStartElement("type");
+  xmlWriter.writeCharacters(
+      QString::number(obj->getDataElementType().getValue()));
+  xmlWriter.writeEndElement();
+
+
+  xmlWriter.writeStartElement("Body");
+  auto type = static_cast<packStore::DataElementType>(
+      obj->getDataElementType().getValue());
+
+  switch (type) {
+  case packStore::DataElementType::StorageIndex: {
+
+    auto storageIndex =
+        std::dynamic_pointer_cast<packStore::StorageIndex>(obj->getBody());
+    writeStorageIndex(storageIndex, xmlWriter);
+    break;
+  }
+  case packStore::DataElementType::StorageManifest: {
+
+    auto storageManifest =
+        std::dynamic_pointer_cast<packStore::StorageManifest>(obj->getBody());
+    writeStorageManifest(storageManifest, xmlWriter);
+    break;
+  }
+  case packStore::DataElementType::CellManifest: {
+
+    auto manifest =
+        std::dynamic_pointer_cast<packStore::CellManifest>(obj->getBody());
+    writeCellManifest(manifest, xmlWriter);
+    break;
+  }
+  case packStore::DataElementType::RevisionManifest: {
+
+    auto manifest =
+        std::dynamic_pointer_cast<packStore::RevisionManifest>(obj->getBody());
+    writeRevisionManifest(manifest, xmlWriter);
+    break;
+  }
+  default:
+    break;
+  }
+
+  xmlWriter.writeEndElement();
+
+  xmlWriter.writeEndElement();
+
+  return xmlWriter;
+}
+
+QXmlStreamWriter& PSFtoXml::writeStorageIndex(
+    const packStore::StorageIndex_SPtr_t& obj, QXmlStreamWriter& xmlWriter)
+{
+
+  xmlWriter.writeStartElement("StorageIndex");
+
+  writeStorageIndexManifestMapping(obj->getManifestMapping(), xmlWriter);
+
+  xmlWriter.writeStartElement("CellMappings");
+  for (const auto& entry : obj->getCellMappings()) {
+    writeStorageIndexCellMapping(entry, xmlWriter);
+  }
+  xmlWriter.writeEndElement();
+
+  xmlWriter.writeStartElement("RevisionMappings");
+  for (const auto& entry : obj->getRevisionMappings()) {
+    writeStorageIndexRevisionMapping(entry, xmlWriter);
+  }
+  xmlWriter.writeEndElement();
+
+  xmlWriter.writeEndElement();
+
+  return xmlWriter;
+}
+
+QXmlStreamWriter& PSFtoXml::writeStorageManifest(
+    const packStore::StorageManifest_SPtr_t& obj, QXmlStreamWriter& xmlWriter)
+{
+  xmlWriter.writeStartElement("StorageManifest");
+
+  xmlWriter.writeStartElement("StorageManifestSchema");
+  xmlWriter.writeCharacters(obj->getSchema()->getGuid().toString());
+  xmlWriter.writeEndElement();
+
+  xmlWriter.writeStartElement("RootDeclares");
+  for (const auto& entry : obj->getRootDeclares()) {
+    writeRootDeclare(entry, xmlWriter);
+  }
+  xmlWriter.writeEndElement();
+
+
+  xmlWriter.writeEndElement();
+
+  return xmlWriter;
+}
+
+QXmlStreamWriter& PSFtoXml::writeCellManifest(
+    const packStore::CellManifest_SPtr_t& obj, QXmlStreamWriter& xmlWriter)
+{
+  xmlWriter.writeStartElement("CellManifest");
+
+  writeCellManifestCurrentRevision(obj->getCurrentRevision(), xmlWriter);
+
+  xmlWriter.writeEndElement();
+
+  return xmlWriter;
+}
+
+QXmlStreamWriter& PSFtoXml::writeRevisionManifest(
+    const packStore::RevisionManifest_SPtr_t& obj, QXmlStreamWriter& xmlWriter)
+{
+  xmlWriter.writeStartElement("RevisionManifest");
+
+  writeRevisionManifest(obj->getRevisionManifest(), xmlWriter);
+
+  xmlWriter.writeStartElement("RootDeclares");
+  for (const auto& entry : obj->getRootDeclares()) {
+    writeRevisionManifestRootDeclare(entry, xmlWriter);
+  }
+  xmlWriter.writeEndElement();
+
+  xmlWriter.writeStartElement("ObjectGroupReferences");
+  for (const auto& entry : obj->getObjectGroups()) {
+    writeRevisionManifestObjectGroupReference(entry, xmlWriter);
+  }
+  xmlWriter.writeEndElement();
+
+  xmlWriter.writeEndElement();
+  return xmlWriter;
+}
+
+/*--------------------------------------------------------------------------*/
+/* stream object Types*/
+/*--------------------------------------------------------------------------*/
+
+
+QXmlStreamWriter& PSFtoXml::writeStorageIndexManifestMapping(
+    const packStore::streamObj::StorageIndexManifestMapping_SPtr_t& obj,
+    QXmlStreamWriter& xmlWriter)
+{
+
+
+  xmlWriter.writeStartElement("StorageIndexManifestMapping");
+
+  if (obj != nullptr) {
+    xmlWriter.writeStartElement("ExtGuid");
+    writeCompactExtGuid(obj->getExtendedGuid(), xmlWriter);
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("SerialNumber");
+    writeLongExtGuid(obj->getSerialNumber(), xmlWriter);
+    xmlWriter.writeEndElement();
+  }
+
+  xmlWriter.writeEndElement();
+  return xmlWriter;
+}
+
+QXmlStreamWriter& PSFtoXml::writeStorageIndexCellMapping(
+    const packStore::streamObj::StorageIndexCellMapping_SPtr_t& obj,
+    QXmlStreamWriter& xmlWriter)
+{
+  xmlWriter.writeStartElement("StorageIndexCellMapping");
+  if (obj != nullptr) {
+
+    writeCellId(obj->getCellId(), xmlWriter);
+
+
+    xmlWriter.writeStartElement("ExtGuid");
+    writeCompactExtGuid(obj->getExtendedGuid(), xmlWriter);
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("SerialNumber");
+    writeLongExtGuid(obj->getSerialNumber(), xmlWriter);
+    xmlWriter.writeEndElement();
+  }
+
+  xmlWriter.writeEndElement();
+  return xmlWriter;
+}
+
+QXmlStreamWriter& PSFtoXml::writeStorageIndexRevisionMapping(
+    const packStore::streamObj::StorageIndexRevisionMapping_SPtr_t& obj,
+    QXmlStreamWriter& xmlWriter)
+{
+  xmlWriter.writeStartElement("StorageIndexRevisionMapping");
+  if (obj != nullptr) {
+    xmlWriter.writeStartElement("Revision");
+    writeCompactExtGuid(obj->getExtendedGuid(), xmlWriter);
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("ExtGuid");
+    writeCompactExtGuid(obj->getExtendedGuid(), xmlWriter);
+    xmlWriter.writeEndElement();
+
+    xmlWriter.writeStartElement("SerialNumber");
+    writeLongExtGuid(obj->getSerialNumber(), xmlWriter);
+    xmlWriter.writeEndElement();
+  }
+
+  xmlWriter.writeEndElement();
+  return xmlWriter;
+}
+
+QXmlStreamWriter& PSFtoXml::writeRootDeclare(
+    const packStore::streamObj::StorageManifestRootDeclare_SPtr_t& obj,
+    QXmlStreamWriter& xmlWriter)
+{
+  xmlWriter.writeStartElement("RootDeclare");
+  xmlWriter.writeStartElement("RootExtGuid");
+  writeCompactExtGuid(obj->getExtendedGuid(), xmlWriter);
+  xmlWriter.writeEndElement();
+
+  writeCellId(obj->getCellId(), xmlWriter);
+
+
+  xmlWriter.writeEndElement();
+
+  return xmlWriter;
+}
+
+QXmlStreamWriter& PSFtoXml::writeCellManifestCurrentRevision(
+    const packStore::streamObj::CellManifestCurrentRevision_SPtr_t& obj,
+    QXmlStreamWriter& xmlWriter)
+{
+  xmlWriter.writeStartElement("CellManifestCurrentRevision");
+  writeCompactExtGuid(obj->getExtendedGuid(), xmlWriter);
+
+  xmlWriter.writeEndElement();
+
+  return xmlWriter;
+}
+
+QXmlStreamWriter& PSFtoXml::writeRevisionManifest(
+    const packStore::streamObj::RevisionManifest_SPtr_t& obj,
+    QXmlStreamWriter& xmlWriter)
+{
+  xmlWriter.writeStartElement("RevisionManifest");
+
+  xmlWriter.writeStartElement("RevisionId");
+  writeCompactExtGuid(obj->getRevisionId(), xmlWriter);
+  xmlWriter.writeEndElement();
+
+  xmlWriter.writeStartElement("BaseRevisionId");
+  writeCompactExtGuid(obj->getBaseRevisionId(), xmlWriter);
+  xmlWriter.writeEndElement();
+
+  xmlWriter.writeEndElement();
+
+  return xmlWriter;
+}
+
+QXmlStreamWriter& PSFtoXml::writeRevisionManifestObjectGroupReference(
+    const packStore::streamObj::RevisionManifestObjectGroupReference_SPtr_t&
+        obj,
+    QXmlStreamWriter& xmlWriter)
+{
+  xmlWriter.writeStartElement("RevisionManifestObjectGroupReference");
+
+  xmlWriter.writeStartElement("ObjectGroup");
+  writeCompactExtGuid(obj->getObjectGroup(), xmlWriter);
+  xmlWriter.writeEndElement();
+
+  xmlWriter.writeEndElement();
+
+  return xmlWriter;
+}
+
+QXmlStreamWriter& PSFtoXml::writeRevisionManifestRootDeclare(
+    const packStore::streamObj::RevisionManifestRootDeclare_SPtr_t& obj,
+    QXmlStreamWriter& xmlWriter)
+{
+  xmlWriter.writeStartElement("RevisionManifestRootDeclare");
+
+  xmlWriter.writeStartElement("Root");
+  writeCompactExtGuid(obj->getRoot(), xmlWriter);
+  xmlWriter.writeEndElement();
+
+  xmlWriter.writeStartElement("Object");
+  writeCompactExtGuid(obj->getObject(), xmlWriter);
   xmlWriter.writeEndElement();
 
   xmlWriter.writeEndElement();
@@ -180,11 +495,46 @@ PSFtoXml::writeGUID(const QUuid& obj, QXmlStreamWriter& xmlWriter)
 QXmlStreamWriter& PSFtoXml::writeCompactExtGuid(
     const packStore::CompactExtGuid& obj, QXmlStreamWriter& xmlWriter)
 {
-  //  xmlWriter.writeStartElement("ExtendedGUID_VarWidth");
+  //  xmlWriter.writeStartElement("CompactExtGuid");
   xmlWriter.writeAttribute(
       "type", packStore::CompactExtGuid::typeToString(obj.getWidthType()));
   xmlWriter.writeCharacters(obj.toString());
   //  xmlWriter.writeEndElement();
+
+  return xmlWriter;
+}
+
+QXmlStreamWriter& PSFtoXml::writeLongExtGuid(
+    const packStore::LongExtGuid& obj, QXmlStreamWriter& xmlWriter)
+{
+  xmlWriter.writeStartElement("LongExtGuid");
+
+  xmlWriter.writeStartElement("guid");
+  xmlWriter.writeCharacters(obj.getGuid().toString());
+  xmlWriter.writeEndElement();
+
+  xmlWriter.writeStartElement("serialNumber");
+  xmlWriter.writeCharacters(QString::number(obj.getSerialNumber()));
+  xmlWriter.writeEndElement();
+
+  xmlWriter.writeEndElement();
+
+  return xmlWriter;
+}
+
+QXmlStreamWriter&
+PSFtoXml::writeCellId(const packStore::CellId& obj, QXmlStreamWriter& xmlWriter)
+{
+  xmlWriter.writeStartElement("CellId");
+  xmlWriter.writeStartElement("ExtGuid1");
+  writeCompactExtGuid(obj.getExguid1(), xmlWriter);
+  xmlWriter.writeEndElement();
+
+  xmlWriter.writeStartElement("ExtGuid2");
+  writeCompactExtGuid(obj.getExguid2(), xmlWriter);
+  xmlWriter.writeEndElement();
+
+  xmlWriter.writeEndElement();
 
   return xmlWriter;
 }
@@ -205,9 +555,9 @@ QXmlStreamWriter& PSFtoXml::writeCompactExtGuid(
 //  xmlWriter.writeAttribute(
 //      "IsPropertySet", obj.IsPropertySet() ? "true" : "false");
 //  xmlWriter.writeAttribute("IsGraphNode", obj.IsGraphNode() ? "true" :
-//  "false"); xmlWriter.writeAttribute("IsFileData", obj.IsFileData() ? "true" :
-//  "false"); xmlWriter.writeAttribute("IsReadOnly", obj.IsReadOnly() ? "true" :
-//  "false");
+//  "false"); xmlWriter.writeAttribute("IsFileData", obj.IsFileData() ? "true"
+//  : "false"); xmlWriter.writeAttribute("IsReadOnly", obj.IsReadOnly() ?
+//  "true" : "false");
 
 //  xmlWriter.writeEndElement();
 
@@ -215,7 +565,8 @@ QXmlStreamWriter& PSFtoXml::writeCompactExtGuid(
 //}
 
 // QXmlStreamWriter&
-// PSFtoXml::writePropertyID(const PropertyID& obj, QXmlStreamWriter& xmlWriter)
+// PSFtoXml::writePropertyID(const PropertyID& obj, QXmlStreamWriter&
+// xmlWriter)
 //{
 //  xmlWriter.writeStartElement("PropertyID");
 
@@ -243,12 +594,14 @@ QXmlStreamWriter& PSFtoXml::writeCompactExtGuid(
 //    break;
 //  }
 //  case PropertyIDType::OneByteOfData: {
-//    auto castObj = std::static_pointer_cast<PropertyType_OneByteOfData>(obj);
+//    auto castObj =
+//    std::static_pointer_cast<PropertyType_OneByteOfData>(obj);
 //    writePropertyType_OneByteOfData(castObj, xmlWriter);
 //    break;
 //  }
 //  case PropertyIDType::TwoBytesOfData: {
-//    auto castObj = std::static_pointer_cast<PropertyType_TwoBytesOfData>(obj);
+//    auto castObj =
+//    std::static_pointer_cast<PropertyType_TwoBytesOfData>(obj);
 //    writePropertyType_TwoBytesOfData(castObj, xmlWriter);
 //    break;
 //  }
@@ -324,7 +677,8 @@ QXmlStreamWriter& PSFtoXml::writeCompactExtGuid(
 //{
 //  xmlWriter.writeStartElement("PropertySet");
 
-//  xmlWriter.writeAttribute("cProperties", QString::number(obj.cProperties()));
+//  xmlWriter.writeAttribute("cProperties",
+//  QString::number(obj.cProperties()));
 
 //  for (size_t i{0}; i < obj.rgPrids().size(); i++) {
 
@@ -642,7 +996,8 @@ QXmlStreamWriter& PSFtoXml::writeCompactExtGuid(
 //              PropertyType_FourBytesOfLengthFollowedByData>(currentData)
 //              ->data();
 //      QString string = QString::fromUtf16(
-//          reinterpret_cast<const ushort*>(data.constData()), data.size() / 2);
+//          reinterpret_cast<const ushort*>(data.constData()), data.size() /
+//          2);
 
 //      xmlWriter.writeCharacters(string);
 //      xmlWriter.writeEndElement();
@@ -1306,7 +1661,8 @@ QXmlStreamWriter& PSFtoXml::writeCompactExtGuid(
 //              PropertyType_FourBytesOfLengthFollowedByData>(currentData)
 //              ->data();
 //      QString string = QString::fromUtf16(
-//          reinterpret_cast<const ushort*>(data.constData()), data.size() / 2);
+//          reinterpret_cast<const ushort*>(data.constData()), data.size() /
+//          2);
 
 //      xmlWriter.writeCharacters(string);
 //      xmlWriter.writeEndElement();
@@ -1319,7 +1675,8 @@ QXmlStreamWriter& PSFtoXml::writeCompactExtGuid(
 //              PropertyType_FourBytesOfLengthFollowedByData>(currentData)
 //              ->data();
 //      QString string = QString::fromUtf16(
-//          reinterpret_cast<const ushort*>(data.constData()), data.size() / 2);
+//          reinterpret_cast<const ushort*>(data.constData()), data.size() /
+//          2);
 
 //      xmlWriter.writeCharacters(string);
 //      xmlWriter.writeEndElement();
@@ -1343,7 +1700,8 @@ QXmlStreamWriter& PSFtoXml::writeCompactExtGuid(
 //              PropertyType_FourBytesOfLengthFollowedByData>(currentData)
 //              ->data();
 //      QString string = QString::fromUtf16(
-//          reinterpret_cast<const ushort*>(data.constData()), data.size() / 2);
+//          reinterpret_cast<const ushort*>(data.constData()), data.size() /
+//          2);
 
 //      xmlWriter.writeCharacters(string);
 //      xmlWriter.writeEndElement();
@@ -1665,18 +2023,18 @@ QXmlStreamWriter& PSFtoXml::writeCompactExtGuid(
 //      xmlWriter.writeCharacters(((val >> 9) & 0x1) == 1 ? "True" : "False");
 //      xmlWriter.writeEndElement();
 //      xmlWriter.writeStartElement("DueLater");
-//      xmlWriter.writeCharacters(((val >> 10) & 0x1) == 1 ? "True" : "False");
-//      xmlWriter.writeEndElement();
+//      xmlWriter.writeCharacters(((val >> 10) & 0x1) == 1 ? "True" :
+//      "False"); xmlWriter.writeEndElement();
 //      xmlWriter.writeStartElement("DueCustom");
-//      xmlWriter.writeCharacters(((val >> 11) & 0x1) == 1 ? "True" : "False");
-//      xmlWriter.writeEndElement();
+//      xmlWriter.writeCharacters(((val >> 11) & 0x1) == 1 ? "True" :
+//      "False"); xmlWriter.writeEndElement();
 
 //      xmlWriter.writeEndElement();
 //      break;
 //    }
 
-//    /// \todo not sure whether this is the correct string format (utf8/utf16)
-//    case PropertyIDs::NoteTagLabel: {
+//    /// \todo not sure whether this is the correct string format
+//    (utf8/utf16) case PropertyIDs::NoteTagLabel: {
 //      xmlWriter.writeStartElement("wz");
 //      const auto data =
 //          std::dynamic_pointer_cast<
@@ -2088,7 +2446,8 @@ QXmlStreamWriter& PSFtoXml::writeCompactExtGuid(
 //              ->data();
 
 //      QString string = QString::fromUtf16(
-//          reinterpret_cast<const ushort*>(data.constData()), data.size() / 2);
+//          reinterpret_cast<const ushort*>(data.constData()), data.size() /
+//          2);
 //      QStringList strings = string.split('\0');
 //      for (const auto& str : strings) {
 //        if (str.size() > 0) {
@@ -2171,7 +2530,8 @@ QXmlStreamWriter& PSFtoXml::writeCompactExtGuid(
 //              ->data();
 
 //      QString string = QString::fromUtf16(
-//          reinterpret_cast<const ushort*>(data.constData()), data.size() / 2);
+//          reinterpret_cast<const ushort*>(data.constData()), data.size() /
+//          2);
 //      QStringList strings = string.split('\0');
 //      for (const auto& str : strings) {
 //        if (str.size() > 0) {
@@ -2192,7 +2552,8 @@ QXmlStreamWriter& PSFtoXml::writeCompactExtGuid(
 //              ->data();
 
 //      QString string = QString::fromUtf16(
-//          reinterpret_cast<const ushort*>(data.constData()), data.size() / 2);
+//          reinterpret_cast<const ushort*>(data.constData()), data.size() /
+//          2);
 
 //      xmlWriter.writeCharacters(string);
 //      xmlWriter.writeEndElement();
@@ -2363,8 +2724,8 @@ QXmlStreamWriter& PSFtoXml::writeCompactExtGuid(
 
 // QXmlStreamWriter&
 // PSFtoXml::writePropertyType_FourBytesOfLengthFollowedByData(
-//    const std::shared_ptr<PropertyType_FourBytesOfLengthFollowedByData>& obj,
-//    QXmlStreamWriter& xmlWriter)
+//    const std::shared_ptr<PropertyType_FourBytesOfLengthFollowedByData>&
+//    obj, QXmlStreamWriter& xmlWriter)
 //{
 //  xmlWriter.writeStartElement("FourBytesOfLengthFollowedByData");
 
@@ -2461,8 +2822,8 @@ QXmlStreamWriter& PSFtoXml::writeCompactExtGuid(
 //    const libmson::FileTime& obj, QXmlStreamWriter& xmlWriter)
 //{
 //  xmlWriter.writeStartElement("FILETIME");
-//  xmlWriter.writeCharacters(obj.getTime().toString("dd/MM/yyyy hh:mm:ss AP"));
-//  xmlWriter.writeEndElement();
+//  xmlWriter.writeCharacters(obj.getTime().toString("dd/MM/yyyy hh:mm:ss
+//  AP")); xmlWriter.writeEndElement();
 
 //  return xmlWriter;
 //}
@@ -2478,9 +2839,9 @@ QXmlStreamWriter& PSFtoXml::writeCompactExtGuid(
 //      "vertial",
 //      libmson::LayoutAlignment::vAlignmentToString(obj.getVAlignment()));
 //  xmlWriter.writeAttribute("hMargin", obj.getFHorizMargin() ? "true" :
-//  "false"); xmlWriter.writeAttribute("vMargin", obj.getFVertMargin() ? "true"
-//  : "false"); xmlWriter.writeAttribute("valid", !obj.isNil() ? "true" :
-//  "false"); xmlWriter.writeEndElement();
+//  "false"); xmlWriter.writeAttribute("vMargin", obj.getFVertMargin() ?
+//  "true" : "false"); xmlWriter.writeAttribute("valid", !obj.isNil() ? "true"
+//  : "false"); xmlWriter.writeEndElement();
 
 //  return xmlWriter;
 //}
@@ -2532,8 +2893,8 @@ QXmlStreamWriter& PSFtoXml::writeCompactExtGuid(
 // xmlWriter)
 //{
 //  xmlWriter.writeStartElement("Time32");
-//  xmlWriter.writeCharacters(obj.getTime().toString("dd/MM/yyyy hh:mm:ss AP"));
-//  xmlWriter.writeEndElement();
+//  xmlWriter.writeCharacters(obj.getTime().toString("dd/MM/yyyy hh:mm:ss
+//  AP")); xmlWriter.writeEndElement();
 
 //  return xmlWriter;
 //}

@@ -4,6 +4,8 @@
 #include "ExtendedGUID.h"
 #include <QtCore/qglobal.h>
 
+#include "../IStreamable.h"
+
 namespace libmson {
 namespace packStore {
 

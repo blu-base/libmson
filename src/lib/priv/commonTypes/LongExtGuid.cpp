@@ -42,7 +42,7 @@ void LongExtGuid::deserialize(QDataStream& ds)
     m_serialNumber = 0;
     m_guid         = QUuid();
   }
-  else if (typeByte == 128) {
+  else if (typeByte == 128u) {
     ds >> m_guid;
     if (m_guid == QUuid()) {
       qWarning("LongExtGuid (SerialNumber) likely formatted incorrectly. Guid "
