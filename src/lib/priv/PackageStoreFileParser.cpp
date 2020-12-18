@@ -18,8 +18,29 @@ std::shared_ptr<PackageStoreFile> PackageStoreFileParser::parse()
 {
   auto header = parsePackagingStructure(m_ds);
 
-  m_file->m_packages = parseDataElementTree(m_ds);
-  //  parseStreamObjectHeaderEnd(header->getPackagingStart(), m_ds);
+  auto packageStart = std::make_shared<StreamObjectHeader>();
+  m_ds >> *packageStart;
+
+  m_ds.device()->skip(1);
+
+
+  char peek[1];
+
+  qint64 peeking = m_ds.device()->peek(peek, 1);
+  while ((static_cast<uint8_t>(peek[0]) & 0x1) != 1) {
+
+    m_file->m_elements.push_back(parseDataElement(m_ds));
+
+    peeking = m_ds.device()->peek(peek, 1);
+
+    if (peeking == 0) {
+      qDebug() << "Ran out of bytes";
+      break;
+    }
+  }
+
+  StreamObjectHeaderEnd end(packageStart);
+  m_ds >> end;
 
 
   return m_file;
@@ -120,77 +141,97 @@ PackageStoreFileParser::parseDataElementPackage(QDataStream& ds)
   return package;
 }
 
-std::vector<DataElementPackage_SPtr_t>
-PackageStoreFileParser::parseDataElementTree(QDataStream& ds)
+// std::vector<DataElementPackage_SPtr_t>
+// PackageStoreFileParser::parseDataElementTree(QDataStream& ds)
+//{
+//  std::vector<DataElementPackage_SPtr_t> vec;
+
+
+//  char peek[1];
+
+//  qint64 peeking = ds.device()->peek(peek, 1);
+
+
+//  while ((static_cast<uint8_t>(peek[0]) & 0x1) != 1) {
+
+
+//    auto composite   = std::make_shared<DataElementPackage>();
+//    composite->m_stp = ds.device()->pos();
+
+//    uint8_t streamObjectHeaderType = static_cast<uint8_t>(peek[0]) & 0x3;
+//    if (!(streamObjectHeaderType == 0) && !(streamObjectHeaderType == 2)) {
+//      qDebug() << "Potentially incorrectly formated StreamObjectHeader ahead";
+//    }
+//    auto packageStart = std::make_shared<StreamObjectHeader>();
+//    ds >> *packageStart;
+//    composite->m_header = packageStart;
+
+//    qint64 currentPos = ds.device()->pos();
+
+
+//    if (composite->getHeader()->getType() == StreamObjectType::DataElement) {
+//      composite->m_dataElement =
+//          parseDataElement(composite->m_header->getLength(), ds);
+//    }
+
+//    /// \todo remove temporary parsing of raw data (also duplicate parse)
+//    ds.device()->seek(currentPos);
+//    composite->m_data = ds.device()->read(composite->m_header->getLength());
+
+
+//    vec.push_back(composite);
+//    if (packStore::compoundType.at(packageStart->getType()) == 1) {
+//      composite->m_children = parseDataElementTree(ds);
+
+//      if (ds.device()->peek(peek, 1) == 0) {
+//        qDebug() << "Ran out of bytes";
+//        break;
+//      }
+//      parseStreamObjectHeaderEnd(composite->m_header, ds);
+//    }
+
+//    peeking = ds.device()->peek(peek, 1);
+
+//    if (peeking == 0) {
+//      qDebug() << "Ran out of bytes";
+//      break;
+//    }
+//  }
+
+
+//  return vec;
+//}
+
+DataElement_SPtr_t PackageStoreFileParser::parseDataElement(QDataStream& ds)
 {
-  std::vector<DataElementPackage_SPtr_t> vec;
+
+  //  auto packageStart = std::make_shared<StreamObjectHeader>();
+  //  m_ds >> *packageStart;
+  //  if (packageStart->getType() != StreamObjectType::DataElementPackage) {
+  //    qFatal("Did not find beginning of a Data Element");
+  //  }
 
 
-  char peek[1];
+  auto header = std::make_shared<StreamObjectHeader>();
+  ds >> *header;
 
-  qint64 peeking = ds.device()->peek(peek, 1);
-
-
-  while ((static_cast<uint8_t>(peek[0]) & 0x1) != 1) {
-
-    auto composite   = std::make_shared<DataElementPackage>();
-    composite->m_stp = ds.device()->pos();
-
-    uint8_t streamObjectHeaderType = static_cast<uint8_t>(peek[0]) & 0x3;
-    if (!(streamObjectHeaderType == 0) && !(streamObjectHeaderType == 2)) {
-      qDebug() << "Potentially incorrectly formated StreamObjectHeader ahead";
-    }
-    auto packageStart = std::make_shared<StreamObjectHeader>();
-    ds >> *packageStart;
-    composite->m_header = packageStart;
-
-    qint64 currentPos = ds.device()->pos();
-
-
-    if (composite->getHeader()->getType() == StreamObjectType::DataElement) {
-      composite->m_dataElement =
-          parseDataElement(composite->m_header->getLength(), ds);
-    }
-
-    /// \todo remove temporary parsing of raw data (also duplicate parse)
-    ds.device()->seek(currentPos);
-    composite->m_data = ds.device()->read(composite->m_header->getLength());
-
-
-    vec.push_back(composite);
-    if (packStore::compoundType.at(packageStart->getType()) == 1) {
-      composite->m_children = parseDataElementTree(ds);
-
-      if (ds.device()->peek(peek, 1) == 0) {
-        qDebug() << "Ran out of bytes";
-        break;
-      }
-      parseStreamObjectHeaderEnd(composite->m_header, ds);
-    }
-    peeking = ds.device()->peek(peek, 1);
-
-    if (peeking == 0) {
-      qDebug() << "Ran out of bytes";
-      break;
-    }
+  if (header->getType() != StreamObjectType::DataElement) {
+    qFatal("Did not find beginning of a Data Element");
   }
 
-
-  return vec;
-}
-
-DataElement_SPtr_t
-PackageStoreFileParser::parseDataElement(quint64 length, QDataStream& ds)
-{
   qint64 originalPos = ds.device()->pos();
 
   auto element = std::make_shared<DataElement>();
 
+
   ds >> element->m_dataElementExtGuid;
   ds >> element->m_serialNumber;
-  ds >> element->m_dataElementType;
 
-  switch (static_cast<DataElementType>(element->m_dataElementType.getValue())) {
+  CompactUInt64 dataElementType;
+  ds >> dataElementType;
+  element->m_dataElementType = dataElementType.getValue();
+
+  switch (static_cast<DataElementType>(element->m_dataElementType)) {
   case DataElementType::StorageIndex: {
     element->m_body = parseStorageIndex(ds);
     break;
@@ -211,11 +252,29 @@ PackageStoreFileParser::parseDataElement(quint64 length, QDataStream& ds)
     element->m_body = parseObjectGroup(ds);
     break;
   }
-  default:
-    /// \todo remove temporary skipping of data
-    ds.device()->seek(originalPos + length);
+  case DataElementType::ObjectDataBLOB: {
+    element->m_body = parseObjectDataBLOB(ds);
     break;
   }
+  case DataElementType::DataElementFragment: {
+    element->m_body = parseDataElementFragment(ds);
+    break;
+  } /*
+   default: {
+     /// \todo remove temporary skipping of data
+     ///
+     qDebug() << "skipping data from type" << element->m_dataElementType
+              << " at " << originalPos << ", till "
+              << originalPos + header->getLength() << '\n';
+     ds.device()->seek(originalPos + header->getLength());
+     break;
+   }*/
+  }
+
+  StreamObjectHeaderEnd end(header);
+  m_ds >> end;
+  //  StreamObjectHeaderEnd packageEnd(packageStart);
+  //  m_ds >> packageEnd;
 
 
   return element;
@@ -223,49 +282,69 @@ PackageStoreFileParser::parseDataElement(quint64 length, QDataStream& ds)
 
 StorageIndex_SPtr_t PackageStoreFileParser::parseStorageIndex(QDataStream& ds)
 {
-  auto storageIndex = std::make_shared<StorageIndex>();
+  auto element = std::make_shared<StorageIndex>();
 
-  ds >> *storageIndex;
+  ds >> *element;
 
-  return storageIndex;
+  return element;
 }
 
 StorageManifest_SPtr_t
 PackageStoreFileParser::parseStorageManifest(QDataStream& ds)
 {
-  auto manifest = std::make_shared<StorageManifest>();
+  auto element = std::make_shared<StorageManifest>();
 
-  ds >> *manifest;
+  ds >> *element;
 
-  return manifest;
+  return element;
 }
 
 CellManifest_SPtr_t PackageStoreFileParser::parseCellManifest(QDataStream& ds)
 {
-  auto manifest = std::make_shared<CellManifest>();
+  auto element = std::make_shared<CellManifest>();
 
-  ds >> *manifest;
+  ds >> *element;
 
-  return manifest;
+  return element;
 }
 
 RevisionManifest_SPtr_t
 PackageStoreFileParser::parseRevisionManifest(QDataStream& ds)
 {
-  auto manifest = std::make_shared<RevisionManifest>();
+  auto element = std::make_shared<RevisionManifest>();
 
-  ds >> *manifest;
+  ds >> *element;
 
-  return manifest;
+  return element;
 }
 
 ObjectGroup_SPtr_t PackageStoreFileParser::parseObjectGroup(QDataStream& ds)
 {
-  auto manifest = std::make_shared<ObjectGroup>();
+  auto element = std::make_shared<ObjectGroup>();
 
-  ds >> *manifest;
+  ds >> *element;
 
-  return manifest;
+  return element;
+}
+
+ObjectDataBLOB_SPtr_t
+PackageStoreFileParser::parseObjectDataBLOB(QDataStream& ds)
+{
+  auto element = std::make_shared<ObjectDataBLOB>();
+
+  ds >> *element;
+
+  return element;
+}
+
+DataElementFragment_SPtr_t
+PackageStoreFileParser::parseDataElementFragment(QDataStream& ds)
+{
+  auto element = std::make_shared<DataElementFragment>();
+
+  ds >> *element;
+
+  return element;
 }
 
 

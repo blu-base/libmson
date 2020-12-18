@@ -8,7 +8,7 @@ DataElementHash::DataElementHash() : m_scheme() {}
 
 quint64 DataElementHash::getScheme() const { return m_scheme; }
 
-void DataElementHash::setScheme(const quint64& scheme) { m_scheme = scheme; }
+void DataElementHash::setScheme(const quint64 scheme) { m_scheme = scheme; }
 
 BinaryItem DataElementHash::getData() const { return m_data; }
 

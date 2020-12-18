@@ -14,6 +14,8 @@
 #include "../../lib/priv/packageTypes/CellManifest.h"
 #include "../../lib/priv/packageTypes/DataElement.h"
 #include "../../lib/priv/packageTypes/DataElementBody.h"
+#include "../../lib/priv/packageTypes/DataElementFragment.h"
+#include "../../lib/priv/packageTypes/ObjectDataBLOB.h"
 #include "../../lib/priv/packageTypes/ObjectGroup.h"
 #include "../../lib/priv/packageTypes/RevisionManifest.h"
 #include "../../lib/priv/packageTypes/StorageIndex.h"
@@ -102,6 +104,13 @@ private:
   static QXmlStreamWriter& writeObjectGroup(
       const packStore::ObjectGroup_SPtr_t& obj, QXmlStreamWriter& xmlWriter);
 
+  static QXmlStreamWriter& writeDataElementFragment(
+      const packStore::DataElementFragment_SPtr_t& obj,
+      QXmlStreamWriter& xmlWriter);
+
+  static QXmlStreamWriter& writeObjectDataBLOB(
+      const packStore::ObjectDataBLOB_SPtr_t& obj, QXmlStreamWriter& xmlWriter);
+
 
   /*--------------------------------------------------------------------------*/
   /* stream object Types*/
@@ -164,6 +173,10 @@ private:
       QXmlStreamWriter& xmlWriter);
   static QXmlStreamWriter& writeObjectGroupObjectExcludedData(
       const packStore::streamObj::ObjectGroupObjectExcludedData_SPtr_t& obj,
+      QXmlStreamWriter& xmlWriter);
+
+  static QXmlStreamWriter& writeObjectDataBLOB(
+      const packStore::streamObj::ObjectDataBLOB_SPtr_t& obj,
       QXmlStreamWriter& xmlWriter);
 
   /*--------------------------------------------------------------------------*/

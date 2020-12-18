@@ -7,42 +7,37 @@ PackageStoreFile::PackageStoreFile() {}
 
 PackagingStructure_SPtr_t PackageStoreFile::getHeader() const
 {
-    return m_header;
+  return m_header;
 }
 
 void PackageStoreFile::setHeader(const PackagingStructure_SPtr_t& header)
 {
-    m_header = header;
+  m_header = header;
 }
 
-QString PackageStoreFile::getFileName() const
-{
-    return m_fileName;
-}
+QString PackageStoreFile::getFileName() const { return m_fileName; }
 
 void PackageStoreFile::setFileName(const QString& fileName)
 {
-    m_fileName = fileName;
+  m_fileName = fileName;
 }
 
-bool PackageStoreFile::getIsEncrypted() const
-{
-    return m_isEncrypted;
-}
+bool PackageStoreFile::getIsEncrypted() const { return m_isEncrypted; }
 
 void PackageStoreFile::setIsEncrypted(bool isEncrypted)
 {
-    m_isEncrypted = isEncrypted;
+  m_isEncrypted = isEncrypted;
 }
 
-std::vector<std::shared_ptr<DataElementPackage> > PackageStoreFile::getPackages() const
+std::vector<std::shared_ptr<DataElement>> PackageStoreFile::getElements() const
 {
-    return m_packages;
+  return m_elements;
 }
 
-void PackageStoreFile::setPackages(const std::vector<std::shared_ptr<DataElementPackage> >& packages)
+void PackageStoreFile::setElements(
+    const std::vector<std::shared_ptr<DataElement>>& elements)
 {
-    m_packages = packages;
+  m_elements = elements;
 }
 
 } // namespace packStore

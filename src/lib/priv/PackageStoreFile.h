@@ -26,9 +26,8 @@ public:
   bool getIsEncrypted() const;
   void setIsEncrypted(bool isEncrypted);
 
-  std::vector<std::shared_ptr<DataElementPackage>> getPackages() const;
-  void
-  setPackages(const std::vector<std::shared_ptr<DataElementPackage>>& packages);
+  std::vector<std::shared_ptr<DataElement>> getElements() const;
+  void setElements(const std::vector<std::shared_ptr<DataElement>>& packages);
 
 private:
   /// File name such as "Notebook.one". Does not include any path information.
@@ -38,7 +37,7 @@ private:
 
   PackagingStructure_SPtr_t m_header;
 
-  std::vector<DataElementPackage_SPtr_t> m_packages;
+  std::vector<DataElement_SPtr_t> m_elements;
 };
 
 

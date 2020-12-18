@@ -10,6 +10,8 @@
 #include "packageTypes/StreamObjectHeader.h"
 
 #include "packageTypes/CellManifest.h"
+#include "packageTypes/DataElementFragment.h"
+#include "packageTypes/ObjectDataBLOB.h"
 #include "packageTypes/ObjectGroup.h"
 #include "packageTypes/RevisionManifest.h"
 #include "packageTypes/StorageIndex.h"
@@ -41,19 +43,22 @@ private:
 
   DataElementPackage_SPtr_t parseDataElementPackage(QDataStream& ds);
 
-  std::vector<DataElementPackage_SPtr_t> parseDataElementTree(QDataStream& ds);
+  //  std::vector<DataElementPackage_SPtr_t> parseDataElementTree(QDataStream&
+  //  ds);
 
 
   /*--------------------------------------------------------------------------*/
   /* data element types */
   /*--------------------------------------------------------------------------*/
-  DataElement_SPtr_t parseDataElement(quint64 length, QDataStream& ds);
+  DataElement_SPtr_t parseDataElement(QDataStream& ds);
   /*--------------------------------------------------------------------------*/
   StorageIndex_SPtr_t parseStorageIndex(QDataStream& ds);
   StorageManifest_SPtr_t parseStorageManifest(QDataStream& ds);
   CellManifest_SPtr_t parseCellManifest(QDataStream& ds);
   RevisionManifest_SPtr_t parseRevisionManifest(QDataStream& ds);
   ObjectGroup_SPtr_t parseObjectGroup(QDataStream& ds);
+  ObjectDataBLOB_SPtr_t parseObjectDataBLOB(QDataStream& ds);
+  DataElementFragment_SPtr_t parseDataElementFragment(QDataStream& ds);
 };
 
 } // namespace packStore

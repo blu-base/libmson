@@ -7,14 +7,11 @@ DataElementBody_SPtr_t DataElement::getBody() const { return m_body; }
 
 void DataElement::setBody(const DataElementBody_SPtr_t& body) { m_body = body; }
 
-DataElement::DataElement()
-    : m_dataElementExtGuid(), m_serialNumber(), m_dataElementType()
-{
-}
+DataElement::DataElement() : m_dataElementType() {}
 
 DataElement::DataElement(
     const CompactExtGuid& dataElementExtGuid, const LongExtGuid& serialNumber,
-    const CompactUInt64& dataElementType)
+    const quint64& dataElementType)
     : m_dataElementExtGuid(dataElementExtGuid), m_serialNumber(serialNumber),
       m_dataElementType(dataElementType)
 {
@@ -38,12 +35,9 @@ void DataElement::setSerialNumber(const LongExtGuid& serialNumber)
   m_serialNumber = serialNumber;
 }
 
-CompactUInt64 DataElement::getDataElementType() const
-{
-  return m_dataElementType;
-}
+quint64 DataElement::getDataElementType() const { return m_dataElementType; }
 
-void DataElement::setDataElementType(const CompactUInt64& dataElementType)
+void DataElement::setDataElementType(const quint64& dataElementType)
 {
   m_dataElementType = dataElementType;
 }

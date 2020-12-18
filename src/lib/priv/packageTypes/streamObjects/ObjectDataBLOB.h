@@ -1,33 +1,25 @@
-#ifndef DATAELEMENTHASH_H
-#define DATAELEMENTHASH_H
+#ifndef OBJECTDATABLOB_H
+#define OBJECTDATABLOB_H
 
 #include <QtCore/qglobal.h>
 
-
 #include "../../IStreamable.h"
-#include "../../commonTypes/BinaryItem.h"
 #include "StreamObject.h"
-
 
 namespace libmson {
 namespace packStore {
 namespace streamObj {
 
-
-class DataElementHash
+class ObjectDataBLOB
     : public StreamObject
-    , public priv::IStreamable {
+    , public libmson::priv::IStreamable {
 private:
-  quint64 m_scheme;
-  BinaryItem m_data;
+  QByteArray m_data;
 
 public:
-  DataElementHash();
-  quint64 getScheme() const;
-  void setScheme(const quint64 scheme);
-
-  BinaryItem getData() const;
-  void setData(const BinaryItem& data);
+  ObjectDataBLOB() = default;
+  QByteArray getData() const;
+  void setData(const QByteArray& data);
 
   // IStreamable interface
 private:
@@ -42,12 +34,13 @@ public:
   virtual StreamObjectType getType() const override;
 };
 
-typedef std::shared_ptr<DataElementHash> DataElementHash_SPtr_t;
-typedef std::weak_ptr<DataElementHash> DataElementHash_WPtr_t;
+
+typedef std::shared_ptr<ObjectDataBLOB> ObjectDataBLOB_SPtr_t;
+typedef std::weak_ptr<ObjectDataBLOB> ObjectDataBLOB_WPtr_t;
 
 
 } // namespace streamObj
 } // namespace packStore
 } // namespace libmson
 
-#endif // DATAELEMENTHASH_H
+#endif // OBJECTDATABLOB_H

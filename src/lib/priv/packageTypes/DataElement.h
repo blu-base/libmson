@@ -30,7 +30,7 @@ protected:
 
   LongExtGuid m_serialNumber;
 
-  CompactUInt64 m_dataElementType;
+  quint64 m_dataElementType;
 
   DataElementBody_SPtr_t m_body;
 
@@ -38,7 +38,7 @@ public:
   DataElement();
   DataElement(
       const CompactExtGuid& dataElementExtGuid, const LongExtGuid& serialNumber,
-      const CompactUInt64& dataElementType);
+      const quint64& dataElementType);
   virtual ~DataElement() = default;
 
   //  virtual DataElementType getType() const = 0;
@@ -47,8 +47,8 @@ public:
   void setDataElementExtGuid(const CompactExtGuid& dataElementExtGuid);
   LongExtGuid getSerialNumber() const;
   void setSerialNumber(const LongExtGuid& serialNumber);
-  CompactUInt64 getDataElementType() const;
-  void setDataElementType(const CompactUInt64& dataElementType);
+  quint64 getDataElementType() const;
+  void setDataElementType(const quint64& dataElementType);
   DataElementBody_SPtr_t getBody() const;
   void setBody(const DataElementBody_SPtr_t& body);
 
