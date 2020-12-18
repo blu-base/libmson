@@ -503,6 +503,17 @@ QString PropertyID::idToString(const PropertyIDs& val)
     m_id_string = "undoc_PageBackgroundColor";
     break;
 
+
+  case PropertyIDs::FileDataObject_GUID:
+    m_id_string = "FileDataObject_GUID";
+    break;
+  case PropertyIDs::FileDataObject_InvalidData:
+    m_id_string = "FileDataObject_InvalidData";
+    break;
+  case PropertyIDs::FileDataObject_Extension:
+    m_id_string = "FileDataObject_Extension";
+    break;
+
   case PropertyIDs::None:
     m_id_string = "None";
     break;

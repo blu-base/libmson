@@ -369,6 +369,13 @@ enum class PropertyIDs : quint32 {
   // mono color background
   undoc_PageBackgroundColor = 0x14001d2a,
 
+
+  /** used in PackageStoreFile */
+  FileDataObject_GUID = 0x1C00343E,
+  /** used in PackageStoreFile */
+  FileDataObject_InvalidData = 0x0800343D,
+  /** used in PackageStoreFile */
+  FileDataObject_Extension = 0x1C003424,
 };
 
 
