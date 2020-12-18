@@ -87,7 +87,17 @@ void RevisionManifest::deserialize(QDataStream& ds)
   }
 }
 
-void RevisionManifest::serialize(QDataStream& ds) const {}
+void RevisionManifest::serialize(QDataStream& ds) const
+{
+  ds << *m_revisionManifest;
+
+  for (const auto& entry : m_rootDeclares) {
+    ds << *entry;
+  }
+  for (const auto& entry : m_objectGroups) {
+    ds << *entry;
+  }
+}
 
 quint64 RevisionManifest::cb() const
 {

@@ -33,6 +33,10 @@ public:
   virtual StreamObjectType getType() const = 0;
 };
 
+typedef std::shared_ptr<StreamObject> StreamObject_SPtr_t;
+typedef std::weak_ptr<StreamObject> StreamObject_WPtr_t;
+
+
 } // namespace streamObj
 } // namespace packStore
 } // namespace libmson

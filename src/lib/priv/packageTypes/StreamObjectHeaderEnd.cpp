@@ -11,7 +11,12 @@ StreamObjectHeaderEnd::StreamObjectHeaderEnd(
 
 quint64 StreamObjectHeaderEnd::getSizeInFile() const
 {
-  quint16 typeVal = static_cast<uint16_t>(m_parent.lock()->getType());
+  return StreamObjectHeaderEnd::getSizeInFile(m_parent.lock()->getType());
+}
+
+quint64 StreamObjectHeaderEnd::getSizeInFile(const StreamObjectType& type)
+{
+  quint16 typeVal = static_cast<uint16_t>(type);
 
   if ((typeVal >> 6) == 0) {
     return 1;

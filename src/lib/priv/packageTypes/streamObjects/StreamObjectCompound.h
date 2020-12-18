@@ -22,20 +22,16 @@ typedef std::weak_ptr<StreamObjectCompound> StreamObjectCompound_WPtr_t;
  * StreamObjectCompound must end with a StreamObjectHeaderEnd */
 class StreamObjectCompound : public StreamObject {
 protected:
-  std::vector<StreamObjectCompound_SPtr_t> m_objects;
-
   StreamObjectCompound();
 
 public:
   virtual ~StreamObjectCompound() = default;
 
-  std::vector<StreamObjectCompound_SPtr_t> getObjects() const;
-  std::vector<StreamObjectCompound_SPtr_t>& objects();
-  void setObjects(const std::vector<StreamObjectCompound_SPtr_t>& objects);
+  virtual std::vector<StreamObjectCompound_SPtr_t> getObjects() const = 0;
 
   /** returns a vector only of the objects which have the same type_info as ti*/
-  std::vector<StreamObjectCompound_SPtr_t>
-  getObjects(const std::type_info& ti) const;
+  virtual std::vector<StreamObjectCompound_SPtr_t>
+  getObjects(const std::type_info& ti) const = 0;
 };
 
 } // namespace streamObj

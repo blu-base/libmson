@@ -11,7 +11,8 @@ CompactExtGuid StorageIndexManifestMapping::getExtendedGuid() const
   return m_extendedGuid;
 }
 
-void StorageIndexManifestMapping::setExtendedGuid(const CompactExtGuid& extendedGuid)
+void StorageIndexManifestMapping::setExtendedGuid(
+    const CompactExtGuid& extendedGuid)
 {
   m_extendedGuid = extendedGuid;
 }
@@ -25,8 +26,8 @@ StreamObjectType StorageIndexManifestMapping::getType() const
 
 quint64 StorageIndexManifestMapping::body_cb() const
 {
-  quint64 subtotal;
-  subtotal += m_extendedGuid.getSizeInFile();
+
+  quint64 subtotal = m_extendedGuid.getSizeInFile();
   subtotal += m_serialNumber.getSizeInFile();
 
   return subtotal;

@@ -21,7 +21,8 @@ CompactExtGuid StorageIndexRevisionMapping::getExtendedGuid() const
   return m_extendedGuid;
 }
 
-void StorageIndexRevisionMapping::setExtendedGuid(const CompactExtGuid& extendedGuid)
+void StorageIndexRevisionMapping::setExtendedGuid(
+    const CompactExtGuid& extendedGuid)
 {
   m_extendedGuid = extendedGuid;
 }
@@ -55,13 +56,11 @@ void StorageIndexRevisionMapping::serialize(QDataStream& ds) const
   ds << m_revision;
   ds << m_extendedGuid;
   ds << m_serialNumber;
-
 }
 
 quint64 StorageIndexRevisionMapping::body_cb() const
 {
-  quint64 subtotal;
-  subtotal += m_revision.getSizeInFile();
+  quint64 subtotal = m_revision.getSizeInFile();
   subtotal += m_extendedGuid.getSizeInFile();
   subtotal += m_serialNumber.getSizeInFile();
 
@@ -70,7 +69,7 @@ quint64 StorageIndexRevisionMapping::body_cb() const
 
 StreamObjectType StorageIndexRevisionMapping::getType() const
 {
-    return StreamObjectType::StorageIndexRevisionMapping;
+  return StreamObjectType::StorageIndexRevisionMapping;
 }
 
 

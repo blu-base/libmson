@@ -26,7 +26,7 @@ void StorageIndexCellMapping::setExtendedGuid(
 
 quint64 StorageIndexCellMapping::body_cb() const
 {
-  quint64 subtotal;
+  quint64 subtotal{};
   subtotal += m_cellId.getSizeInFile();
   subtotal += m_extendedGuid.getSizeInFile();
   subtotal += m_serialNumber.getSizeInFile();

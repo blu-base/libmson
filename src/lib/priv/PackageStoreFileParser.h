@@ -10,6 +10,7 @@
 #include "packageTypes/StreamObjectHeader.h"
 
 #include "packageTypes/CellManifest.h"
+#include "packageTypes/ObjectGroup.h"
 #include "packageTypes/RevisionManifest.h"
 #include "packageTypes/StorageIndex.h"
 #include "packageTypes/StorageManifest.h"
@@ -52,6 +53,7 @@ private:
   StorageManifest_SPtr_t parseStorageManifest(QDataStream& ds);
   CellManifest_SPtr_t parseCellManifest(QDataStream& ds);
   RevisionManifest_SPtr_t parseRevisionManifest(QDataStream& ds);
+  ObjectGroup_SPtr_t parseObjectGroup(QDataStream& ds);
 };
 
 } // namespace packStore

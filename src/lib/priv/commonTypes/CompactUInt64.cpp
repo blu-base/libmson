@@ -12,25 +12,30 @@ void CompactUInt64::setValue(const quint64& value) { m_value = value; }
 
 quint64 CompactUInt64::getSizeInFile() const
 {
-  if (m_value < limit14bit) {
+  return CompactUInt64::getSizeInFile(m_value);
+}
+
+quint64 CompactUInt64::getSizeInFile(const quint64& value)
+{
+  if (value < limit14bit) {
     return 1;
   }
-  else if (m_value < limit21bit) {
+  else if (value < limit21bit) {
     return 2;
   }
-  else if (m_value < limit28bit) {
+  else if (value < limit28bit) {
     return 3;
   }
-  else if (m_value < limit35bit) {
+  else if (value < limit35bit) {
     return 4;
   }
-  else if (m_value < limit42bit) {
+  else if (value < limit42bit) {
     return 5;
   }
-  else if (m_value < limit49bit) {
+  else if (value < limit49bit) {
     return 6;
   }
-  else if (m_value < limit64bit) {
+  else if (value < limit64bit) {
     return 7;
   }
   else {

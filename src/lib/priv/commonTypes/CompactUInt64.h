@@ -21,6 +21,9 @@ public:
 
   quint64 getSizeInFile() const;
 
+  /** returns the size of a CompactUInt64 it would have with the given value */
+  static quint64 getSizeInFile(const quint64& value);
+
   // IStreamable interface
 private:
   virtual void deserialize(QDataStream& ds) override;

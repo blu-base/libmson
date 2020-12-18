@@ -207,6 +207,10 @@ PackageStoreFileParser::parseDataElement(quint64 length, QDataStream& ds)
     element->m_body = parseRevisionManifest(ds);
     break;
   }
+  case DataElementType::ObjectGroup: {
+    element->m_body = parseObjectGroup(ds);
+    break;
+  }
   default:
     /// \todo remove temporary skipping of data
     ds.device()->seek(originalPos + length);
@@ -249,6 +253,15 @@ RevisionManifest_SPtr_t
 PackageStoreFileParser::parseRevisionManifest(QDataStream& ds)
 {
   auto manifest = std::make_shared<RevisionManifest>();
+
+  ds >> *manifest;
+
+  return manifest;
+}
+
+ObjectGroup_SPtr_t PackageStoreFileParser::parseObjectGroup(QDataStream& ds)
+{
+  auto manifest = std::make_shared<ObjectGroup>();
 
   ds >> *manifest;
 

@@ -14,6 +14,7 @@
 #include "../../lib/priv/packageTypes/CellManifest.h"
 #include "../../lib/priv/packageTypes/DataElement.h"
 #include "../../lib/priv/packageTypes/DataElementBody.h"
+#include "../../lib/priv/packageTypes/ObjectGroup.h"
 #include "../../lib/priv/packageTypes/RevisionManifest.h"
 #include "../../lib/priv/packageTypes/StorageIndex.h"
 #include "../../lib/priv/packageTypes/StorageManifest.h"
@@ -94,10 +95,12 @@ private:
   static QXmlStreamWriter& writeCellManifest(
       const packStore::CellManifest_SPtr_t& obj, QXmlStreamWriter& xmlWriter);
 
-
   static QXmlStreamWriter& writeRevisionManifest(
       const packStore::RevisionManifest_SPtr_t& obj,
       QXmlStreamWriter& xmlWriter);
+
+  static QXmlStreamWriter& writeObjectGroup(
+      const packStore::ObjectGroup_SPtr_t& obj, QXmlStreamWriter& xmlWriter);
 
 
   /*--------------------------------------------------------------------------*/
@@ -129,6 +132,40 @@ private:
       const packStore::streamObj::RevisionManifestRootDeclare_SPtr_t& obj,
       QXmlStreamWriter& xmlWriter);
 
+  static QXmlStreamWriter& writeDataElementHash(
+      const packStore::streamObj::DataElementHash_SPtr_t& obj,
+      QXmlStreamWriter& xmlWriter);
+  static QXmlStreamWriter& writeObjectGroupDeclarations(
+      const packStore::streamObj::ObjectGroupDeclarations_SPtr_t& obj,
+      QXmlStreamWriter& xmlWriter);
+  static QXmlStreamWriter& writeObjectGroupMetadataDeclarations(
+      const packStore::streamObj::ObjectGroupMetadataDeclarations_SPtr_t& obj,
+      QXmlStreamWriter& xmlWriter);
+  static QXmlStreamWriter& writeObjectGroupData(
+      const packStore::streamObj::ObjectGroupData_SPtr_t& obj,
+      QXmlStreamWriter& xmlWriter);
+  static QXmlStreamWriter& writeObjectGroupObjectDeclare(
+      const packStore::streamObj::ObjectGroupObjectDeclare_SPtr_t& obj,
+      QXmlStreamWriter& xmlWriter);
+  static QXmlStreamWriter& writeObjectGroupObjectDataBLOBDeclaration(
+      const packStore::streamObj::ObjectGroupObjectDataBLOBDeclaration_SPtr_t&
+          obj,
+      QXmlStreamWriter& xmlWriter);
+
+  static QXmlStreamWriter& writeObjectGroupMetadata(
+      const packStore::streamObj::ObjectGroupMetadata_SPtr_t& obj,
+      QXmlStreamWriter& xmlWriter);
+  static QXmlStreamWriter& writeObjectGroupObjectDataBlobReference(
+      const packStore::streamObj::ObjectGroupObjectDataBlobReference_SPtr_t&
+          obj,
+      QXmlStreamWriter& xmlWriter);
+  static QXmlStreamWriter& writeObjectGroupObjectData(
+      const packStore::streamObj::ObjectGroupObjectData_SPtr_t& obj,
+      QXmlStreamWriter& xmlWriter);
+  static QXmlStreamWriter& writeObjectGroupObjectExcludedData(
+      const packStore::streamObj::ObjectGroupObjectExcludedData_SPtr_t& obj,
+      QXmlStreamWriter& xmlWriter);
+
   /*--------------------------------------------------------------------------*/
   /* common Types*/
   /*--------------------------------------------------------------------------*/
@@ -146,6 +183,13 @@ private:
 
   static QXmlStreamWriter&
   writeCellId(const packStore::CellId& obj, QXmlStreamWriter& xmlWriter);
+  static QXmlStreamWriter& writeBinaryItem(
+      const packStore::BinaryItem& obj, QXmlStreamWriter& xmlWriter);
+
+  static QXmlStreamWriter& writeCompactExtGuidArray(
+      const packStore::CompactExtGuidArray& obj, QXmlStreamWriter& xmlWriter);
+  static QXmlStreamWriter& writeCellIdArray(
+      const packStore::CellIdArray& obj, QXmlStreamWriter& xmlWriter);
 
 
   /*--------------------------------------------------------------------------*/
