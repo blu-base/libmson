@@ -315,7 +315,7 @@ enum class PropertyIDs : quint32 {
   /** Seems to always have odd sizes, such as 17,33,49,81
    * FourBytesOfLengthFollowedByData
    */
-  undoc_001d5c = 0x14001d5d,
+  undoc_001d5d = 0x14001d5d,
 
   /** Likely is used for labeling multi-author document changes
    * Uses two letters for author with one family name and one given name (in

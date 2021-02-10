@@ -437,7 +437,7 @@ QString PropertyID::idToString(const PropertyIDs& val)
     m_id_string = "undoc_TextServiesFramework001d4e";
     break;
 
-  case PropertyIDs::undoc_TextServicesFramework32byteBlob;
+  case PropertyIDs::undoc_TextServicesFramework32byteBlob:
     m_id_string = "undoc_TextServicesFramework32byteBlob";
     break;
 
@@ -513,8 +513,9 @@ QString PropertyID::idToString(const PropertyIDs& val)
   case PropertyIDs::undoc_RecognizedText:
     m_id_string = "undoc_RecognizedText";
     break;
-  case PropertyID::undoc_TextServiceFrameworkBlob:
-    m_id_string = "undoc_TextServiceFrameworkBlob";
+
+  case PropertyIDs::undoc_TextServicesFrameworkBlob:
+    m_id_string = "undoc_TextServicesFrameworkBlob";
     break;
 
   case PropertyIDs::undoc_tocSectionName:

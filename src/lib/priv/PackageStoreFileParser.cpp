@@ -97,8 +97,8 @@ std::shared_ptr<PackageStoreFile> PackageStoreFileParser::parse()
 
   const auto cellManifestCurrentRevisionDataElementIter = std::find_if(
       m_file->getElements().begin(), m_file->getElements().end(),
-      [&](DataElement entry) {
-        return entry.getDataElementExtGuid() ==
+      [&](DataElement_SPtr_t& entry) {
+        return entry->getDataElementExtGuid() ==
                currentStorageIndexCellMappingEGuid;
       });
 

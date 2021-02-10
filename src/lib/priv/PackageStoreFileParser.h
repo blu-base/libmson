@@ -19,6 +19,7 @@
 
 #include "commonTypes/CellId.h"
 #include "commonTypes/CompactExtGuid.h"
+#include "packageTypes/DataElement.h"
 
 namespace libmson {
 namespace packStore {
