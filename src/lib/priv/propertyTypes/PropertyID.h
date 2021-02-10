@@ -146,6 +146,176 @@ enum class PropertyIDs : quint32 {
 
   // undocumented ids, this is mostly guessed, do no trust whether they are
   // deducted correctly
+  
+
+
+  /** seems to be a float, maybe some margins
+   *
+   * FourBytesOfData
+   */
+  undoc_float001c9e = 0x14001c9e,
+  /** seems to be a float, maybe some margins
+   *
+   * FourBytesOfData
+   */
+  undoc_float001c9f = 0x14001c9f,
+  /** seems to be a float, maybe some margins
+   *
+   * FourBytesOfData
+   */
+  undoc_float001ca0 = 0x14001ca0,
+  /** seems to be a float, maybe some margins
+   *
+   * FourBytesOfData
+   */
+  undoc_float001ca1 = 0x14001ca1,
+
+
+  /// maybe the index within the sequence of sections
+  undoc_tocSectionIndex = 0x14001cb9,
+
+  // seems to be a color code. 0xFFFFFFFF might be the default (no setting)
+  // which differs from COLORREF spec maybe RGBA, big endian uint32, possibly
+  // last byte also switches between default color and selected color
+  undoc_tocSectionColor = 0x14001cbe,
+
+  /// does not to be written in all cases
+  /// maybe a cache or alternative text
+  /// appears in jcidRichTextOENode
+  /// FourBytesOfLengthFollowedByData
+  undoc_RecognizedText = 0x1c001cc4,
+
+  // Maybe stores a file name of a section file, but also found FileSyncandWOPI
+  // and OneNote_RecycleBin
+  undoc_tocSectionName = 0x1c001d6b,
+  // usually 16 bytes, likely a guid?
+  undoc_tocSectionGUID = 0x1c001d94,
+
+
+  /** 32 byte blob
+   *
+   * seems to be only present when undoc_TextServiceFrameworkBlob is in same ObjectSpaceObjectPropSet
+   *
+   * observed sequences
+   * 03090000b60f00002c0a0000b60f00002c0a0000a617000003090000a6170000
+   * 090f0000bc530000fb0f0000bc530000fb0f000074560000090f000074560000
+   * 10100000ab190000fe3500006d1e0000e2350000491f0000f50f0000881a0000
+   * 10100000ac190000fe3500006d1e0000e2350000491f0000f40f0000881a0000
+   * 10100000b0190000fe3500006d1e0000e2350000481f0000f40f00008c1a0000
+   * 130100007d010000220100007d010000220100008c010000130100008c010000
+   * 1301000092010000220100009201000022010000a101000013010000a1010000
+   * 1a0d00001b6900007c1300007466000066140000a7680000040e00004e6b0000
+   * 271a0000ee0b0000604100009c0f00000a400000d71d0000d1180000281a0000
+   * 370f0000421400000b250000421400000b25000012170000370f000012170000
+   * 370f00005d110000413f00005d110000413f000054200000370f000054200000
+   * 3b0d0000560d000099490000590c0000c74900008a1700006a0d000087180000
+   * 401300003a5c0000331400003a5c000033140000355d000040130000355d0000
+   * 410a0000280c00003f0b0000280c00003f0b00001e110000410a00001e110000
+   * 42100000c8120000b63400002a150000a8340000fb1500003510000099130000
+   * 42100000ca120000b73400002c150000a9340000fc150000351000009a130000
+   * 5301000092010000620100009201000062010000a101000053010000a1010000
+   * 5619000007f411009d19000040e81100ce1c000053e81100881c00001bf41100
+   * 5a3d000066370000693d000066370000693d0000753700005a3d000075370000
+   * 5d1800000c0a0000291b000011360000bd0f0000cb360000f10c0000c60a0000
+   * 650a0000060c00004c160000d60d00008a150000d5120000a209000005110000
+   * 680100007d010000770100007d010000770100008c010000680100008c010000
+   * 692900008a0800006d3800000b0c0000d5360000df120000d12700005e0f0000
+   * 6b3f0000183e00007a3f0000183e00007a3f0000273e00006b3f0000273e0000
+   * 6d0d0000f466000036130000f466000036130000666800006d0d000066680000
+   * 7012000005080000ce18000005080000ce1800001b1d0000701200001b1d0000
+   * 77190000a10f00000c2f0000a10f00000c2f00000d240000771900000d240000
+   * 7b020000df3a00008a020000df3a00008a020000ee3a00007b020000ee3a0000
+   * 7c21000023190000590800001f1900005a080000890e00007e2100008d0e0000
+   * 84280000410a00007b370000410a00007b370000c61c000084280000c61c0000
+   * 871100005d110000922100005d11000092210000831e000087110000831e0000
+   * 8b0d0000220d00005b1e0000b90c0000961e000043160000c60d0000ab160000
+   * 8d2e0000601a0000413f0000601a0000413f0000731b00008d2e0000731b0000
+   * 901800001e0a0000371b0000ee3c0000b90f0000883d0000120d0000b80a0000
+   * 930f0000e10f0000ca3f0000d9130000803e000088230000480e0000901f0000
+   * 9a1d0000672100004647000067210000464700005d3100009a1d00005d310000
+   * 9a1d000068210000e940000068210000e94000005e3100009a1d00005e310000
+   * a52c0000251800004f0d000023180000500d00000e0d0000a62c0000110d0000
+   * a840000092010000b740000092010000b7400000a1010000a8400000a1010000
+   * bf3f000053010000ce3f000053010000ce3f000062010000bf3f000062010000
+   * ca0d0000e9630000720e0000e9630000720e0000b2640000ca0d0000b2640000
+   * cb0d00003f0c0000f34500000e0e000092450000d21900006a0d000003180000
+   * cd0e0000341b000026220000341b000026220000041e0000cd0e0000041e0000
+   * cf1900007a0d0000f06100004f11000031610000511f0000101900007d1b0000
+   * cf1900007a0d0000f16100004f11000032610000521f0000101900007c1b0000
+   * d20d0000910c00007f4000009f0e00000a400000ec1900005d0d0000de170000
+   * d3400000333b0000e2400000333b0000e2400000423b0000d3400000423b0000
+   * d8330000b425000061440000b42500006144000007270000d833000007270000
+   * e02f0000a90b000052410000a90b000052410000240e0000e02f0000240e0000
+   * e70e0000821a00003e2200005f1d000024220000101e0000cd0e0000341b0000
+   * e91c00008c720000fd1d00005a6d0000861f0000ac6d0000711e0000dd720000
+   * ea1f0000fc16000033260000fc1600003326000027170000ea1f000027170000
+   * eb0d00009a0c000048220000e50d000097210000c31800003a0d000078170000
+   * f50f00006b0a0000101800006b0a00001018000066170000f50f000066170000
+   * fd4000009b3c00000c4100009b3c00000c410000aa3c0000fd400000aa3c0000
+   *
+   */
+  undoc_TextServicesFramework32byteBlob = 0x1c001d4d,
+
+
+  /** Four bytes
+   *
+   * seems to be only present when undoc_TextServiceFrameworkBlob is in same ObjectSpaceObjectPropSet
+   *
+   * Observed these byte sequences
+   * 01000000
+   * 02000000
+   * 03000000
+   * 04000000
+   * 05000000
+   * 06000000
+   * 07000000
+   * 08000000
+   * 09000000
+   * 0a000000
+   * 0c000000
+   * 0d000000
+   * 0e000000
+   * 10000000
+   * 16000000
+   * 18000000
+   *
+   * maybe flags, of 0x01, 0x02, 0x04, 0x08, and 0x10
+   *
+   */ 
+  undoc_TextServiesFramework001d4e = 0x14001d4e,
+
+
+  /**
+   * FourBytes
+   *
+   * Flags?
+   *
+   * Observed these byte sequences
+   * 01000000
+   * 02000000
+   * 03000000
+   * 04000000
+   * 05000000
+   * 06000000
+   * 08000000
+   * 09000000
+   * 0a000000
+   * 0b000000
+   * 0c000000
+   * 0d000000
+   * 0e000000
+   * 0f000000
+   * 10000000
+   * 11000000
+   * 12000000
+   * 13000000
+   */
+  undoc_001d5c = 0x14001d5c,
+
+  /** Seems to always have odd sizes, such as 17,33,49,81
+   * FourBytesOfLengthFollowedByData
+   */
+  undoc_001d5c = 0x14001d5d,
 
   /** Likely is used for labeling multi-author document changes
    * Uses two letters for author with one family name and one given name (in
@@ -175,6 +345,14 @@ enum class PropertyIDs : quint32 {
    * 759f3fb5e0049844a7eec30dbb5a9011 00000080 ffffff7f 02000000 00007a44
    *
    * there seem to be two GUIDs in this chunk.
+   *
+   * On http://www.devsuperpage.com/search/Articles.asp?ArtID=798001
+   * there are these two GUID mentioned for InkEdit Control:
+   * X = '{598A6A8F-52C0-4BA0-93AF-AF357411A561}'
+   * Y = '{B53F9F75-04E0-4498-A7EE-C30DBB5A9011}'
+   *
+   * This indicates, this block specifies the structure of inkdata?
+   *
    *
    * FourBytesOfLengthFollowedByData
    */
@@ -302,9 +480,15 @@ enum class PropertyIDs : quint32 {
   undoc_StrokesRecognizedText = 0x1c00341e,
 
   /** seems to be only present when handwriting modus or dual modus is active
+   * if that modus is active this bool is set to true 
    * bool
    */
   undoc_Strokes00341f = 0x8800341f,
+
+  /*
+   * FourBytesOfData
+   */
+  undoc_Strokes003420 = 0x14003420,
 
   /// might not be writtng when modus is only drawing
   /// in other handwriting modus and dual modus the value seems somewhat
@@ -315,22 +499,16 @@ enum class PropertyIDs : quint32 {
   /// FourBytesOfLengthFollowedByData
   undoc_StrokesOffsetsVertHoriz = 0x1c00345b,
 
-  /// does not to be written in all cases
-  /// maybe a cache or alternative text
-  /// appears in jcidRichTextOENode
-  /// FourBytesOfLengthFollowedByData
-  undoc_RecognizedText = 0x1c001cc4,
 
   /** seems to be only present when "undoc_RecognizedText = 0x1c001cc4" is set
-   * maybe two allow highlighting when search handwritten stuff
    *
-   * seems to contain alot of zero bytes
-   * seems to contain similar content across different sections,
+   * maybe a MS Text Service Framework blob
+   * Found GUIDs in https://github.com/NyaRuRu/TSF-TypeLib/blob/master/TSF.TypeLib/src/msctf.cs
    *
    * appears in jcidRichTextOENode
    * FourBytesOfLengthFollowedByData
    */
-  undoc_Strokes00345d = 0x1c00345d,
+  undoc_TextServicesFrameworkBlob = 0x1c00345d,
 
   /** the following values always appear in a group
    */
@@ -343,23 +521,6 @@ enum class PropertyIDs : quint32 {
   undoc_Strokes0034a4 = 0x140034a4,
   undoc_Strokes0034a5 = 0x140034a5,
 
-  /** seems to be always 32 byte wide
-   */
-  undoc_001d4d = 0x1c001d4d,
-
-  // Maybe stores a file name of a section file, but also found FileSyncandWOPI
-  // and OneNote_RecycleBin
-  undoc_tocSectionName = 0x1c001d6b,
-  // usually 16 bytes, likely a guid?
-  undoc_tocSectionGUID = 0x1c001d94,
-
-  // maybe the index within the sequence of sections
-  undoc_tocSectionIndex = 0x14001cb9,
-
-  // seems to be a color code. 0xFFFFFFFF might be the default (no setting)
-  // which differs from COLORREF spec maybe RGBA, big endian uint32, possibly
-  // last byte also switches between default color and selected color
-  undoc_tocSectionColor = 0x14001cbe,
 
   /* seems to always have the same value as SchemaRevisionInOrderToRead
    * might also be SchemaRevisionInOrderToWrite

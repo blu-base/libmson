@@ -420,6 +420,34 @@ QString PropertyID::idToString(const PropertyIDs& val)
     m_id_string = "TaskTagDueDate";
     break;
 
+  case PropertyIDs::undoc_float001c9e:
+    m_id_string = "undoc_float001c9e";
+    break;
+  case PropertyIDs::undoc_float001c9f:
+    m_id_string = "undoc_float001c9f";
+    break;
+  case PropertyIDs::undoc_float001ca0:
+    m_id_string = "undoc_float001ca0";
+    break;
+  case PropertyIDs::undoc_float001ca1:
+    m_id_string = "undoc_float001ca1";
+    break;
+
+  case PropertyIDs::undoc_TextServiesFramework001d4e:
+    m_id_string = "undoc_TextServiesFramework001d4e";
+    break;
+
+  case PropertyIDs::undoc_TextServicesFramework32byteBlob;
+    m_id_string = "undoc_TextServicesFramework32byteBlob";
+    break;
+
+  case PropertyIDs::undoc_001d5c:
+    m_id_string = "undoc_001d5c";
+    break;
+  case PropertyIDs::undoc_001d5d:
+    m_id_string = "undoc_001d5d";
+    break;
+
   case PropertyIDs::undoc_AuthorInitials:
     m_id_string = "undoc_AuthorInitials";
     break;
@@ -484,6 +512,9 @@ QString PropertyID::idToString(const PropertyIDs& val)
     break;
   case PropertyIDs::undoc_RecognizedText:
     m_id_string = "undoc_RecognizedText";
+    break;
+  case PropertyID::undoc_TextServiceFrameworkBlob:
+    m_id_string = "undoc_TextServiceFrameworkBlob";
     break;
 
   case PropertyIDs::undoc_tocSectionName:
