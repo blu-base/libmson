@@ -4,7 +4,6 @@
 
 #include "PackageStoreFile.h"
 
-
 namespace libmson {
 namespace packStore {
 PackageStoreFileParser::PackageStoreFileParser(
@@ -13,6 +12,25 @@ PackageStoreFileParser::PackageStoreFileParser(
 {
   m_file->m_fileName = fileName;
 }
+
+static const QUuid storageManifestSchemeGuid_One{
+    "{1F937CB4-B26F-445F-B9F8-17E20160E461}"};
+static const QUuid storageManifestSchemeGuid_OneToc2 =
+    QUuid("{E4DBFD38-E5C7-408B-A8A1-0E7B421E1F5F}");
+
+static const CompactExtGuid storageManifestRootEGuid =
+    CompactExtGuid(QUuid("{1A5A319C-C26b-41AA-B9C5-9BD8C44E07D4}"), 1);
+
+
+static const CellId storageManifestRootCellId = CellId(
+    CompactExtGuid(QUuid("{84DEFAB9-AAA3-4A0D-A3A8-520C77AC7073}"), 1),
+    CompactExtGuid(QUuid("{111E4CF3-7FEF-4087-AF6A-B9544ACD334D}"), 1));
+
+static const CompactExtGuid storageManifestDataRootEGuid =
+    CompactExtGuid(QUuid("{84DEFAB9-AAA3-4A0D-A3A8-520C77AC7073}"), 2);
+
+static const CompactExtGuid storageManifestDataRootCellIdParticle =
+    CompactExtGuid(QUuid("{84DEFAB9-AAA3-4A0D-A3A8-520C77AC7073}"), 1);
 
 std::shared_ptr<PackageStoreFile> PackageStoreFileParser::parse()
 {
@@ -41,6 +59,69 @@ std::shared_ptr<PackageStoreFile> PackageStoreFileParser::parse()
 
   StreamObjectHeaderEnd end(packageStart);
   m_ds >> end;
+
+
+  // following [MS-ONESTORE] section 3.5. StorageIndex, and StorageManifest
+  // should have been set by parseDataElement method
+
+  // step 7
+  /// \todo StorageManifest RootDecl structure dependent call
+  const auto dataRoot =
+      m_file->m_storageManifest.lock()->getRootDeclares().at(1)->getCellId();
+
+
+  // step 8
+  const auto cellMappings = m_file->m_storageIndex.lock()->getCellMappings();
+
+
+  const auto dataRootSICMiter = std::find_if(
+      cellMappings.begin(), cellMappings.end(),
+      [&](const streamObj::StorageIndexCellMapping_SPtr_t entry) {
+        return entry->getCellId() == dataRoot;
+      });
+
+  if (dataRootSICMiter == cellMappings.end()) {
+
+    qDebug() << "Did not found data Root StorageIndexCellMapping";
+  }
+
+
+  const streamObj::StorageIndexCellMapping_SPtr_t dataRootSICM =
+      *dataRootSICMiter;
+
+  const CompactExtGuid currentStorageIndexCellMappingEGuid =
+      dataRootSICM->getExtendedGuid();
+
+
+  // step 9
+
+  const auto cellManifestCurrentRevisionDataElementIter = std::find_if(
+      m_file->getElements().begin(), m_file->getElements().end(),
+      [&](DataElement entry) {
+        return entry.getDataElementExtGuid() ==
+               currentStorageIndexCellMappingEGuid;
+      });
+
+  if (cellManifestCurrentRevisionDataElementIter ==
+      m_file->getElements().end()) {
+    qDebug("Did not find cellManifestCurrentRevision");
+  }
+
+  const auto cellManifestCurrentRevisionDataElement =
+      *cellManifestCurrentRevisionDataElementIter;
+
+  if (cellManifestCurrentRevisionDataElement->getDataElementTypeEnum() !=
+      DataElementType::CellManifest) {
+    qDebug()
+        << "Found cellManifestCurrentRevisionDataElement is not a CellManifest";
+  }
+  const auto cellManifestCurrentRevision =
+      std::static_pointer_cast<CellManifest>(
+          cellManifestCurrentRevisionDataElement->getBody())
+          ->getCurrentRevision();
+
+
+  // step 10
 
 
   return m_file;
@@ -141,67 +222,6 @@ PackageStoreFileParser::parseDataElementPackage(QDataStream& ds)
   return package;
 }
 
-// std::vector<DataElementPackage_SPtr_t>
-// PackageStoreFileParser::parseDataElementTree(QDataStream& ds)
-//{
-//  std::vector<DataElementPackage_SPtr_t> vec;
-
-
-//  char peek[1];
-
-//  qint64 peeking = ds.device()->peek(peek, 1);
-
-
-//  while ((static_cast<uint8_t>(peek[0]) & 0x1) != 1) {
-
-
-//    auto composite   = std::make_shared<DataElementPackage>();
-//    composite->m_stp = ds.device()->pos();
-
-//    uint8_t streamObjectHeaderType = static_cast<uint8_t>(peek[0]) & 0x3;
-//    if (!(streamObjectHeaderType == 0) && !(streamObjectHeaderType == 2)) {
-//      qDebug() << "Potentially incorrectly formated StreamObjectHeader ahead";
-//    }
-//    auto packageStart = std::make_shared<StreamObjectHeader>();
-//    ds >> *packageStart;
-//    composite->m_header = packageStart;
-
-//    qint64 currentPos = ds.device()->pos();
-
-
-//    if (composite->getHeader()->getType() == StreamObjectType::DataElement) {
-//      composite->m_dataElement =
-//          parseDataElement(composite->m_header->getLength(), ds);
-//    }
-
-//    /// \todo remove temporary parsing of raw data (also duplicate parse)
-//    ds.device()->seek(currentPos);
-//    composite->m_data = ds.device()->read(composite->m_header->getLength());
-
-
-//    vec.push_back(composite);
-//    if (packStore::compoundType.at(packageStart->getType()) == 1) {
-//      composite->m_children = parseDataElementTree(ds);
-
-//      if (ds.device()->peek(peek, 1) == 0) {
-//        qDebug() << "Ran out of bytes";
-//        break;
-//      }
-//      parseStreamObjectHeaderEnd(composite->m_header, ds);
-//    }
-
-//    peeking = ds.device()->peek(peek, 1);
-
-//    if (peeking == 0) {
-//      qDebug() << "Ran out of bytes";
-//      break;
-//    }
-//  }
-
-
-//  return vec;
-//}
-
 DataElement_SPtr_t PackageStoreFileParser::parseDataElement(QDataStream& ds)
 {
 
@@ -233,11 +253,15 @@ DataElement_SPtr_t PackageStoreFileParser::parseDataElement(QDataStream& ds)
 
   switch (static_cast<DataElementType>(element->m_dataElementType)) {
   case DataElementType::StorageIndex: {
-    element->m_body = parseStorageIndex(ds);
+    auto storageIndex      = parseStorageIndex(ds);
+    element->m_body        = storageIndex;
+    m_file->m_storageIndex = storageIndex;
     break;
   }
   case DataElementType::StorageManifest: {
-    element->m_body = parseStorageManifest(ds);
+    auto storageManifest      = parseStorageManifest(ds);
+    element->m_body           = storageManifest;
+    m_file->m_storageManifest = storageManifest;
     break;
   }
   case DataElementType::CellManifest: {
@@ -295,6 +319,43 @@ PackageStoreFileParser::parseStorageManifest(QDataStream& ds)
   auto element = std::make_shared<StorageManifest>();
 
   ds >> *element;
+
+
+  // Checking sturcture following the description in [MS-ONESTORE] section 2.7.1
+
+  /// \todo file type validity check
+  ///
+  const auto& scheme = element->getSchema()->getGuid();
+  if (scheme != storageManifestSchemeGuid_One &&
+      scheme != storageManifestSchemeGuid_OneToc2) {
+    qWarning("File does have known StorageManifestSchemeGUID");
+  }
+
+  const auto& rootDecls = element->getRootDeclares();
+
+  // It is not clear, whether there are always 2 RootDeclare in the
+  // StorageManifest
+  if (rootDecls.size() != 2) {
+    qDebug("There is something unusual with StorageManifest RootDecls");
+  }
+
+  if (rootDecls.at(0)->getExtendedGuid() != storageManifestRootEGuid) {
+    qFatal("storageManifestRootEGuid is invalid");
+  }
+
+  if (rootDecls.at(0)->getCellId() != storageManifestRootCellId) {
+    qFatal("storageManifestRootCellId is invalid");
+  }
+
+  if (rootDecls.at(1)->getExtendedGuid() != storageManifestDataRootEGuid) {
+    qFatal("storageManifestDataRootEGuid is invalid");
+  }
+
+  if (rootDecls.at(1)->getCellId().getExguid1() !=
+      storageManifestDataRootCellIdParticle) {
+    qFatal("storageManifestDataRootCellId_EGuid1 is invalid");
+  }
+
 
   return element;
 }

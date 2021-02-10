@@ -7,6 +7,9 @@
 #include "packageTypes/DataElementPackage.h"
 #include "packageTypes/PackagingStructure.h"
 
+#include "packageTypes/StorageIndex.h"
+#include "packageTypes/StorageManifest.h"
+
 namespace libmson {
 namespace packStore {
 
@@ -38,6 +41,9 @@ private:
   PackagingStructure_SPtr_t m_header;
 
   std::vector<DataElement_SPtr_t> m_elements;
+
+  StorageIndex_WPtr_t m_storageIndex;
+  StorageManifest_WPtr_t m_storageManifest;
 };
 
 

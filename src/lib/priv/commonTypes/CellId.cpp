@@ -36,5 +36,15 @@ void CellId::serialize(QDataStream& ds) const
   ds << m_exguid2;
 }
 
+bool operator==(const CellId& lhs, const CellId& rhs) noexcept
+{
+  return (lhs.getExguid1() == rhs.getExguid1()) &&
+         (lhs.getExguid2() == rhs.getExguid2());
+}
+bool operator!=(const CellId& lhs, const CellId& rhs) noexcept
+{
+  return !(lhs == rhs);
+}
+
 } // namespace packStore
 } // namespace libmson

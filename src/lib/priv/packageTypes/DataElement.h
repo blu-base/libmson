@@ -49,6 +49,8 @@ public:
   void setSerialNumber(const LongExtGuid& serialNumber);
   quint64 getDataElementType() const;
   void setDataElementType(const quint64& dataElementType);
+  DataElementType getDataElementTypeEnum() const;
+  void setDataElementType(const DataElementType& dataElementType);
   DataElementBody_SPtr_t getBody() const;
   void setBody(const DataElementBody_SPtr_t& body);
 

@@ -17,6 +17,9 @@
 #include "packageTypes/StorageIndex.h"
 #include "packageTypes/StorageManifest.h"
 
+#include "commonTypes/CellId.h"
+#include "commonTypes/CompactExtGuid.h"
+
 namespace libmson {
 namespace packStore {
 
@@ -59,6 +62,14 @@ private:
   ObjectGroup_SPtr_t parseObjectGroup(QDataStream& ds);
   ObjectDataBLOB_SPtr_t parseObjectDataBLOB(QDataStream& ds);
   DataElementFragment_SPtr_t parseDataElementFragment(QDataStream& ds);
+
+
+  static const QUuid storageManifestSchemeGuid_One;
+  static const QUuid storageManifestSchemeGuid_OneToc2;
+  static const CompactExtGuid storageManifestRootEGuid;
+  static const CellId storageManifestRootCellId;
+  static const CompactExtGuid storageManifestDataRootEGuid;
+  static const CompactExtGuid storageManifestDataRootCellIdParticle;
 };
 
 } // namespace packStore

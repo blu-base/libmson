@@ -41,6 +41,15 @@ void DataElement::setDataElementType(const quint64& dataElementType)
 {
   m_dataElementType = dataElementType;
 }
+DataElementType DataElement::getDataElementTypeEnum() const
+{
+  return static_cast<DataElementType>(m_dataElementType);
+}
+
+void DataElement::setDataElementType(const DataElementType& dataElementType)
+{
+  m_dataElementType = static_cast<quint64>(dataElementType);
+}
 
 
 } // namespace packStore

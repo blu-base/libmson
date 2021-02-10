@@ -25,6 +25,10 @@ public:
 
   quint64 getSizeInFile() const;
 
+
+  friend bool operator==(const CellId& lhs, const CellId& rhs) noexcept;
+  friend bool operator!=(const CellId& lhs, const CellId& rhs) noexcept;
+
   // IStreamable interface
 private:
   virtual void deserialize(QDataStream& ds) override;
