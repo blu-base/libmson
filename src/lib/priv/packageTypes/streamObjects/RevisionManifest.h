@@ -1,5 +1,5 @@
-#ifndef REVISIONMANIFEST_H
-#define REVISIONMANIFEST_H
+#ifndef REVISIONMANIFESTSTREAMOBJ_H
+#define REVISIONMANIFESTSTREAMOBJ_H
 
 #include <QtCore/qglobal.h>
 
@@ -49,4 +49,4 @@ typedef std::weak_ptr<RevisionManifest> RevisionManifest_WPtr_t;
 } // namespace libmson
 
 
-#endif // REVISIONMANIFEST_H
+#endif // REVISIONMANIFESTSTREAMOBJ_H
