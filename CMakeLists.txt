@@ -22,12 +22,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 
 ########## Find Qt #############################################################
-find_package(
-    Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED
-        Core
-        Xml
-        Test
-)
+find_package(QT NAMES Qt5 COMPONENTS Core Xml Widgets Test REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Xml Widgets Test REQUIRED)
 
 set (CMAKE_AUTOMOC ON)
 set (CMAKE_AUTOUIC ON)
@@ -41,6 +37,9 @@ add_subdirectory(src)
 add_subdirectory(tests)
 add_subdirectory(resources)
 add_subdirectory(docs)
+
+
+add_subdirectory(devtools)
 
 
 
