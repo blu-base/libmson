@@ -380,13 +380,48 @@ void FileNodeChunkReference::serialize(QDataStream& ds) const
   }
 }
 
-FNCR_STP_FORMAT FileNodeChunkReference::getStpFormat() const 
+FNCR_STP_FORMAT FileNodeChunkReference::getStpFormat() const
 {
-    return m_stpFormat;
+  return m_stpFormat;
 }
 
-FNCR_CB_FORMAT FileNodeChunkReference::getCbFormat() const {
-    return m_cbFormat;
+FNCR_CB_FORMAT FileNodeChunkReference::getCbFormat() const
+{
+  return m_cbFormat;
+}
+
+QString FileNodeChunkReference::fncrStpFormatString(const FNCR_STP_FORMAT format)
+{
+  switch (format) {
+  case FNCR_STP_FORMAT::UNCOMPRESED_8BYTE:
+    return QStringLiteral("UNCOMPRESED_8BYTE");
+
+  case FNCR_STP_FORMAT::UNCOMPRESED_4BYTE:
+    return QStringLiteral("UNCOMPRESED_4BYTE");
+
+  case FNCR_STP_FORMAT::COMPRESSED_2BYTE:
+    return QStringLiteral("COMPRESSED_2BYTE");
+
+  case FNCR_STP_FORMAT::COMPRESSED_4BYTE:
+    return QStringLiteral("COMPRESSED_4BYTE");
+  }
+}
+
+QString FileNodeChunkReference::fncrCbFormatString(const FNCR_CB_FORMAT format)
+{
+  switch (format) {
+  case FNCR_CB_FORMAT::UNCOMPRESED_8BYTE:
+    return QStringLiteral("UNCOMPRESED_8BYTE");
+
+  case FNCR_CB_FORMAT::UNCOMPRESED_4BYTE:
+    return QStringLiteral("UNCOMPRESED_4BYTE");
+
+  case FNCR_CB_FORMAT::COMPRESSED_1BYTE:
+    return QStringLiteral("COMPRESSED_1BYTE");
+
+  case FNCR_CB_FORMAT::COMPRESSED_2BYTE:
+    return QStringLiteral("COMPRESSED_2BYTE");
+  }
 }
 
 } // namespace priv

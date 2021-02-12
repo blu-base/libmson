@@ -52,8 +52,13 @@ public:
   quint64 getSizeInFile() const;
 
 
+
+
   static quint64
   getSizeInFile(FNCR_STP_FORMAT stpFormat, FNCR_CB_FORMAT cbFormat);
+
+  static QString fncrStpFormatString(const FNCR_STP_FORMAT format);
+  static QString fncrCbFormatString(const FNCR_CB_FORMAT format);
 
 private:
   virtual void deserialize(QDataStream& ds) override;
@@ -63,6 +68,8 @@ private:
   FNCR_STP_FORMAT m_stpFormat;
   FNCR_CB_FORMAT m_cbFormat;
 };
+
+
 
 
 } // namespace priv
