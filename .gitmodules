@@ -1,0 +1,3 @@
+[submodule "devtools/onhexviewer/qhexview"]
+	path = devtools/onhexviewer/qhexview
+	url = https://github.com/Dax89/QHexView
