@@ -23,7 +23,11 @@ RevisionStoreFileHeader::RevisionStoreFileHeader(
       m_guidFile(QUuid::createUuid()), m_ffvLastWriterVersion{0x0000002A},
       m_ffvOldestWriterVersion{0x0000002A},
       m_ffvNewestWriterVersion{0x0000002A}, m_ffvOldestReader{0x0000002A},
-      m_cTransactionsInLog{1}, m_rgbPlaceholder{0}, m_fNeedsDefrag{0},
+      m_fcrLegacyFreeChunkList(FCR_INIT::ZERO),
+      m_fcrLegacyTransactionLog(FCR_INIT::NIL), m_cTransactionsInLog{1},
+      m_cbLegacyExpectedFileLength(0), m_rgbPlaceholder{0},
+      m_fcrLegacyFileNodeListRoot(FCR_INIT::NIL),
+      m_cbLegacyFreeSpaceInFreeChunkList(0), m_fNeedsDefrag{0},
       m_fRepairedFile{0}, m_fNeedsGarbageCollect{0},
       m_fHasNoEmbeddedFileObjects{0}, m_guidAncestor{QUuid()}, m_crcName{0},
       m_fcrHashedChunkList{FileNodeListFragment_WPtr_t()},
@@ -32,7 +36,9 @@ RevisionStoreFileHeader::RevisionStoreFileHeader(
       m_fcrFreeChunkList{FreeChunkListFragment_WPtr_t()},
       m_cbExpectedFileLength{0x400}, m_cbFreeSpaceInFreeChunkList{0},
       m_guidFileVersion{QUuid()}, m_nFileVersionGeneration{},
-      m_guidDenyReadFileVersion{QUuid()}, m_grfDebugLogFlags{0}, m_bnCreated{0},
+      m_guidDenyReadFileVersion{QUuid()}, m_grfDebugLogFlags{0},
+      m_fcrDebugLog(FCR_INIT::ZERO),
+      m_fcrAllocVerificationFreeChunkList(FCR_INIT::ZERO), m_bnCreated{0},
       m_bnLastWroteToThisFile{0}, m_bnOldestWritten{0}, m_bnNewestWritten{0}
 {
 }
@@ -41,28 +47,38 @@ RevisionStoreFileHeader::RevisionStoreFileHeader(
     const QUuid& guidFileType, const QUuid& guidFile,
     const quint32 ffvLastWriterVersion, const quint32 ffvOldestWriterVersion,
     const quint32 ffvNewestWriterVersion, const quint32 ffvOldestReader,
-    const quint32 cTransactionsInLog, const quint64 rgbPlaceholder,
-    const quint8 fNeedsDefrag, const quint8 fRepairedFile,
-    const quint8 fNeedsGarbageCollect, const quint8 fHasNoEmbeddedFileObjects,
-    const QUuid& guidAncestor, const quint32 crcName,
-    FileNodeListFragment_SPtr_t fcrHashedChunkList,
+    const FileChunkReference32& fcrLegacyFreeChunkList,
+    const FileChunkReference32& fcrLegacyTransactionLog,
+    const quint32 cTransactionsInLog, const quint32 cbLegacyExpectedFileLength,
+    const quint64 rgbPlaceholder,
+    const FileChunkReference32& fcrLegacyFileNodeListRoot,
+    const quint32 cbLegacyFreeSpaceInFreeChunkList, const quint8 fNeedsDefrag,
+    const quint8 fRepairedFile, const quint8 fNeedsGarbageCollect,
+    const quint8 fHasNoEmbeddedFileObjects, const QUuid& guidAncestor,
+    const quint32 crcName, FileNodeListFragment_SPtr_t fcrHashedChunkList,
     TransactionLogFragment_SPtr_t fcrTransactionLog,
     FileNodeListFragment_SPtr_t fcrFileNodeListRoot,
     FreeChunkListFragment_SPtr_t fcrFreeChunkList,
     const quint64 cbExpectedFileLength,
     const quint64 cbFreeSpaceInFreeChunkList, const QUuid& guidFileVersion,
     const quint64 nFileVersionGeneration, const QUuid& guidDenyReadFileVersion,
-    const quint32 grfDebugLogFlags, const quint32 bnCreated,
-    const quint32 bnLastWroteToThisFile, const quint32 bnOldestWritten,
-    const quint32 bnNewestWritten)
+    const quint32 grfDebugLogFlags, const FileChunkReference64x32& fcrDebugLog,
+    const FileChunkReference64x32& fcrAllocVerificationFreeChunkList,
+    const quint32 bnCreated, const quint32 bnLastWroteToThisFile,
+    const quint32 bnOldestWritten, const quint32 bnNewestWritten)
     : m_guidFileType(guidFileType), m_guidFile(guidFile),
       m_ffvLastWriterVersion(ffvLastWriterVersion),
       m_ffvOldestWriterVersion(ffvOldestWriterVersion),
       m_ffvNewestWriterVersion(ffvNewestWriterVersion),
       m_ffvOldestReader(ffvOldestReader),
+      m_fcrLegacyFreeChunkList(fcrLegacyFreeChunkList),
+      m_fcrLegacyTransactionLog(fcrLegacyTransactionLog),
       m_cTransactionsInLog(cTransactionsInLog),
-      m_rgbPlaceholder(rgbPlaceholder), m_fNeedsDefrag(fNeedsDefrag),
-      m_fRepairedFile(fRepairedFile),
+      m_cbLegacyExpectedFileLength(cbLegacyExpectedFileLength),
+      m_rgbPlaceholder(rgbPlaceholder),
+      m_fcrLegacyFileNodeListRoot(fcrLegacyFileNodeListRoot),
+      m_cbLegacyFreeSpaceInFreeChunkList(cbLegacyFreeSpaceInFreeChunkList),
+      m_fNeedsDefrag(fNeedsDefrag), m_fRepairedFile(fRepairedFile),
       m_fNeedsGarbageCollect(fNeedsGarbageCollect),
       m_fHasNoEmbeddedFileObjects(fHasNoEmbeddedFileObjects),
       m_guidAncestor(guidAncestor), m_crcName(crcName),
@@ -75,8 +91,9 @@ RevisionStoreFileHeader::RevisionStoreFileHeader(
       m_guidFileVersion(guidFileVersion),
       m_nFileVersionGeneration(nFileVersionGeneration),
       m_guidDenyReadFileVersion(guidDenyReadFileVersion),
-      m_grfDebugLogFlags(grfDebugLogFlags), m_bnCreated(bnCreated),
-      m_bnLastWroteToThisFile(bnLastWroteToThisFile),
+      m_grfDebugLogFlags(grfDebugLogFlags), m_fcrDebugLog(fcrDebugLog),
+      m_fcrAllocVerificationFreeChunkList(fcrAllocVerificationFreeChunkList),
+      m_bnCreated(bnCreated), m_bnLastWroteToThisFile(bnLastWroteToThisFile),
       m_bnOldestWritten(bnOldestWritten), m_bnNewestWritten(bnNewestWritten)
 {
 }
@@ -100,8 +117,13 @@ RevisionStoreFileHeader::RevisionStoreFileHeader(
       m_ffvOldestWriterVersion(ffvOldestWriterVersion),
       m_ffvNewestWriterVersion(ffvNewestWriterVersion),
       m_ffvOldestReader(ffvOldestReader),
+      m_fcrLegacyFreeChunkList(FCR_INIT::ZERO),
+      m_fcrLegacyTransactionLog(FCR_INIT::NIL),
       m_cTransactionsInLog(cTransactionsInLog),
-      m_rgbPlaceholder(rgbPlaceholder), m_fNeedsDefrag(fNeedsDefrag),
+      m_cbLegacyExpectedFileLength(0),
+      m_rgbPlaceholder(rgbPlaceholder),
+      m_fcrLegacyFileNodeListRoot(FCR_INIT::NIL),
+      m_fNeedsDefrag(fNeedsDefrag),
       m_fRepairedFile(fRepairedFile),
       m_fNeedsGarbageCollect(fNeedsGarbageCollect),
       m_fHasNoEmbeddedFileObjects(fHasNoEmbeddedFileObjects),
@@ -115,10 +137,62 @@ RevisionStoreFileHeader::RevisionStoreFileHeader(
       m_guidFileVersion(guidFileVersion),
       m_nFileVersionGeneration(nFileVersionGeneration),
       m_guidDenyReadFileVersion(guidDenyReadFileVersion),
-      m_grfDebugLogFlags(grfDebugLogFlags), m_bnCreated(bnCreated),
+      m_grfDebugLogFlags(grfDebugLogFlags),
+      m_fcrDebugLog(FCR_INIT::ZERO),
+      m_fcrAllocVerificationFreeChunkList(FCR_INIT::ZERO),
+      m_bnCreated(bnCreated),
       m_bnLastWroteToThisFile(bnLastWroteToThisFile),
       m_bnOldestWritten(bnOldestWritten), m_bnNewestWritten(bnNewestWritten)
 {
+}
+
+FileChunkReference64x32
+RevisionStoreFileHeader::getFcrAllocVerificationFreeChunkList() const
+{
+  return m_fcrAllocVerificationFreeChunkList;
+}
+
+FileChunkReference64x32 RevisionStoreFileHeader::getFcrDebugLog() const
+{
+  return m_fcrDebugLog;
+}
+
+quint32 RevisionStoreFileHeader::getCbLegacyFreeSpaceInFreeChunkList() const
+{
+  return m_cbLegacyFreeSpaceInFreeChunkList;
+}
+
+void RevisionStoreFileHeader::setCbLegacyFreeSpaceInFreeChunkList(
+    const quint32& cbLegacyFreeSpaceInFreeChunkList)
+{
+  m_cbLegacyFreeSpaceInFreeChunkList = cbLegacyFreeSpaceInFreeChunkList;
+}
+
+FileChunkReference32
+RevisionStoreFileHeader::getFcrLegacyFileNodeListRoot() const
+{
+  return m_fcrLegacyFileNodeListRoot;
+}
+
+void RevisionStoreFileHeader::setFcrLegacyFileNodeListRoot(
+    const FileChunkReference32& fcrLegacyFileNodeListRoot)
+{
+  m_fcrLegacyFileNodeListRoot = fcrLegacyFileNodeListRoot;
+}
+
+quint32 RevisionStoreFileHeader::getCbLegacyExpectedFileLength() const
+{
+  return m_cbLegacyExpectedFileLength;
+}
+
+FileChunkReference32 RevisionStoreFileHeader::getFcrLegacyTransactionLog() const
+{
+  return m_fcrLegacyTransactionLog;
+}
+
+FileChunkReference32 RevisionStoreFileHeader::getFcrLegacyFreeChunkList() const
+{
+  return m_fcrLegacyFreeChunkList;
 }
 
 QUuid RevisionStoreFileHeader::getGuidFileType() const

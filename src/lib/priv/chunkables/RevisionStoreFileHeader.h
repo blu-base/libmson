@@ -3,6 +3,8 @@
 
 #include <QUuid>
 #include <QtCore/qglobal.h>
+#include <commonTypes/FileChunkReference32.h>
+#include <commonTypes/FileChunkReference64x32.h>
 
 #include <memory>
 
@@ -36,22 +38,27 @@ public:
       const quint64 initialStp = 0, const quint64 initialCb = 0);
 
   RevisionStoreFileHeader(
-      const QUuid& guidFileType, const QUuid& guidFile,
-      const quint32 ffvLastWriterVersion, const quint32 ffvOldestWriterVersion,
-      const quint32 ffvNewestWriterVersion, const quint32 ffvOldestReader,
-      const quint32 cTransactionsInLog, const quint64 rgbPlaceholder,
-      const quint8 fNeedsDefrag, const quint8 fRepairedFile,
-      const quint8 fNeedsGarbageCollect, const quint8 fHasNoEmbeddedFileObjects,
-      const QUuid& guidAncestor, const quint32 crcName,
-      FileNodeListFragment_SPtr_t fcrHashedChunkList,
-      TransactionLogFragment_SPtr_t fcrTransactionLog,
-      FileNodeListFragment_SPtr_t fcrFileNodeListRoot,
-      FreeChunkListFragment_SPtr_t fcrFreeChunkList,
-      const quint64 cbExpectedFileLength,
-      const quint64 cbFreeSpaceInFreeChunkList, const QUuid& guidFileVersion,
-      const quint64 nFileVersionGeneration,
-      const QUuid& guidDenyReadFileVersion, const quint32 grfDebugLogFlags,
-      const quint32 bnCreated, const quint32 bnLastWroteToThisFile,
+    const QUuid& guidFileType, const QUuid& guidFile,
+    const quint32 ffvLastWriterVersion, const quint32 ffvOldestWriterVersion,
+    const quint32 ffvNewestWriterVersion, const quint32 ffvOldestReader,
+    const FileChunkReference32& fcrLegacyFreeChunkList,
+    const FileChunkReference32& fcrLegacyTransactionLog,
+    const quint32 cTransactionsInLog, const quint32 cbLegacyExpectedFileLength,
+    const quint64 rgbPlaceholder,
+    const FileChunkReference32& fcrLegacyFileNodeListRoot,
+    const quint32 cbLegacyFreeSpaceInFreeChunkList, const quint8 fNeedsDefrag,
+    const quint8 fRepairedFile, const quint8 fNeedsGarbageCollect,
+    const quint8 fHasNoEmbeddedFileObjects, const QUuid& guidAncestor,
+    const quint32 crcName, FileNodeListFragment_SPtr_t fcrHashedChunkList,
+    TransactionLogFragment_SPtr_t fcrTransactionLog,
+    FileNodeListFragment_SPtr_t fcrFileNodeListRoot,
+    FreeChunkListFragment_SPtr_t fcrFreeChunkList,
+    const quint64 cbExpectedFileLength,
+    const quint64 cbFreeSpaceInFreeChunkList, const QUuid& guidFileVersion,
+    const quint64 nFileVersionGeneration, const QUuid& guidDenyReadFileVersion,
+    const quint32 grfDebugLogFlags, const FileChunkReference64x32& fcrDebugLog,
+    const FileChunkReference64x32& fcrAllocVerificationFreeChunkList,
+    const quint32 bnCreated, const quint32 bnLastWroteToThisFile,
       const quint32 bnOldestWritten, const quint32 bnNewestWritten);
 
   RevisionStoreFileHeader(
@@ -96,8 +103,13 @@ private:
   quint32 m_ffvOldestWriterVersion; // ffvNewestCodeThatHasWrittenToThisFile
   quint32 m_ffvNewestWriterVersion; // ffvOldestCodeThatHasWrittenToThisFile
   quint32 m_ffvOldestReader;        // ffvOldestCodeThatMayReadThisFile
+  FileChunkReference32 m_fcrLegacyFreeChunkList;
+  FileChunkReference32 m_fcrLegacyTransactionLog;
   quint32 m_cTransactionsInLog;
+  quint32 m_cbLegacyExpectedFileLength;
   quint64 m_rgbPlaceholder;
+  FileChunkReference32 m_fcrLegacyFileNodeListRoot;
+  quint32 m_cbLegacyFreeSpaceInFreeChunkList;
   quint8 m_fNeedsDefrag;
   quint8 m_fRepairedFile;
   quint8 m_fNeedsGarbageCollect;
@@ -114,6 +126,8 @@ private:
   quint64 m_nFileVersionGeneration;
   QUuid m_guidDenyReadFileVersion;
   quint32 m_grfDebugLogFlags;
+  FileChunkReference64x32 m_fcrDebugLog;
+  FileChunkReference64x32 m_fcrAllocVerificationFreeChunkList;
   quint32 m_bnCreated;
   quint32 m_bnLastWroteToThisFile;
   quint32 m_bnOldestWritten;
@@ -143,11 +157,25 @@ public:
   quint32 getFfvOldestReader() const;
   void setFfvOldestReader(const quint32 value);
 
+  FileChunkReference32 getFcrLegacyFreeChunkList() const;
+
+  FileChunkReference32 getFcrLegacyTransactionLog() const;
+
   quint32 getCTransactionsInLog() const;
   void setCTransactionsInLog(const quint32 value);
 
+  quint32 getCbLegacyExpectedFileLength() const;
+
   quint64 getRgbPlaceholder() const;
   void setRgbPlaceholder(const quint64 value);
+
+  FileChunkReference32 getFcrLegacyFileNodeListRoot() const;
+  void setFcrLegacyFileNodeListRoot(
+      const FileChunkReference32& fcrLegacyFileNodeListRoot);
+
+  quint32 getCbLegacyFreeSpaceInFreeChunkList() const;
+  void setCbLegacyFreeSpaceInFreeChunkList(
+      const quint32& cbLegacyFreeSpaceInFreeChunkList);
 
   quint8 getFNeedsDefrag() const;
   void setFNeedsDefrag(quint8 value);
@@ -197,6 +225,10 @@ public:
   quint32 getGrfDebugLogFlags() const;
   void setGrfDebugLogFlags(const quint32 value);
 
+  FileChunkReference64x32 getFcrDebugLog() const;
+
+  FileChunkReference64x32 getFcrAllocVerificationFreeChunkList() const;
+
   quint32 getBnCreated() const;
   void setBnCreated(const quint32 value);
 
@@ -208,6 +240,7 @@ public:
 
   quint32 getBnNewestWritten() const;
   void setBnNewestWritten(const quint32 value);
+
 };
 
 
