@@ -93,7 +93,7 @@ stpTillIterator(std::list<Chunkably_SPtr_t>& list, Chunkable_WPtr_t chunk)
 
 FileChunkReference64x32 getFcr64x32FromChunk(
     RevisionStoreFile_SPtr_t revStoreFile, Chunkable_WPtr_t chunk,
-    FCR_INIT preferedState = FCR_INIT::NIL)
+    FCR_INIT preferedState)
 {
   if (chunk.expired()) {
     return FileChunkReference64x32(preferedState);
@@ -107,7 +107,7 @@ FileChunkReference64x32 getFcr64x32FromChunk(
 
 FileChunkReference64 getFcr64FromChunk(
     RevisionStoreFile_SPtr_t revStoreFile, Chunkable_WPtr_t chunk,
-    FCR_INIT preferedState = FCR_INIT::NIL)
+    FCR_INIT preferedState)
 {
   if (chunk.expired()) {
     return FileChunkReference64(preferedState);
@@ -122,7 +122,7 @@ FileChunkReference64 getFcr64FromChunk(
 FileNodeChunkReference getFncrFromChunk(
     RevisionStoreFile_SPtr_t revStoreFile, Chunkable_WPtr_t chunk,
     FNCR_STP_FORMAT stpFormat, FNCR_CB_FORMAT cbFormat,
-    FCR_INIT preferedState = FCR_INIT::NIL)
+    FCR_INIT preferedState)
 {
   if (chunk.expired()) {
     return FileNodeChunkReference(

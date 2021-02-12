@@ -8,6 +8,8 @@
 #include <memory>
 #include <vector>
 
+#include "../commonTypes/IFileChunkReference.h"
+
 namespace libmson {
 namespace priv {
 
@@ -15,7 +17,6 @@ class FileChunkReference64x32;
 class FileChunkReference64;
 class FileNodeChunkReference;
 
-enum class FCR_INIT;
 enum class FNCR_STP_FORMAT;
 enum class FNCR_CB_FORMAT;
 
@@ -38,15 +39,15 @@ stpTillIterator(std::list<Chunkably_SPtr_t>& list, Chunkable_WPtr_t chunk);
 
 FileChunkReference64x32 getFcr64x32FromChunk(
     RevisionStoreFile_SPtr_t revStoreFile, Chunkable_WPtr_t chunk,
-    FCR_INIT preferedState);
+    FCR_INIT preferedState  = FCR_INIT::NIL);
 
 FileChunkReference64 getFcr64FromChunk(
     RevisionStoreFile_SPtr_t revStoreFile, Chunkable_WPtr_t chunk,
-    FCR_INIT preferedState);
+    FCR_INIT preferedState  = FCR_INIT::NIL);
 
 FileNodeChunkReference getFncrFromChunk(
     RevisionStoreFile_SPtr_t revStoreFile, Chunkable_WPtr_t chunk,
-    FNCR_STP_FORMAT stpFormat, FNCR_CB_FORMAT cbFormat, FCR_INIT preferedState);
+    FNCR_STP_FORMAT stpFormat, FNCR_CB_FORMAT cbFormat, FCR_INIT preferedState  = FCR_INIT::NIL);
 
 } // namespace priv
 } // namespace libmson
