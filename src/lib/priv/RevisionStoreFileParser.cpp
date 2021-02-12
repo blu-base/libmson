@@ -397,41 +397,38 @@ RevisionStoreFileParser::parseRevisionStoreFileHeader(QDataStream& ds)
   ds >> header->m_ffvNewestWriterVersion;
   ds >> header->m_ffvOldestReader;
 
-  FileChunkReference32 fcrLegacyFreeChunkList;
-  ds >> fcrLegacyFreeChunkList;
-  if (!fcrLegacyFreeChunkList.is_fcrZero()) {
+
+  ds >> header->m_fcrLegacyFreeChunkList;
+  if (!header->m_fcrLegacyFreeChunkList.is_fcrZero()) {
     qWarning("fcrLegacyFreeChunkList of the RevisionStoreFileHeader is "
              "invalid.");
   }
 
-  FileChunkReference32 fcrLegacyTransactionLog;
-  ds >> fcrLegacyTransactionLog;
-  if (!fcrLegacyTransactionLog.is_fcrNil()) {
+  ds >> header->m_fcrLegacyTransactionLog;
+  if (!header->m_fcrLegacyTransactionLog.is_fcrNil()) {
     qWarning("fcrLegacyTransactionLog of the RevisionStoreFileHeader is "
              "invalid.");
   }
 
   ds >> header->m_cTransactionsInLog;
 
-  quint32 cbLegacyExpectedFileLength;
-  ds >> cbLegacyExpectedFileLength;
-  if (cbLegacyExpectedFileLength != 0u) {
+  ds >> header->m_cbLegacyExpectedFileLength;
+  if (header->m_cbLegacyExpectedFileLength != 0u) {
     qWarning("cbLegacyExpectedFileLength of the RevisionStoreFileHeader is "
              "invalid.");
   }
 
   ds >> header->m_rgbPlaceholder;
 
-  FileChunkReference32 fcrLegacyFileNodeListRoot;
-  ds >> fcrLegacyFileNodeListRoot;
-  if (!fcrLegacyFileNodeListRoot.is_fcrNil()) {
+  ds >> header->m_fcrLegacyFileNodeListRoot;
+  if (!header->m_fcrLegacyFileNodeListRoot.is_fcrNil()) {
     qWarning("fcrLegacyFileNodeListRoot of the RevisionStoreFileHeader is "
              "invalid.");
   }
 
-  quint32 cbLegacyFreeSpaceInFreeChunkList;
-  ds >> cbLegacyFreeSpaceInFreeChunkList;
-  if (cbLegacyFreeSpaceInFreeChunkList != 0u) {
+
+  ds >> header->m_cbLegacyFreeSpaceInFreeChunkList;
+  if (header->m_cbLegacyFreeSpaceInFreeChunkList != 0u) {
     qWarning("cbLegacyFreeSpaceInFreeChunkList of the RevisionStoreFileHeader "
              "is invalid.");
   }
@@ -504,16 +501,15 @@ RevisionStoreFileParser::parseRevisionStoreFileHeader(QDataStream& ds)
   ds >> header->m_guidDenyReadFileVersion;
   ds >> header->m_grfDebugLogFlags;
 
-  FileChunkReference64x32 fcrDebugLog;
-  ds >> fcrDebugLog;
-  if (!fcrDebugLog.is_fcrZero()) {
+  ds >> header->m_fcrDebugLog;
+  if (!header->m_fcrDebugLog.is_fcrZero()) {
     qWarning("fcrLegacyFreeChunkList of the RevisionStoreFileHeader is "
              "invalid.");
   }
 
-  FileChunkReference64x32 fcrAllocVerificationFreeChunkList;
-  ds >> fcrAllocVerificationFreeChunkList;
-  if (!fcrAllocVerificationFreeChunkList.is_fcrZero()) {
+
+  ds >> header->m_fcrAllocVerificationFreeChunkList;
+  if (!header->m_fcrAllocVerificationFreeChunkList.is_fcrZero()) {
     qWarning("fcrLegacyFreeChunkList of the RevisionStoreFileHeader is "
              "invalid.");
   }
@@ -763,7 +759,7 @@ FileNodeListFragment_SPtr_t RevisionStoreFileParser::parseFileNodeListFragment(
   quint32 fileNodeCount = UINT32_MAX;
 
   if (m_file->m_fileNodeCountMapping.contains(fragment->m_fileNodeListID)) {
-    fileNodeCount = m_file->m_fileNodeCountMapping[fragment->m_fileNodeListID];
+    fileNodeCount = m_file->m_fileNodeCountMapping.value(fragment->m_fileNodeListID);
   }
 
   quint64 remainingBytes = cb - FileNodeListFragment::minSizeInFile;
@@ -1262,6 +1258,7 @@ std::shared_ptr<IFileNodeType> RevisionStoreFileParser::parseFileNodeType(
   case FileNodeTypeID::NullFnd: {
     return nullptr;
   }
+
 
   case FileNodeTypeID::InvalidFND:
   default:
