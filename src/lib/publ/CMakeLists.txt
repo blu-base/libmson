@@ -7,7 +7,7 @@ FILE (GLOB_RECURSE libmson_PART_HEADERS *.h
     )
 
 
-add_library(libmson SHARED ${libmson_PART_SRCS} ${libmson_PART_HEADERS})
+add_library(libmson SHARED ${libmson_PART_SRCS} ${libmson_PART_HEADERS} ../FormatIdentifier.cpp ../FormatIdentifier.h)
 
 target_link_libraries(
     libmson
