@@ -13,23 +13,23 @@ PackageStoreFileParser::PackageStoreFileParser(
   m_file->m_fileName = fileName;
 }
 
-static const QUuid storageManifestSchemeGuid_One{
+const QUuid PackageStoreFileParser::storageManifestSchemeGuid_One{
     "{1F937CB4-B26F-445F-B9F8-17E20160E461}"};
-static const QUuid storageManifestSchemeGuid_OneToc2 =
+const QUuid PackageStoreFileParser::storageManifestSchemeGuid_OneToc2 =
     QUuid("{E4DBFD38-E5C7-408B-A8A1-0E7B421E1F5F}");
 
-static const CompactExtGuid storageManifestRootEGuid =
+const CompactExtGuid PackageStoreFileParser::storageManifestRootEGuid =
     CompactExtGuid(QUuid("{1A5A319C-C26b-41AA-B9C5-9BD8C44E07D4}"), 1);
 
 
-static const CellId storageManifestRootCellId = CellId(
+const CellId PackageStoreFileParser::storageManifestRootCellId = CellId(
     CompactExtGuid(QUuid("{84DEFAB9-AAA3-4A0D-A3A8-520C77AC7073}"), 1),
     CompactExtGuid(QUuid("{111E4CF3-7FEF-4087-AF6A-B9544ACD334D}"), 1));
 
-static const CompactExtGuid storageManifestDataRootEGuid =
+const CompactExtGuid PackageStoreFileParser::storageManifestDataRootEGuid =
     CompactExtGuid(QUuid("{84DEFAB9-AAA3-4A0D-A3A8-520C77AC7073}"), 2);
 
-static const CompactExtGuid storageManifestDataRootCellIdParticle =
+const CompactExtGuid PackageStoreFileParser::storageManifestDataRootCellIdParticle =
     CompactExtGuid(QUuid("{84DEFAB9-AAA3-4A0D-A3A8-520C77AC7073}"), 1);
 
 std::shared_ptr<PackageStoreFile> PackageStoreFileParser::parse()
