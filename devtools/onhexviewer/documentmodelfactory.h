@@ -103,140 +103,174 @@ private:
 
   // type 0
   static void appendObjectSpaceManifestRootFND(
-      const libmson::priv::ObjectSpaceManifestRootFND_SPtr_t& fnd, const quint64 stp, const quint64 cb,
-      DocumentItem* parent);
+      const libmson::priv::ObjectSpaceManifestRootFND_SPtr_t& fnd,
+      const quint64 stp, const quint64 cb, DocumentItem* parent);
   static void appendObjectSpaceManifestListStartFND(
-      const libmson::priv::ObjectSpaceManifestListStartFND_SPtr_t& fnd, const quint64 stp, const quint64 cb,
-      DocumentItem* parent);
+      const libmson::priv::ObjectSpaceManifestListStartFND_SPtr_t& fnd,
+      const quint64 stp, const quint64 cb, DocumentItem* parent);
   static void appendRevisionManifestListStartFND(
-      const libmson::priv::RevisionManifestListStartFND_SPtr_t& fnd, const quint64 stp, const quint64 cb,
-      DocumentItem* parent);
+      const libmson::priv::RevisionManifestListStartFND_SPtr_t& fnd,
+      const quint64 stp, const quint64 cb, DocumentItem* parent);
   static void appendRevisionManifestStart4FND(
-      const libmson::priv::RevisionManifestStart4FND_SPtr_t& fnd, const quint64 stp, const quint64 cb,
-      DocumentItem* parent);
+      const libmson::priv::RevisionManifestStart4FND_SPtr_t& fnd,
+      const quint64 stp, const quint64 cb, DocumentItem* parent);
   static void appendRevisionManifestEndFND(
-      const libmson::priv::RevisionManifestEndFND_SPtr_t& fnd, const quint64 stp, const quint64 cb,
-      DocumentItem* parent);
+      const libmson::priv::RevisionManifestEndFND_SPtr_t& fnd,
+      const quint64 stp, const quint64 cb, DocumentItem* parent);
   static void appendRevisionManifestStart6FND(
-      const libmson::priv::RevisionManifestStart6FND_SPtr_t& fnd, const quint64 stp, const quint64 cb,
-      DocumentItem* parent);
+      const libmson::priv::RevisionManifestStart6FND_SPtr_t& fnd,
+      const quint64 stp, const quint64 cb, DocumentItem* parent);
   static void appendRevisionManifestStart7FND(
-      const libmson::priv::RevisionManifestStart7FND_SPtr_t& fnd, const quint64 stp, const quint64 cb,
-      DocumentItem* parent);
+      const libmson::priv::RevisionManifestStart7FND_SPtr_t& fnd,
+      const quint64 stp, const quint64 cb, DocumentItem* parent);
   static void appendGlobalIdTableStartFNDX(
-      const libmson::priv::GlobalIdTableStartFNDX_SPtr_t& fnd, const quint64 stp, const quint64 cb,
-      DocumentItem* parent);
+      const libmson::priv::GlobalIdTableStartFNDX_SPtr_t& fnd,
+      const quint64 stp, const quint64 cb, DocumentItem* parent);
   static void appendGlobalIdTableStart2FND(
-      const libmson::priv::GlobalIdTableStart2FND_SPtr_t& fnd, const quint64 stp, const quint64 cb,
-      DocumentItem* parent);
+      const libmson::priv::GlobalIdTableStart2FND_SPtr_t& fnd,
+      const quint64 stp, const quint64 cb, DocumentItem* parent);
   static void appendGlobalIdTableEntryFNDX(
-      const libmson::priv::GlobalIdTableEntryFNDX_SPtr_t& fnd, const quint64 stp, const quint64 cb,
-      DocumentItem* parent);
+      const libmson::priv::GlobalIdTableEntryFNDX_SPtr_t& fnd,
+      const quint64 stp, const quint64 cb, DocumentItem* parent);
   static void appendGlobalIdTableEntry2FNDX(
-      const libmson::priv::GlobalIdTableEntry2FNDX_SPtr_t& fnd, const quint64 stp, const quint64 cb,
-      DocumentItem* parent);
+      const libmson::priv::GlobalIdTableEntry2FNDX_SPtr_t& fnd,
+      const quint64 stp, const quint64 cb, DocumentItem* parent);
   static void appendGlobalIdTableEntry3FNDX(
-      const libmson::priv::GlobalIdTableEntry3FNDX_SPtr_t& fnd, const quint64 stp, const quint64 cb,
-      DocumentItem* parent);
+      const libmson::priv::GlobalIdTableEntry3FNDX_SPtr_t& fnd,
+      const quint64 stp, const quint64 cb, DocumentItem* parent);
   static void appendGlobalIdTableEndFNDX(
-      const libmson::priv::GlobalIdTableEndFNDX_SPtr_t& fnd, const quint64 stp, const quint64 cb,
-      DocumentItem* parent);
+      const libmson::priv::GlobalIdTableEndFNDX_SPtr_t& fnd, const quint64 stp,
+      const quint64 cb, DocumentItem* parent);
   static void appendRootObjectReference2FNDX(
-      const libmson::priv::RootObjectReference2FNDX_SPtr_t& fnd, const quint64 stp, const quint64 cb,
-      DocumentItem* parent);
+      const libmson::priv::RootObjectReference2FNDX_SPtr_t& fnd,
+      const quint64 stp, const quint64 cb, DocumentItem* parent);
   static void appendRootObjectReference3FND(
-      const libmson::priv::RootObjectReference3FND_SPtr_t& fnd, const quint64 stp, const quint64 cb,
-      DocumentItem* parent);
+      const libmson::priv::RootObjectReference3FND_SPtr_t& fnd,
+      const quint64 stp, const quint64 cb, DocumentItem* parent);
   static void appendRevisionRoleDeclarationFND(
-      const libmson::priv::RevisionRoleDeclarationFND_SPtr_t& fnd, const quint64 stp, const quint64 cb,
-      DocumentItem* parent);
+      const libmson::priv::RevisionRoleDeclarationFND_SPtr_t& fnd,
+      const quint64 stp, const quint64 cb, DocumentItem* parent);
   static void appendRevisionRoleAndContextDeclarationFND(
-      const libmson::priv::RevisionRoleAndContextDeclarationFND_SPtr_t& fnd, const quint64 stp, const quint64 cb,
-      DocumentItem* parent);
+      const libmson::priv::RevisionRoleAndContextDeclarationFND_SPtr_t& fnd,
+      const quint64 stp, const quint64 cb, DocumentItem* parent);
   static void appendObjectDeclarationFileData3RefCountFND(
-      const libmson::priv::ObjectDeclarationFileData3RefCountFND_SPtr_t& fnd, const quint64 stp, const quint64 cb,
-      DocumentItem* parent);
+      const libmson::priv::ObjectDeclarationFileData3RefCountFND_SPtr_t& fnd,
+      const quint64 stp, const quint64 cb, DocumentItem* parent);
   static void appendObjectDeclarationFileData3LargeRefCountFND(
       const libmson::priv::ObjectDeclarationFileData3LargeRefCountFND_SPtr_t&
-          fnd, const quint64 stp, const quint64 cb,
-      DocumentItem* parent);
+          fnd,
+      const quint64 stp, const quint64 cb, DocumentItem* parent);
   static void appendDataSignatureGroupDefinitionFND(
-      const libmson::priv::DataSignatureGroupDefinitionFND_SPtr_t& fnd, const quint64 stp, const quint64 cb,
-      DocumentItem* parent);
+      const libmson::priv::DataSignatureGroupDefinitionFND_SPtr_t& fnd,
+      const quint64 stp, const quint64 cb, DocumentItem* parent);
   static void appendObjectGroupStartFND(
-      const libmson::priv::ObjectGroupStartFND_SPtr_t& fnd, const quint64 stp, const quint64 cb,
-      DocumentItem* parent);
+      const libmson::priv::ObjectGroupStartFND_SPtr_t& fnd, const quint64 stp,
+      const quint64 cb, DocumentItem* parent);
   static void appendObjectGroupEndFND(
-      const libmson::priv::ObjectGroupEndFND_SPtr_t& fnd, const quint64 stp, const quint64 cb, DocumentItem* parent);
-  static void appendHashedChunkDescriptor2FND(
-      const libmson::priv::HashedChunkDescriptor2FND_SPtr_t& fnd, const quint64 stp, const quint64 cb,
-      DocumentItem* parent);
+      const libmson::priv::ObjectGroupEndFND_SPtr_t& fnd, const quint64 stp,
+      const quint64 cb, DocumentItem* parent);
   static void appendChunkTerminatorFND(
-      const libmson::priv::ChunkTerminatorFND_SPtr_t& fnd, const quint64 stp, const quint64 cb,
-      DocumentItem* parent);
+      const libmson::priv::ChunkTerminatorFND_SPtr_t& fnd, const quint64 stp,
+      const quint64 cb, DocumentItem* parent);
 
   // type 1
   static void appendObjectDeclarationWithRefCountFNDX(
-      const libmson::priv::ObjectDeclarationWithRefCountFNDX_SPtr_t& fnd, const quint64 stp, const quint64 cb,
+      const libmson::priv::ObjectDeclarationWithRefCountFNDX_SPtr_t& fnd,
+      const quint64 stp, const quint64 cb,
+      const libmson::priv::FileNode_SPtr_t& fn,
       const libmson::priv::RevisionStoreFile_SPtr_t& revStoreFile,
       DocumentItem* parent);
   static void appendObjectDeclarationWithRefCount2FNDX(
-      const libmson::priv::ObjectDeclarationWithRefCount2FNDX_SPtr_t& fnd, const quint64 stp, const quint64 cb,
+      const libmson::priv::ObjectDeclarationWithRefCount2FNDX_SPtr_t& fnd,
+      const quint64 stp, const quint64 cb,
+      const libmson::priv::FileNode_SPtr_t& fn,
       const libmson::priv::RevisionStoreFile_SPtr_t& revStoreFile,
       DocumentItem* parent);
   static void appendObjectRevisionWithRefCountFNDX(
-      const libmson::priv::ObjectRevisionWithRefCountFNDX_SPtr_t& fnd, const quint64 stp, const quint64 cb,
+      const libmson::priv::ObjectRevisionWithRefCountFNDX_SPtr_t& fnd,
+      const quint64 stp, const quint64 cb,
+      const libmson::priv::FileNode_SPtr_t& fn,
       const libmson::priv::RevisionStoreFile_SPtr_t& revStoreFile,
       DocumentItem* parent);
   static void appendObjectRevisionWithRefCount2FNDX(
-      const libmson::priv::ObjectRevisionWithRefCount2FNDX_SPtr_t& fnd, const quint64 stp, const quint64 cb,
+      const libmson::priv::ObjectRevisionWithRefCount2FNDX_SPtr_t& fnd,
+      const quint64 stp, const quint64 cb,
+      const libmson::priv::FileNode_SPtr_t& fn,
       const libmson::priv::RevisionStoreFile_SPtr_t& revStoreFile,
       DocumentItem* parent);
   static void appendObjectDataEncryptionKeyV2FNDX(
-      const libmson::priv::ObjectDataEncryptionKeyV2FNDX_SPtr_t& fnd, const quint64 stp, const quint64 cb,
+      const libmson::priv::ObjectDataEncryptionKeyV2FNDX_SPtr_t& fnd,
+      const quint64 stp, const quint64 cb,
+      const libmson::priv::FileNode_SPtr_t& fn,
       const libmson::priv::RevisionStoreFile_SPtr_t& revStoreFile,
       DocumentItem* parent);
   static void appendObjectInfoDependencyOverridesFND(
-      const libmson::priv::ObjectInfoDependencyOverridesFND_SPtr_t& fnd, const quint64 stp, const quint64 cb,
+      const libmson::priv::ObjectInfoDependencyOverridesFND_SPtr_t& fnd,
+      const quint64 stp, const quint64 cb,
+      const libmson::priv::FileNode_SPtr_t& fn,
       const libmson::priv::RevisionStoreFile_SPtr_t& revStoreFile,
       DocumentItem* parent);
   static void appendFileDataStoreObjectReferenceFND(
-      const libmson::priv::FileDataStoreObjectReferenceFND_SPtr_t& fnd, const quint64 stp, const quint64 cb,
+      const libmson::priv::FileDataStoreObjectReferenceFND_SPtr_t& fnd,
+      const quint64 stp, const quint64 cb,
+      const libmson::priv::FileNode_SPtr_t& fn,
       const libmson::priv::RevisionStoreFile_SPtr_t& revStoreFile,
       DocumentItem* parent);
   static void appendObjectDeclaration2RefCountFND(
-      const libmson::priv::ObjectDeclaration2RefCountFND_SPtr_t& fnd, const quint64 stp, const quint64 cb,
+      const libmson::priv::ObjectDeclaration2RefCountFND_SPtr_t& fnd,
+      const quint64 stp, const quint64 cb,
+      const libmson::priv::FileNode_SPtr_t& fn,
       const libmson::priv::RevisionStoreFile_SPtr_t& revStoreFile,
       DocumentItem* parent);
   static void appendObjectDeclaration2LargeRefCountFND(
-      const libmson::priv::ObjectDeclaration2LargeRefCountFND_SPtr_t& fnd, const quint64 stp, const quint64 cb,
+      const libmson::priv::ObjectDeclaration2LargeRefCountFND_SPtr_t& fnd,
+      const quint64 stp, const quint64 cb,
+      const libmson::priv::FileNode_SPtr_t& fn,
+      const libmson::priv::RevisionStoreFile_SPtr_t& revStoreFile,
+      DocumentItem* parent);
+  static void appendHashedChunkDescriptor2FND(
+      const libmson::priv::HashedChunkDescriptor2FND_SPtr_t& fnd,
+      const quint64 stp, const quint64 cb,
+      const libmson::priv::FileNode_SPtr_t& fn,
       const libmson::priv::RevisionStoreFile_SPtr_t& revStoreFile,
       DocumentItem* parent);
   static void appendReadOnlyObjectDeclaration2RefCountFND(
-      const libmson::priv::ReadOnlyObjectDeclaration2RefCountFND_SPtr_t& fnd, const quint64 stp, const quint64 cb,
+      const libmson::priv::ReadOnlyObjectDeclaration2RefCountFND_SPtr_t& fnd,
+      const quint64 stp, const quint64 cb,
+      const libmson::priv::FileNode_SPtr_t& fn,
       const libmson::priv::RevisionStoreFile_SPtr_t& revStoreFile,
       DocumentItem* parent);
   static void appendReadOnlyObjectDeclaration2LargeRefCountFND(
       const libmson::priv::ReadOnlyObjectDeclaration2LargeRefCountFND_SPtr_t&
-          fnd,  const quint64 stp, const quint64 cb,
+          fnd,
+      const quint64 stp, const quint64 cb,
+      const libmson::priv::FileNode_SPtr_t& fn,
       const libmson::priv::RevisionStoreFile_SPtr_t& revStoreFile,
       DocumentItem* parent);
 
   // type 2
   static void appendFileDataStoreListReferenceFND(
-      const libmson::priv::FileDataStoreListReferenceFND_SPtr_t& fnd, const quint64 stp, const quint64 cb,
+      const libmson::priv::FileDataStoreListReferenceFND_SPtr_t& fnd,
+      const quint64 stp, const quint64 cb,
+      const libmson::priv::FileNode_SPtr_t& fn,
       const libmson::priv::RevisionStoreFile_SPtr_t& revStoreFile,
       DocumentItem* parent);
   static void appendObjectSpaceManifestListReferenceFND(
-      const libmson::priv::ObjectSpaceManifestListReferenceFND_SPtr_t& fnd, const quint64 stp, const quint64 cb,
+      const libmson::priv::ObjectSpaceManifestListReferenceFND_SPtr_t& fnd,
+      const quint64 stp, const quint64 cb,
+      const libmson::priv::FileNode_SPtr_t& fn,
       const libmson::priv::RevisionStoreFile_SPtr_t& revStoreFile,
       DocumentItem* parent);
   static void appendRevisionManifestListReferenceFND(
-      const libmson::priv::RevisionManifestListReferenceFND_SPtr_t& fnd, const quint64 stp, const quint64 cb,
+      const libmson::priv::RevisionManifestListReferenceFND_SPtr_t& fnd,
+      const quint64 stp, const quint64 cb,
+      const libmson::priv::FileNode_SPtr_t& fn,
       const libmson::priv::RevisionStoreFile_SPtr_t& revStoreFile,
       DocumentItem* parent);
   static void appendObjectGroupListReferenceFND(
-      const libmson::priv::ObjectGroupListReferenceFND_SPtr_t& fnd, const quint64 stp, const quint64 cb,
+      const libmson::priv::ObjectGroupListReferenceFND_SPtr_t& fnd,
+      const quint64 stp, const quint64 cb,
+      const libmson::priv::FileNode_SPtr_t& fn,
       const libmson::priv::RevisionStoreFile_SPtr_t& revStoreFile,
       DocumentItem* parent);
 
@@ -289,8 +323,53 @@ private:
 
   // increments stp by its size
   static DocumentItem* appendExtendedGuid(
-      const libmson::priv::ExtendedGUID& eguid, const QString& name, quint64& stp,
+      const libmson::priv::ExtendedGUID& eguid, const QString& name,
+      quint64& stp, DocumentItem* parent);
+
+  // increments stp by its size
+  static DocumentItem* appendCompactID(
+      const libmson::priv::CompactID& cid, const QString& name, quint64& stp,
       DocumentItem* parent);
+
+  // increments stp by its size
+  static DocumentItem* ObjectInfoDependencyOverrideData(
+      const libmson::priv::ObjectInfoDependencyOverrideData& objInfo,
+      const QString& name, quint64& stp, DocumentItem* parent);
+
+  // increments stp by its size
+  static DocumentItem* appendObjectInfoDependencyOverride8(
+      const libmson::priv::ObjectInfoDependencyOverride8& objInfo,
+      const QString& name, quint64& stp, DocumentItem* parent);
+
+  // increments stp by its size
+  static DocumentItem* appendObjectInfoDependencyOverride32(
+      const libmson::priv::ObjectInfoDependencyOverride32& objInfo,
+      const QString& name, quint64& stp, DocumentItem* parent);
+
+  // increments stp by its size
+  static DocumentItem* appendJCID(
+      const libmson::priv::JCID& cid, const QString& name, quint64& stp,
+      DocumentItem* parent);
+
+  // increments stp by its size
+  static DocumentItem* appendStringInStorageBuffer(
+      const libmson::priv::StringInStorageBuffer& buffer, const QString& name,
+      quint64& stp, DocumentItem* parent);
+
+  // increments stp by its size
+  static DocumentItem* appendObjectDeclarationWithRefCountBody(
+      const libmson::priv::ObjectDeclarationWithRefCountBody& declBody,
+      const QString& name, quint64& stp, DocumentItem* parent);
+
+  // increments stp by its size
+  static DocumentItem* appendObjectDeclaration2Body(
+      const libmson::priv::ObjectDeclaration2Body& declBody,
+      const QString& name, quint64& stp, DocumentItem* parent);
+
+  // increments stp by its size
+  static DocumentItem* appendObjectInfoDependencyOverrideData(
+      const libmson::priv::ObjectInfoDependencyOverrideData& objInfo,
+      const QString& name, quint64& stp, DocumentItem* parent);
 
   // increments stp by its size
   static DocumentItem* appendFileChunkReference32(
