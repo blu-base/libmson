@@ -404,7 +404,11 @@ QString FileNodeChunkReference::fncrStpFormatString(const FNCR_STP_FORMAT format
 
   case FNCR_STP_FORMAT::COMPRESSED_4BYTE:
     return QStringLiteral("COMPRESSED_4BYTE");
+
   }
+
+  // should never be reached
+  return QString();
 }
 
 QString FileNodeChunkReference::fncrCbFormatString(const FNCR_CB_FORMAT format)
@@ -422,6 +426,9 @@ QString FileNodeChunkReference::fncrCbFormatString(const FNCR_CB_FORMAT format)
   case FNCR_CB_FORMAT::COMPRESSED_2BYTE:
     return QStringLiteral("COMPRESSED_2BYTE");
   }
+
+  // should never be reached
+  return QString();
 }
 
 } // namespace priv
