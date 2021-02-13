@@ -130,6 +130,8 @@ public:
   quint16 index() const;
   void setIndex(const quint16& index);
 
+
+  /// \todo make all methods camelCase
   bool IsBinary() const;
   void setIsBinary(bool IsBinary);
 
