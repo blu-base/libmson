@@ -22,7 +22,7 @@ private:
    * @brief specifies the value of the JCID.indexfield of the object. MUSTbe
    * 0x01
    */
-  quint8 m_jci;
+  quint16 m_jci;
 
   /**
    * @brief specifies whether the data contained by this object is encrypted.
@@ -63,8 +63,8 @@ public:
   CompactID getOid() const;
   void setOid(const CompactID& value);
 
-  quint8 getJci() const;
-  void setJci(const quint8& value);
+  quint16 getJci() const;
+  void setJci(const quint16& value);
 
   quint8 getOdc() const;
   void setOdc(const quint8& value);

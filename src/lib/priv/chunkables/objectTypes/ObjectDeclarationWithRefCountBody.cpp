@@ -36,7 +36,7 @@ void ObjectDeclarationWithRefCountBody::serialize(QDataStream& ds) const
   temp += m_fHasOsidReferences << 17;
   temp += m_fHasOidReferences << 16;
   temp += m_odcs << 10;
-  temp += m_jci;
+  temp += m_jci & 0x3FF;
 
   ds << temp;
 }
@@ -77,11 +77,11 @@ void ObjectDeclarationWithRefCountBody::setOdc(const quint8& value)
   m_odcs = value;
 }
 
-quint8 ObjectDeclarationWithRefCountBody::getJci() const { return m_jci; }
+quint16 ObjectDeclarationWithRefCountBody::getJci() const { return m_jci; }
 
-void ObjectDeclarationWithRefCountBody::setJci(const quint8& value)
+void ObjectDeclarationWithRefCountBody::setJci(const quint16& value)
 {
-  m_jci = value;
+  m_jci = value & 0x3FF;
 }
 
 CompactID ObjectDeclarationWithRefCountBody::getOid() const { return m_oid; }
