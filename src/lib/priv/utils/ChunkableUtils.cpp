@@ -126,7 +126,7 @@ FileNodeChunkReference getFncrFromChunk(
 {
   if (chunk.expired()) {
     return FileNodeChunkReference(
-        FNCR_STP_FORMAT::UNCOMPRESED_8BYTE, FNCR_CB_FORMAT::UNCOMPRESED_4BYTE,
+        stpFormat, cbFormat,
         preferedState);
   }
   else {
