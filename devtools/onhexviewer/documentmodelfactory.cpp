@@ -96,7 +96,7 @@ void DocumentModelFactory::createRevisionStoreModel(
       appendFreeChunkListFragment(
           std::dynamic_pointer_cast<libmson::priv::FreeChunkListFragment>(
               chunk),
-          root);
+          revisionStoreFile, root);
       break;
     }
     case libmson::priv::RevisionStoreChunkType::FreeChunk: {
@@ -108,7 +108,7 @@ void DocumentModelFactory::createRevisionStoreModel(
       appendTransactionLogFragment(
           std::dynamic_pointer_cast<libmson::priv::TransactionLogFragment>(
               chunk),
-          root);
+          revisionStoreFile, root);
       break;
     }
     case libmson::priv::RevisionStoreChunkType::FileDataStoreObject: {
@@ -236,7 +236,7 @@ void DocumentModelFactory::appendRevisionStoreFileHeader(
   // add Header
   auto* headerItem = appendNewChild(
       QStringLiteral("Header"), QStringLiteral("Chunkable"),
-      revStoreFile->getFileName(), stp, header->getInitialCb(), parent);
+      QStringLiteral("RevisionStoreFile"), stp, header->getInitialCb(), parent);
 
   appendGuid(
       header->getGuidFileType(), QStringLiteral("GuidFileType"), stp,
@@ -514,11 +514,36 @@ void DocumentModelFactory::appendFileNode(
 
 void DocumentModelFactory::appendFreeChunkListFragment(
     const libmson::priv::FreeChunkListFragment_SPtr_t& chunk,
+    const libmson::priv::RevisionStoreFile_SPtr_t& revStoreFile,
     DocumentItem* parent)
 {
   auto* chunkItem = appendNewChild(
       QStringLiteral("FreeChunkListFragment"), QStringLiteral("Chunkable"),
       QString(), chunk->getInitialStp(), chunk->getInitialCb(), parent);
+
+  quint64 stp = chunk->getInitialStp();
+
+  appendUInt32(chunk->getCrc(), QStringLiteral("crc"), stp, chunkItem);
+
+  appendFileChunkReference64x32(
+      libmson::priv::getFcr64x32FromChunk(revStoreFile, chunk),
+      QStringLiteral("fcrNextFragment"), stp, chunkItem);
+
+
+  const quint64 remainingCb =
+      chunk->fcrFreeChunks().size() *
+      libmson::priv::FileChunkReference64::getSizeInFile();
+
+  auto* chunks = appendNewChild(
+      QStringLiteral("Chunks"), QString(),
+      QString::number(chunk->getFcrFreeChunks().size()), stp, remainingCb,
+      chunkItem);
+
+  for (auto&& fch : chunk->fcrFreeChunks()) {
+    appendFileChunkReference64(
+        libmson::priv::getFcr64FromChunk(revStoreFile, fch),
+        QStringLiteral("FreeChunk"), stp, chunks);
+  }
 }
 
 void DocumentModelFactory::appendFreeChunk(
@@ -531,11 +556,34 @@ void DocumentModelFactory::appendFreeChunk(
 
 void DocumentModelFactory::appendTransactionLogFragment(
     const libmson::priv::TransactionLogFragment_SPtr_t& chunk,
+    const libmson::priv::RevisionStoreFile_SPtr_t& revStoreFile,
     DocumentItem* parent)
 {
   auto* chunkItem = appendNewChild(
       QStringLiteral("TransactionLogFragment"), QStringLiteral("Chunkable"),
       QString(), chunk->getInitialStp(), chunk->getInitialCb(), parent);
+
+  auto* sizeTableItem = appendNewChild(
+      QStringLiteral("SizeTable"), QString(), QString(), chunk->getInitialStp(),
+      chunk->getInitialCb() -
+          libmson::priv::FileChunkReference64x32::getSizeInFile(),
+      chunkItem);
+
+  quint64 ststp = chunk->getInitialStp();
+
+  for (auto&& entry : chunk->getSizeTable()) {
+    appendTransactionEntry(
+        *entry, QStringLiteral("TransactionEntry"), ststp, sizeTableItem);
+  }
+
+
+
+  quint64 footer = chunk->getInitialStp() + chunk->getInitialCb() -
+                   libmson::priv::FileChunkReference64::getSizeInFile();
+  appendFileChunkReference64x32(
+      libmson::priv::getFcr64x32FromChunk(
+          revStoreFile, chunk->getNextFragment(), libmson::priv::FCR_INIT::ZERO),
+      QStringLiteral("nextFragment"), footer, chunkItem);
 }
 
 void DocumentModelFactory::appendFileDataStoreObject(
@@ -545,6 +593,34 @@ void DocumentModelFactory::appendFileDataStoreObject(
   auto* chunkItem = appendNewChild(
       QStringLiteral("FileDataStoreObject"), QStringLiteral("Chunkable"),
       QString(), chunk->getInitialStp(), chunk->getInitialCb(), parent);
+
+  quint64 stp = chunk->getInitialStp();
+
+  appendGuid(
+      libmson::priv::FileDataStoreObject::guidHeader, QStringLiteral("GuidHeader"), stp,
+      chunkItem);
+
+  appendUInt64(
+      chunk->getCbLength(), QStringLiteral("cbLength"), stp, chunkItem);
+  appendNewChild(
+      QStringLiteral("unused"), QStringLiteral("uint32_t"), QString(), stp, sizeof(quint32),
+      chunkItem);
+  stp += sizeof(quint32);
+  appendNewChild(
+      QStringLiteral("reserved"), QStringLiteral("uint64_t"), QString(), stp, sizeof(quint64),
+      chunkItem);
+  stp += sizeof(quint64);
+
+  appendNewChild(
+      QStringLiteral("FileData"), QString(), QString(), stp,
+      chunk->getInitialStp() - stp + chunk->getInitialCb() - sizeof(QUuid),
+      chunkItem);
+
+  quint64 footerStp =
+      chunk->getInitialStp() + chunk->getInitialCb() - sizeof(QUuid);
+  appendGuid(
+      libmson::priv::FileDataStoreObject::guidFooter, QStringLiteral("GuidFooter"), footerStp,
+      chunkItem);
 }
 
 void DocumentModelFactory::appendObjectSpaceObjectPropSet(
@@ -573,6 +649,24 @@ void DocumentModelFactory::appendEncryptedData(
   auto* chunkItem = appendNewChild(
       QStringLiteral("EncryptedData"), QStringLiteral("Chunkable"), QString(),
       chunk->getInitialStp(), chunk->getInitialCb(), parent);
+
+  quint64 stp = chunk->getInitialStp();
+
+  appendUInt64(
+      libmson::priv::EncryptedData::header, QStringLiteral("Header"), stp,
+      chunkItem);
+
+  quint64 edcb = chunk->getInitialCb() -
+                 sizeof(libmson::priv::EncryptedData::header) -
+                 sizeof(libmson::priv::EncryptedData::footer);
+
+  appendNewChild(
+      QStringLiteral("Encrypted Data"), QString(), QString(), stp, edcb,
+      chunkItem);
+
+  appendUInt64(
+      libmson::priv::EncryptedData::footer, QStringLiteral("Footer"), stp,
+      chunkItem);
 }
 
 void DocumentModelFactory::appendUnknownBlob(
@@ -888,6 +982,9 @@ void DocumentModelFactory::appendFileNodeData(
             chunk->getFnt()),
         chunk->getInitialStp() + 4, chunk->getInitialCb() - 4, chunk,
         revStoreFile, parent);
+    break;
+
+  default:
     break;
   }
 }
@@ -1270,16 +1367,16 @@ void DocumentModelFactory::appendObjectRevisionWithRefCountFNDX(
           fn->getCbFormatEnum()),
       QStringLiteral("ref"), fndstp, parent);
 
-  appendCompactID(fnd->getOid(), "OId", fndstp, parent);
+  appendCompactID(fnd->getOid(), QStringLiteral("OId"), fndstp, parent);
 
   appendNewChild(
-      "fHasOidReferences", "1bit",
+      QStringLiteral("fHasOidReferences"), QStringLiteral("1bit"),
       fnd->getFHasOidReferences() ? QStringLiteral("true")
                                   : QStringLiteral("false"),
       fndstp, 1, parent);
 
   appendNewChild(
-      "fHasOsidReferences", "1bit",
+      QStringLiteral("fHasOsidReferences"), QStringLiteral("1bit"),
       fnd->getFHasOsidReferences() ? QStringLiteral("true")
                                    : QStringLiteral("false"),
       fndstp, 1, parent);
@@ -1303,16 +1400,16 @@ void DocumentModelFactory::appendObjectRevisionWithRefCount2FNDX(
           fn->getCbFormatEnum()),
       QStringLiteral("ref"), fndstp, parent);
 
-  appendCompactID(fnd->getOid(), "OId", fndstp, parent);
+  appendCompactID(fnd->getOid(), QStringLiteral("OId"), fndstp, parent);
 
   appendNewChild(
-      "fHasOidReferences", "1bit",
+      QStringLiteral("fHasOidReferences"), QStringLiteral("1bit"),
       fnd->getFHasOidReferences() ? QStringLiteral("true")
                                   : QStringLiteral("false"),
       fndstp, 1, parent);
 
   appendNewChild(
-      "fHasOsidReferences", "1bit",
+      QStringLiteral("fHasOsidReferences"), QStringLiteral("1bit"),
       fnd->getFHasOsidReferences() ? QStringLiteral("true")
                                    : QStringLiteral("false"),
       fndstp, 1, parent);
@@ -1351,19 +1448,13 @@ void DocumentModelFactory::appendObjectInfoDependencyOverridesFND(
   quint64 fndstp = stp;
 
 
-  auto ref  = fnd->getRef().lock();
-  auto ref2 = fnd->getRef();
-
-  //  bool isExpired = ref.expired();
-  bool isempty = (ref == nullptr) ? true : false;
+  auto ref = fnd->getRef().lock();
 
   appendFileNodeChunkReference(
       libmson::priv::getFncrFromChunk(
           revStoreFile, ref, fn->getStpFormatEnum(), fn->getCbFormatEnum()),
       QStringLiteral("ref"), fndstp, parent);
 
-
-  //  if (ref.lock() == nullptr) {
   if (ref == nullptr) {
     appendObjectInfoDependencyOverrideData(
         fnd->getData(), QStringLiteral("Data"), fndstp, parent);
@@ -1406,8 +1497,8 @@ void DocumentModelFactory::appendObjectDeclaration2RefCountFND(
           fn->getCbFormatEnum()),
       QStringLiteral("blobRef"), fndstp, parent);
 
-  appendObjectDeclaration2Body(fnd->getBody(), "Body", fndstp, parent);
-  appendUInt8(fnd->getCRef(), "cRef", fndstp, parent);
+  appendObjectDeclaration2Body(fnd->getBody(), QStringLiteral("Body"), fndstp, parent);
+  appendUInt8(fnd->getCRef(), QStringLiteral("cRef"), fndstp, parent);
 }
 
 void DocumentModelFactory::appendObjectDeclaration2LargeRefCountFND(
@@ -1426,8 +1517,8 @@ void DocumentModelFactory::appendObjectDeclaration2LargeRefCountFND(
           fn->getCbFormatEnum()),
       QStringLiteral("blobRef"), fndstp, parent);
 
-  appendObjectDeclaration2Body(fnd->getBody(), "Body", fndstp, parent);
-  appendUInt32(fnd->getCRef(), "cRef", fndstp, parent);
+  appendObjectDeclaration2Body(fnd->getBody(), QStringLiteral("Body"), fndstp, parent);
+  appendUInt32(fnd->getCRef(), QStringLiteral("cRef"), fndstp, parent);
 }
 
 void DocumentModelFactory::appendHashedChunkDescriptor2FND(
@@ -1574,6 +1665,26 @@ void DocumentModelFactory::appendObjectGroupListReferenceFND(
 
   appendExtendedGuid(
       fnd->getObjectGroupID(), QStringLiteral("ObjectGroupID"), fndstp, parent);
+}
+
+DocumentItem* DocumentModelFactory::appendTransactionEntry(
+    const libmson::priv::TransactionEntry& entry, const QString& name,
+    quint64& stp, DocumentItem* parent)
+{
+  const quint64 cb = libmson::priv::TransactionEntry::getSizeInFile();
+
+  DocumentItem* item = appendNewChild(
+      name, QStringLiteral("TransactionEntry"),
+      QString::number(entry.getSrcID(), 16) + ", " +
+          QString::number(entry.getTransactionEntrySwitch(), 16),
+      stp, cb, parent);
+
+  appendUInt32(entry.getSrcID(), QStringLiteral("srcID"), stp, item);
+  appendUInt32(
+      entry.getTransactionEntrySwitch(),
+      QStringLiteral("TransactionEntrySwitch"), stp, item);
+
+  return item;
 }
 
 
@@ -1886,13 +1997,13 @@ DocumentItem* DocumentModelFactory::appendObjectDeclarationWithRefCountBody(
   stp += 2;
 
   appendNewChild(
-      "fHasOidReferences", "1bit",
+      QStringLiteral("fHasOidReferences"), QStringLiteral("1bit"),
       declBody.getFHasOidReferences() ? QStringLiteral("true")
                                       : QStringLiteral("false"),
       stp, 4, item);
 
   appendNewChild(
-      "fHasOsidReferences", "1bit",
+      QStringLiteral("fHasOsidReferences"), QStringLiteral("1bit"),
       declBody.getFHasOsidReferences() ? QStringLiteral("true")
                                        : QStringLiteral("false"),
       stp, 4, item);
@@ -1919,13 +2030,13 @@ DocumentItem* DocumentModelFactory::appendObjectDeclaration2Body(
 
 
   appendNewChild(
-      "fHasOidReferences", "1bit",
+      QStringLiteral("fHasOidReferences"), QStringLiteral("1bit"),
       declBody.getFHasOidReferences() ? QStringLiteral("true")
                                       : QStringLiteral("false"),
       stp, 1, item);
 
   appendNewChild(
-      "fHasOsidReferences", "1bit",
+      QStringLiteral("fHasOsidReferences"), QStringLiteral("1bit"),
       declBody.getFHasOsidReferences() ? QStringLiteral("true")
                                        : QStringLiteral("false"),
       stp, 1, item);

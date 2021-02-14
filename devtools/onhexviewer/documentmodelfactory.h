@@ -74,11 +74,13 @@ private:
       DocumentItem* parent);
   static void appendFreeChunkListFragment(
       const libmson::priv::FreeChunkListFragment_SPtr_t& chunk,
+      const libmson::priv::RevisionStoreFile_SPtr_t& revStoreFile,
       DocumentItem* parent);
   static void appendFreeChunk(
       const libmson::priv::FreeChunk_SPtr_t& chunk, DocumentItem* parent);
   static void appendTransactionLogFragment(
       const libmson::priv::TransactionLogFragment_SPtr_t& chunk,
+          const libmson::priv::RevisionStoreFile_SPtr_t& revStoreFile,
       DocumentItem* parent);
   static void appendFileDataStoreObject(
       const libmson::priv::FileDataStoreObject_SPtr_t& chunk,
@@ -274,6 +276,11 @@ private:
       const libmson::priv::RevisionStoreFile_SPtr_t& revStoreFile,
       DocumentItem* parent);
 
+
+  // Transactions
+  // increments stp by its size
+  static DocumentItem* appendTransactionEntry(const libmson::priv::TransactionEntry& entry, const QString& name, quint64& stp,
+      DocumentItem* parent);
 
   // common
 
