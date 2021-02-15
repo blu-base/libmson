@@ -16,6 +16,9 @@ void PropertyID::setType(const PropertyIDType& type) { m_type = type; }
 
 quint32 PropertyID::value() const { return m_value; }
 
+QString PropertyID::idToString() const { return PropertyID::idToString(m_id);
+}
+
 QString PropertyID::idToString(const PropertyIDs& val)
 {
   QString m_id_string;
@@ -555,6 +558,11 @@ QString PropertyID::idToString(const PropertyIDs& val)
   }
 
   return m_id_string;
+}
+
+QString PropertyID::typeToString() const
+{
+  return PropertyID::typeToString(m_type);
 }
 
 QString PropertyID::typeToString(const PropertyIDType& val)

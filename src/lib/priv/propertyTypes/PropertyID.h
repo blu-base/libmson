@@ -146,8 +146,15 @@ enum class PropertyIDs : quint32 {
 
   // undocumented ids, this is mostly guessed, do no trust whether they are
   // deducted correctly
-  
 
+
+  /** ID occured in the ArrayOfPropertyValues which inherits a TextRunData
+   * PropertyID
+   *
+   * PropertySet
+   *
+   */
+  undoc_TextRunDataPropertyArray = 0x44000811,
 
   /** seems to be a float, maybe some margins
    *
@@ -194,7 +201,8 @@ enum class PropertyIDs : quint32 {
 
   /** 32 byte blob
    *
-   * seems to be only present when undoc_TextServiceFrameworkBlob is in same ObjectSpaceObjectPropSet
+   * seems to be only present when undoc_TextServiceFrameworkBlob is in same
+   * ObjectSpaceObjectPropSet
    *
    * observed sequences
    * 03090000b60f00002c0a0000b60f00002c0a0000a617000003090000a6170000
@@ -259,7 +267,8 @@ enum class PropertyIDs : quint32 {
 
   /** Four bytes
    *
-   * seems to be only present when undoc_TextServiceFrameworkBlob is in same ObjectSpaceObjectPropSet
+   * seems to be only present when undoc_TextServiceFrameworkBlob is in same
+   * ObjectSpaceObjectPropSet
    *
    * Observed these byte sequences
    * 01000000
@@ -281,7 +290,7 @@ enum class PropertyIDs : quint32 {
    *
    * maybe flags, of 0x01, 0x02, 0x04, 0x08, and 0x10
    *
-   */ 
+   */
   undoc_TextServiesFramework001d4e = 0x14001d4e,
 
 
@@ -480,7 +489,7 @@ enum class PropertyIDs : quint32 {
   undoc_StrokesRecognizedText = 0x1c00341e,
 
   /** seems to be only present when handwriting modus or dual modus is active
-   * if that modus is active this bool is set to true 
+   * if that modus is active this bool is set to true
    * bool
    */
   undoc_Strokes00341f = 0x8800341f,
@@ -503,7 +512,8 @@ enum class PropertyIDs : quint32 {
   /** seems to be only present when "undoc_RecognizedText = 0x1c001cc4" is set
    *
    * maybe a MS Text Service Framework blob
-   * Found GUIDs in https://github.com/NyaRuRu/TSF-TypeLib/blob/master/TSF.TypeLib/src/msctf.cs
+   * Found GUIDs in
+   * https://github.com/NyaRuRu/TSF-TypeLib/blob/master/TSF.TypeLib/src/msctf.cs
    *
    * appears in jcidRichTextOENode
    * FourBytesOfLengthFollowedByData
@@ -561,7 +571,10 @@ public:
 
   quint32 value() const;
 
+  QString idToString() const;
   static QString idToString(const PropertyIDs& val);
+
+  QString typeToString() const;
   static QString typeToString(const PropertyIDType& val);
 
   /**
