@@ -400,7 +400,8 @@ void DocumentModelFactory::appendFileNodeListFragment(
 {
   auto* chunkItem = appendNewChild(
       QStringLiteral("FileNodeListFragment"), QStringLiteral("Chunkable"),
-      QString(), chunk->getInitialStp(), chunk->getInitialCb(), parent);
+      QString::number(chunk->fileNodes().size()) + " FileNodes",
+      chunk->getInitialStp(), chunk->getInitialCb(), parent);
 
   quint64 stp = chunk->getInitialStp();
 
@@ -417,13 +418,13 @@ void DocumentModelFactory::appendFileNodeListFragment(
 
   appendUInt32(
       chunk->getNFragmentSequence(), QStringLiteral("nFragmentSequence"), stp,
-      chunkItem);
+      chunkItem, false);
 
 
   // compute size of contained FileNodes
   const quint64 sumFnCb = std::accumulate(
       chunk->fileNodes().begin(), chunk->fileNodes().end(), 0,
-      [&](quint64 sum, libmson::priv::FileNode_SPtr_t fn) {
+      [&](quint64 sum, const libmson::priv::FileNode_SPtr_t& fn) {
         return sum + fn->getSizeInFile();
       });
 
@@ -479,12 +480,12 @@ void DocumentModelFactory::appendFileNode(
 
   appendNewChild(
       QStringLiteral("fileNodeId"), QStringLiteral("uint10_t"),
-      QString::number(chunk->getFileNodeID(), 16), chunk->getInitialStp(), 4,
-      fileNodeHeaderItem);
+      QString("0x" + QString::number(chunk->getFileNodeID(), 16)),
+      chunk->getInitialStp(), 4, fileNodeHeaderItem);
   appendNewChild(
       QStringLiteral("fileNodeSize"), QStringLiteral("uint13_t"),
-      QString::number(chunk->getFileNodeSize(), 16), chunk->getInitialStp(), 4,
-      fileNodeHeaderItem);
+      QString("0x" + QString::number(chunk->getFileNodeSize(), 16)),
+      chunk->getInitialStp(), 4, fileNodeHeaderItem);
 
 
   appendNewChild(
@@ -577,12 +578,12 @@ void DocumentModelFactory::appendTransactionLogFragment(
   }
 
 
-
   quint64 footer = chunk->getInitialStp() + chunk->getInitialCb() -
                    libmson::priv::FileChunkReference64::getSizeInFile();
   appendFileChunkReference64x32(
       libmson::priv::getFcr64x32FromChunk(
-          revStoreFile, chunk->getNextFragment(), libmson::priv::FCR_INIT::ZERO),
+          revStoreFile, chunk->getNextFragment(),
+          libmson::priv::FCR_INIT::ZERO),
       QStringLiteral("nextFragment"), footer, chunkItem);
 }
 
@@ -597,18 +598,18 @@ void DocumentModelFactory::appendFileDataStoreObject(
   quint64 stp = chunk->getInitialStp();
 
   appendGuid(
-      libmson::priv::FileDataStoreObject::guidHeader, QStringLiteral("GuidHeader"), stp,
-      chunkItem);
+      libmson::priv::FileDataStoreObject::guidHeader,
+      QStringLiteral("GuidHeader"), stp, chunkItem);
 
   appendUInt64(
       chunk->getCbLength(), QStringLiteral("cbLength"), stp, chunkItem);
   appendNewChild(
-      QStringLiteral("unused"), QStringLiteral("uint32_t"), QString(), stp, sizeof(quint32),
-      chunkItem);
+      QStringLiteral("unused"), QStringLiteral("uint32_t"), QString(), stp,
+      sizeof(quint32), chunkItem);
   stp += sizeof(quint32);
   appendNewChild(
-      QStringLiteral("reserved"), QStringLiteral("uint64_t"), QString(), stp, sizeof(quint64),
-      chunkItem);
+      QStringLiteral("reserved"), QStringLiteral("uint64_t"), QString(), stp,
+      sizeof(quint64), chunkItem);
   stp += sizeof(quint64);
 
   appendNewChild(
@@ -619,8 +620,8 @@ void DocumentModelFactory::appendFileDataStoreObject(
   quint64 footerStp =
       chunk->getInitialStp() + chunk->getInitialCb() - sizeof(QUuid);
   appendGuid(
-      libmson::priv::FileDataStoreObject::guidFooter, QStringLiteral("GuidFooter"), footerStp,
-      chunkItem);
+      libmson::priv::FileDataStoreObject::guidFooter,
+      QStringLiteral("GuidFooter"), footerStp, chunkItem);
 }
 
 void DocumentModelFactory::appendObjectSpaceObjectPropSet(
@@ -630,6 +631,27 @@ void DocumentModelFactory::appendObjectSpaceObjectPropSet(
   auto* chunkItem = appendNewChild(
       QStringLiteral("ObjectSpaceObjectPropSet"), QStringLiteral("Chunkable"),
       QString(), chunk->getInitialStp(), chunk->getInitialCb(), parent);
+
+  quint64 stp = chunk->getInitialStp();
+
+  appendObjectSpaceObjectStreamOfOIDs(
+      chunk->OIDs(), QStringLiteral("OIDs"), stp, chunkItem);
+
+  if (chunk->OIDs().getHeader().isOsidStreamNotPresent() == false) {
+    appendObjectSpaceObjectStreamOfOSIDs(
+        chunk->OSIDs(), QStringLiteral("OSIDs"), stp, chunkItem);
+
+    if (chunk->getOSIDs().getHeader().isExtendedStreamPresent() == true) {
+      appendObjectSpaceObjectStreamOfContextIDs(
+          chunk->contextIDs(), QStringLiteral("ContextIDs"), stp, chunkItem);
+    }
+  }
+  appendPropertySet(chunk->getBody(), QStringLiteral("Body"), stp, chunkItem);
+
+
+  appendNewChild(
+      QStringLiteral("Padding"), QString(), QString(), stp,
+      chunk->getInitialStp() + chunk->getInitialCb() - stp, chunkItem);
 }
 
 void DocumentModelFactory::appendObjectInfoDependencyOverrideData(
@@ -1152,7 +1174,7 @@ void DocumentModelFactory::appendGlobalIdTableEntry3FNDX(
 
   appendUInt32(
       fnd->getCEntriesToCopy(), QStringLiteral("cEntriesToCopy"), fndstp,
-      parent);
+      parent, false);
 
   appendUInt32(
       fnd->getIIndexCopyToStart(), QStringLiteral("iIndexCopyToStart"), fndstp,
@@ -1251,7 +1273,7 @@ void DocumentModelFactory::appendObjectDeclarationFileData3LargeRefCountFND(
 
   appendJCID(fnd->getJcid(), QStringLiteral("jcid"), fndstp, parent);
 
-  appendUInt32(fnd->getCRef(), QStringLiteral("cRef"), fndstp, parent);
+  appendUInt32(fnd->getCRef(), QStringLiteral("cRef"), fndstp, parent, false);
 
   appendStringInStorageBuffer(
       fnd->getFileDataReference(), QStringLiteral("FileDataReference"), fndstp,
@@ -1325,7 +1347,7 @@ void DocumentModelFactory::appendObjectDeclarationWithRefCountFNDX(
       fnd->getBody(), QStringLiteral("Body"), fndstp, parent);
 
 
-  appendUInt8(fnd->getCRef(), QStringLiteral("cRef"), fndstp, parent);
+  appendUInt8(fnd->getCRef(), QStringLiteral("cRef"), fndstp, parent, false);
 }
 
 void DocumentModelFactory::appendObjectDeclarationWithRefCount2FNDX(
@@ -1348,7 +1370,7 @@ void DocumentModelFactory::appendObjectDeclarationWithRefCount2FNDX(
       fnd->getBody(), QStringLiteral("Body"), fndstp, parent);
 
 
-  appendUInt32(fnd->getCRef(), QStringLiteral("cRef"), fndstp, parent);
+  appendUInt32(fnd->getCRef(), QStringLiteral("cRef"), fndstp, parent, false);
 }
 
 void DocumentModelFactory::appendObjectRevisionWithRefCountFNDX(
@@ -1381,7 +1403,7 @@ void DocumentModelFactory::appendObjectRevisionWithRefCountFNDX(
                                    : QStringLiteral("false"),
       fndstp, 1, parent);
 
-  appendUInt8(fnd->getCRef(), QStringLiteral("cRef"), fndstp, parent);
+  appendUInt8(fnd->getCRef(), QStringLiteral("cRef"), fndstp, parent, false);
 }
 
 void DocumentModelFactory::appendObjectRevisionWithRefCount2FNDX(
@@ -1416,7 +1438,7 @@ void DocumentModelFactory::appendObjectRevisionWithRefCount2FNDX(
 
   fndstp += 4;
 
-  appendUInt32(fnd->getCRef(), QStringLiteral("cRef"), fndstp, parent);
+  appendUInt32(fnd->getCRef(), QStringLiteral("cRef"), fndstp, parent, false);
 }
 
 void DocumentModelFactory::appendObjectDataEncryptionKeyV2FNDX(
@@ -1497,8 +1519,9 @@ void DocumentModelFactory::appendObjectDeclaration2RefCountFND(
           fn->getCbFormatEnum()),
       QStringLiteral("blobRef"), fndstp, parent);
 
-  appendObjectDeclaration2Body(fnd->getBody(), QStringLiteral("Body"), fndstp, parent);
-  appendUInt8(fnd->getCRef(), QStringLiteral("cRef"), fndstp, parent);
+  appendObjectDeclaration2Body(
+      fnd->getBody(), QStringLiteral("Body"), fndstp, parent);
+  appendUInt8(fnd->getCRef(), QStringLiteral("cRef"), fndstp, parent, false);
 }
 
 void DocumentModelFactory::appendObjectDeclaration2LargeRefCountFND(
@@ -1517,8 +1540,9 @@ void DocumentModelFactory::appendObjectDeclaration2LargeRefCountFND(
           fn->getCbFormatEnum()),
       QStringLiteral("blobRef"), fndstp, parent);
 
-  appendObjectDeclaration2Body(fnd->getBody(), QStringLiteral("Body"), fndstp, parent);
-  appendUInt32(fnd->getCRef(), QStringLiteral("cRef"), fndstp, parent);
+  appendObjectDeclaration2Body(
+      fnd->getBody(), QStringLiteral("Body"), fndstp, parent);
+  appendUInt32(fnd->getCRef(), QStringLiteral("cRef"), fndstp, parent, false);
 }
 
 void DocumentModelFactory::appendHashedChunkDescriptor2FND(
@@ -1561,7 +1585,7 @@ void DocumentModelFactory::appendReadOnlyObjectDeclaration2RefCountFND(
   appendObjectDeclaration2Body(
       fnd->getBody(), QStringLiteral("Body"), fndstp, parent);
 
-  appendUInt8(fnd->getCRef(), QStringLiteral("cRef"), fndstp, parent);
+  appendUInt8(fnd->getCRef(), QStringLiteral("cRef"), fndstp, parent, false);
 
   appendNewChild(
       QStringLiteral("MD5Hash"), QStringLiteral("byte array"),
@@ -1587,7 +1611,7 @@ void DocumentModelFactory::appendReadOnlyObjectDeclaration2LargeRefCountFND(
   appendObjectDeclaration2Body(
       fnd->getBody(), QStringLiteral("Body"), fndstp, parent);
 
-  appendUInt32(fnd->getCRef(), QStringLiteral("cRef"), fndstp, parent);
+  appendUInt32(fnd->getCRef(), QStringLiteral("cRef"), fndstp, parent, false);
 
   appendNewChild(
       QStringLiteral("MD5Hash"), QStringLiteral("byte array"),
@@ -1675,7 +1699,7 @@ DocumentItem* DocumentModelFactory::appendTransactionEntry(
 
   DocumentItem* item = appendNewChild(
       name, QStringLiteral("TransactionEntry"),
-      QString::number(entry.getSrcID(), 16) + ", " +
+      "0x" + QString::number(entry.getSrcID(), 16) + ", 0x" +
           QString::number(entry.getTransactionEntrySwitch(), 16),
       stp, cb, parent);
 
@@ -1687,99 +1711,506 @@ DocumentItem* DocumentModelFactory::appendTransactionEntry(
   return item;
 }
 
+DocumentItem* DocumentModelFactory::appendObjectSpaceObjectStreamHeader(
+    const libmson::priv::ObjectSpaceObjectStreamHeader& streamHeader,
+    const QString& name, quint64& stp, DocumentItem* parent)
+{
+  const quint64 cb = sizeof(quint32);
 
-DocumentItem* DocumentModelFactory::appendUInt8(
-    const quint8 val, const QString& name, quint64& stp, DocumentItem* parent)
+  DocumentItem* item = appendNewChild(
+      name, QStringLiteral("ObjectSpaceObjectStreamHeader"), QString(), stp, cb,
+      parent);
+
+  appendNewChild(
+      QStringLiteral("Count"), QStringLiteral("uint24_t"),
+      QString::number(streamHeader.getCount()), stp, 3, item);
+
+  stp += 3;
+
+  appendNewChild(
+      QStringLiteral("ExtendedStreamsPresent"), QStringLiteral("1 bit"),
+      streamHeader.isExtendedStreamPresent() ? QStringLiteral("true")
+                                             : QStringLiteral("false"),
+      stp, 1, item);
+  appendNewChild(
+      QStringLiteral("OsidStreamNotPresent"), QStringLiteral("1 bit"),
+      streamHeader.isOsidStreamNotPresent() ? QStringLiteral("true")
+                                            : QStringLiteral("false"),
+      stp, 1, item);
+  stp++;
+
+  return item;
+}
+
+DocumentItem* DocumentModelFactory::appendObjectSpaceObjectStreamOfOIDs(
+    const libmson::priv::ObjectSpaceObjectStreamOfOIDs& stream,
+    const QString& name, quint64& stp, DocumentItem* parent)
+{
+  const quint64 cb = stream.getSizeInFile();
+
+
+  DocumentItem* item = appendNewChild(
+      name, QStringLiteral("ObjectSpaceObjectStreamOfOIDs"),
+      QString::number(stream.getHeader().getCount()) + " IDs", stp, cb, parent);
+
+  appendObjectSpaceObjectStreamHeader(
+      stream.getHeader(), QStringLiteral("Header"), stp, item);
+
+  auto* ids = appendNewChild(
+      QStringLiteral("Ids"), QString(), QString(), stp,
+      stream.getBody().size() * libmson::priv::CompactID::getSizeInFile(),
+      item);
+
+  for (auto&& entry : stream.getBody()) {
+    appendCompactID(entry, QStringLiteral("ObjectIdentity"), stp, ids);
+  }
+
+  return item;
+}
+
+DocumentItem* DocumentModelFactory::appendObjectSpaceObjectStreamOfOSIDs(
+    const libmson::priv::ObjectSpaceObjectStreamOfOSIDs& stream,
+    const QString& name, quint64& stp, DocumentItem* parent)
+{
+  const quint64 cb = stream.getSizeInFile();
+
+
+  DocumentItem* item = appendNewChild(
+      name, QStringLiteral("ObjectSpaceObjectStreamOfOSIDs"),
+      QString::number(stream.getHeader().getCount()) + " IDs", stp, cb, parent);
+
+  appendObjectSpaceObjectStreamHeader(
+      stream.getHeader(), QStringLiteral("Header"), stp, item);
+
+  auto* ids = appendNewChild(
+      QStringLiteral("Ids"), QString(), QString(), stp,
+      stream.getBody().size() * libmson::priv::CompactID::getSizeInFile(),
+      item);
+
+  for (auto&& entry : stream.getBody()) {
+    appendCompactID(entry, QStringLiteral("ObjectSpaceIdentity"), stp, ids);
+  }
+
+  return item;
+}
+
+DocumentItem* DocumentModelFactory::appendObjectSpaceObjectStreamOfContextIDs(
+    const libmson::priv::ObjectSpaceObjectStreamOfContextIDs& stream,
+    const QString& name, quint64& stp, DocumentItem* parent)
+{
+  const quint64 cb = stream.getSizeInFile();
+
+
+  DocumentItem* item = appendNewChild(
+      name, QStringLiteral("ObjectSpaceObjectStreamOfContextIDs"),
+      QString::number(stream.getHeader().getCount()) + " IDs", stp, cb, parent);
+
+  appendObjectSpaceObjectStreamHeader(
+      stream.getHeader(), QStringLiteral("Header"), stp, item);
+
+  auto* ids = appendNewChild(
+      QStringLiteral("Ids"), QString(), QString(), stp,
+      stream.getBody().size() * libmson::priv::CompactID::getSizeInFile(),
+      item);
+
+  for (auto&& entry : stream.getBody()) {
+    appendCompactID(entry, QStringLiteral("ContextIdentity"), stp, ids);
+  }
+
+  return item;
+}
+
+DocumentItem* DocumentModelFactory::appendPropertySet(
+    const libmson::priv::PropertySet& prop, const QString& name, quint64& stp,
+    DocumentItem* parent)
+{
+  const quint64 cb = prop.getSizeInFile();
+
+
+  DocumentItem* item = appendNewChild(
+      name, QStringLiteral("PropertySet"), QString(), stp, cb, parent);
+
+  appendUInt16(
+      prop.cProperties(), QStringLiteral("cProperties"), stp, item, false);
+
+  auto* prids = appendNewChild(
+      QStringLiteral("rgPropertyIds"), QString(), QString(), stp,
+      prop.cProperties() * libmson::priv::PropertyID::getSizeInFile(), item);
+  for (auto&& id : prop.rgPrids()) {
+    appendPropertyID(id, stp, prids);
+  }
+
+  const auto vec = prop.rgData();
+
+  quint64 cbData = std::accumulate(
+      vec.begin(), vec.end(), 0,
+      [](quint64 sum, const libmson::priv::IPropertyType_SPtr_t& pt) {
+        return sum + pt->getSizeInFile();
+      });
+
+  auto* rgData = appendNewChild(
+      QStringLiteral("rgData"), QString(), QString(), stp, cbData, item);
+
+  for (const auto& entry : vec) {
+
+
+    switch (entry->getType()) {
+    case libmson::priv::PropertyIDType::NoData:
+    case libmson::priv::PropertyIDType::Bool:
+    case libmson::priv::PropertyIDType::ContextID:
+    case libmson::priv::PropertyIDType::ObjectSpaceID:
+    case libmson::priv::PropertyIDType::ObjectID:
+      appendPTNoData(stp, rgData);
+      break;
+
+    case libmson::priv::PropertyIDType::ArrayOfObjectIDs:
+    case libmson::priv::PropertyIDType::ArrayOfObjectSpaceIDs:
+    case libmson::priv::PropertyIDType::ArrayOfContextIDs:
+    case libmson::priv::PropertyIDType::ArrayNumber:
+      appendPTArrayNumber(
+          std::static_pointer_cast<libmson::priv::PropertyType_ArrayNumber>(
+              entry),
+          stp, rgData);
+      break;
+
+    case libmson::priv::PropertyIDType::OneByteOfData:
+      appendPTOneByteOfData(
+          std::dynamic_pointer_cast<libmson::priv::PropertyType_OneByteOfData>(
+              entry),
+          stp, rgData);
+      break;
+
+    case libmson::priv::PropertyIDType::TwoBytesOfData:
+      appendPTTwoBytesOfData(
+          std::dynamic_pointer_cast<libmson::priv::PropertyType_TwoBytesOfData>(
+              entry),
+          stp, rgData);
+      break;
+
+    case libmson::priv::PropertyIDType::FourBytesOfData:
+      appendPTFourBytesOfData(
+          std::dynamic_pointer_cast<
+              libmson::priv::PropertyType_FourBytesOfData>(entry),
+          stp, rgData);
+      break;
+
+    case libmson::priv::PropertyIDType::EightBytesOfData:
+      appendPTEightBytesOfData(
+          std::dynamic_pointer_cast<
+              libmson::priv::PropertyType_EightBytesOfData>(entry),
+          stp, rgData);
+      break;
+
+    case libmson::priv::PropertyIDType::FourBytesOfLengthFollowedByData:
+      appendPTFourBytesOfLengthFollowedByData(
+          std::dynamic_pointer_cast<
+              libmson::priv::PropertyType_FourBytesOfLengthFollowedByData>(
+              entry),
+          stp, rgData);
+      break;
+
+    case libmson::priv::PropertyIDType::ArrayOfPropertyValues:
+      appendPTArrayOfPropertyValues(
+          std::dynamic_pointer_cast<
+              libmson::priv::PropertyType_ArrayOfPropertyValues>(entry),
+          stp, rgData);
+      break;
+
+    case libmson::priv::PropertyIDType::PropertySet:
+      appendPTPropertySet(
+          std::dynamic_pointer_cast<libmson::priv::PropertyType_PropertySet>(
+              entry),
+          stp, rgData);
+      break;
+
+    default:
+      break;
+    }
+  }
+
+  return item;
+}
+
+
+DocumentItem* DocumentModelFactory::appendPropertyID(
+    const libmson::priv::PropertyID& propId, quint64& stp, DocumentItem* parent)
+{
+  const quint64 cb = libmson::priv::PropertyID::getSizeInFile();
+
+  DocumentItem* item = appendNewChild(
+      propId.idToString(), QStringLiteral("PropertyID"), propId.typeToString(),
+      stp, cb, parent);
+
+  appendNewChild(
+      QStringLiteral("Id"), QStringLiteral("uint26_t"), propId.idToString(),
+      stp, cb, item);
+
+  appendNewChild(
+      QStringLiteral("Type"), QStringLiteral("uint5_t"), propId.typeToString(),
+      stp + 3, 1, item);
+
+  appendNewChild(
+      QStringLiteral("BoolValue"), QStringLiteral("1 bit"),
+      propId.boolValue() ? QStringLiteral("true") : QStringLiteral("false"),
+      stp + 3, 1, item);
+
+  appendUInt32(propId.value(), QStringLiteral("Composite ID"), stp, item);
+
+  return item;
+}
+
+DocumentItem* DocumentModelFactory::appendPTArrayNumber(
+    const libmson::priv::PropertyType_ArrayNumber_SPtr_t& pt, quint64& stp,
+    DocumentItem* parent)
+{
+  const quint64 cb = sizeof(quint32);
+
+  DocumentItem* item = appendNewChild(
+      QStringLiteral("ArrayNumber"), QString(),
+      QString(QString::number(pt->cCIDs()) + " IDs"), stp, cb, parent);
+
+  appendUInt32(pt->cCIDs(), QStringLiteral("cIDs"), stp, item, false);
+
+  return item;
+}
+
+DocumentItem* DocumentModelFactory::appendPTArrayOfPropertyValues(
+    const libmson::priv::PropertyType_ArrayOfPropertyValues_SPtr_t& pt,
+    quint64& stp, DocumentItem* parent)
+{
+  const quint64 cb = pt->getSizeInFile();
+
+  DocumentItem* item = appendNewChild(
+      QStringLiteral("ArrayOfPropertyValues"), QString(), QString(), stp, cb,
+      parent);
+
+  appendUInt32(
+      pt->cProperties(), QStringLiteral("cProperties"), stp, item, false);
+
+  appendPropertyID(pt->prid(), stp, item);
+
+  const auto vec = pt->data();
+
+  quint64 propsetsize = std::accumulate(
+      vec.begin(), vec.end(), 0,
+      [](quint64 sum, const libmson::priv::PropertySet& set) {
+        return sum + set.getSizeInFile();
+      });
+
+  auto* propsets = appendNewChild(
+      QStringLiteral("PropertySets"), QString(), QString(), stp, propsetsize,
+      item);
+
+  for (auto&& propset : pt->data()) {
+    appendPropertySet(propset, QStringLiteral("PropertySet"), stp, propsets);
+  }
+
+  return item;
+}
+
+DocumentItem* DocumentModelFactory::appendPTEightBytesOfData(
+    const libmson::priv::PropertyType_EightBytesOfData_SPtr_t& pt, quint64& stp,
+    DocumentItem* parent)
+{
+  const quint64 cb = sizeof(quint64);
+
+  DocumentItem* item = appendNewChild(
+      QStringLiteral("EightBytesOfData"), QString(), pt->data().toHex(), stp,
+      cb, parent);
+  stp += cb;
+  return item;
+}
+
+DocumentItem* DocumentModelFactory::appendPTFourBytesOfData(
+    const libmson::priv::PropertyType_FourBytesOfData_SPtr_t& pt, quint64& stp,
+    DocumentItem* parent)
+{
+  const quint64 cb = sizeof(quint32);
+
+  DocumentItem* item = appendNewChild(
+      QStringLiteral("FourBytesOfData"), QString(), pt->data().toHex(), stp, cb,
+      parent);
+  stp += cb;
+  return item;
+}
+
+DocumentItem* DocumentModelFactory::appendPTFourBytesOfLengthFollowedByData(
+    const libmson::priv::PropertyType_FourBytesOfLengthFollowedByData_SPtr_t&
+        pt,
+    quint64& stp, DocumentItem* parent)
+{
+  const quint64 cb = pt->getSizeInFile();
+
+  DocumentItem* item = appendNewChild(
+      QStringLiteral("FourBytesOfLengthFollowedByData"), QString(),
+      QString(QString::number(pt->cb()) + " bytes"), stp, cb, parent);
+
+  appendUInt32(pt->cb(), QStringLiteral("Length"), stp, item, false);
+
+  appendNewChild(
+      QStringLiteral("Data"), QString(), pt->data().toHex(), stp, cb - 4, item);
+
+  stp += cb -4;
+  return item;
+}
+
+DocumentItem* DocumentModelFactory::appendPTOneByteOfData(
+    const libmson::priv::PropertyType_OneByteOfData_SPtr_t& pt, quint64& stp,
+    DocumentItem* parent)
 {
   const quint64 cb = sizeof(quint8);
 
   DocumentItem* item = appendNewChild(
-      name, QStringLiteral("uint8_t"), QString::number(val, 16), stp, cb,
+      QStringLiteral("TwoBytesOfData"), QString(), pt->data().toHex(), stp, cb,
       parent);
+  stp += cb;
+  return item;
+}
+
+DocumentItem* DocumentModelFactory::appendPTPropertySet(
+    const libmson::priv::PropertyType_PropertySet_SPtr_t& pt, quint64& stp,
+    DocumentItem* parent)
+{
+
+  DocumentItem* item =
+      appendPropertySet(pt->data(), "PropertySet", stp, parent);
+
+  return item;
+}
+
+
+DocumentItem* DocumentModelFactory::appendPTTwoBytesOfData(
+    const libmson::priv::PropertyType_TwoBytesOfData_SPtr_t& pt, quint64& stp,
+    DocumentItem* parent)
+{
+  const quint64 cb = sizeof(quint16);
+
+  DocumentItem* item = appendNewChild(
+      QStringLiteral("TwoBytesOfData"), QString(), pt->data().toHex(), stp, cb,
+      parent);
+  stp += cb;
+  return item;
+}
+
+DocumentItem*
+DocumentModelFactory::appendPTNoData(quint64& stp, DocumentItem* parent)
+{
+
+  DocumentItem* item = appendNewChild(
+      QStringLiteral("NoData"), QString(), QString(), stp, 0, parent);
+
+  return item;
+}
+
+
+DocumentItem* DocumentModelFactory::appendUInt8(
+    const quint8 val, const QString& name, quint64& stp, DocumentItem* parent,
+    const bool asHex)
+{
+  const quint64 cb = sizeof(quint8);
+
+  DocumentItem* item = appendNewChild(
+      name, QStringLiteral("uint8_t"),
+      QString((asHex ? "0x" : "") + QString::number(val, asHex ? 16 : 10)), stp,
+      cb, parent);
   stp += cb;
   return item;
 }
 
 DocumentItem* DocumentModelFactory::appendUInt16(
-    const quint16 val, const QString& name, quint64& stp, DocumentItem* parent)
+    const quint16 val, const QString& name, quint64& stp, DocumentItem* parent,
+    const bool asHex)
 {
   const quint64 cb = sizeof(quint16);
 
   DocumentItem* item = appendNewChild(
-      name, QStringLiteral("uint16_t"), QString::number(val, 16), stp, cb,
-      parent);
+      name, QStringLiteral("uint16_t"),
+      QString((asHex ? "0x" : "") + QString::number(val, asHex ? 16 : 10)), stp,
+      cb, parent);
   stp += cb;
   return item;
 }
 
 DocumentItem* DocumentModelFactory::appendUInt32(
-    const quint32 val, const QString& name, quint64& stp, DocumentItem* parent)
+    const quint32 val, const QString& name, quint64& stp, DocumentItem* parent,
+    const bool asHex)
 {
   const quint64 cb = sizeof(quint32);
 
   DocumentItem* item = appendNewChild(
-      name, QStringLiteral("uint32_t"), QString::number(val, 16), stp, cb,
-      parent);
+      name, QStringLiteral("uint32_t"),
+      QString((asHex ? "0x" : "") + QString::number(val, asHex ? 16 : 10)), stp,
+      cb, parent);
   stp += cb;
   return item;
 }
 
 DocumentItem* DocumentModelFactory::appendUInt64(
-    const quint64 val, const QString& name, quint64& stp, DocumentItem* parent)
+    const quint64 val, const QString& name, quint64& stp, DocumentItem* parent,
+    const bool asHex)
 {
   const quint64 cb = sizeof(quint64);
 
   DocumentItem* item = appendNewChild(
-      name, QStringLiteral("uint64_t"), QString::number(val, 16), stp, cb,
-      parent);
+      name, QStringLiteral("uint64_t"),
+      QString((asHex ? "0x" : "") + QString::number(val, asHex ? 16 : 10)), stp,
+      cb, parent);
   stp += cb;
   return item;
 }
 
 DocumentItem* DocumentModelFactory::appendInt8(
-    const qint8 val, const QString& name, quint64& stp, DocumentItem* parent)
+    const qint8 val, const QString& name, quint64& stp, DocumentItem* parent,
+    const bool asHex)
 {
   const quint64 cb = sizeof(qint8);
 
   DocumentItem* item = appendNewChild(
-      name, QStringLiteral("int8_t"), QString::number(val, 16), stp, cb,
-      parent);
+      name, QStringLiteral("int8_t"),
+      QString((asHex ? "0x" : "") + QString::number(val, asHex ? 16 : 10)), stp,
+      cb, parent);
   stp += cb;
   return item;
 }
 
 DocumentItem* DocumentModelFactory::appendInt16(
-    const qint16 val, const QString& name, quint64& stp, DocumentItem* parent)
+    const qint16 val, const QString& name, quint64& stp, DocumentItem* parent,
+    const bool asHex)
 {
   const quint64 cb = sizeof(qint16);
 
   DocumentItem* item = appendNewChild(
-      name, QStringLiteral("int16_t"), QString::number(val, 16), stp, cb,
-      parent);
+      name, QStringLiteral("int16_t"),
+      QString(asHex ? "0x" : "" + QString::number(val, asHex ? 16 : 10)), stp,
+      cb, parent);
   stp += cb;
   return item;
 }
 
 DocumentItem* DocumentModelFactory::appendInt32(
-    const qint32 val, const QString& name, quint64& stp, DocumentItem* parent)
+    const qint32 val, const QString& name, quint64& stp, DocumentItem* parent,
+    const bool asHex)
 {
   const quint64 cb = sizeof(qint32);
 
   DocumentItem* item = appendNewChild(
-      name, QStringLiteral("uint32_t"), QString::number(val, 16), stp, cb,
-      parent);
+      name, QStringLiteral("uint32_t"),
+      QString((asHex ? "0x" : "") + QString::number(val, asHex ? 16 : 10)), stp,
+      cb, parent);
   stp += cb;
   return item;
 }
 
 DocumentItem* DocumentModelFactory::appendInt64(
-    const qint64 val, const QString& name, quint64& stp, DocumentItem* parent)
+    const qint64 val, const QString& name, quint64& stp, DocumentItem* parent,
+    const bool asHex)
 {
   const quint64 cb = sizeof(qint64);
 
   DocumentItem* item = appendNewChild(
-      name, QStringLiteral("uint64_t"), QString::number(val, 16), stp, cb,
-      parent);
+      name, QStringLiteral("uint64_t"),
+      QString((asHex ? "0x" : "") + QString::number(val, asHex ? 16 : 10)), stp,
+      cb, parent);
   stp += cb;
   return item;
 }
@@ -1826,8 +2257,8 @@ DocumentItem* DocumentModelFactory::appendCompactID(
   stp += 1;
 
   appendNewChild(
-      QStringLiteral("GuidIndex"), QStringLiteral("uint24_t"), cid.getN(), stp,
-      3, item);
+      QStringLiteral("GuidIndex"), QStringLiteral("uint24_t"),
+      cid.getGuidIndex(), stp, 3, item);
   stp += 3;
 
 
@@ -1847,10 +2278,10 @@ DocumentItem* DocumentModelFactory::appendObjectInfoDependencyOverrideData(
 
   appendUInt32(
       objInfo.getC8BitOverrides(), QStringLiteral("c8BitOverrides"), stp,
-      chunkItem);
+      chunkItem, false);
   appendUInt32(
       objInfo.getC32BitOverrides(), QStringLiteral("c32BitOverrides"), stp,
-      chunkItem);
+      chunkItem, false);
   appendUInt32(objInfo.getCrc(), QStringLiteral("crc"), stp, chunkItem);
 
   auto* overrides1 = appendNewChild(
@@ -1964,7 +2395,7 @@ DocumentItem* DocumentModelFactory::appendStringInStorageBuffer(
       name, QStringLiteral("StringInStorageBuffer"), buffer.getStringData(),
       stp, cb, parent);
 
-  appendUInt32(buffer.getCch(), QStringLiteral("cCh"), stp, item);
+  appendUInt32(buffer.getCch(), QStringLiteral("cCh"), stp, item, false);
 
 
   appendNewChild(
@@ -2170,12 +2601,13 @@ DocumentItem* DocumentModelFactory::appendFileNodeChunkReference(
       QStringLiteral("Stp"),
       libmson::priv::FileNodeChunkReference::fncrStpFormatString(
           ref.getStpFormat()),
-      QString::number(ref.stp(), 16), stp, stpSize, item);
+      QString("0x" + QString::number(ref.stp(), 16)), stp, stpSize, item);
   appendNewChild(
       QStringLiteral("Cb"),
       libmson::priv::FileNodeChunkReference::fncrCbFormatString(
           ref.getCbFormat()),
-      QString::number(ref.cb(), 16), stp + stpSize, cbSize, item);
+      QString("0x" + QString::number(ref.cb(), 16)), stp + stpSize, cbSize,
+      item);
 
   stp += cb;
 

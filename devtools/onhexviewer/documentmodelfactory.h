@@ -17,6 +17,8 @@
 
 #include "../../../src/lib/priv/chunkables/fileNodeTypes/FileNodeTypes.h"
 
+#include "../../../src/lib/priv/propertyTypes/PropertyTypes.h"
+
 // namespace libmson::priv {
 // class RevisionStoreFile;
 
@@ -80,7 +82,7 @@ private:
       const libmson::priv::FreeChunk_SPtr_t& chunk, DocumentItem* parent);
   static void appendTransactionLogFragment(
       const libmson::priv::TransactionLogFragment_SPtr_t& chunk,
-          const libmson::priv::RevisionStoreFile_SPtr_t& revStoreFile,
+      const libmson::priv::RevisionStoreFile_SPtr_t& revStoreFile,
       DocumentItem* parent);
   static void appendFileDataStoreObject(
       const libmson::priv::FileDataStoreObject_SPtr_t& chunk,
@@ -279,49 +281,121 @@ private:
 
   // Transactions
   // increments stp by its size
-  static DocumentItem* appendTransactionEntry(const libmson::priv::TransactionEntry& entry, const QString& name, quint64& stp,
+  static DocumentItem* appendTransactionEntry(
+      const libmson::priv::TransactionEntry& entry, const QString& name,
+      quint64& stp, DocumentItem* parent);
+
+
+  // ObjectPropSet components
+
+  // increments stp by its size
+  static DocumentItem* appendObjectSpaceObjectStreamHeader(
+      const libmson::priv::ObjectSpaceObjectStreamHeader& streamHeader,
+      const QString& name, quint64& stp, DocumentItem* parent);
+
+  // increments stp by its size
+  static DocumentItem* appendObjectSpaceObjectStreamOfOIDs(
+      const libmson::priv::ObjectSpaceObjectStreamOfOIDs& stream,
+      const QString& name, quint64& stp, DocumentItem* parent);
+
+  // increments stp by its size
+  static DocumentItem* appendObjectSpaceObjectStreamOfOSIDs(
+      const libmson::priv::ObjectSpaceObjectStreamOfOSIDs& stream,
+      const QString& name, quint64& stp, DocumentItem* parent);
+
+  // increments stp by its size
+  static DocumentItem* appendObjectSpaceObjectStreamOfContextIDs(
+      const libmson::priv::ObjectSpaceObjectStreamOfContextIDs& stream,
+      const QString& name, quint64& stp, DocumentItem* parent);
+
+  // increments stp by its size
+  static DocumentItem* appendPropertySet(
+      const libmson::priv::PropertySet& prop, const QString& name, quint64& stp,
       DocumentItem* parent);
+
+  // increments stp by its size
+  static DocumentItem* appendPropertyID(
+      const libmson::priv::PropertyID& propId, quint64& stp,
+      DocumentItem* parent);
+
+  // increments stp by its size
+  static DocumentItem* appendPTArrayNumber(
+      const libmson::priv::PropertyType_ArrayNumber_SPtr_t& pt, quint64& stp,
+      DocumentItem* parent);
+  // increments stp by its size
+  static DocumentItem* appendPTArrayOfPropertyValues(
+      const libmson::priv::PropertyType_ArrayOfPropertyValues_SPtr_t& pt,
+      quint64& stp, DocumentItem* parent);
+  // increments stp by its size
+  static DocumentItem* appendPTEightBytesOfData(
+      const libmson::priv::PropertyType_EightBytesOfData_SPtr_t& pt,
+      quint64& stp, DocumentItem* parent);
+  // increments stp by its size
+  static DocumentItem* appendPTFourBytesOfData(
+      const libmson::priv::PropertyType_FourBytesOfData_SPtr_t& pt,
+      quint64& stp, DocumentItem* parent);
+  // increments stp by its size
+  static DocumentItem* appendPTFourBytesOfLengthFollowedByData(
+      const libmson::priv::PropertyType_FourBytesOfLengthFollowedByData_SPtr_t&
+          pt,
+      quint64& stp, DocumentItem* parent);
+  // increments stp by its size
+  static DocumentItem* appendPTOneByteOfData(
+      const libmson::priv::PropertyType_OneByteOfData_SPtr_t& pt, quint64& stp,
+      DocumentItem* parent);
+  // increments stp by its size
+  static DocumentItem* appendPTPropertySet(
+      const libmson::priv::PropertyType_PropertySet_SPtr_t& pt, quint64& stp,
+      DocumentItem* parent);
+  // increments stp by its size
+  static DocumentItem* appendPTTwoBytesOfData(
+      const libmson::priv::PropertyType_TwoBytesOfData_SPtr_t& pt, quint64& stp,
+      DocumentItem* parent);
+  // increments stp by its size
+  static DocumentItem* appendPTNoData(quint64& stp, DocumentItem* parent);
+
 
   // common
 
   // increments stp by its size
   static DocumentItem* appendUInt8(
-      const quint8 val, const QString& name, quint64& stp,
-      DocumentItem* parent);
+      const quint8 val, const QString& name, quint64& stp, DocumentItem* parent,
+      const bool asHex = true);
 
   // increments stp by its size
   static DocumentItem* appendUInt16(
       const quint16 val, const QString& name, quint64& stp,
-      DocumentItem* parent);
+      DocumentItem* parent, const bool asHex = true);
 
   // increments stp by its size
   static DocumentItem* appendUInt32(
       const quint32 val, const QString& name, quint64& stp,
-      DocumentItem* parent);
+      DocumentItem* parent, const bool asHex = true);
 
   // increments stp by its size
   static DocumentItem* appendUInt64(
       const quint64 val, const QString& name, quint64& stp,
-      DocumentItem* parent);
+      DocumentItem* parent, const bool asHex = true);
 
   // increments stp by its size
   static DocumentItem* appendInt8(
-      const qint8 val, const QString& name, quint64& stp, DocumentItem* parent);
+      const qint8 val, const QString& name, quint64& stp, DocumentItem* parent,
+      const bool asHex = true);
 
   // increments stp by its size
   static DocumentItem* appendInt16(
-      const qint16 val, const QString& name, quint64& stp,
-      DocumentItem* parent);
+      const qint16 val, const QString& name, quint64& stp, DocumentItem* parent,
+      const bool asHex = true);
 
   // increments stp by its size
   static DocumentItem* appendInt32(
-      const qint32 val, const QString& name, quint64& stp,
-      DocumentItem* parent);
+      const qint32 val, const QString& name, quint64& stp, DocumentItem* parent,
+      const bool asHex = true);
 
   // increments stp by its size
   static DocumentItem* appendInt64(
-      const qint64 val, const QString& name, quint64& stp,
-      DocumentItem* parent);
+      const qint64 val, const QString& name, quint64& stp, DocumentItem* parent,
+      const bool asHex = true);
 
   // increments stp by its size
   static DocumentItem* appendGuid(
@@ -339,7 +413,7 @@ private:
       DocumentItem* parent);
 
   // increments stp by its size
-  static DocumentItem* ObjectInfoDependencyOverrideData(
+  static DocumentItem* appendObjectInfoDependencyOverrideData(
       const libmson::priv::ObjectInfoDependencyOverrideData& objInfo,
       const QString& name, quint64& stp, DocumentItem* parent);
 
@@ -371,11 +445,6 @@ private:
   // increments stp by its size
   static DocumentItem* appendObjectDeclaration2Body(
       const libmson::priv::ObjectDeclaration2Body& declBody,
-      const QString& name, quint64& stp, DocumentItem* parent);
-
-  // increments stp by its size
-  static DocumentItem* appendObjectInfoDependencyOverrideData(
-      const libmson::priv::ObjectInfoDependencyOverrideData& objInfo,
       const QString& name, quint64& stp, DocumentItem* parent);
 
   // increments stp by its size
