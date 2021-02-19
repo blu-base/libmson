@@ -659,6 +659,7 @@ bool RevisionStoreFileWriter::writeFileNode(
       ds.writeRawData(
           md5hash.data(),
           ReadOnlyObjectDeclaration2LargeRefCountFND::md5HashSize);
+      break;
     }
     case FileNodeTypeID::ReadOnlyObjectDeclaration2RefCountFND: {
       auto cFnd =
