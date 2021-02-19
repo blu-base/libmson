@@ -74,140 +74,137 @@ enum class FileNodeTypeID : uint16_t {
   InvalidFND = 0xFFF,
 };
 
-
-
-static QString fileNodeTypeIDString(const FileNodeTypeID type){
+static QString fileNodeTypeIDString(const FileNodeTypeID type)
+{
 
   switch (type) {
-    case FileNodeTypeID::ObjectSpaceManifestRootFND:
-      return QStringLiteral("ObjectSpaceManifestRootFND");
+  case FileNodeTypeID::ObjectSpaceManifestRootFND:
+    return QStringLiteral("ObjectSpaceManifestRootFND");
 
-    case FileNodeTypeID::ObjectSpaceManifestListReferenceFND:
-      return QStringLiteral("ObjectSpaceManifestListReferenceFND");
+  case FileNodeTypeID::ObjectSpaceManifestListReferenceFND:
+    return QStringLiteral("ObjectSpaceManifestListReferenceFND");
 
-    case FileNodeTypeID::ObjectSpaceManifestListStartFND:
-      return QStringLiteral("ObjectSpaceManifestListStartFND");
+  case FileNodeTypeID::ObjectSpaceManifestListStartFND:
+    return QStringLiteral("ObjectSpaceManifestListStartFND");
 
-    case FileNodeTypeID::RevisionManifestListReferenceFND:
-      return QStringLiteral("RevisionManifestListReferenceFND");
+  case FileNodeTypeID::RevisionManifestListReferenceFND:
+    return QStringLiteral("RevisionManifestListReferenceFND");
 
-    case FileNodeTypeID::RevisionManifestListStartFND:
-      return QStringLiteral("RevisionManifestListStartFND");
+  case FileNodeTypeID::RevisionManifestListStartFND:
+    return QStringLiteral("RevisionManifestListStartFND");
 
-    case FileNodeTypeID::RevisionManifestStart4FND:
-      return QStringLiteral("RevisionManifestStart4FND");
+  case FileNodeTypeID::RevisionManifestStart4FND:
+    return QStringLiteral("RevisionManifestStart4FND");
 
-    case FileNodeTypeID::RevisionManifestEndFND:
-      return QStringLiteral("RevisionManifestEndFND");
+  case FileNodeTypeID::RevisionManifestEndFND:
+    return QStringLiteral("RevisionManifestEndFND");
 
-    case FileNodeTypeID::RevisionManifestStart6FND:
-      return QStringLiteral("RevisionManifestStart6FND");
+  case FileNodeTypeID::RevisionManifestStart6FND:
+    return QStringLiteral("RevisionManifestStart6FND");
 
-    case FileNodeTypeID::RevisionManifestStart7FND:
-      return QStringLiteral("RevisionManifestStart7FND");
+  case FileNodeTypeID::RevisionManifestStart7FND:
+    return QStringLiteral("RevisionManifestStart7FND");
 
-    case FileNodeTypeID::GlobalIdTableStartFNDX:
-      return QStringLiteral("GlobalIdTableStartFNDX");
+  case FileNodeTypeID::GlobalIdTableStartFNDX:
+    return QStringLiteral("GlobalIdTableStartFNDX");
 
-    case FileNodeTypeID::GlobalIdTableStart2FND:
-      return QStringLiteral("GlobalIdTableStart2FND");
+  case FileNodeTypeID::GlobalIdTableStart2FND:
+    return QStringLiteral("GlobalIdTableStart2FND");
 
-    case FileNodeTypeID::GlobalIdTableEntryFNDX:
-      return QStringLiteral("GlobalIdTableEntryFNDX");
+  case FileNodeTypeID::GlobalIdTableEntryFNDX:
+    return QStringLiteral("GlobalIdTableEntryFNDX");
 
-    case FileNodeTypeID::GlobalIdTableEntry2FNDX:
-      return QStringLiteral("GlobalIdTableEntry2FNDX");
+  case FileNodeTypeID::GlobalIdTableEntry2FNDX:
+    return QStringLiteral("GlobalIdTableEntry2FNDX");
 
-    case FileNodeTypeID::GlobalIdTableEntry3FNDX:
-      return QStringLiteral("GlobalIdTableEntry3FNDX");
+  case FileNodeTypeID::GlobalIdTableEntry3FNDX:
+    return QStringLiteral("GlobalIdTableEntry3FNDX");
 
-    case FileNodeTypeID::GlobalIdTableEndFNDX:
-      return QStringLiteral("GlobalIdTableEndFNDX");
+  case FileNodeTypeID::GlobalIdTableEndFNDX:
+    return QStringLiteral("GlobalIdTableEndFNDX");
 
-    case FileNodeTypeID::ObjectDeclarationWithRefCountFNDX:
-      return QStringLiteral("ObjectDeclarationWithRefCountFNDX");
+  case FileNodeTypeID::ObjectDeclarationWithRefCountFNDX:
+    return QStringLiteral("ObjectDeclarationWithRefCountFNDX");
 
-    case FileNodeTypeID::ObjectDeclarationWithRefCount2FNDX:
-      return QStringLiteral("ObjectDeclarationWithRefCount2FNDX");
+  case FileNodeTypeID::ObjectDeclarationWithRefCount2FNDX:
+    return QStringLiteral("ObjectDeclarationWithRefCount2FNDX");
 
-    case FileNodeTypeID::ObjectRevisionWithRefCountFNDX:
-      return QStringLiteral("ObjectRevisionWithRefCountFNDX");
+  case FileNodeTypeID::ObjectRevisionWithRefCountFNDX:
+    return QStringLiteral("ObjectRevisionWithRefCountFNDX");
 
-    case FileNodeTypeID::ObjectRevisionWithRefCount2FNDX:
-      return QStringLiteral("ObjectRevisionWithRefCount2FNDX");
+  case FileNodeTypeID::ObjectRevisionWithRefCount2FNDX:
+    return QStringLiteral("ObjectRevisionWithRefCount2FNDX");
 
-    case FileNodeTypeID::RootObjectReference2FNDX:
-      return QStringLiteral("RootObjectReference2FNDX");
+  case FileNodeTypeID::RootObjectReference2FNDX:
+    return QStringLiteral("RootObjectReference2FNDX");
 
-    case FileNodeTypeID::RootObjectReference3FND:
-      return QStringLiteral("RootObjectReference3FND");
+  case FileNodeTypeID::RootObjectReference3FND:
+    return QStringLiteral("RootObjectReference3FND");
 
-    case FileNodeTypeID::RevisionRoleDeclarationFND:
-      return QStringLiteral("RevisionRoleDeclarationFND");
+  case FileNodeTypeID::RevisionRoleDeclarationFND:
+    return QStringLiteral("RevisionRoleDeclarationFND");
 
-    case FileNodeTypeID::RevisionRoleAndContextDeclarationFND:
-      return QStringLiteral("RevisionRoleAndContextDeclarationFND");
+  case FileNodeTypeID::RevisionRoleAndContextDeclarationFND:
+    return QStringLiteral("RevisionRoleAndContextDeclarationFND");
 
-    case FileNodeTypeID::ObjectDeclarationFileData3RefCountFND:
-      return QStringLiteral("ObjectDeclarationFileData3RefCountFND");
+  case FileNodeTypeID::ObjectDeclarationFileData3RefCountFND:
+    return QStringLiteral("ObjectDeclarationFileData3RefCountFND");
 
-    case FileNodeTypeID::ObjectDeclarationFileData3LargeRefCountFND:
-      return QStringLiteral("ObjectDeclarationFileData3LargeRefCountFND");
+  case FileNodeTypeID::ObjectDeclarationFileData3LargeRefCountFND:
+    return QStringLiteral("ObjectDeclarationFileData3LargeRefCountFND");
 
-    case FileNodeTypeID::ObjectDataEncryptionKeyV2FNDX:
-      return QStringLiteral("ObjectDataEncryptionKeyV2FNDX");
+  case FileNodeTypeID::ObjectDataEncryptionKeyV2FNDX:
+    return QStringLiteral("ObjectDataEncryptionKeyV2FNDX");
 
-    case FileNodeTypeID::ObjectInfoDependencyOverridesFND:
-      return QStringLiteral("ObjectInfoDependencyOverridesFND");
+  case FileNodeTypeID::ObjectInfoDependencyOverridesFND:
+    return QStringLiteral("ObjectInfoDependencyOverridesFND");
 
-    case FileNodeTypeID::DataSignatureGroupDefinitionFND:
-      return QStringLiteral("DataSignatureGroupDefinitionFND");
+  case FileNodeTypeID::DataSignatureGroupDefinitionFND:
+    return QStringLiteral("DataSignatureGroupDefinitionFND");
 
-    case FileNodeTypeID::FileDataStoreListReferenceFND:
-      return QStringLiteral("FileDataStoreListReferenceFND");
+  case FileNodeTypeID::FileDataStoreListReferenceFND:
+    return QStringLiteral("FileDataStoreListReferenceFND");
 
-    case FileNodeTypeID::FileDataStoreObjectReferenceFND:
-      return QStringLiteral("FileDataStoreObjectReferenceFND");
+  case FileNodeTypeID::FileDataStoreObjectReferenceFND:
+    return QStringLiteral("FileDataStoreObjectReferenceFND");
 
-    case FileNodeTypeID::ObjectDeclaration2RefCountFND:
-      return QStringLiteral("ObjectDeclaration2RefCountFND");
+  case FileNodeTypeID::ObjectDeclaration2RefCountFND:
+    return QStringLiteral("ObjectDeclaration2RefCountFND");
 
-    case FileNodeTypeID::ObjectDeclaration2LargeRefCountFND:
-      return QStringLiteral("ObjectDeclaration2LargeRefCountFND");
+  case FileNodeTypeID::ObjectDeclaration2LargeRefCountFND:
+    return QStringLiteral("ObjectDeclaration2LargeRefCountFND");
 
-    case FileNodeTypeID::ObjectGroupListReferenceFND:
-      return QStringLiteral("ObjectGroupListReferenceFND");
+  case FileNodeTypeID::ObjectGroupListReferenceFND:
+    return QStringLiteral("ObjectGroupListReferenceFND");
 
-    case FileNodeTypeID::ObjectGroupStartFND:
-      return QStringLiteral("ObjectGroupStartFND");
+  case FileNodeTypeID::ObjectGroupStartFND:
+    return QStringLiteral("ObjectGroupStartFND");
 
-    case FileNodeTypeID::ObjectGroupEndFND:
-      return QStringLiteral("ObjectGroupEndFND");
+  case FileNodeTypeID::ObjectGroupEndFND:
+    return QStringLiteral("ObjectGroupEndFND");
 
-    case FileNodeTypeID::HashedChunkDescriptor2FND:
-      return QStringLiteral("HashedChunkDescriptor2FND");
+  case FileNodeTypeID::HashedChunkDescriptor2FND:
+    return QStringLiteral("HashedChunkDescriptor2FND");
 
-    case FileNodeTypeID::ReadOnlyObjectDeclaration2RefCountFND:
-      return QStringLiteral("ReadOnlyObjectDeclaration2RefCountFND");
+  case FileNodeTypeID::ReadOnlyObjectDeclaration2RefCountFND:
+    return QStringLiteral("ReadOnlyObjectDeclaration2RefCountFND");
 
-    case FileNodeTypeID::ReadOnlyObjectDeclaration2LargeRefCountFND:
-      return QStringLiteral("ReadOnlyObjectDeclaration2LargeRefCountFND");
+  case FileNodeTypeID::ReadOnlyObjectDeclaration2LargeRefCountFND:
+    return QStringLiteral("ReadOnlyObjectDeclaration2LargeRefCountFND");
 
-    case FileNodeTypeID::ChunkTerminatorFND:
-      return QStringLiteral("ChunkTerminatorFND");
+  case FileNodeTypeID::ChunkTerminatorFND:
+    return QStringLiteral("ChunkTerminatorFND");
 
-    case FileNodeTypeID::NullFnd:
-      return QStringLiteral("NullFnd");
+  case FileNodeTypeID::NullFnd:
+    return QStringLiteral("NullFnd");
 
-    case FileNodeTypeID::InvalidFND:
-      return QStringLiteral("InvalidFND");
+  case FileNodeTypeID::InvalidFND:
+    return QStringLiteral("InvalidFND");
 
-    default:
-      return QString();
+  default:
+    return QString();
   }
-
-}
-
+};
 
 } // namespace priv
 } // namespace libmson

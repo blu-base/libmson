@@ -23,8 +23,8 @@ public:
   };
 
 private:
-  virtual void deserialize(QDataStream& ds) override{};
-  virtual void serialize(QDataStream& ds) const override{};
+  virtual void deserialize(QDataStream& ds) override { Q_UNUSED(ds) };
+  virtual void serialize(QDataStream& ds) const override { Q_UNUSED(ds) };
 };
 
 } // namespace priv
