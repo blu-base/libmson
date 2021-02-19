@@ -153,6 +153,9 @@ enum class PropertyIDs : quint32 {
    *
    * PropertySet
    *
+   *
+   * Tags? :
+   * https://github.com/msiemens/onenote.rs/blob/master/src/one/property/mod.rs
    */
   undoc_TextRunDataPropertyArray = 0x44000811,
 
@@ -179,24 +182,24 @@ enum class PropertyIDs : quint32 {
 
 
   /// maybe the index within the sequence of sections
-  undoc_tocSectionIndex = 0x14001cb9,
+  SectionOrderingIndex = 0x14001cb9,
 
   // seems to be a color code. 0xFFFFFFFF might be the default (no setting)
   // which differs from COLORREF spec maybe RGBA, big endian uint32, possibly
   // last byte also switches between default color and selected color
-  undoc_tocSectionColor = 0x14001cbe,
+  SectionColor = 0x14001cbe,
 
   /// does not to be written in all cases
   /// maybe a cache or alternative text
   /// appears in jcidRichTextOENode
   /// FourBytesOfLengthFollowedByData
-  undoc_RecognizedText = 0x1c001cc4,
+  RecognizedText = 0x1c001cc4,
 
   // Maybe stores a file name of a section file, but also found FileSyncandWOPI
   // and OneNote_RecycleBin
-  undoc_tocSectionName = 0x1c001d6b,
+  SectionName = 0x1c001d6b,
   // usually 16 bytes, likely a guid?
-  undoc_tocSectionGUID = 0x1c001d94,
+  SectionGUID = 0x1c001d94,
 
 
   /** 32 byte blob
@@ -262,7 +265,7 @@ enum class PropertyIDs : quint32 {
    * fd4000009b3c00000c4100009b3c00000c410000aa3c0000fd400000aa3c0000
    *
    */
-  undoc_TextServicesFramework32byteBlob = 0x1c001d4d,
+  TextServicesFrameworkBlob = 0x1c001d4d,
 
 
   /** Four bytes
@@ -291,7 +294,7 @@ enum class PropertyIDs : quint32 {
    * maybe flags, of 0x01, 0x02, 0x04, 0x08, and 0x10
    *
    */
-  undoc_TextServiesFramework001d4e = 0x14001d4e,
+  TextServiesFrameworkFlag1 = 0x14001d4e,
 
 
   /**
@@ -336,7 +339,7 @@ enum class PropertyIDs : quint32 {
    * <resolutionId provider="Windows Live" hash="abcdefg"> <localId
    * cid="abcdefg"/></resolutionId>
    */
-  undoc_ResolutionID = 0x1c001e30,
+  ResolutionID = 0x1c001e30,
 
   /** ObjectID which points to undoc_jciddrawingToolData(0x00120048), the tool
    * settings which contains:
@@ -345,45 +348,45 @@ enum class PropertyIDs : quint32 {
    * * undoc_StrokesToolSizeHeight
    * * undoc_StrokesToolSizeWidth
    */
-  undoc_StrokesToolSettings = 0x20003409,
+  InkStrokeProperties = 0x20003409,
 
 
-  /** When ever there are strokes or a shape, there is this 64bytes object which
-   * always have the same content (unparsed):
-   * 8f6a8a59c052a04b93afaf357411a561 00000080 ffffff7f 02000000 00007a44
-   * 759f3fb5e0049844a7eec30dbb5a9011 00000080 ffffff7f 02000000 00007a44
+  /** ISF Metric table
    *
-   * there seem to be two GUIDs in this chunk.
+   * FourBytesOfLengthFollowedByData, at least 64 bytes
+   *  Encoding:
+   *  | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | A | B | C | D | E | F |
+   *  | - | - | - | - | - | - | - | - | - | - | - | - | - | - | - | - |
+   *  | Tag Guid (16 bytes) ||||||||||||||||
+   *  | logic min (int32) |||| logic max (int32) |||| unit enum (32 bits] |||| resolution (float32) ||||
    *
-   * On http://www.devsuperpage.com/search/Articles.asp?ArtID=798001
-   * there are these two GUID mentioned for InkEdit Control:
    * X = '{598A6A8F-52C0-4BA0-93AF-AF357411A561}'
    * Y = '{B53F9F75-04E0-4498-A7EE-C30DBB5A9011}'
    *
-   * This indicates, this block specifies the structure of inkdata?
+   * Reference:
+   * https://docs.microsoft.com/de-de/uwp/specifications/ink-serialized-format
    *
-   *
-   * FourBytesOfLengthFollowedByData
    */
-  undoc_Undetermined64byteBlock = 0x1c00340a,
+  InkMetricTable = 0x1c00340a,
 
   /** Blob containing serialized strokes in native format
    *
    * Seems to correlate with InkStroke class from onenote api
    *
-   * FourBytesOfLengthFollowedByData
+   * Multi-byte encoding according to:
+   * https://docs.microsoft.com/de-de/uwp/specifications/ink-serialized-format
    */
-  undoc_StrokesBlob = 0x1c00340b,
+  InkPath = 0x1c00340b,
 
   /// \todo find ToolSettings whether it's round or square
   /** float32 for the tool height, 1 unit represents 0.01mm
    */
-  undoc_StrokesToolSizeHeight = 0x1400340c,
+  InkPenHeight = 0x1400340c,
 
   /** float32 for the tool width, 1 unit represents 0.01mm
    *
    */
-  undoc_StrokesToolSizeWidth = 0x1400340d,
+  InkPenWidth = 0x1400340d,
 
   /** Stroke's Tool color
    * FourBytesOfData
@@ -395,9 +398,13 @@ enum class PropertyIDs : quint32 {
    * X might be a switch to declare fixed color versus automatically
    * changeble,such as maybe color scheme
    */
-  undoc_StrokesColor = 0x1400340f,
+  InkColor = 0x1400340f,
 
-
+  /**
+   * \todo why is 003411 byte and bool?
+   * Nameing source: https://github.com/msiemens/onenote.rs/blob/master/src/one/property/mod.rs
+   */
+  InkIgnorePressure = 0x08003411,
   /** Strokes's tool setting, which seem to correlate with square-like tool such
    * as the highlight markers Bool usually seems to have only the value True
    * when present
@@ -426,9 +433,9 @@ enum class PropertyIDs : quint32 {
    * Which contains PropertyID 0x24003416
    * which further points to undoc_jcidDrawingNode (0x00020047)
    *
-   * also contains
+   * Nameing source: https://github.com/msiemens/onenote.rs/blob/master/src/one/property/mod.rs
    */
-  undoc_StrokesContainer = 0x20003415,
+  InkData = 0x20003415,
 
   /** ArrayofObjectIDs
    *  lives within undoc_jcidDrawingGroupNode(0x0002003b)
@@ -436,29 +443,36 @@ enum class PropertyIDs : quint32 {
    * points to undoc_jcidDrawingNodes which are likely
    * contain the strokes for which matches according to
    * undoc_StrokesRecognizedText have been found
-   */
-  undoc_StrokesGroup = 0x24003416,
-
-  /** 16 byte structure, not a guid, maybe 4 uint32 being coordinates or bound
-   * box in a unit with very small increments (such as the StrokeTool)
    *
-   * only present when Handwritting modus is active
+   * Nameing source: https://github.com/msiemens/onenote.rs/blob/master/src/one/property/mod.rs
    */
-  undoc_Strokes003418 = 0x1c003418,
+  InkStrokes = 0x24003416,
+
+  /** Bounding box of an ink object
+   *
+   *  16 byte object containing 4 uint32_t
+   *
+   *  \todo specify unit, and order
+   *
+   * only present when Handwritting modus is active?
+   *
+   * Nameing source: https://github.com/msiemens/onenote.rs/blob/master/src/one/property/mod.rs
+   */
+  InkBoundingBox = 0x1c003418,
 
   /** squential number likely indicating the input order
    * FourBytesOfData
    */
-  undoc_StrokesIndex = 0x14003419,
+  InkStorkeOrderingIndex = 0x14003419,
   /** likely the language setting, maybe is used for ocr
   * TwoBytesOfData
 
+
+  * Unique Guid for the referencing ink object
+  *
   * 16 bytes structure
-  * values seem to be quite random, except a GUID' constant bits (56-59, and
-  * likely 64-65).
-  * FourBytesOfLengthFollowedByData
   */
-  undoc_StrokesGUID = 0x1c00341a,
+  InkGUID = 0x1c00341a,
 
 
   /** TwoBytes declaring the LanguageID without a SortID
@@ -466,33 +480,40 @@ enum class PropertyIDs : quint32 {
    */
   unodc_StrokeLanguage = 0x1000341b,
 
-  /** observed only values 0x00, 0x01, 0x02.
-   * 0x00 seems to be the default value, 'handwriting and drawing'
-   * 0x01 seems to only occur when drawing is set to 'handwriting only'
-   * 0x02 only occurs when modus is 'drawning only'
-   * OneByteOfData
+  /** Switch which describes the drawing mode used to create the referencing ink object
+   *
+   *  One byte of data
+   *
+   *  | Value | Feature                 |
+   *  | ----- | ----------------------- |
+   *  | 0x00  | handwriting and drawing |
+   *  | 0x01  | handwriting only        |
+   *  | 0x02  | drawing only            |
+   *
+   *
+   *  https://docs.microsoft.com/en-us/archive/blogs/johnguin/the-inkbias-registry-key-in-onenote
    */
-  undoc_StrokesModus = 0x0c00341c,
+  InkBias = 0x0c00341c,
 
   /** FILETIME object with creation time of the respective stroke
    *
    * eight bytes in FourBytesOfLengthFollowedByData
    */
-  undoc_StrokesCreationTime = 0x1c00341d,
+  InkCreationTime = 0x1c00341d,
 
 
-  /** \0-seperated list of recognized text
-   * It seems the sorting is sorted by likelyhood
+  /** \0-seperated list of recognized text in the ink object
+   * It seems the sorting is by likelyhood
    *
    * FourBytesOfLengthFollowedByData
    */
-  undoc_StrokesRecognizedText = 0x1c00341e,
+  InkRecognizedText = 0x1c00341e,
 
   /** seems to be only present when handwriting modus or dual modus is active
    * if that modus is active this bool is set to true
    * bool
    */
-  undoc_Strokes00341f = 0x8800341f,
+  undoc_Strokes00341f = 0x0800341f,
 
   /*
    * FourBytesOfData
@@ -520,14 +541,66 @@ enum class PropertyIDs : quint32 {
    */
   undoc_TextServicesFrameworkBlob = 0x1c00345d,
 
-  /** the following values always appear in a group
+  //the following values always appear in a group
+  // EmbeddedInkStartX
+  // EmbeddedInkStartY
+  // EmbeddedInkWidth
+  // EmbeddedInkHeight
+  // EmbeddedInkOffsetHoriz
+  // EmbeddedInkHeight
+  // undoc_Strokes0034a4
+  // undoc_Strokes0034a5
+
+
+  /** Initial x coordinate of an embedded ink object
+   *
+   *  Source:
+   *  https://github.com/msiemens/onenote.rs/blob/master/src/one/property/mod.rs
    */
-  undoc_Strokes00349e = 0x1400349e,
-  undoc_Strokes00349f = 0x1400349f,
-  undoc_Strokes0034a0 = 0x140034a0,
-  undoc_Strokes0034a1 = 0x140034a1,
-  undoc_Strokes0034a2 = 0x140034a2,
-  undoc_Strokes0034a3 = 0x140034a3,
+  EmbeddedInkStartX = 0x1400349e,
+
+  /** Initial y coordinate of an embedded ink object
+   *
+   *  Source:
+   *  https://github.com/msiemens/onenote.rs/blob/master/src/one/property/mod.rs
+   */
+  EmbeddedInkStartY = 0x1400349f,
+
+  /** Width of an embedded ink object
+   *
+   *  Source:
+   *  https://github.com/msiemens/onenote.rs/blob/master/src/one/property/mod.rs
+   *
+   */
+  EmbeddedInkWidth = 0x140034a0,
+
+  /** Height of an embedded ink object
+   *
+   *  Source:
+   *  https://github.com/msiemens/onenote.rs/blob/master/src/one/property/mod.rs
+   *
+   */
+  EmbeddedInkHeight = 0x140034a1,
+
+  /** Horizontal offset of an embedded ink object
+   *  \todo from where?
+   *
+   *  Source:
+   *  https://github.com/msiemens/onenote.rs/blob/master/src/one/property/mod.rs
+   *
+   */
+  EmbeddedInkOffsetHoriz = 0x140034a2,
+
+  /** Vertical offset of an embedded ink object
+   *  \todo from where?
+   *
+   *  Source:
+   *  https://github.com/msiemens/onenote.rs/blob/master/src/one/property/mod.rs
+   *
+   */
+  EmbeddedInkOffsetVert = 0x140034a3,
+
+
   undoc_Strokes0034a4 = 0x140034a4,
   undoc_Strokes0034a5 = 0x140034a5,
 
@@ -538,7 +611,7 @@ enum class PropertyIDs : quint32 {
   undoc_SchemaRevisionInOrderToRead = 0x1400348b,
 
   // mono color background
-  undoc_PageBackgroundColor = 0x14001d2a,
+  PageBackgroundColor = 0x14001d2a,
 
 
   /** used in PackageStoreFile */
@@ -547,6 +620,85 @@ enum class PropertyIDs : quint32 {
   FileDataObject_InvalidData = 0x0800343D,
   /** used in PackageStoreFile */
   FileDataObject_Extension = 0x1C003424,
+
+
+  /// the following undocumented IDs where observed but not yet specified
+
+  // ArrayOfObjectSpaceIDs
+  undoc_0x2c001d62 = 0x2c001d62,
+
+  // bools
+  undoc_0x08001c32 = 0x08001c32,
+  undoc_0x08001d85 = 0x08001d85,
+  undoc_0x08001d8d = 0x08001d8d,
+  undoc_0x08001dce = 0x08001dce,
+  undoc_0x08001dec = 0x08001dec,
+  undoc_0x08001e24 = 0x08001e24,
+  undoc_0x08001e2c = 0x08001e2c,
+  undoc_0x08003405 = 0x08003405,
+  undoc_0x08003406 = 0x08003406,
+
+  undoc_0x0800341f = 0x0800341f,
+  undoc_0x08003495 = 0x08003495,
+  undoc_0x080034aa = 0x080034aa,
+  undoc_0x080034dd = 0x080034dd,
+
+  // FourBytesOfData
+  undoc_0x14001c28 = 0x14001c28,
+  undoc_0x14001c48 = 0x14001c48,
+  undoc_0x14001c49 = 0x14001c49,
+  undoc_0x14001c4a = 0x14001c4a,
+  undoc_0x14001c4b = 0x14001c4b,
+  undoc_0x14001c99 = 0x14001c99,
+  undoc_0x14001c9e = 0x14001c9e,
+  undoc_0x14001c9f = 0x14001c9f,
+  undoc_0x14001ca0 = 0x14001ca0,
+  undoc_0x14001ca1 = 0x14001ca1,
+  undoc_0x14001cfd = 0x14001cfd,
+  undoc_0x14001d4e = 0x14001d4e,
+  undoc_0x14001d5c = 0x14001d5c,
+  undoc_0x14001df6 = 0x14001df6,
+  undoc_0x14001df9 = 0x14001df9,
+  undoc_0x14003420 = 0x14003420,
+  undoc_0x1400344f = 0x1400344f,
+  undoc_0x14003450 = 0x14003450,
+  undoc_0x14003481 = 0x14003481,
+  undoc_0x140034a4 = 0x140034a4,
+  undoc_0x140034a5 = 0x140034a5,
+  undoc_0x140035a4 = 0x140035a4,
+  undoc_0x140035d1 = 0x140035d1,
+  undoc_0x140035d2 = 0x140035d2,
+
+  // FourBytesOfLengthFollowedByData
+  undoc_0x1c001c97 = 0x1c001c97,
+  undoc_0x1c001c98 = 0x1c001c98,
+  undoc_0x1c001ca3 = 0x1c001ca3,
+  undoc_0x1c001ca5 = 0x1c001ca5,
+  undoc_0x1c001ca6 = 0x1c001ca6,
+  undoc_0x1c001ca7 = 0x1c001ca7,
+  undoc_0x1c001cc8 = 0x1c001cc8,
+  undoc_0x1c001cda = 0x1c001cda,
+  undoc_0x1c001d4c = 0x1c001d4c,
+  undoc_0x1c001d4d = 0x1c001d4d,
+  undoc_0x1c001d5d = 0x1c001d5d,
+  undoc_0x1c001d61 = 0x1c001d61,
+  undoc_0x1c001d84 = 0x1c001d84,
+  undoc_0x1c001daa = 0x1c001daa,
+  undoc_0x1c001dbe = 0x1c001dbe,
+  undoc_0x1c001dbf = 0x1c001dbf,
+  undoc_0x1c001dcf = 0x1c001dcf,
+  undoc_0x1c001dfb = 0x1c001dfb,
+  undoc_0x1c001dfc = 0x1c001dfc,
+  undoc_0x1c00345d = 0x1c00345d,
+  // OneByteOfData
+  undoc_0x0c001cc0 = 0x0c001cc0,
+  undoc_0x0c001d4f = 0x0c001d4f,
+  undoc_0x0c003452 = 0x0c003452,
+
+  //TwoBytesOfData
+  undoc_0x1000344e = 0x1000344e,
+  undoc_0x10003453 = 0x10003453,
+
 };
 
 

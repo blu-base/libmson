@@ -436,12 +436,12 @@ QString PropertyID::idToString(const PropertyIDs& val)
     m_id_string = "undoc_float001ca1";
     break;
 
-  case PropertyIDs::undoc_TextServiesFramework001d4e:
-    m_id_string = "undoc_TextServiesFramework001d4e";
+  case PropertyIDs::TextServiesFrameworkFlag1:
+    m_id_string = "TextServiesFrameworkFlag1";
     break;
 
-  case PropertyIDs::undoc_TextServicesFramework32byteBlob:
-    m_id_string = "undoc_TextServicesFramework32byteBlob";
+  case PropertyIDs::TextServicesFrameworkBlob:
+    m_id_string = "TextServicesFrameworkBlob";
     break;
 
   case PropertyIDs::undoc_001d5c:
@@ -455,55 +455,55 @@ QString PropertyID::idToString(const PropertyIDs& val)
     m_id_string = "undoc_AuthorInitials";
     break;
 
-  case PropertyIDs::undoc_ResolutionID:
-    m_id_string = "undoc_ResolutionID";
+  case PropertyIDs::ResolutionID:
+    m_id_string = "ResolutionID";
     break;
 
-  case PropertyIDs::undoc_StrokesToolSettings:
-    m_id_string = "undoc_StrokesToolSettings";
+  case PropertyIDs::InkStrokeProperties:
+    m_id_string = "InkStrokeProperties";
     break;
-  case PropertyIDs::undoc_Undetermined64byteBlock:
-    m_id_string = "undoc_Undetermined64byteBlock";
+  case PropertyIDs::InkMetricTable:
+    m_id_string = "InkMetricTable";
     break;
-  case PropertyIDs::undoc_StrokesBlob:
-    m_id_string = "undoc_StrokesBlob";
+  case PropertyIDs::InkPath:
+    m_id_string = "InkPath";
     break;
-  case PropertyIDs::undoc_StrokesToolSizeHeight:
-    m_id_string = "undoc_StrokesToolSizeHeight";
+  case PropertyIDs::InkPenHeight:
+    m_id_string = "InkPenHeight";
     break;
-  case PropertyIDs::undoc_StrokesToolSizeWidth:
-    m_id_string = "undoc_StrokesToolSizeWidth";
+  case PropertyIDs::InkPenWidth:
+    m_id_string = "InkPenWidth";
     break;
-  case PropertyIDs::undoc_StrokesColor:
-    m_id_string = "undoc_StrokesColor";
+  case PropertyIDs::InkColor:
+    m_id_string = "InkColor";
     break;
-  case PropertyIDs::undoc_StrokesContainer:
-    m_id_string = "undoc_StrokesContainer";
+  case PropertyIDs::InkData:
+    m_id_string = "InkData";
     break;
-  case PropertyIDs::undoc_StrokesGroup:
-    m_id_string = "undoc_StrokesGroup";
+  case PropertyIDs::InkStrokes:
+    m_id_string = "InkStrokes";
     break;
-  case PropertyIDs::undoc_Strokes003418:
-    m_id_string = "undoc_Strokes003418";
+  case PropertyIDs::InkBoundingBox:
+    m_id_string = "InkBoundingBox";
     break;
-  case PropertyIDs::undoc_StrokesIndex:
-    m_id_string = "undoc_StrokesIndex";
+  case PropertyIDs::InkStorkeOrderingIndex:
+    m_id_string = "InkStorkeOrderingIndex";
     break;
-  case PropertyIDs::undoc_StrokesGUID:
-    m_id_string = "undoc_StrokesGUID";
+  case PropertyIDs::InkGUID:
+    m_id_string = "InkGUID";
     break;
   case PropertyIDs::unodc_StrokeLanguage:
     m_id_string = "unodc_StrokeLanguage";
     break;
-  case PropertyIDs::undoc_StrokesModus:
-    m_id_string = "undoc_StrokesModus";
+  case PropertyIDs::InkBias:
+    m_id_string = "InkBias";
     break;
 
-  case PropertyIDs::undoc_StrokesCreationTime:
-    m_id_string = "undoc_StrokesCreationTime";
+  case PropertyIDs::InkCreationTime:
+    m_id_string = "InkCreationTime";
     break;
-  case PropertyIDs::undoc_StrokesRecognizedText:
-    m_id_string = "undoc_StrokesRecognizedText";
+  case PropertyIDs::InkRecognizedText:
+    m_id_string = "InkRecognizedText";
     break;
 
   case PropertyIDs::undoc_StrokesOffsetsVertHoriz:
@@ -513,29 +513,29 @@ QString PropertyID::idToString(const PropertyIDs& val)
   case PropertyIDs::undoc_SchemaRevisionInOrderToRead:
     m_id_string = "undoc_SchemaRevisionInOrderToRead";
     break;
-  case PropertyIDs::undoc_RecognizedText:
-    m_id_string = "undoc_RecognizedText";
+  case PropertyIDs::RecognizedText:
+    m_id_string = "RecognizedText";
     break;
 
   case PropertyIDs::undoc_TextServicesFrameworkBlob:
     m_id_string = "undoc_TextServicesFrameworkBlob";
     break;
 
-  case PropertyIDs::undoc_tocSectionName:
-    m_id_string = "undoc_tocSectionName";
+  case PropertyIDs::SectionName:
+    m_id_string = "SectionName";
     break;
-  case PropertyIDs::undoc_tocSectionIndex:
-    m_id_string = "undoc_tocSectionIndex";
+  case PropertyIDs::SectionOrderingIndex:
+    m_id_string = "SectionOrderingIndex";
     break;
-  case PropertyIDs::undoc_tocSectionGUID:
-    m_id_string = "undoc_tocSectionGUID";
+  case PropertyIDs::SectionGUID:
+    m_id_string = "SectionGUID";
     break;
-  case PropertyIDs::undoc_tocSectionColor:
-    m_id_string = "undoc_tocSectionColor";
+  case PropertyIDs::SectionColor:
+    m_id_string = "SectionColor";
     break;
 
-  case PropertyIDs::undoc_PageBackgroundColor:
-    m_id_string = "undoc_PageBackgroundColor";
+  case PropertyIDs::PageBackgroundColor:
+    m_id_string = "PageBackgroundColor";
     break;
 
 
@@ -552,6 +552,7 @@ QString PropertyID::idToString(const PropertyIDs& val)
   case PropertyIDs::None:
     m_id_string = "None";
     break;
+
   default:
     m_id_string = "unspecified";
     break;
