@@ -153,6 +153,10 @@ void DocumentModelFactory::createRevisionStoreModel(
 void DocumentModelFactory::createPackageStoreModel(
     DocumentModel* tree, const QString& fileName)
 {
+
+  auto packageStoreFile = getPackageStoreDocument(fileName);
+
+  auto* root = tree->root();
 }
 
 std::shared_ptr<libmson::priv::RevisionStoreFile>
@@ -1711,6 +1715,8 @@ DocumentItem* DocumentModelFactory::appendTransactionEntry(
   return item;
 }
 
+
+
 DocumentItem* DocumentModelFactory::appendObjectSpaceObjectStreamHeader(
     const libmson::priv::ObjectSpaceObjectStreamHeader& streamHeader,
     const QString& name, quint64& stp, DocumentItem* parent)
@@ -2100,6 +2106,22 @@ DocumentModelFactory::appendPTNoData(quint64& stp, DocumentItem* parent)
       QStringLiteral("NoData"), QString(), QString(), stp, 0, parent);
 
   return item;
+}
+
+
+
+void DocumentModelFactory::appendPackagingStructure(
+    const libmson::packStore::PackageStoreFile_SPtr_t& packStoreFile,
+    DocumentItem* parent)
+{
+  auto header = packStoreFile->getHeader();
+
+//  const quint64 cb = header.getSi
+
+//  // add Header
+//  auto* headerItem = appendNewChild(
+//      QStringLiteral("Header"), QStringLiteral("Chunkable"),
+//      QStringLiteral("RevisionStoreFile"), 0, packStoreFile->), parent);
 }
 
 

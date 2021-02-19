@@ -11,6 +11,7 @@
 #include "documentmodel.h"
 
 #include "../../../src/lib/priv/RevisionStoreFile.h"
+#include "../../../src/lib/priv/PackageStoreFile.h"
 #include "../../../src/lib/priv/RevisionStoreFileParser.h"
 
 #include "../../../src/lib/priv/utils/ChunkableUtils.h"
@@ -60,6 +61,9 @@ private:
   static DocumentItem* appendNewChild(
       const QString& name, const QString& type, const QVariant& value,
       const quint64 stp, const quint64 cb, DocumentItem* parent);
+
+
+  // RevisionStoreFile
 
   // chunkables
   static void appendRevisionStoreFileHeader(
@@ -288,6 +292,10 @@ private:
 
   // ObjectPropSet components
 
+
+
+
+
   // increments stp by its size
   static DocumentItem* appendObjectSpaceObjectStreamHeader(
       const libmson::priv::ObjectSpaceObjectStreamHeader& streamHeader,
@@ -353,6 +361,12 @@ private:
       DocumentItem* parent);
   // increments stp by its size
   static DocumentItem* appendPTNoData(quint64& stp, DocumentItem* parent);
+
+
+  // PackageStoreFile
+  static void appendPackagingStructure(
+      const libmson::packStore::PackageStoreFile_SPtr_t& packStoreFile,
+      DocumentItem* parent);
 
 
   // common
