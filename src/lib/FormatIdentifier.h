@@ -39,7 +39,7 @@ enum class Supported { Yes, No, Inapplicable };
 class FormatIdentifier {
 public:
   FormatIdentifier();
-  FormatIdentifier(const std::string& fileName);
+  FormatIdentifier(std::string fileName);
 
   ~FormatIdentifier();
 
@@ -72,7 +72,7 @@ public:
    * subsequent call of getFormat, and getSupported will parse the file again.
    * Use reparse() if you expect the file to be changed after the initializing
    * of the FormatIdentifer or after using setFileName.*/
-  void setFileName(const std::string& fileName);
+  void setFileName(std::string fileName);
 
 private:
   class Impl;

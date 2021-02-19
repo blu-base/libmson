@@ -22,7 +22,6 @@ private:
   Supported m_support = Supported::Inapplicable;
 
   // support map
-private:
   inline static const std::map<OnFormat, Supported> m_supportMap{
       {OnFormat::One03_revStore, Supported::No},
       {OnFormat::OneToc03_revStore, Supported::No},
@@ -34,8 +33,6 @@ private:
       {OnFormat::Unrecoqnized, Supported::Inapplicable}};
 
   // File signatures
-private:
-  // offset 0x00
   static const std::array<uint8_t, 16> revisionStoreFileType_One;
   static const std::array<uint8_t, 16> revisionStoreFileType_OneToc;
 
@@ -67,14 +64,25 @@ private:
 
 public:
   explicit Impl() = default;
-  explicit Impl(const std::string& fileName);
+  explicit Impl(std::string fileName);
   ~Impl() = default;
 
-  [[nodiscard]] std::string getFileName();
+  // movable:
+  Impl(Impl&& rhs) = delete ;
+  Impl& operator=(Impl&& rhs) = delete ;
 
-  void setFileName(const std::string& fileName);
+  // and copyable
+  Impl(const Impl& rhs) = delete ;
+  Impl& operator=(const Impl& rhs) = delete ;
 
+  [[nodiscard]] std::string getFileName() const;
+
+  // parses the file if necessary
+  void setFileName(std::string fileName);
+
+  // parses the file if necessary
   [[nodiscard]] OnFormat getFormat();
+  // parses the file if necessary
   [[nodiscard]] Supported getSupported();
 
   void setDefaults();
@@ -89,7 +97,6 @@ private:
       uint16_t offset);
 };
 
-// offset 0x00
 constexpr const std::array<uint8_t, 16>
     FormatIdentifier::Impl::revisionStoreFileType_One = std::array<uint8_t, 16>(
         {0xe4, 0x52, 0x5c, 0x7b, 0x8c, 0xd8, 0xa7, 0x4d, 0xae, 0xb1, 0x53, 0x78,
@@ -149,16 +156,16 @@ constexpr const std::array<uint8_t, 2>
 // Private Implementations
 // ############################################################################
 
-FormatIdentifier::Impl::Impl(const std::string& fileName) : m_fileName(fileName)
+FormatIdentifier::Impl::Impl(std::string fileName) : m_fileName(std::move(fileName))
 {
   parseFile();
 }
 
-std::string FormatIdentifier::Impl::getFileName() { return m_fileName; }
+std::string FormatIdentifier::Impl::getFileName() const { return m_fileName; }
 
-void FormatIdentifier::Impl::setFileName(const std::string& fileName)
+void FormatIdentifier::Impl::setFileName(std::string fileName)
 {
-  m_fileName = fileName;
+  m_fileName = std::move(fileName);
   parseFile();
 }
 
@@ -226,7 +233,7 @@ void FormatIdentifier::Impl::parseFile()
   std::ifstream fileStream(m_fileName, std::ios::binary);
 
   // cache file header
-  std::array<char, 0x400> buff;
+  std::array<char, 0x400> buff{};
   fileStream.read(buff.data(), buff.size());
 
 
@@ -280,14 +287,16 @@ void FormatIdentifier::Impl::parseFile()
         return;
       }
     }
-    else if (hasRevisionStoreFileTypeOneTocGUID) {
+
+    if (hasRevisionStoreFileTypeOneTocGUID) {
       if (hasNonZeroLegacyFileVersionGUID && ffv_isFfvLegacy) {
         m_format   = OnFormat::OneToc03_revStore;
         m_support  = m_supportMap.at(m_format);
         m_isParsed = true;
         return;
       }
-      else if (!hasNonZeroLegacyFileVersionGUID && ffv_isFfvOneToc) {
+
+      if (!hasNonZeroLegacyFileVersionGUID && ffv_isFfvOneToc) {
         m_format   = OnFormat::OneToc10_revStore;
         m_support  = m_supportMap.at(m_format);
         m_isParsed = true;
@@ -300,7 +309,7 @@ void FormatIdentifier::Impl::parseFile()
     // determine width of variable ExtendedGUID in packageStoreFile
     uint16_t packageStoreFileFormat_offset = packageStoreFileFormat_offset_base;
 
-    uint8_t varWidthByte =
+    auto varWidthByte =
         static_cast<uint8_t>(buff.at(packageStoreFileFormat_offset_base));
 
     if (varWidthByte == 0) {
@@ -343,7 +352,7 @@ void FormatIdentifier::Impl::parseFile()
   // invalid content
   setDefaults();
   m_isParsed = true;
-};
+}
 
 
 template <size_t N>
@@ -351,13 +360,13 @@ bool FormatIdentifier::Impl::compareBuffWithRefArray(
     std::array<char, 0x400>& buff, std::array<uint8_t, N> ref, uint16_t offset)
 {
 
-  typedef typename std::array<uint8_t, N>::iterator RefArrayIterator;
+  using RefArrayIterator = typename std::array<uint8_t, N>::iterator;
 
-  auto buffItBegin = buff.begin();
-  auto refItBegin  = ref.begin();
-  auto buffItEnd   = buff.end();
-  auto refItEnd    = ref.end();
-  std::array<char, 0x400>::iterator buffIt;
+  auto* buffItBegin = buff.begin();
+  auto* refItBegin  = ref.begin();
+  auto* buffItEnd   = buff.end();
+  auto* refItEnd    = ref.end();
+  std::array<char, 0x400>::iterator buffIt{};
   RefArrayIterator refIt;
 
   // initial conditions
@@ -381,8 +390,9 @@ FormatIdentifier::FormatIdentifier()
     : p{std::make_unique<FormatIdentifier::Impl>()}
 {
 }
-FormatIdentifier::FormatIdentifier(const std::string& fileName)
-    : p{std::make_unique<FormatIdentifier::Impl>(fileName)}
+
+FormatIdentifier::FormatIdentifier(std::string fileName)
+    : p{std::make_unique<FormatIdentifier::Impl>(std::move(fileName))}
 {
 }
 
@@ -400,9 +410,9 @@ bool FormatIdentifier::isSupported()
 
 std::string FormatIdentifier::getFileName() { return p->getFileName(); }
 
-void FormatIdentifier::setFileName(const std::string& fileName)
+void FormatIdentifier::setFileName(std::string fileName)
 {
-  p->setFileName(fileName);
+  p->setFileName(std::move(fileName));
 }
 
 void FormatIdentifier::reparse() { p->parseFile(); }
