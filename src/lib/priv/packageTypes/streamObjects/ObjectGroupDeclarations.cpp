@@ -20,8 +20,6 @@ void ObjectGroupDeclarations::deserialize(QDataStream& ds)
 
   // the header has length 0...
 
-  qint64 origPos = ds.device()->pos();
-
   char buff[1];
   qint64 peeking = ds.device()->peek(buff, 1);
   if (peeking < 1) {
