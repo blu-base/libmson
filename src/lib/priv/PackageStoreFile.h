@@ -47,6 +47,10 @@ private:
 };
 
 
+typedef std::shared_ptr<PackageStoreFile> PackageStoreFile_SPtr_t;
+typedef std::weak_ptr<PackageStoreFile> PackageStoreFile_WPtr_t;
+
+
 } // namespace packStore
 } // namespace libmson
 
