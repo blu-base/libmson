@@ -119,7 +119,7 @@ constexpr const std::array<uint8_t, 16>
 
 
 constexpr const uint16_t
-    FormatIdentifier::Impl::packageStoreFileFormat_offset_base = 0x44;
+    FormatIdentifier::Impl::packageStoreFileFormat_offset_base = 0x48;
 constexpr const std::array<uint8_t, 16>
     FormatIdentifier::Impl::packageStoreFileType_One = {
         0xb4, 0x7c, 0x93, 0x1f, 0x6f, 0xb2, 0x5f, 0x44,

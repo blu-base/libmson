@@ -21,7 +21,7 @@ enum class OnFormat {
   /** conventional MS-ONESTORE revision store toc file format (2010)*/
   OneToc10_revStore,
 
-  /** compressed (CAB) directory  which should contain MS-ONESTORE files */
+  /** compressed (CAB) directory which should contain MS-ONESTORE files */
   OnePkg,
 
   /** SOAP packaged MS-ONESTORE file format */
