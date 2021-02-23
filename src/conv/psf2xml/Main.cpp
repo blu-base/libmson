@@ -14,6 +14,7 @@
 #include "../../lib/priv/PackageStoreFile.h"
 #include "../../lib/priv/PackageStoreFileParser.h"
 
+#include <../FormatIdentifier.h>
 
 #include "PSFtoXml.h"
 
@@ -158,6 +159,50 @@ int main(int argc, char* argv[])
         fileInfo.fileName().left(fileInfo.fileName().lastIndexOf('.'));
 
     // parse file
+
+    auto identifier = libmson::FormatIdentifier(entry.toStdString());
+    qInfo() << "Parsing" << entry;
+
+
+    QString formatInfo{"  file format: "};
+
+    auto onestoreFormat = identifier.getFormat();
+
+    switch (onestoreFormat) {
+    case libmson::OnFormat::One03_revStore:
+      formatInfo += "One03_revStore";
+      break;
+    case libmson::OnFormat::OneToc03_revStore:
+      formatInfo += "OneToc03_revStore";
+      break;
+    case libmson::OnFormat::One10_revStore:
+      formatInfo += "One10_revStore";
+      break;
+    case libmson::OnFormat::OneToc10_revStore:
+      formatInfo += "OneToc10_revStore";
+      break;
+    case libmson::OnFormat::OnePkg:
+      formatInfo += "OnePkg";
+      break;
+    case libmson::OnFormat::One_packStore:
+      formatInfo += "One_packStore";
+      break;
+    case libmson::OnFormat::OneToc_packStore:
+      formatInfo += "OneToc_packStore";
+      break;
+    case libmson::OnFormat::Unrecoqnized:
+      formatInfo += "Unrecoqnized";
+      break;
+    }
+
+    qInfo().noquote().nospace() << formatInfo;
+
+    if ((onestoreFormat != libmson::OnFormat::One_packStore) &&
+        (onestoreFormat != libmson::OnFormat::OneToc_packStore)) {
+      qInfo() << "  Skipping since the file format is not supported." << Qt::endl;
+      continue;
+    }
+
     QFile msonFile(entry);
     bool couldopen = msonFile.open(QIODevice::ReadOnly);
 

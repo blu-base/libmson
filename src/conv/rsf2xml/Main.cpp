@@ -10,11 +10,14 @@
 #include <QXmlStreamWriter>
 
 #include <QDir>
-
+#include <QString>
 #include <QUuid>
 
 #include "../../lib/priv/RevisionStoreFile.h"
 #include "../../lib/priv/RevisionStoreFileParser.h"
+
+
+#include <../FormatIdentifier.h>
 
 
 #include "RSFtoXml.h"
@@ -168,7 +171,53 @@ int main(int argc, char* argv[])
     QString baseFileName =
         fileInfo.fileName().left(fileInfo.fileName().lastIndexOf('.'));
 
+
     // parse file
+
+
+    auto identifier = libmson::FormatIdentifier(entry.toStdString());
+    qInfo() << "Parsing" << entry;
+
+
+    QString formatInfo{"  file format: "};
+
+    auto onestoreFormat = identifier.getFormat();
+
+    switch (onestoreFormat) {
+    case libmson::OnFormat::One03_revStore:
+      formatInfo += "One03_revStore";
+      break;
+    case libmson::OnFormat::OneToc03_revStore:
+      formatInfo += "OneToc03_revStore";
+      break;
+    case libmson::OnFormat::One10_revStore:
+      formatInfo += "One10_revStore";
+      break;
+    case libmson::OnFormat::OneToc10_revStore:
+      formatInfo += "OneToc10_revStore";
+      break;
+    case libmson::OnFormat::OnePkg:
+      formatInfo += "OnePkg";
+      break;
+    case libmson::OnFormat::One_packStore:
+      formatInfo += "One_packStore";
+      break;
+    case libmson::OnFormat::OneToc_packStore:
+      formatInfo += "OneToc_packStore";
+      break;
+    case libmson::OnFormat::Unrecoqnized:
+      formatInfo += "Unrecoqnized";
+      break;
+    }
+
+    qInfo().noquote().nospace() << formatInfo;
+
+    if ((onestoreFormat != libmson::OnFormat::One10_revStore) &&
+        (onestoreFormat != libmson::OnFormat::OneToc10_revStore)) {
+      qInfo() << "  Skipping since the file format is not supported." << Qt::endl;
+      continue;
+    }
+
     QFile msonFile(entry);
     bool couldopen = msonFile.open(QIODevice::ReadOnly);
 
