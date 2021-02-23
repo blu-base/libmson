@@ -24,7 +24,10 @@ void ObjectDeclarationWithRefCountBody::deserialize(QDataStream& ds)
   m_fHasOidReferences  = (temp >> 16) & 0x1;
   m_fHasOsidReferences = (temp >> 17) & 0x1;
 
-  ds >> m_fReserved2;
+  quint16 tail;
+  ds >> tail;
+
+  m_fReserved2 = (tail << 14) + (temp << 17);
 }
 
 void ObjectDeclarationWithRefCountBody::serialize(QDataStream& ds) const
