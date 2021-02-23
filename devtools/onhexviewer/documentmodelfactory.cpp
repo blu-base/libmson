@@ -570,9 +570,7 @@ void DocumentModelFactory::appendTransactionLogFragment(
 
   auto* sizeTableItem = appendNewChild(
       QStringLiteral("SizeTable"), QString(), QString(), chunk->getInitialStp(),
-      chunk->getInitialCb() -
-          libmson::priv::FileChunkReference64x32::getSizeInFile(),
-      chunkItem);
+      chunk->getSizeTable().size() * 8, chunkItem);
 
   quint64 ststp = chunk->getInitialStp();
 
@@ -582,14 +580,17 @@ void DocumentModelFactory::appendTransactionLogFragment(
   }
 
 
-  quint64 footer = chunk->getInitialStp() + chunk->getInitialCb() -
-                   libmson::priv::FileChunkReference64::getSizeInFile();
   appendFileChunkReference64x32(
       libmson::priv::getFcr64x32FromChunk(
           revStoreFile, chunk->getNextFragment(),
           libmson::priv::FCR_INIT::ZERO),
-      QStringLiteral("nextFragment"), footer, chunkItem);
+      QStringLiteral("nextFragment"), ststp, chunkItem);
+
+  appendNewChild(
+      QStringLiteral("padding"), QStringLiteral("unspecified"), QString(),
+      ststp, 4, chunkItem);
 }
+
 
 void DocumentModelFactory::appendFileDataStoreObject(
     const libmson::priv::FileDataStoreObject_SPtr_t& chunk,
@@ -1264,6 +1265,17 @@ void DocumentModelFactory::appendObjectDeclarationFileData3RefCountFND(
   quint64 fndstp = stp;
 
   appendCompactID(fnd->getOid(), QStringLiteral("oid"), fndstp, parent);
+
+  appendJCID(fnd->getJcid(), QStringLiteral("jcid"), fndstp, parent);
+
+  appendUInt8(fnd->getCRef(), QStringLiteral("cRef"), fndstp, parent);
+
+  appendStringInStorageBuffer(
+      fnd->getFileDataReference(), QStringLiteral("FileDataReference"), fndstp,
+      parent);
+  appendStringInStorageBuffer(
+      fnd->getExtension(), QStringLiteral("Extension"), fndstp,
+      parent);
 }
 
 void DocumentModelFactory::appendObjectDeclarationFileData3LargeRefCountFND(
@@ -1716,7 +1728,6 @@ DocumentItem* DocumentModelFactory::appendTransactionEntry(
 }
 
 
-
 DocumentItem* DocumentModelFactory::appendObjectSpaceObjectStreamHeader(
     const libmson::priv::ObjectSpaceObjectStreamHeader& streamHeader,
     const QString& name, quint64& stp, DocumentItem* parent)
@@ -2056,7 +2067,7 @@ DocumentItem* DocumentModelFactory::appendPTFourBytesOfLengthFollowedByData(
   appendNewChild(
       QStringLiteral("Data"), QString(), pt->data().toHex(), stp, cb - 4, item);
 
-  stp += cb -4;
+  stp += cb - 4;
   return item;
 }
 
@@ -2109,19 +2120,18 @@ DocumentModelFactory::appendPTNoData(quint64& stp, DocumentItem* parent)
 }
 
 
-
 void DocumentModelFactory::appendPackagingStructure(
     const libmson::packStore::PackageStoreFile_SPtr_t& packStoreFile,
     DocumentItem* parent)
 {
   auto header = packStoreFile->getHeader();
 
-//  const quint64 cb = header.getSi
+  //  const quint64 cb = header.getSi
 
-//  // add Header
-//  auto* headerItem = appendNewChild(
-//      QStringLiteral("Header"), QStringLiteral("Chunkable"),
-//      QStringLiteral("RevisionStoreFile"), 0, packStoreFile->), parent);
+  //  // add Header
+  //  auto* headerItem = appendNewChild(
+  //      QStringLiteral("Header"), QStringLiteral("Chunkable"),
+  //      QStringLiteral("RevisionStoreFile"), 0, packStoreFile->), parent);
 }
 
 
@@ -2422,7 +2432,9 @@ DocumentItem* DocumentModelFactory::appendStringInStorageBuffer(
 
   appendNewChild(
       QStringLiteral("RawString"), QStringLiteral("char array"),
-      buffer.getStringData(), stp, buffer.getCch(), item);
+      buffer.getStringData(), stp, buffer.getCch() *2, item);
+
+  stp += buffer.getCch() * 2;
 
   return item;
 }
