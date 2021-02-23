@@ -373,8 +373,10 @@ private:
       const libmson::ListMSAAIndex& obj, QXmlStreamWriter& xmlWriter);
   static QXmlStreamWriter& writeNoteTagShape(
       const libmson::NoteTagShape& obj, QXmlStreamWriter& xmlWriter);
-  static QXmlStreamWriter&
-  writePageSize(const libmson::PageSize& obj, QXmlStreamWriter& xmlWriter);
+
+  static QXmlStreamWriter& writeBoolean(
+      const int boolValue, QXmlStreamWriter& xmlWriter);
+
   static QXmlStreamWriter&
   writeTime32(const libmson::Time32& obj, QXmlStreamWriter& xmlWriter);
 

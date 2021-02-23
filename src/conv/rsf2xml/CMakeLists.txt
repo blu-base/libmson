@@ -16,6 +16,7 @@ target_link_libraries(
     libmson
     Qt5::Core
     Qt5::Xml
+    isf
     )
 
 install(TARGETS rsf2xml DESTINATION ${CMAKE_INSTALL_BINDIR})

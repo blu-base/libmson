@@ -3,12 +3,18 @@
 #include "../../lib/priv/utils/ChunkableUtils.h"
 #include "../../lib/priv/utils/Helper.h"
 
+
+#include <propertyTypes/PropertyID.h>
+
 #include <QDataStream>
 #include <QDebug>
 #include <QXmlStreamWriter>
 
 #include <memory>
 
+
+#include <MetricTable.h>
+#include <MultiByteEncoding.h>
 
 bool RSFtoXml::writeRSFTree(
     QFile& outputFile,
@@ -2144,18 +2150,16 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
         "boolValue", currentPrid.boolValue() ? "True" : "False");
     xmlWriter.writeAttribute("Value", qStringHex(currentPrid.value(), 8));
 
+
+    xmlWriter.writeStartElement(PropertyID::idToString(currentPrid.id()));
+
+
     switch (currentPrid.id()) {
     case PropertyIDs::LayoutTightLayout: {
-      xmlWriter.writeStartElement("LayoutTightLayout");
-
-      int val = currentPrid.boolValue();
-      xmlWriter.writeCharacters(
-          val == 0 ? "False" : (val == 1 ? "True" : "n.a."));
-      xmlWriter.writeEndElement();
+      writeBoolean(currentPrid.boolValue(), xmlWriter);
       break;
     }
     case PropertyIDs::PageWidth: {
-      xmlWriter.writeStartElement("PageWidth");
       const auto body =
           std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
               ->data();
@@ -2164,16 +2168,15 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
       float pagewidth;
       bytes >> pagewidth;
+
       // Validity specified by MS-ONE, sec 2.3.6
       if (pagewidth < 2.0 || pagewidth > 44.0) {
         xmlWriter.writeAttribute("valid", "False");
       }
       xmlWriter.writeCharacters(QString::number(pagewidth, 'f', 5));
-      xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::PageHeight: {
-      xmlWriter.writeStartElement("PageHeight");
       const auto body =
           std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
               ->data();
@@ -2189,11 +2192,9 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
         xmlWriter.writeAttribute("valid", "False");
       }
       xmlWriter.writeCharacters(QString::number(pageheight, 'f', 5));
-      xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::OutlineElementChildLevel: {
-      xmlWriter.writeStartElement("IndentationLevel");
       const auto body =
           std::dynamic_pointer_cast<PropertyType_OneByteOfData>(currentData)
               ->data();
@@ -2203,66 +2204,34 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       bytes >> val;
 
       xmlWriter.writeCharacters(QString::number(val));
-      xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::Bold: {
-      xmlWriter.writeStartElement("Bold");
-
-      int val = currentPrid.boolValue();
-      xmlWriter.writeCharacters(
-          val == 0 ? "False" : (val == 1 ? "True" : "n.a."));
-      xmlWriter.writeEndElement();
+      writeBoolean(currentPrid.boolValue(), xmlWriter);
       break;
     }
     case PropertyIDs::Italic: {
-      xmlWriter.writeStartElement("Italic");
-
-      int val = currentPrid.boolValue();
-      xmlWriter.writeCharacters(
-          val == 0 ? "False" : (val == 1 ? "True" : "n.a."));
-      xmlWriter.writeEndElement();
+      writeBoolean(currentPrid.boolValue(), xmlWriter);
       break;
     }
     case PropertyIDs::Underline: {
-      xmlWriter.writeStartElement("Underline");
-
-      int val = currentPrid.boolValue();
-      xmlWriter.writeCharacters(
-          val == 0 ? "False" : (val == 1 ? "True" : "n.a."));
-      xmlWriter.writeEndElement();
+      writeBoolean(currentPrid.boolValue(), xmlWriter);
       break;
     }
     case PropertyIDs::Strikethrough: {
-      xmlWriter.writeStartElement("Strikethrough");
-
-      int val = currentPrid.boolValue();
-      xmlWriter.writeCharacters(
-          val == 0 ? "False" : (val == 1 ? "True" : "n.a."));
-      xmlWriter.writeEndElement();
+      writeBoolean(currentPrid.boolValue(), xmlWriter);
       break;
     }
     case PropertyIDs::Superscript: {
-      xmlWriter.writeStartElement("Superscript");
-
-      int val = currentPrid.boolValue();
-      xmlWriter.writeCharacters(
-          val == 0 ? "False" : (val == 1 ? "True" : "n.a."));
-      xmlWriter.writeEndElement();
+      writeBoolean(currentPrid.boolValue(), xmlWriter);
       break;
     }
     case PropertyIDs::Subscript: {
-      xmlWriter.writeStartElement("Subscript");
-
-      int val = currentPrid.boolValue();
-      xmlWriter.writeCharacters(
-          val == 0 ? "False" : (val == 1 ? "True" : "n.a."));
-      xmlWriter.writeEndElement();
+      writeBoolean(currentPrid.boolValue(), xmlWriter);
       break;
     }
 
     case PropertyIDs::Font: {
-      xmlWriter.writeStartElement("Font");
       if (currentPrid.type() ==
           PropertyIDType::FourBytesOfLengthFollowedByData) {
         const auto data =
@@ -2272,11 +2241,9 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
         QString string = QString::fromUtf8(data.constData(), data.size());
         xmlWriter.writeCharacters(string);
       }
-      xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::FontSize: {
-      xmlWriter.writeStartElement("FontSize");
       const auto data =
           std::dynamic_pointer_cast<PropertyType_TwoBytesOfData>(currentData)
               ->data();
@@ -2289,11 +2256,9 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
         xmlWriter.writeAttribute("valid", "false");
       }
       xmlWriter.writeCharacters(QString::number(val));
-      xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::FontColor: {
-      xmlWriter.writeStartElement("FontColor");
       const auto data =
           std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
               ->data();
@@ -2303,12 +2268,9 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       bytes >> val;
 
       writeColorRef(val, xmlWriter);
-
-      xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::Highlight: {
-      xmlWriter.writeStartElement("Highlight");
       const auto data =
           std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
               ->data();
@@ -2318,11 +2280,9 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       bytes >> val;
 
       writeColorRef(val, xmlWriter);
-      xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::RgOutlineIndentDistance: {
-      xmlWriter.writeStartElement("RgOutlineIndentDistance");
       const auto body =
           std::dynamic_pointer_cast<
               PropertyType_FourBytesOfLengthFollowedByData>(currentData)
@@ -2347,9 +2307,8 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
         }
       }
       xmlWriter.writeCharacters("}");
-      xmlWriter.writeEndElement();
+      xmlWriter.writeEndElement(); // rgIndents
 
-      xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::BodyTextAlignment: {
@@ -2363,7 +2322,6 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       break;
     }
     case PropertyIDs::OffsetFromParentHoriz: {
-      xmlWriter.writeStartElement("OffsetFromParentHoriz");
       const auto data =
           std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
               ->data();
@@ -2373,11 +2331,9 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       float val;
       bytes >> val;
       xmlWriter.writeCharacters(QString::number(val, 'f', 5));
-      xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::OffsetFromParentVert: {
-      xmlWriter.writeStartElement("OffsetFromParentVert");
       const auto data =
           std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
               ->data();
@@ -2387,14 +2343,12 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       float val;
       bytes >> val;
       xmlWriter.writeCharacters(QString::number(val, 'f', 5));
-      xmlWriter.writeEndElement();
       break;
     }
       //    case PropertyIDs::NumberListFormat:
       //      m_id_string = "NumberListFormat";
       //      break;
     case PropertyIDs::LayoutMaxWidth: {
-      xmlWriter.writeStartElement("LayoutMaxWidth");
       const auto data =
           std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
               ->data();
@@ -2404,11 +2358,9 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       float val;
       bytes >> val;
       xmlWriter.writeCharacters(QString::number(val, 'f', 5));
-      xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::LayoutMaxHeight: {
-      xmlWriter.writeStartElement("LayoutMaxHeight");
       const auto data =
           std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
               ->data();
@@ -2418,7 +2370,6 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       float val;
       bytes >> val;
       xmlWriter.writeCharacters(QString::number(val, 'f', 5));
-      xmlWriter.writeEndElement();
       break;
     }
       //    case PropertyIDs::ContentChildNodes:
@@ -2428,16 +2379,10 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       //      m_id_string = "ElementChildNodes";
       //      break;
     case PropertyIDs::EnableHistory: {
-      xmlWriter.writeStartElement("EnableHistory");
-
-      int val = currentPrid.boolValue();
-      xmlWriter.writeCharacters(
-          val == 0 ? "False" : (val == 1 ? "True" : "n.a."));
-      xmlWriter.writeEndElement();
+      writeBoolean(currentPrid.boolValue(), xmlWriter);
       break;
     }
     case PropertyIDs::RichEditTextUnicode: {
-      xmlWriter.writeStartElement("RichEditTextUnicode");
       const auto data =
           std::dynamic_pointer_cast<
               PropertyType_FourBytesOfLengthFollowedByData>(currentData)
@@ -2446,14 +2391,12 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
           reinterpret_cast<const ushort*>(data.constData()), data.size() / 2);
 
       xmlWriter.writeCharacters(string);
-      xmlWriter.writeEndElement();
       break;
     }
       //    case PropertyIDs::ListNodes:
       //      m_id_string = "ListNodes";
       //      break;
     case PropertyIDs::NotebookManagementEntityGuid: {
-      xmlWriter.writeStartElement("NotebookManagementEntityGuid");
       const auto data =
           std::dynamic_pointer_cast<
               PropertyType_FourBytesOfLengthFollowedByData>(currentData)
@@ -2462,22 +2405,16 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       bytes.setByteOrder(QDataStream::LittleEndian);
       QUuid val;
       bytes >> val;
+
       xmlWriter.writeCharacters(val.toString());
-      xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::OutlineElementRTL: {
-      xmlWriter.writeStartElement("OutlineElementRTL");
-
-      int val = currentPrid.boolValue();
-      xmlWriter.writeCharacters(
-          val == 0 ? "False" : (val == 1 ? "True" : "n.a."));
-      xmlWriter.writeEndElement();
+      writeBoolean(currentPrid.boolValue(), xmlWriter);
       break;
     }
 
     case PropertyIDs::LanguageID: {
-
       const auto data =
           std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
               ->data();
@@ -2485,6 +2422,7 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       bytes.setByteOrder(QDataStream::LittleEndian);
       libmson::LCID val;
       bytes >> val;
+
       writeLCID(val, xmlWriter);
       break;
     }
@@ -2496,6 +2434,7 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       QDataStream bytes(data);
       libmson::LayoutAlignment val;
       bytes >> val;
+
       writeLayoutAlignment(val, xmlWriter);
       break;
     }
@@ -2503,7 +2442,6 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       //      m_id_string = "PictureContainer";
       //      break;
     case PropertyIDs::PageMarginTop: {
-      xmlWriter.writeStartElement("PageMarginTop");
       const auto data =
           std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
               ->data();
@@ -2512,12 +2450,11 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
       float val;
       bytes >> val;
+
       xmlWriter.writeCharacters(QString::number(val, 'f', 5));
-      xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::PageMarginBottom: {
-      xmlWriter.writeStartElement("PageMarginBottom");
       const auto data =
           std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
               ->data();
@@ -2526,12 +2463,11 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
       float val;
       bytes >> val;
+
       xmlWriter.writeCharacters(QString::number(val, 'f', 5));
-      xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::PageMarginLeft: {
-      xmlWriter.writeStartElement("PageMarginLeft");
       const auto data =
           std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
               ->data();
@@ -2540,12 +2476,11 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
       float val;
       bytes >> val;
+
       xmlWriter.writeCharacters(QString::number(val, 'f', 5));
-      xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::PageMarginRight: {
-      xmlWriter.writeStartElement("PageMarginRight");
       const auto data =
           std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
               ->data();
@@ -2554,12 +2489,11 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
       float val;
       bytes >> val;
+
       xmlWriter.writeCharacters(QString::number(val, 'f', 5));
-      xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::ListFont: {
-      xmlWriter.writeStartElement("ListFont");
       if (currentPrid.type() ==
           PropertyIDType::FourBytesOfLengthFollowedByData) {
         const auto body = std::dynamic_pointer_cast<
@@ -2568,11 +2502,9 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
             QString::fromUtf8(body->data().constData(), body->cb());
         xmlWriter.writeCharacters(string);
       }
-      xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::TopologyCreationTimeStamp: {
-      xmlWriter.writeStartElement("TopologyCreationTimeStamp");
       const auto data =
           std::dynamic_pointer_cast<PropertyType_EightBytesOfData>(currentData)
               ->data();
@@ -2581,9 +2513,9 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       bytes.setByteOrder(QDataStream::LittleEndian);
       libmson::FileTime time;
       bytes >> time;
+
       xmlWriter.writeCharacters(
           time.getTime().toString("dd/MM/yyyy hh:mm:ss AP"));
-      xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::LayoutAlignmentSelf: {
@@ -2597,21 +2529,11 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       break;
     }
     case PropertyIDs::IsTitleTime: {
-      xmlWriter.writeStartElement("IsTitleTime");
-
-      int val = currentPrid.boolValue();
-      xmlWriter.writeCharacters(
-          val == 0 ? "False" : (val == 1 ? "True" : "n.a."));
-      xmlWriter.writeEndElement();
+      writeBoolean(currentPrid.boolValue(), xmlWriter);
       break;
     }
     case PropertyIDs::IsBoilerText: {
-      xmlWriter.writeStartElement("IsBoilerText");
-
-      int val = currentPrid.boolValue();
-      xmlWriter.writeCharacters(
-          val == 0 ? "False" : (val == 1 ? "True" : "n.a."));
-      xmlWriter.writeEndElement();
+      writeBoolean(currentPrid.boolValue(), xmlWriter);
       break;
     }
     case PropertyIDs::PageSize: {
@@ -2621,62 +2543,34 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       QDataStream bytes(data);
       libmson::PageSize ps;
       bytes >> ps;
-      writePageSize(ps, xmlWriter);
+
+      xmlWriter.writeCharacters(
+          libmson::PageSize::typeToString(ps.getPageType()));
       break;
     }
 
     case PropertyIDs::PortraitPage: {
-      xmlWriter.writeStartElement("PortraitPage");
-
-      int val = currentPrid.boolValue();
-      xmlWriter.writeCharacters(
-          val == 0 ? "False" : (val == 1 ? "True" : "n.a."));
-      xmlWriter.writeEndElement();
+      writeBoolean(currentPrid.boolValue(), xmlWriter);
       break;
     }
     case PropertyIDs::EnforceOutlineStructure: {
-      xmlWriter.writeStartElement("EnforceOutlineStructure");
-
-      int val = currentPrid.boolValue();
-      xmlWriter.writeCharacters(
-          val == 0 ? "False" : (val == 1 ? "True" : "n.a."));
-      xmlWriter.writeEndElement();
+      writeBoolean(currentPrid.boolValue(), xmlWriter);
       break;
     }
     case PropertyIDs::EditRootRTL: {
-      xmlWriter.writeStartElement("EditRootRTL");
-
-      int val = currentPrid.boolValue();
-      xmlWriter.writeCharacters(
-          val == 0 ? "False" : (val == 1 ? "True" : "n.a."));
-      xmlWriter.writeEndElement();
+      writeBoolean(currentPrid.boolValue(), xmlWriter);
       break;
     }
     case PropertyIDs::CannotBeSelected: {
-      xmlWriter.writeStartElement("CannotBeSelected");
-
-      int val = currentPrid.boolValue();
-      xmlWriter.writeCharacters(
-          val == 0 ? "False" : (val == 1 ? "True" : "n.a."));
-      xmlWriter.writeEndElement();
+      writeBoolean(currentPrid.boolValue(), xmlWriter);
       break;
     }
     case PropertyIDs::IsTitleText: {
-      xmlWriter.writeStartElement("IsTitleText");
-
-      int val = currentPrid.boolValue();
-      xmlWriter.writeCharacters(
-          val == 0 ? "False" : (val == 1 ? "True" : "n.a."));
-      xmlWriter.writeEndElement();
+      writeBoolean(currentPrid.boolValue(), xmlWriter);
       break;
     }
     case PropertyIDs::IsTitleDate: {
-      xmlWriter.writeStartElement("IsTitleDate");
-
-      int val = currentPrid.boolValue();
-      xmlWriter.writeCharacters(
-          val == 0 ? "False" : (val == 1 ? "True" : "n.a."));
-      xmlWriter.writeEndElement();
+      writeBoolean(currentPrid.boolValue(), xmlWriter);
       break;
     }
     case PropertyIDs::ListRestart: {
@@ -2689,18 +2583,13 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       quint32 val;
       bytes >> val;
 
-      xmlWriter.writeStartElement("ListRestart");
       xmlWriter.writeCharacters(QString::number(val));
-      xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::IsLayoutSizeSetByUser: {
-      xmlWriter.writeStartElement("IsLayoutSizeSetByUser");
-
       int val = currentPrid.boolValue();
-      xmlWriter.writeCharacters(
-          val == 0 ? "False" : (val == 1 ? "True" : "n.a."));
-      xmlWriter.writeEndElement();
+
+      writeBoolean(val, xmlWriter);
       break;
     }
     case PropertyIDs::ListSpacingMu: {
@@ -2713,9 +2602,7 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       float val;
       bytes >> val;
 
-      xmlWriter.writeStartElement("ListSpacingMu");
       xmlWriter.writeCharacters(QString::number(val, 'f', 5));
-      xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::LayoutOutlineReservedWidth: {
@@ -2728,33 +2615,20 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       float val;
       bytes >> val;
 
-      xmlWriter.writeStartElement("LayoutOutlineReservedWidth");
       xmlWriter.writeCharacters(QString::number(val, 'f', 5));
-      xmlWriter.writeEndElement();
       break;
     }
 
     case PropertyIDs::LayoutResolveChildCollisions: {
-      xmlWriter.writeStartElement("LayoutResolveChildCollisions");
-
-      int val = currentPrid.boolValue();
-      xmlWriter.writeCharacters(
-          val == 0 ? "False" : (val == 1 ? "True" : "n.a."));
-      xmlWriter.writeEndElement();
+      writeBoolean(currentPrid.boolValue(), xmlWriter);
       break;
     }
 
     case PropertyIDs::IsReadOnly: {
-      xmlWriter.writeStartElement("IsReadOnly");
-
-      int val = currentPrid.boolValue();
-      xmlWriter.writeCharacters(
-          val == 0 ? "False" : (val == 1 ? "True" : "n.a."));
-      xmlWriter.writeEndElement();
+      writeBoolean(currentPrid.boolValue(), xmlWriter);
       break;
     }
     case PropertyIDs::LayoutMinimumOutlineWidth: {
-      xmlWriter.writeStartElement("LayoutMinimumOutlineWidth");
       const auto data =
           std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
               ->data();
@@ -2763,8 +2637,8 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
       float val;
       bytes >> val;
+
       xmlWriter.writeCharacters(QString::number(val, 'f', 5));
-      xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::LayoutCollisionPriority: {
@@ -2777,12 +2651,11 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       quint32 val;
       bytes >> val;
 
-      xmlWriter.writeStartElement("LayoutCollisionPriority");
       xmlWriter.writeCharacters(qStringHex(val, 8));
-      xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::CachedTitleString: {
+      /// \todo create method for wz strings
       xmlWriter.writeStartElement("wz");
       const auto body = std::dynamic_pointer_cast<
           PropertyType_FourBytesOfLengthFollowedByData>(currentData);
@@ -2792,16 +2665,10 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       break;
     }
     case PropertyIDs::DescendantsCannotBeMoved: {
-      xmlWriter.writeStartElement("DescendantsCannotBeMoved");
-
-      int val = currentPrid.boolValue();
-      xmlWriter.writeCharacters(
-          val == 0 ? "False" : (val == 1 ? "True" : "n.a."));
-      xmlWriter.writeEndElement();
+      writeBoolean(currentPrid.boolValue(), xmlWriter);
       break;
     }
     case PropertyIDs::RichEditTextLangID: {
-      xmlWriter.writeStartElement("RichEditTextLangID");
       const auto data =
           std::dynamic_pointer_cast<PropertyType_TwoBytesOfData>(currentData)
               ->data();
@@ -2811,20 +2678,13 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       bytes >> val;
 
       writeLCID(val, xmlWriter);
-      xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::LayoutTightAlignment: {
-      xmlWriter.writeStartElement("LayoutTightAlignment");
-
-      int val = currentPrid.boolValue();
-      xmlWriter.writeCharacters(
-          val == 0 ? "False" : (val == 1 ? "True" : "n.a."));
-      xmlWriter.writeEndElement();
+      writeBoolean(currentPrid.boolValue(), xmlWriter);
       break;
     }
     case PropertyIDs::Charset: {
-      xmlWriter.writeStartElement("Charset");
       auto data =
           std::dynamic_pointer_cast<PropertyType_OneByteOfData>(currentData)
               ->data();
@@ -2833,11 +2693,9 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       bytes >> set;
 
       xmlWriter.writeCharacters(set.toString());
-      xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::CreationTimeStamp: {
-      xmlWriter.writeStartElement("CreationTimeStamp");
       const auto data =
           std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
               ->data();
@@ -2848,16 +2706,10 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       bytes >> time;
       xmlWriter.writeCharacters(
           time.getTime().toString("dd/MM/yyyy hh:mm:ss AP"));
-      xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::Deletable: {
-      xmlWriter.writeStartElement("Deletable");
-
-      int val = currentPrid.boolValue();
-      xmlWriter.writeCharacters(
-          val == 0 ? "False" : (val == 1 ? "True" : "n.a."));
-      xmlWriter.writeEndElement();
+      writeBoolean(currentPrid.boolValue(), xmlWriter);
       break;
     }
     case PropertyIDs::ListMSAAIndex: {
@@ -2875,17 +2727,11 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       break;
     }
     case PropertyIDs::IsBackground: {
-      xmlWriter.writeStartElement("IsBackground");
-
-      int val = currentPrid.boolValue();
-      xmlWriter.writeCharacters(
-          val == 0 ? "False" : (val == 1 ? "True" : "n.a."));
-      xmlWriter.writeEndElement();
+      writeBoolean(currentPrid.boolValue(), xmlWriter);
       break;
     }
 
     case PropertyIDs::IRecordMedia: {
-      xmlWriter.writeStartElement("IRecordMedia");
       const auto data =
           std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
               ->data();
@@ -2894,9 +2740,9 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       bytes.setByteOrder(QDataStream::LittleEndian);
       quint32 val;
       bytes >> val;
+
       xmlWriter.writeCharacters(
           val == 1 ? "Audio" : (val == 2 ? "Video" : "invalid"));
-      xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::CachedTitleStringFromPage: {
@@ -2910,7 +2756,6 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
     }
 
     case PropertyIDs::RowCount: {
-      xmlWriter.writeStartElement("RowCount");
       const auto data =
           std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
               ->data();
@@ -2919,12 +2764,11 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       bytes.setByteOrder(QDataStream::LittleEndian);
       quint32 val;
       bytes >> val;
+
       xmlWriter.writeCharacters(QString::number(val));
-      xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::ColumnCount: {
-      xmlWriter.writeStartElement("ColumnCount");
       const auto data =
           std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
               ->data();
@@ -2933,18 +2777,13 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       bytes.setByteOrder(QDataStream::LittleEndian);
       quint32 val;
       bytes >> val;
+
       xmlWriter.writeCharacters(QString::number(val));
-      xmlWriter.writeEndElement();
       break;
     }
 
     case PropertyIDs::TableBordersVisible: {
-      xmlWriter.writeStartElement("TableBordersVisible");
-
-      int val = currentPrid.boolValue();
-      xmlWriter.writeCharacters(
-          val == 0 ? "False" : (val == 1 ? "True" : "n.a."));
-      xmlWriter.writeEndElement();
+      writeBoolean(currentPrid.boolValue(), xmlWriter);
       break;
     }
 
@@ -2955,7 +2794,6 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       //      m_id_string = "ChildGraphSpaceElementNodes";
       //      break;
     case PropertyIDs::TableColumnWidths: {
-      xmlWriter.writeStartElement("TableColumnWidths");
       const auto data =
           std::dynamic_pointer_cast<
               PropertyType_FourBytesOfLengthFollowedByData>(currentData)
@@ -2979,24 +2817,20 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
         }
       }
       xmlWriter.writeCharacters("}");
-      xmlWriter.writeEndElement();
       break;
     }
 
     case PropertyIDs::Author: {
-      xmlWriter.writeStartElement("Author");
       const auto body = std::dynamic_pointer_cast<
           PropertyType_FourBytesOfLengthFollowedByData>(currentData);
       QString string = QString::fromUtf16(
           reinterpret_cast<const ushort*>(body->data().constData()));
 
       xmlWriter.writeCharacters(string);
-      xmlWriter.writeEndElement();
       break;
     }
 
     case PropertyIDs::LastModifiedTimeStamp: {
-      xmlWriter.writeStartElement("LastModifiedTimeStamp");
       const auto data =
           std::dynamic_pointer_cast<PropertyType_EightBytesOfData>(currentData)
               ->data();
@@ -3006,7 +2840,6 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       libmson::FileTime time;
       bytes >> time;
       writeFileTime(time, xmlWriter);
-      xmlWriter.writeEndElement();
       break;
     }
       //      ObjectID:
@@ -3016,7 +2849,6 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       //    case PropertyIDs::AuthorMostRecent:
 
     case PropertyIDs::LastModifiedTime: {
-      xmlWriter.writeStartElement("LastModifiedTime");
       const auto data =
           std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
               ->data();
@@ -3025,17 +2857,12 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       bytes.setByteOrder(QDataStream::LittleEndian);
       libmson::Time32 time;
       bytes >> time;
+
       writeTime32(time, xmlWriter);
-      xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::IsConflictPage: {
-      xmlWriter.writeStartElement("IsConflictPage");
-
-      int val = currentPrid.boolValue();
-      xmlWriter.writeCharacters(
-          val == 0 ? "False" : (val == 1 ? "True" : "n.a."));
-      xmlWriter.writeEndElement();
+      writeBoolean(currentPrid.boolValue(), xmlWriter);
       break;
     }
 
@@ -3049,7 +2876,6 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       quint8 cColumns = data.at(0);
       quint8 nbytes   = data.size() - 1;
 
-      xmlWriter.writeStartElement("TableColumnsLocked");
       xmlWriter.writeAttribute("cColumns", QString::number(cColumns));
 
       xmlWriter.writeStartElement("rgfColumnLocked");
@@ -3070,13 +2896,10 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
         }
       }
       xmlWriter.writeCharacters("}");
-      xmlWriter.writeEndElement();
-
-      xmlWriter.writeEndElement();
+      xmlWriter.writeEndElement(); // rgfColumnLocked
       break;
     }
     case PropertyIDs::SchemaRevisionInOrderToRead: {
-      xmlWriter.writeStartElement("SchemaRevisionInOrderToRead");
       const auto data =
           std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
               ->data();
@@ -3085,23 +2908,18 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       quint32 val;
       bytes >> val;
       xmlWriter.writeCharacters(qStringHex(val, 8));
-      xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::IsConflictObjectForRender: {
-      xmlWriter.writeStartElement("IsConflictObjectForRender");
-
       int val = currentPrid.boolValue();
-      xmlWriter.writeCharacters(
-          val == 0 ? "False" : (val == 1 ? "True" : "n.a."));
-      xmlWriter.writeEndElement();
+
+      writeBoolean(val, xmlWriter);
       break;
     }
       //    case PropertyIDs::EmbeddedFileContainer:
       //      m_id_string = "EmbeddedFileContainer";
       //      break;
     case PropertyIDs::EmbeddedFileName: {
-      xmlWriter.writeStartElement("EmbeddedFileName");
       const auto data =
           std::dynamic_pointer_cast<
               PropertyType_FourBytesOfLengthFollowedByData>(currentData)
@@ -3110,11 +2928,9 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
           reinterpret_cast<const ushort*>(data.constData()), data.size() / 2);
 
       xmlWriter.writeCharacters(string);
-      xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::SourceFilepath: {
-      xmlWriter.writeStartElement("SourceFilepath");
       const auto data =
           std::dynamic_pointer_cast<
               PropertyType_FourBytesOfLengthFollowedByData>(currentData)
@@ -3123,22 +2939,18 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
           reinterpret_cast<const ushort*>(data.constData()), data.size() / 2);
 
       xmlWriter.writeCharacters(string);
-      xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::ConflictingUserName: {
-      xmlWriter.writeStartElement("ConflictingUserName");
       const auto data =
           std::dynamic_pointer_cast<
               PropertyType_FourBytesOfLengthFollowedByData>(currentData)
               ->data();
       QString string = QString::fromUtf8(data.constData(), data.size());
       xmlWriter.writeCharacters(string);
-      xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::ImageFilename: {
-      xmlWriter.writeStartElement("ImageFilename");
       const auto data =
           std::dynamic_pointer_cast<
               PropertyType_FourBytesOfLengthFollowedByData>(currentData)
@@ -3147,20 +2959,13 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
           reinterpret_cast<const ushort*>(data.constData()), data.size() / 2);
 
       xmlWriter.writeCharacters(string);
-      xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::IsConflictObjectForSelection: {
-      xmlWriter.writeStartElement("IsConflictObjectForSelection");
-
-      int val = currentPrid.boolValue();
-      xmlWriter.writeCharacters(
-          val == 0 ? "False" : (val == 1 ? "True" : "n.a."));
-      xmlWriter.writeEndElement();
+      writeBoolean(currentPrid.boolValue(), xmlWriter);
       break;
     }
     case PropertyIDs::PageLevel: {
-      xmlWriter.writeStartElement("PageLevel");
       const auto data =
           std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
               ->data();
@@ -3170,7 +2975,6 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       qint32 val;
       bytes >> val;
       xmlWriter.writeCharacters(QString::number(val));
-      xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::TextRunIndex: {
@@ -3191,23 +2995,16 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       // remove last ", " characters
       indices.resize(indices.size() - 2);
 
-      xmlWriter.writeStartElement("TextRunIndex");
       xmlWriter.writeCharacters("{");
       xmlWriter.writeCharacters(indices);
       xmlWriter.writeCharacters("}");
-      xmlWriter.writeEndElement();
       break;
     }
       //    case PropertyIDs::TextRunFormatting:
       //      m_id_string = "TextRunFormatting";
       //      break;
     case PropertyIDs::Hyperlink: {
-      xmlWriter.writeStartElement("Hyperlink");
-
-      int val = currentPrid.boolValue();
-      xmlWriter.writeCharacters(
-          val == 0 ? "False" : (val == 1 ? "True" : "n.a."));
-      xmlWriter.writeEndElement();
+      writeBoolean(currentPrid.boolValue(), xmlWriter);
       break;
     }
     case PropertyIDs::UnderlineType: {
@@ -3215,41 +3012,17 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
           std::dynamic_pointer_cast<PropertyType_OneByteOfData>(currentData)
               ->data();
       quint8 val = data.toUInt();
-      xmlWriter.writeStartElement("UnderlineType");
-      xmlWriter.writeCharacters(
-          val == 0 ? "False" : (val == 1 ? "True" : "n.a."));
-      xmlWriter.writeEndElement();
-      break;
-    }
-    case PropertyIDs::Hidden: {
-      xmlWriter.writeStartElement("Hidden");
 
-      int val = currentPrid.boolValue();
-      xmlWriter.writeCharacters(
-          val == 0 ? "False" : (val == 1 ? "True" : "n.a."));
-      xmlWriter.writeEndElement();
+      writeBoolean(val, xmlWriter);
       break;
     }
-    case PropertyIDs::HyperlinkProtected: {
-      xmlWriter.writeStartElement("HyperlinkProtected");
-
-      int val = currentPrid.boolValue();
-      xmlWriter.writeCharacters(
-          val == 0 ? "False" : (val == 1 ? "True" : "n.a."));
-      xmlWriter.writeEndElement();
-      break;
-    }
+    case PropertyIDs::Hidden:
+    case PropertyIDs::HyperlinkProtected:
     case PropertyIDs::TextRunIsEmbeddedObject: {
-      xmlWriter.writeStartElement("TextRunIsEmbeddedObject");
-
-      int val = currentPrid.boolValue();
-      xmlWriter.writeCharacters(
-          val == 0 ? "False" : (val == 1 ? "True" : "n.a."));
-      xmlWriter.writeEndElement();
+      writeBoolean(currentPrid.boolValue(), xmlWriter);
       break;
     }
     case PropertyIDs::ImageAltText: {
-      xmlWriter.writeStartElement("ImageAltText");
       const auto data =
           std::dynamic_pointer_cast<
               PropertyType_FourBytesOfLengthFollowedByData>(currentData)
@@ -3258,23 +3031,16 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
           QString::fromUtf16(reinterpret_cast<const ushort*>(data.constData()));
 
       xmlWriter.writeCharacters(string);
-      xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::MathFormatting: {
-      xmlWriter.writeStartElement("MathFormatting");
-
-      int val = currentPrid.boolValue();
-      xmlWriter.writeCharacters(
-          val == 0 ? "False" : (val == 1 ? "True" : "n.a."));
-      xmlWriter.writeEndElement();
+      writeBoolean(currentPrid.boolValue(), xmlWriter);
       break;
     }
       //    case PropertyIDs::ParagraphStyle: {
       //      break;
       //    }
     case PropertyIDs::ParagraphSpaceBefore: {
-      xmlWriter.writeStartElement("ParagraphSpaceBefore");
       const auto data =
           std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
               ->data();
@@ -3284,11 +3050,9 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       float val;
       bytes >> val;
       xmlWriter.writeCharacters(QString::number(val, 'f', 5));
-      xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::ParagraphSpaceAfter: {
-      xmlWriter.writeStartElement("ParagraphSpaceBefore");
       const auto data =
           std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
               ->data();
@@ -3297,12 +3061,11 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
       float val;
       bytes >> val;
+
       xmlWriter.writeCharacters(QString::number(val, 'f', 5));
-      xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::ParagraphLineSpacingExact: {
-      xmlWriter.writeStartElement("ParagraphLineSpacingExact");
       const auto data =
           std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
               ->data();
@@ -3312,7 +3075,6 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       float val;
       bytes >> val;
       xmlWriter.writeCharacters(QString::number(val, 'f', 5));
-      xmlWriter.writeEndElement();
       break;
     }
       //          case PropertyIDs::MetaDataObjectsAboveGraphSpace: {
@@ -3329,26 +3091,20 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       //      m_id_string = "TextRunData";
       //      break;
     case PropertyIDs::ParagraphStyleId: {
-      xmlWriter.writeStartElement("ParagraphStyleId");
-      if (currentPrid.type() ==
+      if (currentPrid.type() !=
           PropertyIDType::FourBytesOfLengthFollowedByData) {
-        const auto data =
-            std::dynamic_pointer_cast<
-                PropertyType_FourBytesOfLengthFollowedByData>(currentData)
-                ->data();
-        QString string = QString::fromUtf8(data.constData(), data.size());
-        xmlWriter.writeCharacters(string);
+        break;
       }
-      xmlWriter.writeEndElement();
+      const auto data =
+          std::dynamic_pointer_cast<
+              PropertyType_FourBytesOfLengthFollowedByData>(currentData)
+              ->data();
+      QString string = QString::fromUtf8(data.constData(), data.size());
+      xmlWriter.writeCharacters(string);
       break;
     }
     case PropertyIDs::HasVersionPages: {
-      xmlWriter.writeStartElement("HasVersionPages");
-
-      int val = currentPrid.boolValue();
-      xmlWriter.writeCharacters(
-          val == 0 ? "False" : (val == 1 ? "True" : "n.a."));
-      xmlWriter.writeEndElement();
+      writeBoolean(currentPrid.boolValue(), xmlWriter);
       break;
     }
     case PropertyIDs::ActionItemType: {
@@ -3362,7 +3118,6 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
         quint16 val;
         ds >> val;
 
-        xmlWriter.writeStartElement("ActionItemType");
         xmlWriter.writeAttribute("val", QString::number(val));
 
         if (val < 100) {
@@ -3390,7 +3145,6 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
             break;
           }
         }
-        xmlWriter.writeEndElement();
         break;
       }
     case PropertyIDs::NoteTagShape: {
@@ -3406,33 +3160,30 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       break;
     }
     case PropertyIDs::NoteTagHighlightColor: {
-      xmlWriter.writeStartElement("NoteTagHighlightColor");
       const auto data =
           std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
               ->data();
       QDataStream bytes(data);
       libmson::ColorRef val;
       bytes >> val;
+
       writeColorRef(val, xmlWriter);
-      xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::NoteTagTextColor: {
-      xmlWriter.writeStartElement("NoteTagTextColor");
       const auto data =
           std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
               ->data();
       QDataStream bytes(data);
       libmson::ColorRef val;
       bytes >> val;
+
       writeColorRef(val, xmlWriter);
-      xmlWriter.writeEndElement();
       break;
     }
 
     /// \todo use proper BitReader
     case PropertyIDs::NoteTagPropertyStatus: {
-      xmlWriter.writeStartElement("NoteTagPropertyStatus");
       const auto data =
           std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
               ->data();
@@ -3440,38 +3191,22 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       quint32 val;
       bytes >> val;
 
-      xmlWriter.writeStartElement("hasLabel");
-      xmlWriter.writeCharacters((val & 0x1) == 1 ? "True" : "False");
-      xmlWriter.writeEndElement();
-      xmlWriter.writeStartElement("hasFontColor");
-      xmlWriter.writeCharacters(((val >> 1) & 0x1) == 1 ? "True" : "False");
-      xmlWriter.writeEndElement();
-      xmlWriter.writeStartElement("hasHighlightColor");
-      xmlWriter.writeCharacters(((val >> 2) & 0x1) == 1 ? "True" : "False");
-      xmlWriter.writeEndElement();
-      xmlWriter.writeStartElement("hasIcon");
-      xmlWriter.writeCharacters(((val >> 3) & 0x1) == 1 ? "True" : "False");
-      xmlWriter.writeEndElement();
-      xmlWriter.writeStartElement("DueToday");
-      xmlWriter.writeCharacters(((val >> 6) & 0x1) == 1 ? "True" : "False");
-      xmlWriter.writeEndElement();
-      xmlWriter.writeStartElement("DueTomorrow");
-      xmlWriter.writeCharacters(((val >> 7) & 0x1) == 1 ? "True" : "False");
-      xmlWriter.writeEndElement();
-      xmlWriter.writeStartElement("DueThisWeek");
-      xmlWriter.writeCharacters(((val >> 8) & 0x1) == 1 ? "True" : "False");
-      xmlWriter.writeEndElement();
-      xmlWriter.writeStartElement("DueNextWeek");
-      xmlWriter.writeCharacters(((val >> 9) & 0x1) == 1 ? "True" : "False");
-      xmlWriter.writeEndElement();
-      xmlWriter.writeStartElement("DueLater");
-      xmlWriter.writeCharacters(((val >> 10) & 0x1) == 1 ? "True" : "False");
-      xmlWriter.writeEndElement();
-      xmlWriter.writeStartElement("DueCustom");
-      xmlWriter.writeCharacters(((val >> 11) & 0x1) == 1 ? "True" : "False");
-      xmlWriter.writeEndElement();
+      auto writeProps = [&](const QString& value, const quint8 shiftwidth) {
+        xmlWriter.writeStartElement(value);
+        xmlWriter.writeCharacters(
+            ((val >> shiftwidth) & 0x1) == 1 ? "True" : "False");
+        xmlWriter.writeEndElement();
+      };
 
-      xmlWriter.writeEndElement();
+      std::array<QString, 12> propNames{
+          "hasLabel", "hasFontColor", "hasHighlightColor", "hasIcon",
+          "DueToday", "DueTomorrow",  "DueThisWeek",       "DueNextWeek",
+          "DueLater", "DueCostum"};
+
+      for (size_t sw = 0; sw < propNames.size(); sw++) {
+        writeProps(propNames.at(sw), sw);
+      }
+
       break;
     }
 
@@ -3488,7 +3223,6 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       break;
     }
     case PropertyIDs::NoteTagCreated: {
-      xmlWriter.writeStartElement("NoteTagCreated");
       const auto data =
           std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
               ->data();
@@ -3497,12 +3231,11 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       bytes.setByteOrder(QDataStream::LittleEndian);
       libmson::Time32 time;
       bytes >> time;
+
       writeTime32(time, xmlWriter);
-      xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::NoteTagCompleted: {
-      xmlWriter.writeStartElement("NoteTagCompleted");
       const auto data =
           std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
               ->data();
@@ -3512,7 +3245,6 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       libmson::Time32 time;
       bytes >> time;
       writeTime32(time, xmlWriter);
-      xmlWriter.writeEndElement();
       break;
     }
       //    case PropertyIDs::NoteTagDefinitionOid:
@@ -3522,7 +3254,6 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       //      m_id_string = "NoteTagStates";
       //      break;
     case PropertyIDs::ActionItemStatus: {
-      xmlWriter.writeStartElement("ActionItemStatus");
       const auto data =
           std::dynamic_pointer_cast<PropertyType_TwoBytesOfData>(currentData)
               ->data();
@@ -3530,42 +3261,32 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       quint16 val;
       bytes >> val;
 
-      xmlWriter.writeStartElement("Completed");
-      xmlWriter.writeCharacters((val & 0x1) == 1 ? "True" : "False");
-      xmlWriter.writeEndElement();
-      xmlWriter.writeStartElement("Disabled");
-      xmlWriter.writeCharacters(((val >> 1) & 0x1) == 1 ? "True" : "False");
-      xmlWriter.writeEndElement();
-      xmlWriter.writeStartElement("TaskTag");
-      xmlWriter.writeCharacters(((val >> 2) & 0x1) == 1 ? "True" : "False");
-      xmlWriter.writeEndElement();
-      xmlWriter.writeStartElement("Unsynchronized");
-      xmlWriter.writeCharacters(((val >> 3) & 0x1) == 1 ? "True" : "False");
-      xmlWriter.writeEndElement();
-      xmlWriter.writeStartElement("Removed");
-      xmlWriter.writeCharacters(((val >> 4) & 0x1) == 1 ? "True" : "False");
-      xmlWriter.writeEndElement();
+      auto writeProps = [&](const QString& value, const quint8 shiftwidth) {
+        xmlWriter.writeStartElement(value);
+        xmlWriter.writeCharacters(
+            ((val >> shiftwidth) & 0x1) == 1 ? "True" : "False");
+        xmlWriter.writeEndElement();
+      };
 
-      xmlWriter.writeEndElement();
+      std::array<QString, 5> propNames{
+          "Completed", "Disabled", "TaskTag", "Unsynchronized", "Removed"};
+
+      for (size_t sw = 0; sw < propNames.size(); sw++) {
+        writeProps(propNames.at(sw), sw);
+      }
+
       break;
     }
     case PropertyIDs::ActionItemSchemaVersion: {
-      xmlWriter.writeStartElement("ActionItemSchemaVersion");
       const auto data =
           std::dynamic_pointer_cast<PropertyType_OneByteOfData>(currentData)
               ->data();
       xmlWriter.writeCharacters("0x" + data.toHex());
-      xmlWriter.writeEndElement();
       break;
     }
 
     case PropertyIDs::ReadingOrderRTL: {
-      xmlWriter.writeStartElement("ReadingOrderRTL");
-
-      int val = currentPrid.boolValue();
-      xmlWriter.writeCharacters(
-          val == 0 ? "False" : (val == 1 ? "True" : "n.a."));
-      xmlWriter.writeEndElement();
+      writeBoolean(currentPrid.boolValue(), xmlWriter);
       break;
     }
       /// \todo declare ParagraphAlignment Enum
@@ -3592,10 +3313,8 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
         align = "invalid";
         break;
       }
-      xmlWriter.writeStartElement("ParagraphAlignment");
-      xmlWriter.writeCharacters(align);
-      xmlWriter.writeEndElement();
 
+      xmlWriter.writeCharacters(align);
       break;
     }
       //    case PropertyIDs::VersionHistoryGraphSpaceContextNodes:
@@ -3603,7 +3322,6 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       //      break;
 
     case PropertyIDs::DisplayedPageNumber: {
-      xmlWriter.writeStartElement("DisplayedPageNumber");
       const auto data =
           std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
               ->data();
@@ -3611,8 +3329,8 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       bytes.setByteOrder(QDataStream::LittleEndian);
       quint32 val;
       bytes >> val;
+
       xmlWriter.writeCharacters(QString::number(val));
-      xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::SectionDisplayName: {
@@ -3662,9 +3380,8 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
         state = "Invalid Upload state";
         break;
       }
-      xmlWriter.writeStartElement("ImageUploadState");
+
       xmlWriter.writeCharacters(state);
-      xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::TextExtendedAscii: {
@@ -3679,7 +3396,6 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       break;
     }
     case PropertyIDs::PictureWidth: {
-      xmlWriter.writeStartElement("PictureWidth");
       const auto data =
           std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
               ->data();
@@ -3688,12 +3404,11 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
       float val;
       bytes >> val;
+
       xmlWriter.writeCharacters(QString::number(val, 'f', 5));
-      xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::PictureHeight: {
-      xmlWriter.writeStartElement("PictureHeight");
       const auto data =
           std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
               ->data();
@@ -3703,11 +3418,9 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       float val;
       bytes >> val;
       xmlWriter.writeCharacters(QString::number(val, 'f', 5));
-      xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::PageMarginOriginX: {
-      xmlWriter.writeStartElement("PageMarginOriginX");
       const auto data =
           std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
               ->data();
@@ -3716,12 +3429,11 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
       float val;
       bytes >> val;
+
       xmlWriter.writeCharacters(QString::number(val, 'f', 5));
-      xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::PageMarginOriginY: {
-      xmlWriter.writeStartElement("PageMarginOriginY");
       const auto data =
           std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
               ->data();
@@ -3730,8 +3442,8 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
       float val;
       bytes >> val;
+
       xmlWriter.writeCharacters(QString::number(val, 'f', 5));
-      xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::WzHyperlinkUrl: {
@@ -3746,7 +3458,6 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       break;
     }
     case PropertyIDs::TaskTagDueDate: {
-      xmlWriter.writeStartElement("TaskTagDueDate");
       const auto data =
           std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
               ->data();
@@ -3755,12 +3466,11 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       bytes.setByteOrder(QDataStream::LittleEndian);
       libmson::Time32 time;
       bytes >> time;
+
       writeTime32(time, xmlWriter);
-      xmlWriter.writeEndElement();
       break;
     }
     case PropertyIDs::undoc_AuthorInitials: {
-      xmlWriter.writeStartElement("undoc_AuthorInitials");
       if (currentPrid.type() ==
           PropertyIDType::FourBytesOfLengthFollowedByData) {
         const auto data =
@@ -3770,11 +3480,9 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
         QString string = QString::fromUtf8(data.constData(), data.size());
         xmlWriter.writeCharacters(string);
       }
-      xmlWriter.writeEndElement();
       break;
     }
-    case PropertyIDs::undoc_ResolutionID: {
-      xmlWriter.writeStartElement("undoc_ResolutionID");
+    case PropertyIDs::ResolutionID: {
       if (currentPrid.type() ==
           PropertyIDType::FourBytesOfLengthFollowedByData) {
         const auto data =
@@ -3784,33 +3492,41 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
         QString string = QString::fromUtf8(data.constData(), data.size());
         xmlWriter.writeCharacters(string);
       }
-      xmlWriter.writeEndElement();
       break;
     }
-    case PropertyIDs::undoc_StrokesBlob: {
-      xmlWriter.writeStartElement("undoc_StrokesBlob");
-      writeIPropertyType(currentData, xmlWriter);
-      xmlWriter.writeEndElement();
-      break;
-    }
-    case PropertyIDs::undoc_StrokesIndex: {
-      xmlWriter.writeStartElement("undoc_StrokesIndex");
-      if (currentPrid.type() == PropertyIDType::FourBytesOfData) {
-        const auto data =
-            std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
-                ->data();
-        QDataStream bytes(data);
-        bytes.setByteOrder(QDataStream::LittleEndian);
-        bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
-        uint32_t val;
-        bytes >> val;
+    case PropertyIDs::InkPath: {
+      const auto data =
+          std::dynamic_pointer_cast<
+              PropertyType_FourBytesOfLengthFollowedByData>(currentData)
+              ->data();
+
+      auto values = libmson::isf::MultiByteEncoding::decodeInkPath(data);
+
+      xmlWriter.writeAttribute(
+          QStringLiteral("count"), QString::number(values.size()));
+
+      for (const auto& val : values) {
+        xmlWriter.writeStartElement("val");
         xmlWriter.writeCharacters(QString::number(val));
+        xmlWriter.writeEndElement();
       }
-      xmlWriter.writeEndElement();
+
+      break;
+    }
+    case PropertyIDs::InkStorkeOrderingIndex: {
+      const auto data =
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
+              ->data();
+      QDataStream bytes(data);
+      bytes.setByteOrder(QDataStream::LittleEndian);
+      bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
+      uint32_t val;
+      bytes >> val;
+
+      xmlWriter.writeCharacters(QString::number(val));
       break;
     }
     case PropertyIDs::unodc_StrokeLanguage: {
-      xmlWriter.writeStartElement("unodc_StrokeLanguage");
       const auto data =
           std::dynamic_pointer_cast<PropertyType_TwoBytesOfData>(currentData)
               ->data();
@@ -3818,25 +3534,22 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       bytes.setByteOrder(QDataStream::LittleEndian);
       quint16 val;
       bytes >> val;
+
       xmlWriter.writeCharacters(libmson::LCID::languageIDtoString(
           static_cast<libmson::LanguageID>(val)));
-      xmlWriter.writeEndElement();
       break;
     }
 
-    case PropertyIDs::undoc_StrokesColor: {
-      xmlWriter.writeStartElement("undoc_StrokesColor");
+    case PropertyIDs::InkColor: {
       const auto data =
           std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
               ->data();
 
       xmlWriter.writeCharacters("#" + data.toHex());
-      xmlWriter.writeEndElement();
       break;
     }
 
-    case PropertyIDs::undoc_StrokesToolSizeHeight: {
-      xmlWriter.writeStartElement("undoc_StrokesToolSizeHeight");
+    case PropertyIDs::InkPenHeight: {
       const auto data =
           std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
               ->data();
@@ -3846,11 +3559,9 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       float val;
       bytes >> val;
       xmlWriter.writeCharacters(QString::number(val, 'f', 5));
-      xmlWriter.writeEndElement();
       break;
     }
-    case PropertyIDs::undoc_StrokesToolSizeWidth: {
-      xmlWriter.writeStartElement("undoc_StrokesToolSizeWidth");
+    case PropertyIDs::InkPenWidth: {
       const auto data =
           std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
               ->data();
@@ -3860,12 +3571,10 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       float val;
       bytes >> val;
       xmlWriter.writeCharacters(QString::number(val, 'f', 5));
-      xmlWriter.writeEndElement();
       break;
     }
 
-    case PropertyIDs::undoc_StrokesCreationTime: {
-      xmlWriter.writeStartElement("undoc_StrokesCreationTime");
+    case PropertyIDs::InkCreationTime: {
       const auto data =
           std::dynamic_pointer_cast<
               PropertyType_FourBytesOfLengthFollowedByData>(currentData)
@@ -3876,12 +3585,10 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       libmson::FileTime time;
       bytes >> time;
       writeFileTime(time, xmlWriter);
-      xmlWriter.writeEndElement();
       break;
     }
 
-    case PropertyIDs::undoc_StrokesRecognizedText: {
-      xmlWriter.writeStartElement("undoc_StrokesRecognizedText");
+    case PropertyIDs::InkRecognizedText: {
       const auto data =
           std::dynamic_pointer_cast<
               PropertyType_FourBytesOfLengthFollowedByData>(currentData)
@@ -3897,12 +3604,10 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
           xmlWriter.writeEndElement();
         }
       }
-      xmlWriter.writeEndElement();
       break;
     }
 
     case PropertyIDs::undoc_StrokesOffsetsVertHoriz: {
-      xmlWriter.writeStartElement("undoc_StrokesOffsetsVertHoriz");
       const auto data =
           std::dynamic_pointer_cast<
               PropertyType_FourBytesOfLengthFollowedByData>(currentData)
@@ -3921,12 +3626,10 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       xmlWriter.writeCharacters(QString::number(horiz, 'f', 5));
       xmlWriter.writeEndElement();
 
-      xmlWriter.writeEndElement();
       break;
     }
 
-    case PropertyIDs::undoc_StrokesModus: {
-      xmlWriter.writeStartElement("undoc_StrokesModus");
+    case PropertyIDs::InkBias: {
       const auto data =
           std::dynamic_pointer_cast<PropertyType_OneByteOfData>(currentData)
               ->data();
@@ -3944,12 +3647,10 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
         break;
       }
 
-      xmlWriter.writeEndElement();
       break;
     }
 
-    case PropertyIDs::undoc_StrokesGUID: {
-      xmlWriter.writeStartElement("undoc_StrokesGUID");
+    case PropertyIDs::InkGUID: {
       const auto data =
           std::dynamic_pointer_cast<
               PropertyType_FourBytesOfLengthFollowedByData>(currentData)
@@ -3959,12 +3660,10 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       bytes >> guid;
 
       xmlWriter.writeCharacters(guid.toString());
-      xmlWriter.writeEndElement();
       break;
     }
 
-    case PropertyIDs::undoc_RecognizedText: {
-      xmlWriter.writeStartElement("undoc_RecognizedText");
+    case PropertyIDs::RecognizedText: {
       const auto data =
           std::dynamic_pointer_cast<
               PropertyType_FourBytesOfLengthFollowedByData>(currentData)
@@ -3980,12 +3679,10 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
           xmlWriter.writeEndElement();
         }
       }
-      xmlWriter.writeEndElement();
       break;
     }
 
-    case PropertyIDs::undoc_tocSectionName: {
-      xmlWriter.writeStartElement("undoc_tocSectionName");
+    case PropertyIDs::SectionName: {
       const auto data =
           std::dynamic_pointer_cast<
               PropertyType_FourBytesOfLengthFollowedByData>(currentData)
@@ -3995,12 +3692,10 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
           reinterpret_cast<const ushort*>(data.constData()), data.size() / 2);
 
       xmlWriter.writeCharacters(string);
-      xmlWriter.writeEndElement();
       break;
     }
 
-    case PropertyIDs::undoc_tocSectionIndex: {
-      xmlWriter.writeStartElement("undoc_tocSectionIndex");
+    case PropertyIDs::SectionOrderingIndex: {
       const auto data =
           std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
               ->data();
@@ -4010,12 +3705,10 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       bytes >> val;
 
       xmlWriter.writeCharacters(QString::number(val));
-      xmlWriter.writeEndElement();
       break;
     }
 
-    case PropertyIDs::undoc_tocSectionGUID: {
-      xmlWriter.writeStartElement("undoc_tocSectionGUID");
+    case PropertyIDs::SectionGUID: {
       const auto data =
           std::dynamic_pointer_cast<
               PropertyType_FourBytesOfLengthFollowedByData>(currentData)
@@ -4024,25 +3717,22 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       QUuid val;
       bytes >> val;
       xmlWriter.writeCharacters(val.toString());
-      xmlWriter.writeEndElement();
       break;
     }
 
-    case PropertyIDs::undoc_tocSectionColor: {
-      xmlWriter.writeStartElement("undoc_tocSectionColor");
+    case PropertyIDs::SectionColor: {
       const auto data =
           std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
               ->data();
       QDataStream bytes(data);
       libmson::ColorRef val;
       bytes >> val;
+
       writeColorRef(val, xmlWriter);
-      xmlWriter.writeEndElement();
       break;
     }
 
     case PropertyIDs::undoc_SchemaRevisionInOrderToRead: {
-      xmlWriter.writeStartElement("undoc_SchemaRevisionInOrderToRead");
       const auto data =
           std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
               ->data();
@@ -4051,29 +3741,162 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       quint32 val;
       bytes >> val;
       xmlWriter.writeCharacters(qStringHex(val, 8));
-      xmlWriter.writeEndElement();
       break;
     }
 
-    case PropertyIDs::undoc_PageBackgroundColor: {
-      xmlWriter.writeStartElement("undoc_PageBackgroundColor");
+    case PropertyIDs::PageBackgroundColor: {
       const auto data =
           std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
               ->data();
 
       xmlWriter.writeCharacters("#" + data.toHex());
-      xmlWriter.writeEndElement();
       break;
     }
 
+
+    case PropertyIDs::InkMetricTable: {
+      const auto data =
+          std::dynamic_pointer_cast<
+              PropertyType_FourBytesOfLengthFollowedByData>(currentData)
+              ->data();
+
+      libmson::isf::MetricTable table(data);
+
+      for (const auto& entry : table.entries()) {
+        xmlWriter.writeStartElement(entry.getTypeString());
+
+        xmlWriter.writeStartElement("min");
+        xmlWriter.writeCharacters(QString::number(entry.getMin()));
+        xmlWriter.writeEndElement();
+        xmlWriter.writeStartElement("max");
+        xmlWriter.writeCharacters(QString::number(entry.getMax()));
+        xmlWriter.writeEndElement();
+        xmlWriter.writeStartElement("unit");
+        xmlWriter.writeCharacters(entry.getUnitString());
+        xmlWriter.writeEndElement();
+        xmlWriter.writeStartElement("Resolution");
+        xmlWriter.writeCharacters(QString::number(entry.getResolution()));
+        xmlWriter.writeEndElement();
+
+        xmlWriter.writeEndElement();
+      }
+
+      break;
+    }
+
+    case PropertyIDs::NumberListFormat:
+    case PropertyIDs::ContentChildNodes:
+    case PropertyIDs::ElementChildNodes:
+    case PropertyIDs::ListNodes:
+    case PropertyIDs::PictureContainer:
+    case PropertyIDs::StructureElementChildNodes:
+    case PropertyIDs::ChildGraphSpaceElementNodes:
+    case PropertyIDs::AuthorOriginal:
+    case PropertyIDs::AuthorMostRecent:
+    case PropertyIDs::EmbeddedFileContainer:
+    case PropertyIDs::TextRunFormatting:
+    case PropertyIDs::ParagraphStyle:
+    case PropertyIDs::MetaDataObjectsAboveGraphSpace:
+    case PropertyIDs::TextRunDataObject:
+    case PropertyIDs::TextRunData:
+    case PropertyIDs::NoteTagDefinitionOid:
+    case PropertyIDs::NoteTagStates:
+    case PropertyIDs::VersionHistoryGraphSpaceContextNodes:
+    case PropertyIDs::WebPictureContainer14:
+    case PropertyIDs::undoc_TextRunDataPropertyArray:
+    case PropertyIDs::undoc_float001c9e:
+    case PropertyIDs::undoc_float001c9f:
+    case PropertyIDs::undoc_float001ca0:
+    case PropertyIDs::undoc_float001ca1:
+    case PropertyIDs::TextServicesFrameworkBlob:
+    case PropertyIDs::TextServiesFrameworkFlag1:
+    case PropertyIDs::undoc_001d5c:
+    case PropertyIDs::undoc_001d5d:
+    case PropertyIDs::InkStrokeProperties:
+
+    case PropertyIDs::InkIgnorePressure:
+    case PropertyIDs::undoc_StrokesToolSetting003411:
+    case PropertyIDs::undoc_StrokesToolSetting003412:
+    case PropertyIDs::undoc_StrokesToolSetting003413:
+    case PropertyIDs::undoc_StrokesToolSetting003414:
+    case PropertyIDs::InkData:
+    case PropertyIDs::InkStrokes:
+    case PropertyIDs::InkBoundingBox:
+    case PropertyIDs::undoc_Strokes00341f:
+    case PropertyIDs::undoc_Strokes003420:
+    case PropertyIDs::undoc_TextServicesFrameworkBlob:
+    case PropertyIDs::EmbeddedInkStartX:
+    case PropertyIDs::EmbeddedInkStartY:
+    case PropertyIDs::EmbeddedInkWidth:
+    case PropertyIDs::EmbeddedInkHeight:
+    case PropertyIDs::EmbeddedInkOffsetHoriz:
+    case PropertyIDs::EmbeddedInkOffsetVert:
+    case PropertyIDs::undoc_Strokes0034a4:
+    case PropertyIDs::undoc_Strokes0034a5:
+    case PropertyIDs::FileDataObject_GUID:
+    case PropertyIDs::FileDataObject_InvalidData:
+    case PropertyIDs::FileDataObject_Extension:
+    case PropertyIDs::undoc_0x2c001d62:
+    case PropertyIDs::undoc_0x08001c32:
+    case PropertyIDs::undoc_0x08001d85:
+    case PropertyIDs::undoc_0x08001d8d:
+    case PropertyIDs::undoc_0x08001dce:
+    case PropertyIDs::undoc_0x08001dec:
+    case PropertyIDs::undoc_0x08001e24:
+    case PropertyIDs::undoc_0x08001e2c:
+    case PropertyIDs::undoc_0x08003405:
+    case PropertyIDs::undoc_0x08003406:
+    case PropertyIDs::undoc_0x08003495:
+    case PropertyIDs::undoc_0x080034aa:
+    case PropertyIDs::undoc_0x080034dd:
+    case PropertyIDs::undoc_0x14001c28:
+    case PropertyIDs::undoc_0x14001c48:
+    case PropertyIDs::undoc_0x14001c49:
+    case PropertyIDs::undoc_0x14001c4a:
+    case PropertyIDs::undoc_0x14001c4b:
+    case PropertyIDs::undoc_0x14001c99:
+    case PropertyIDs::undoc_0x14001cfd:
+    case PropertyIDs::undoc_0x14001df6:
+    case PropertyIDs::undoc_0x14001df9:
+    case PropertyIDs::undoc_0x1400344f:
+    case PropertyIDs::undoc_0x14003450:
+    case PropertyIDs::undoc_0x14003481:
+    case PropertyIDs::undoc_0x140035a4:
+    case PropertyIDs::undoc_0x140035d1:
+    case PropertyIDs::undoc_0x140035d2:
+    case PropertyIDs::undoc_0x1c001c97:
+    case PropertyIDs::undoc_0x1c001c98:
+    case PropertyIDs::undoc_0x1c001ca3:
+    case PropertyIDs::undoc_0x1c001ca5:
+    case PropertyIDs::undoc_0x1c001ca6:
+    case PropertyIDs::undoc_0x1c001ca7:
+    case PropertyIDs::undoc_0x1c001cc8:
+    case PropertyIDs::undoc_0x1c001cda:
+    case PropertyIDs::undoc_0x1c001d4c:
+    case PropertyIDs::undoc_0x1c001d5d:
+    case PropertyIDs::undoc_0x1c001d61:
+    case PropertyIDs::undoc_0x1c001d84:
+    case PropertyIDs::undoc_0x1c001daa:
+    case PropertyIDs::undoc_0x1c001dbe:
+    case PropertyIDs::undoc_0x1c001dbf:
+    case PropertyIDs::undoc_0x1c001dcf:
+    case PropertyIDs::undoc_0x1c001dfb:
+    case PropertyIDs::undoc_0x1c001dfc:
+    case PropertyIDs::undoc_0x0c001cc0:
+    case PropertyIDs::undoc_0x0c001d4f:
+    case PropertyIDs::undoc_0x0c003452:
+    case PropertyIDs::undoc_0x1000344e:
+    case PropertyIDs::undoc_0x10003453:
     case PropertyIDs::None:
     default:
       writeIPropertyType(currentData, xmlWriter);
       break;
     }
     }
+    xmlWriter.writeEndElement(); // PropertyID content
     xmlWriter.writeEndElement(); // PropertyID
   }
+
 
   xmlWriter.writeEndElement();
 
@@ -4247,9 +4070,7 @@ QXmlStreamWriter& RSFtoXml::writePropertyType_TwoBytesOfData(
 QXmlStreamWriter& RSFtoXml::writeBodyTextAlignment(
     const libmson::BodyTextAlignment& obj, QXmlStreamWriter& xmlWriter)
 {
-  xmlWriter.writeStartElement("BodyTextAlignment");
   xmlWriter.writeCharacters(QString::number(obj.getValue()));
-  xmlWriter.writeEndElement();
 
   return xmlWriter;
 }
@@ -4315,15 +4136,15 @@ QXmlStreamWriter& RSFtoXml::writeNoteTagShape(
   return xmlWriter;
 }
 
-QXmlStreamWriter& RSFtoXml::writePageSize(
-    const libmson::PageSize& obj, QXmlStreamWriter& xmlWriter)
+QXmlStreamWriter&
+RSFtoXml::writeBoolean(const int boolValue, QXmlStreamWriter& xmlWriter)
 {
-  xmlWriter.writeStartElement("PageSize");
-  xmlWriter.writeCharacters(libmson::PageSize::typeToString(obj.getPageType()));
-  xmlWriter.writeEndElement();
+  xmlWriter.writeCharacters(
+      boolValue == 0 ? "False" : (boolValue == 1 ? "True" : "n.a."));
 
   return xmlWriter;
 }
+
 
 QXmlStreamWriter&
 RSFtoXml::writeTime32(const libmson::Time32& obj, QXmlStreamWriter& xmlWriter)
