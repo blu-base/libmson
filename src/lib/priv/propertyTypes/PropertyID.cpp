@@ -21,6 +21,7 @@ QString PropertyID::idToString() const { return PropertyID::idToString(m_id);
 
 QString PropertyID::idToString(const PropertyIDs& val)
 {
+
   QString m_id_string;
   switch (val) {
   case PropertyIDs::LayoutTightLayout:
@@ -222,7 +223,7 @@ QString PropertyID::idToString(const PropertyIDs& val)
     m_id_string = "CachedTitleStringFromPage";
     break;
   case PropertyIDs::RowCount:
-    m_id_string = "RowCount";
+    m_id_string = QLatin1String("RowCount");
     break;
   case PropertyIDs::ColumnCount:
     m_id_string = "ColumnCount";
@@ -547,6 +548,209 @@ QString PropertyID::idToString(const PropertyIDs& val)
     break;
   case PropertyIDs::FileDataObject_Extension:
     m_id_string = "FileDataObject_Extension";
+    break;
+
+  case libmson::priv::PropertyIDs::undoc_TextRunDataPropertyArray:
+    m_id_string = "undoc_TextRunDataPropertyArray";
+    break;
+
+  case PropertyIDs::InkIgnorePressure:
+    m_id_string = "InkIgnorePressure";
+    break;
+  case PropertyIDs::undoc_StrokesToolSetting003411:
+    m_id_string = "undoc_StrokesToolSetting003411";
+    break;
+  case PropertyIDs::undoc_StrokesToolSetting003412:
+    m_id_string = "undoc_StrokesToolSetting003412";
+    break;
+  case PropertyIDs::undoc_StrokesToolSetting003413:
+    m_id_string = "undoc_StrokesToolSetting003413";
+    break;
+  case PropertyIDs::undoc_StrokesToolSetting003414:
+    m_id_string = "undoc_StrokesToolSetting003414";
+    break;
+  case PropertyIDs::undoc_Strokes00341f:
+    m_id_string = "undoc_Strokes00341f";
+    break;
+  case PropertyIDs::undoc_Strokes003420:
+    m_id_string = "undoc_Strokes003420";
+    break;
+  case PropertyIDs::EmbeddedInkStartX:
+    m_id_string = "EmbeddedInkStartX";
+    break;
+  case PropertyIDs::EmbeddedInkStartY:
+    m_id_string = "EmbeddedInkStartY";
+    break;
+  case PropertyIDs::EmbeddedInkWidth:
+    m_id_string = "EmbeddedInkWidth";
+    break;
+  case PropertyIDs::EmbeddedInkHeight:
+    m_id_string = "EmbeddedInkHeight";
+    break;
+  case PropertyIDs::EmbeddedInkOffsetHoriz:
+    m_id_string = "EmbeddedInkOffsetHoriz";
+    break;
+  case PropertyIDs::EmbeddedInkOffsetVert:
+    m_id_string = "EmbeddedInkOffsetVert";
+    break;
+  case PropertyIDs::undoc_Strokes0034a4:
+    m_id_string = "undoc_Strokes0034a4";
+    break;
+  case PropertyIDs::undoc_Strokes0034a5:
+    m_id_string = "undoc_Strokes0034a5";
+    break;
+  case PropertyIDs::undoc_0x2c001d62:
+    m_id_string = "undoc_0x2c001d62";
+    break;
+  case PropertyIDs::undoc_0x08001c32:
+    m_id_string = "undoc_0x08001c32";
+    break;
+  case PropertyIDs::undoc_0x08001d85:
+    m_id_string = "undoc_0x08001d85";
+    break;
+  case PropertyIDs::undoc_0x08001d8d:
+    m_id_string = "undoc_0x08001d8d";
+    break;
+  case PropertyIDs::undoc_0x08001dce:
+    m_id_string = "undoc_0x08001dce";
+    break;
+  case PropertyIDs::undoc_0x08001dec:
+    m_id_string = "undoc_0x08001dec";
+    break;
+  case PropertyIDs::undoc_0x08001e24:
+    m_id_string = "undoc_0x08001e24";
+    break;
+  case PropertyIDs::undoc_0x08001e2c:
+    m_id_string = "undoc_0x08001e2c";
+    break;
+  case PropertyIDs::undoc_0x08003405:
+    m_id_string = "undoc_0x08003405";
+    break;
+  case PropertyIDs::undoc_0x08003406:
+    m_id_string = "undoc_0x08003406";
+    break;
+  case PropertyIDs::undoc_0x08003495:
+    m_id_string = "undoc_0x08003495";
+    break;
+  case PropertyIDs::undoc_0x080034aa:
+    m_id_string = "undoc_0x080034aa";
+    break;
+  case PropertyIDs::undoc_0x080034dd:
+    m_id_string = "undoc_0x080034dd";
+    break;
+  case PropertyIDs::undoc_0x14001c28:
+    m_id_string = "undoc_0x14001c28";
+    break;
+  case PropertyIDs::undoc_0x14001c48:
+    m_id_string = "undoc_0x14001c48";
+    break;
+  case PropertyIDs::undoc_0x14001c49:
+    m_id_string = "undoc_0x14001c49";
+    break;
+  case PropertyIDs::undoc_0x14001c4a:
+    m_id_string = "undoc_0x14001c4a";
+    break;
+  case PropertyIDs::undoc_0x14001c4b:
+    m_id_string = "undoc_0x14001c4b";
+    break;
+  case PropertyIDs::undoc_0x14001c99:
+    m_id_string = "undoc_0x14001c99";
+    break;
+  case PropertyIDs::undoc_0x14001cfd:
+    m_id_string = "undoc_0x14001cfd";
+    break;
+  case PropertyIDs::undoc_0x14001df6:
+    m_id_string = "undoc_0x14001df6";
+    break;
+  case PropertyIDs::undoc_0x14001df9:
+    m_id_string = "undoc_0x14001df9";
+    break;
+  case PropertyIDs::undoc_0x1400344f:
+    m_id_string = "undoc_0x1400344f";
+    break;
+  case PropertyIDs::undoc_0x14003450:
+    m_id_string = "undoc_0x14003450";
+    break;
+  case PropertyIDs::undoc_0x14003481:
+    m_id_string = "undoc_0x14003481";
+    break;
+  case PropertyIDs::undoc_0x140035a4:
+    m_id_string = "undoc_0x140035a4";
+    break;
+  case PropertyIDs::undoc_0x140035d1:
+    m_id_string = "undoc_0x140035d1";
+    break;
+  case PropertyIDs::undoc_0x140035d2:
+    m_id_string = "undoc_0x140035d2";
+    break;
+  case PropertyIDs::undoc_0x1c001c97:
+    m_id_string = "undoc_0x1c001c97";
+    break;
+  case PropertyIDs::undoc_0x1c001c98:
+    m_id_string = "undoc_0x1c001c98";
+    break;
+  case PropertyIDs::undoc_0x1c001ca3:
+    m_id_string = "undoc_0x1c001ca3";
+    break;
+  case PropertyIDs::undoc_0x1c001ca5:
+    m_id_string = "undoc_0x1c001ca5";
+    break;
+  case PropertyIDs::undoc_0x1c001ca6:
+    m_id_string = "undoc_0x1c001ca6";
+    break;
+  case PropertyIDs::undoc_0x1c001ca7:
+    m_id_string = "undoc_0x1c001ca7";
+    break;
+  case PropertyIDs::undoc_0x1c001cc8:
+    m_id_string = "undoc_0x1c001cc8";
+    break;
+  case PropertyIDs::undoc_0x1c001cda:
+    m_id_string = "undoc_0x1c001cda";
+    break;
+  case PropertyIDs::undoc_0x1c001d4c:
+    m_id_string = "undoc_0x1c001d4c";
+    break;
+  case PropertyIDs::undoc_0x1c001d5d:
+    m_id_string = "undoc_0x1c001d5d";
+    break;
+  case PropertyIDs::undoc_0x1c001d61:
+    m_id_string = "undoc_0x1c001d61";
+    break;
+  case PropertyIDs::undoc_0x1c001d84:
+    m_id_string = "undoc_0x1c001d84";
+    break;
+  case PropertyIDs::undoc_0x1c001daa:
+    m_id_string = "undoc_0x1c001daa";
+    break;
+  case PropertyIDs::undoc_0x1c001dbe:
+    m_id_string = "undoc_0x1c001dbe";
+    break;
+  case PropertyIDs::undoc_0x1c001dbf:
+    m_id_string = "undoc_0x1c001dbf";
+    break;
+  case PropertyIDs::undoc_0x1c001dcf:
+    m_id_string = "undoc_0x1c001dcf";
+    break;
+  case PropertyIDs::undoc_0x1c001dfb:
+    m_id_string = "undoc_0x1c001dfb";
+    break;
+  case PropertyIDs::undoc_0x1c001dfc:
+    m_id_string = "undoc_0x1c001dfc";
+    break;
+  case PropertyIDs::undoc_0x0c001cc0:
+    m_id_string = "undoc_0x0c001cc0";
+    break;
+  case PropertyIDs::undoc_0x0c001d4f:
+    m_id_string = "undoc_0x0c001d4f";
+    break;
+  case PropertyIDs::undoc_0x0c003452:
+    m_id_string = "undoc_0x0c003452";
+    break;
+  case PropertyIDs::undoc_0x1000344e:
+    m_id_string = "undoc_0x1000344e";
+    break;
+  case PropertyIDs::undoc_0x10003453:
+    m_id_string = "undoc_0x10003453";
     break;
 
   case PropertyIDs::None:

@@ -468,7 +468,7 @@ enum class PropertyIDs : quint32 {
   * TwoBytesOfData
 
 
-  * Unique Guid for the referencing ink object
+  * Guid for the referencing ink object
   *
   * 16 bytes structure
   */
@@ -638,7 +638,6 @@ enum class PropertyIDs : quint32 {
   undoc_0x08003405 = 0x08003405,
   undoc_0x08003406 = 0x08003406,
 
-  undoc_0x0800341f = 0x0800341f,
   undoc_0x08003495 = 0x08003495,
   undoc_0x080034aa = 0x080034aa,
   undoc_0x080034dd = 0x080034dd,
@@ -650,21 +649,12 @@ enum class PropertyIDs : quint32 {
   undoc_0x14001c4a = 0x14001c4a,
   undoc_0x14001c4b = 0x14001c4b,
   undoc_0x14001c99 = 0x14001c99,
-  undoc_0x14001c9e = 0x14001c9e,
-  undoc_0x14001c9f = 0x14001c9f,
-  undoc_0x14001ca0 = 0x14001ca0,
-  undoc_0x14001ca1 = 0x14001ca1,
   undoc_0x14001cfd = 0x14001cfd,
-  undoc_0x14001d4e = 0x14001d4e,
-  undoc_0x14001d5c = 0x14001d5c,
   undoc_0x14001df6 = 0x14001df6,
   undoc_0x14001df9 = 0x14001df9,
-  undoc_0x14003420 = 0x14003420,
   undoc_0x1400344f = 0x1400344f,
   undoc_0x14003450 = 0x14003450,
   undoc_0x14003481 = 0x14003481,
-  undoc_0x140034a4 = 0x140034a4,
-  undoc_0x140034a5 = 0x140034a5,
   undoc_0x140035a4 = 0x140035a4,
   undoc_0x140035d1 = 0x140035d1,
   undoc_0x140035d2 = 0x140035d2,
@@ -679,7 +669,6 @@ enum class PropertyIDs : quint32 {
   undoc_0x1c001cc8 = 0x1c001cc8,
   undoc_0x1c001cda = 0x1c001cda,
   undoc_0x1c001d4c = 0x1c001d4c,
-  undoc_0x1c001d4d = 0x1c001d4d,
   undoc_0x1c001d5d = 0x1c001d5d,
   undoc_0x1c001d61 = 0x1c001d61,
   undoc_0x1c001d84 = 0x1c001d84,
@@ -689,7 +678,6 @@ enum class PropertyIDs : quint32 {
   undoc_0x1c001dcf = 0x1c001dcf,
   undoc_0x1c001dfb = 0x1c001dfb,
   undoc_0x1c001dfc = 0x1c001dfc,
-  undoc_0x1c00345d = 0x1c00345d,
   // OneByteOfData
   undoc_0x0c001cc0 = 0x0c001cc0,
   undoc_0x0c001d4f = 0x0c001d4f,
