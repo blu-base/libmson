@@ -1,0 +1,85 @@
+#ifndef METRICENUMS_H
+#define METRICENUMS_H
+
+#include <QtCore/qglobal.h>
+
+#include <QUuid>
+#include <map>
+
+namespace libmson::isf {
+
+enum MetricBlockEntryType {
+  X,
+  Y,
+  Z,
+  NORMAL_PRESSURE,
+  TANGENT_PRESSURE,
+  BUTTON_PRESSURE,
+  X_TILT_ORIENTATION,
+  Y_TILT_ORIENTATION,
+  AZIMUTH_ORIENTATION,
+  ALTITUDE_ORIENTATION,
+  TWIST_ORIENTATION,
+
+  // fallback
+  INVALID,
+};
+
+const std::map<MetricBlockEntryType, QUuid> MetricBlockEntryTypeGuid = {
+    {X, QUuid("{598A6A8F-52C0-4BA0-93AF-AF357411A561}")},
+    {Y, QUuid("{B53F9F75-04E0-4498-A7EE-C30DBB5A9011}")},
+    {Z, QUuid("{735ADB30-0EBB-4788-A0E4-0F316490055D}")},
+    {NORMAL_PRESSURE, QUuid("{7307502D-F9F4-4E18-B3F2-2CE1B1A3610C}")},
+    {TANGENT_PRESSURE, QUuid("{6DA4488B-5244-41EC-905B-32D89AB80809}")},
+    {BUTTON_PRESSURE, QUuid("{8B7FEFC4-96AA-4BFE-AC26-8A5F0BE07BF5}")},
+    {X_TILT_ORIENTATION, QUuid("{A8D07B3A-8BF0-40B0-95A9-B80A6BB787BF}")},
+    {Y_TILT_ORIENTATION, QUuid("{0E932389-1D77-43AF-AC00-5B950D6D4B2D}")},
+    {AZIMUTH_ORIENTATION, QUuid("{029123B4-8828-410B-B250-A0536595E5DC}")},
+    {ALTITUDE_ORIENTATION, QUuid("{598A6A8F-52C0-4BA0-93AF-AF357411A561}")},
+    {TWIST_ORIENTATION, QUuid("{82DEC5C7-F6BA-4906-894F-66D68DFC456C}")},
+    {INVALID, QUuid()},
+};
+
+const std::map<MetricBlockEntryType, QString> MetricBlockEntryTypeString = {
+    {X, "X"},
+    {Y, "Y"},
+    {Z, "Z"},
+    {NORMAL_PRESSURE, "NORMAL_PRESSURE"},
+    {TANGENT_PRESSURE, "TANGENT_PRESSURE"},
+    {BUTTON_PRESSURE, "BUTTON_PRESSURE"},
+    {X_TILT_ORIENTATION, "X_TILT_ORIENTATION"},
+    {Y_TILT_ORIENTATION, "Y_TILT_ORIENTATION"},
+    {AZIMUTH_ORIENTATION, "AZIMUTH_ORIENTATION"},
+    {ALTITUDE_ORIENTATION, "ALTITUDE_ORIENTATION"},
+    {TWIST_ORIENTATION, "TWIST_ORIENTATION"},
+    {INVALID, "INVALID"},
+};
+
+
+enum MetricUnit {
+  DEFAULT,
+  INCH,
+  CM,
+  DEGREE,
+  RADIAN,
+  SECOND,
+  POUNDS,
+  GRAMS,
+};
+
+const std::map<MetricUnit, quint32> MetricUnitMap = {
+    {DEFAULT, 0}, {INCH, 1},   {CM, 2},     {DEGREE, 3},
+    {RADIAN, 4},  {SECOND, 5}, {POUNDS, 6}, {GRAMS, 7},
+};
+
+
+const std::map<MetricUnit, QString> MetricUnitString = {
+    {DEFAULT, "DEFAULT"}, {INCH, "INCH"},     {CM, "CM"},
+    {DEGREE, "DEGREE"},   {RADIAN, "RADIAN"}, {SECOND, "SECOND"},
+    {POUNDS, "POUNDS"},   {GRAMS, "GRAMS"},
+};
+
+
+} // namespace libmson::isf
+
+#endif // METRICENUMS_H

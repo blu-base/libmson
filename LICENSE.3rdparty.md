@@ -1,9 +1,11 @@
 Although this library is provided with a LGPL v2.1 license, it has been created 
-by using significant amounts of code of the following projects.
+by using significant amounts of code of the following projects or has
+significant similarities with them.
 
 * Qt Open Source Edition - 5.15
 * OfficeDev / [Interop-TestSuites][1]
 * pablospe / [cmake-example-library][2]
+* KMess / [LibISF-Qt][3]
 
 
 # Qt Open Source Edition - 5.15
@@ -225,6 +227,15 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
+# kmess / LibISF-Qt
+
+Original authors of this library:
+ - Valerio Pilo <valerio@kmess.org>
+ - Adam Goossens <adam@kmess.org>
+
+It is licensed under ![LGPL2.1](./LICENSE.md).
+
 
 [1]: https://github.com/OfficeDev/Interop-TestSuites
 [2]: https://github.com/pablospe/cmake-example-library
+[3]: https://gitlab.com/kmess/libisf-qt/
