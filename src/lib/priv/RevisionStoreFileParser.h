@@ -225,6 +225,24 @@ private:
   std::shared_ptr<Chunkably>
   parseFileNodeChunkReference(QDataStream& ds, const FileNode_SPtr_t& fn);
 
+  /// parses a FileChunkReference64, creates and adds a Chunkable to the
+  /// RevisionStoreFile and returns the Chunkable poitner
+  template <class Chunkably>
+  std::shared_ptr<Chunkably>
+  parseFileChunkReference64(QDataStream& ds);
+
+  /// parses a FileChunkReference64x32, creates and adds a Chunkable to the
+  /// RevisionStoreFile and returns the Chunkable poitner
+  template <class Chunkably>
+  std::shared_ptr<Chunkably>
+  parseFileChunkReference64x32(QDataStream& ds);
+
+  /// parses a FileChunkReference32, creates and adds a Chunkable to the
+  /// RevisionStoreFile and returns the Chunkable poitner
+  template <class Chunkably>
+  std::shared_ptr<Chunkably>
+  parseFileChunkReference32(QDataStream& ds);
+
   /// Iterates through the list and checks whether chunk is already present
   /// at the specified location (stp, and cb must be equal) If it does not
   /// find an identical Chunkable in chunkList, it will return chunk;

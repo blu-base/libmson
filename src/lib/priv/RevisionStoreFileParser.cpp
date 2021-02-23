@@ -158,8 +158,11 @@ std::shared_ptr<RevisionStoreFile> RevisionStoreFileParser::parse()
 
 
   /// \todo replace temporary brute-force parsing remaining unparsed chunks
+
+  quint8 breakout       = 0;
   bool thereAreUnparsed = true;
-  while (thereAreUnparsed) {
+  while (thereAreUnparsed && ++breakout < 0x3) {
+
     bool foundUnparsedThisLoop = false;
 
 
@@ -169,7 +172,22 @@ std::shared_ptr<RevisionStoreFile> RevisionStoreFileParser::parse()
     for (auto it = chunks.rbegin(); it != chunks.rend(); ++it) {
       if (!(*it)->isParsed()) {
         m_file->m_undiscovered.push_back(*it);
+
+        if ((*it)->getInitialStp() + (*it)->getInitialCb() >
+            m_file->m_header->m_cbExpectedFileLength) {
+          qWarning()
+              << "Chunk allocation (stp:"
+              << QString::number((*it)->getInitialStp(), 16)
+              << "cb:" << QString::number((*it)->getInitialCb(), 16)
+              << ")is longer than the expected file size:"
+              << QString::number(m_file->m_header->m_cbExpectedFileLength, 16)
+              << ". skipping.\n"
+              << "This likely means there is a parsing error somewhere...";
+
+          break;
+        }
         foundUnparsedThisLoop = true;
+
         parseChunk(m_ds, *it);
       }
     }
@@ -194,12 +212,24 @@ std::shared_ptr<RevisionStoreFile> RevisionStoreFileParser::parse()
       quint64 lastEnd = (*prev)->getInitialStp() + (*prev)->getInitialCb();
       quint64 start   = (*it)->getInitialStp();
 
+      if (lastEnd > start) {
+        qWarning().noquote()
+            << "The chunk at stp:"
+            << QString::number((*prev)->getInitialStp(), 16)
+            << ", cb: " << QString::number((*prev)->getInitialCb(), 16)
+            << "of type:" << Chunkable::typeString((*prev)->getType())
+            << "is larger than the start of the next chunk at stp:"
+            << QString::number((*it)->getInitialStp(),16);
+        it++;
+        prev++;
+        continue;
+      }
       quint64 diff = start - lastEnd;
 
       if (diff != 0) {
-        qInfo().noquote() << "Found unreferenced blob at"
-                          << qStringHex(lastEnd, 16) << "of size"
-                          << qStringHex(diff, 8);
+//        qInfo().noquote() << "Found unreferenced blob at"
+//                          << qStringHex(lastEnd, 16) << "of size"
+//                          << qStringHex(diff, 8);
 
         auto unknownBlob = std::make_shared<UnknownBlob>(lastEnd, diff);
 
@@ -220,9 +250,9 @@ std::shared_ptr<RevisionStoreFile> RevisionStoreFileParser::parse()
     quint64 diff = header->getCbExpectedFileLength() - lastEnd;
 
     if (diff != 0) {
-      qInfo().noquote() << "Found unreferenced blob at"
-                        << qStringHex(lastEnd, 16) << "of size"
-                        << qStringHex(diff, 8);
+//      qInfo().noquote() << "Found unreferenced blob at"
+//                        << qStringHex(lastEnd, 16) << "of size"
+//                        << qStringHex(diff, 8);
 
       auto unknownBlob = std::make_shared<UnknownBlob>(lastEnd, diff);
 
@@ -258,6 +288,21 @@ std::shared_ptr<RevisionStoreFile> RevisionStoreFileParser::parse()
 void RevisionStoreFileParser::parseChunk(
     QDataStream& ds, const Chunkable_SPtr_t& chunk)
 {
+
+  if (chunk->getInitialStp() + chunk->getInitialCb() >
+      m_file->m_header->m_cbExpectedFileLength) {
+    qWarning() << "Chunk allocation (stp:"
+               << QString::number(chunk->getInitialStp(), 16)
+               << "cb:" << QString::number(chunk->getInitialCb(), 16)
+               << ")is longer than file size("
+               << QString::number(m_file->m_header->m_cbExpectedFileLength, 16)
+               << "). skipping.\n"
+               << "This likely means there is a parsing error somewhere...";
+    chunk->m_isParsed = true;
+    return;
+  }
+
+
   switch (chunk->type()) {
 
   case RevisionStoreChunkType::RevisionStoreFileHeader: {
@@ -374,7 +419,7 @@ RevisionStoreFileParser::parseRevisionStoreFileHeader(QDataStream& ds)
   }
 
   auto header = std::make_shared<RevisionStoreFileHeader>(
-      0u, RevisionStoreFileHeader::sizeInFile);
+      0u, RevisionStoreFileHeader::sizeInFile, ds.device()->bytesAvailable());
 
 
   m_file->m_header = header;
@@ -440,59 +485,21 @@ RevisionStoreFileParser::parseRevisionStoreFileHeader(QDataStream& ds)
   ds >> header->m_guidAncestor;
   ds >> header->m_crcName;
 
-  FileChunkReference64x32 fcrHashedChunkList;
-  ds >> fcrHashedChunkList;
+  auto fcrHashedChunkListFragment =
+      parseFileChunkReference64x32<FileNodeListFragment>(ds);
+  header->m_fcrHashedChunkList = fcrHashedChunkListFragment;
 
-  if (!fcrHashedChunkList.is_fcrNil() && !fcrHashedChunkList.is_fcrZero()) {
+  auto fcrTransactionLogFragment =
+      parseFileChunkReference64x32<TransactionLogFragment>(ds);
+  header->m_fcrTransactionLog = fcrTransactionLogFragment;
 
+  auto fileNodeListRootChunk =
+      parseFileChunkReference64x32<FileNodeListFragment>(ds);
+  header->m_fcrFileNodeListRoot = fileNodeListRootChunk;
 
-    auto fcrHashedChunkListFragment = std::make_shared<FileNodeListFragment>(
-        fcrHashedChunkList.stp(), fcrHashedChunkList.cb());
-
-    fcrHashedChunkListFragment =
-        insertChunkSorted(m_file->chunks(), fcrHashedChunkListFragment);
-
-    header->m_fcrHashedChunkList = fcrHashedChunkListFragment;
-  }
-
-  FileChunkReference64x32 fcrTransactionLog;
-  ds >> fcrTransactionLog;
-  if (!fcrTransactionLog.is_fcrNil() && !fcrTransactionLog.is_fcrZero()) {
-
-    auto fcrTransactionLogFragment = std::make_shared<TransactionLogFragment>(
-        fcrTransactionLog.stp(), fcrTransactionLog.cb());
-
-    fcrTransactionLogFragment =
-        insertChunkSorted(m_file->chunks(), fcrTransactionLogFragment);
-
-    header->m_fcrTransactionLog = fcrTransactionLogFragment;
-  }
-
-  FileChunkReference64x32 fcrFileNodeListRoot;
-  ds >> fcrFileNodeListRoot;
-  if (!fcrFileNodeListRoot.is_fcrNil() && !fcrFileNodeListRoot.is_fcrZero()) {
-
-    auto fileNodeListRootChunk = std::make_shared<FileNodeListFragment>(
-        fcrFileNodeListRoot.stp(), fcrFileNodeListRoot.cb());
-
-    fileNodeListRootChunk =
-        insertChunkSorted(m_file->chunks(), fileNodeListRootChunk);
-
-    header->m_fcrFileNodeListRoot = fileNodeListRootChunk;
-  }
-
-  FileChunkReference64x32 fcrFreeChunkList;
-  ds >> fcrFreeChunkList;
-  if (!fcrFreeChunkList.is_fcrNil() && !fcrFreeChunkList.is_fcrZero()) {
-
-    auto freeChunkListFragment = std::make_shared<FreeChunkListFragment>(
-        fcrFreeChunkList.stp(), fcrFreeChunkList.cb());
-
-    freeChunkListFragment =
-        insertChunkSorted(m_file->chunks(), freeChunkListFragment);
-
-    header->m_fcrFreeChunkList = freeChunkListFragment;
-  }
+  auto freeChunkListFragment =
+      parseFileChunkReference64x32<FreeChunkListFragment>(ds);
+  header->m_fcrFreeChunkList = freeChunkListFragment;
 
   ds >> header->m_cbExpectedFileLength;
   ds >> header->m_cbFreeSpaceInFreeChunkList;
@@ -604,39 +611,30 @@ void RevisionStoreFileParser::parseFreeChunkListFragments(
 
     ds >> fragment->m_crc;
 
-
-    FileChunkReference64x32 fcrNextFragment;
-    ds >> fcrNextFragment;
-    if (!fcrNextFragment.is_fcrNil() && !fcrNextFragment.is_fcrZero()) {
-
-      auto fcrNextFragmentChunk = std::make_shared<FreeChunkListFragment>(
-          fcrNextFragment.stp(), fcrNextFragment.cb());
-
-      fcrNextFragmentChunk =
-          insertChunkSorted(m_file->chunks(), fcrNextFragmentChunk);
+    auto fcrNextFragmentChunk =
+        parseFileChunkReference64x32<FreeChunkListFragment>(ds);
+    fragment->m_fcrNextFragment = fcrNextFragmentChunk;
 
 
-      fragment->m_fcrNextFragment = fcrNextFragmentChunk;
+    quint64 chunksToRead = 0;
+
+    if (fragment->getInitialCb() > 16) {
+      chunksToRead = fragment->getInitialCb() / 16 - 1;
     }
-
-    quint64 chunksToRead = fragment->cb() / 16 - 1;
 
     for (size_t i{0}; i < chunksToRead; ++i) {
 
-      FileChunkReference64x32 temp;
-      ds >> temp;
-      if (!temp.is_fcrNil() && !temp.is_fcrZero()) {
+      auto freeChunk = parseFileChunkReference64<FreeChunk>(ds);
 
-        auto freeChunk = std::make_shared<FreeChunk>(temp.stp(), temp.cb());
-
-        freeChunk = insertChunkSorted(m_file->chunks(), freeChunk);
-
-
-        fragment->m_fcrFreeChunks.push_back(freeChunk);
+      // try to prevent propagation of parsing errors
+      if (freeChunk == nullptr) {
+        break;
       }
+      fragment->m_fcrFreeChunks.push_back(freeChunk);
     }
+    fragment->m_isParsed = true;
+    fragment = fcrNextFragmentChunk;
 
-    fragment = fragment->m_fcrNextFragment.lock();
   }
 
   ds.device()->seek(originalStp);
@@ -759,7 +757,8 @@ FileNodeListFragment_SPtr_t RevisionStoreFileParser::parseFileNodeListFragment(
   quint32 fileNodeCount = UINT32_MAX;
 
   if (m_file->m_fileNodeCountMapping.contains(fragment->m_fileNodeListID)) {
-    fileNodeCount = m_file->m_fileNodeCountMapping.value(fragment->m_fileNodeListID);
+    fileNodeCount =
+        m_file->m_fileNodeCountMapping.value(fragment->m_fileNodeListID);
   }
 
   quint64 remainingBytes = cb - FileNodeListFragment::minSizeInFile;
@@ -811,30 +810,38 @@ FileNodeListFragment_SPtr_t RevisionStoreFileParser::parseFileNodeListFragment(
   // Skip to end. Ignore ChunkTerminatorFND
   ds.device()->seek(stp + cb - 20);
 
-  // footer
-  FileChunkReference64x32 nextFragment;
-  ds >> nextFragment;
+  auto nextFragment = parseFileChunkReference64x32<FileNodeListFragment>(ds);
 
-  quint64 footerTest;
-  ds >> footerTest;
-  if (footerTest != FileNodeListFragment::footer_magic_id) {
-    qFatal("FileNodeListFragment footer is invalid.");
-  }
 
   fragment->m_isParsed = true;
 
-  if (!nextFragment.is_fcrNil() && !nextFragment.is_fcrZero()) {
-    auto nextFnlf = std::make_shared<FileNodeListFragment>(
-        nextFragment.stp(), nextFragment.cb());
+  fragment->m_nextFragment = nextFragment;
+  return nextFragment;
 
-    nextFnlf                 = insertChunkSorted(m_file->chunks(), nextFnlf);
-    fragment->m_nextFragment = nextFnlf;
-    return nextFnlf;
-  }
+
+  // footer
+  //  FileChunkReference64x32 nextFragment;
+  //  ds >> nextFragment;
+
+  //  quint64 footerTest;
+  //  ds >> footerTest;
+  //  if (footerTest != FileNodeListFragment::footer_magic_id) {
+  //    qFatal("FileNodeListFragment footer is invalid.");
+  //  }
+
+  //  fragment->m_isParsed = true;
+
+  //  if (!nextFragment.is_fcrNil() && !nextFragment.is_fcrZero()) {
+  //    auto nextFnlf = std::make_shared<FileNodeListFragment>(
+  //        nextFragment.stp(), nextFragment.cb());
+
+  //    nextFnlf                 = insertChunkSorted(m_file->chunks(),
+  //    nextFnlf); fragment->m_nextFragment = nextFnlf; return nextFnlf;
+  //  }
 
 
   // return empty if there is no next
-  return FileNodeListFragment_SPtr_t();
+  //  return FileNodeListFragment_SPtr_t();
 }
 
 // -----------------------------------------------------------------------------
@@ -903,44 +910,48 @@ bool RevisionStoreFileParser::parseTransactionLogFragment(
     fragment->setSizeTable(transactionEntries);
 
 
-    FileChunkReference64x32 nextFragmentFCR;
-    ds >> nextFragmentFCR;
-    if (!nextFragmentFCR.is_fcrNil() && !nextFragmentFCR.is_fcrZero()) {
-
-      auto nextTransactionLogFragmentContainer =
-          std::make_shared<TransactionLogFragment>(
-              nextFragmentFCR.stp(), nextFragmentFCR.cb());
-
-      nextTransactionLogFragmentContainer = insertChunkSorted(
-          m_file->chunks(), nextTransactionLogFragmentContainer);
-
-      fragment->m_nextFragment = nextTransactionLogFragmentContainer;
-    }
+    auto nextTransactionLogFragmentContainer =
+        parseFileChunkReference64x32<TransactionLogFragment>(ds);
+    fragment->m_nextFragment = nextTransactionLogFragmentContainer;
 
 
-    /// test for mismatch
-    /// \todo deduct when there is a mismatch between a given Size of a
-    /// TransactionLogFragment and the accumulated size of its contents
+    //    FileChunkReference64x32 nextFragmentFCR;
+    //    ds >> nextFragmentFCR;
+    //    if (!nextFragmentFCR.is_fcrNil() && !nextFragmentFCR.is_fcrZero()) {
 
-    quint64 contentAlignedFooter =
-        num_entries * TransactionEntry::getSizeInFile();
+    //      auto nextTransactionLogFragmentContainer =
+    //          std::make_shared<TransactionLogFragment>(
+    //              nextFragmentFCR.stp(), nextFragmentFCR.cb());
 
-    quint64 tailAlignedFooter =
-        fragment->getInitialCb() - FileChunkReference64x32::getSizeInFile();
+    //      nextTransactionLogFragmentContainer = insertChunkSorted(
+    //          m_file->chunks(), nextTransactionLogFragmentContainer);
 
-    if (contentAlignedFooter != tailAlignedFooter) {
-      qInfo().noquote().nospace()
-          << "There is a mismatch of "
-          << tailAlignedFooter - contentAlignedFooter
-          << " bytes in the TransactionLogFragments given size and used size "
-             "at stp: "
-          << qStringHex(fragment->getInitialStp(), 16)
-          << " cb: " << qStringHex(fragment->getInitialCb(), 16);
+    //      fragment->m_nextFragment = nextTransactionLogFragmentContainer;
+    //    }
 
-      fragment->setPaddingLength(tailAlignedFooter - contentAlignedFooter);
-    }
 
-    ds.skipRawData(fragment->getPaddingLength());
+    //    quint64 contentAlignedFooter =
+    //        num_entries * TransactionEntry::getSizeInFile();
+
+    //    quint64 tailAlignedFooter =
+    //        fragment->getInitialCb() -
+    //        FileChunkReference64x32::getSizeInFile() ;
+
+    //    if (contentAlignedFooter != tailAlignedFooter) {
+    //      qInfo().noquote().nospace()
+    //          << "There is a mismatch of "
+    //          << tailAlignedFooter - contentAlignedFooter
+    //          << " bytes in the TransactionLogFragments given size and used
+    //          size "
+    //             "at stp: "
+    //          << qStringHex(fragment->getInitialStp(), 16)
+    //          << " cb: " << qStringHex(fragment->getInitialCb(), 16);
+
+    //      fragment->setPaddingLength(tailAlignedFooter -
+    //      contentAlignedFooter);
+    //    }
+
+    //    ds.skipRawData(fragment->getPaddingLength());
 
 
     fragment->m_isParsed = true;
@@ -953,7 +964,7 @@ bool RevisionStoreFileParser::parseTransactionLogFragment(
       if (entry->getSrcID() != 0x00000001) {
 
         if (m_file->m_fileNodeCountMapping.contains(entry->getSrcID())) {
-          if (m_file->m_fileNodeCountMapping[entry->getSrcID()] <
+          if (m_file->m_fileNodeCountMapping.value(entry->getSrcID()) <
               entry->getTransactionEntrySwitch()) {
             m_file->m_fileNodeCountMapping[entry->getSrcID()] =
                 entry->getTransactionEntrySwitch();
@@ -978,7 +989,7 @@ bool RevisionStoreFileParser::parseTransactionLogFragment(
       break;
     }
 
-    fragment = fragment->m_nextFragment.lock();
+    fragment = nextTransactionLogFragmentContainer;
   };
 
 
@@ -1035,8 +1046,16 @@ void RevisionStoreFileParser::registerFileNodeData(const FileNode_SPtr_t& fn)
     auto dependentRevision =
         m_file->m_revisionsMap.at(m_file->m_currentRevision).getDependent();
 
-    auto guid = m_file->m_revisionsMap.at(dependentRevision)
-                    .m_globalId.at(fnd->m_iIndexMapFrom);
+    QUuid guid;
+    try {
+      guid = m_file->m_revisionsMap.at(dependentRevision)
+                 .m_globalId.at(fnd->m_iIndexMapFrom);
+    }
+    catch (std::out_of_range) {
+      qWarning() << "Did not find dependentRevision:"
+                 << dependentRevision.toString() << "in revisionsMap";
+      break;
+    }
 
     if (guid.isNull()) {
       qWarning() << "GlobalIdTableEntry2FNDX could not find indexMapFrom GUID";
@@ -1054,8 +1073,17 @@ void RevisionStoreFileParser::registerFileNodeData(const FileNode_SPtr_t& fn)
 
 
     for (size_t i = 0; i < fnd->m_cEntriesToCopy; i++) {
-      auto& globalIdMap =
-          m_file->m_revisionsMap.at(dependentRevision).m_globalId;
+      std::map<quint32, QUuid> globalIdMap;
+
+      try {
+        globalIdMap = m_file->m_revisionsMap.at(dependentRevision).m_globalId;
+      }
+      catch (std::out_of_range) {
+        qWarning() << "Did not find dependentRevision:"
+                   << dependentRevision.toString() << "in revisionsMap";
+        break;
+      }
+
       const auto& guid = globalIdMap.at(fnd->m_iIndexCopyFromStart + i);
 
       auto& currentIdMap =
@@ -1263,8 +1291,9 @@ std::shared_ptr<IFileNodeType> RevisionStoreFileParser::parseFileNodeType(
   case FileNodeTypeID::InvalidFND:
   default:
     qInfo() << "FileNodeID: " << fn->getFileNodeID();
-    qFatal("FileNode has a fileNodeTypeID which switches to "
-           "default. Should not happen.");
+    qWarning("FileNode has a fileNodeTypeID which switches to "
+             "default. Should not happen.");
+    return nullptr;
   }
 }
 
@@ -2110,6 +2139,16 @@ std::shared_ptr<Chunkably> RevisionStoreFileParser::parseFileNodeChunkReference(
   ds >> ref;
 
   if (!ref.is_fcrNil() && !ref.is_fcrZero()) {
+    // try to prevent propagating parsing errors
+    if ((m_file->m_header->m_cbExpectedFileLength < ref.stp()) ||
+        (m_file->m_header->m_cbExpectedFileLength < ref.stp() + ref.cb())) {
+      qWarning() << "Failed parsing FileNodeChunkReference at pos:"
+                 << QString::number(ds.device()->pos(), 16)
+                 << "with the stp:" << QString::number(ref.stp(), 16)
+                 << ", cb:" << QString::number(ref.cb(), 16);
+      return nullptr;
+    }
+
     auto chunkable = std::make_shared<Chunkably>(ref.stp(), ref.cb());
 
     chunkable = insertChunkSorted(m_file->chunks(), chunkable);
@@ -2118,7 +2157,93 @@ std::shared_ptr<Chunkably> RevisionStoreFileParser::parseFileNodeChunkReference(
   }
 
   /// return nullptr
-  return std::make_shared<Chunkably>();
+  return nullptr;
+}
+
+template <class Chunkably>
+std::shared_ptr<Chunkably>
+RevisionStoreFileParser::parseFileChunkReference64(QDataStream& ds)
+{
+  FileChunkReference64 ref;
+  ds >> ref;
+
+  if (!ref.is_fcrNil() && !ref.is_fcrZero()) {
+    // try to prevent propagating parsing errors
+    if ((m_file->m_header->m_cbExpectedFileLength < ref.stp()) ||
+        (m_file->m_header->m_cbExpectedFileLength < ref.stp() + ref.cb())) {
+      qWarning() << "Failed parsing FileChunkReference64 at pos:"
+                 << QString::number(ds.device()->pos(), 16)
+                 << "with the stp:" << QString::number(ref.stp(), 16)
+                 << ", cb:" << QString::number(ref.cb(), 16);
+      return nullptr;
+    }
+
+    auto chunkable = std::make_shared<Chunkably>(ref.stp(), ref.cb());
+
+    chunkable = insertChunkSorted(m_file->chunks(), chunkable);
+
+    return chunkable;
+  }
+
+  /// return nullptr
+  return nullptr;
+}
+
+template <class Chunkably>
+std::shared_ptr<Chunkably>
+RevisionStoreFileParser::parseFileChunkReference64x32(QDataStream& ds)
+{
+  FileChunkReference64x32 ref;
+  ds >> ref;
+
+  if (!ref.is_fcrNil() && !ref.is_fcrZero()) {
+    // try to prevent propagating parsing errors
+    if ((m_file->m_header->m_cbExpectedFileLength < ref.stp()) ||
+        (m_file->m_header->m_cbExpectedFileLength < ref.stp() + ref.cb())) {
+      qWarning() << "Failed parsing FileChunkReference64x32 at pos:"
+                 << QString::number(ds.device()->pos(), 16)
+                 << "with the stp:" << QString::number(ref.stp(), 16)
+                 << ", cb:" << QString::number(ref.cb(), 16);
+      return nullptr;
+    }
+
+    auto chunkable = std::make_shared<Chunkably>(ref.stp(), ref.cb());
+
+    chunkable = insertChunkSorted(m_file->chunks(), chunkable);
+
+    return chunkable;
+  }
+
+  /// return nullptr
+  return nullptr;
+}
+template <class Chunkably>
+std::shared_ptr<Chunkably>
+RevisionStoreFileParser::parseFileChunkReference32(QDataStream& ds)
+{
+  FileChunkReference32 ref;
+  ds >> ref;
+
+  if (!ref.is_fcrNil() && !ref.is_fcrZero()) {
+    // try to prevent propagating parsing errors
+    if ((m_file->m_header->m_cbExpectedFileLength < ref.stp()) ||
+        (m_file->m_header->m_cbExpectedFileLength < ref.stp() + ref.cb())) {
+      qWarning() << "Failed parsing FileChunkReference32 at pos:"
+                 << QString::number(ds.device()->pos(), 16)
+                 << "with the stp:" << QString::number(ref.stp(), 16)
+                 << ", cb:" << QString::number(ref.cb(), 16);
+      return nullptr;
+    }
+
+    auto chunkable = std::make_shared<Chunkably>(ref.stp(), ref.cb());
+
+    chunkable = insertChunkSorted(m_file->chunks(), chunkable);
+
+    return chunkable;
+  }
+
+  /// return nullptr
+  return nullptr;
 }
 
 

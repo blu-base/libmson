@@ -18,7 +18,7 @@ const QUuid RevisionStoreFileHeader::guidLegacyFileVersion(
 
 
 RevisionStoreFileHeader::RevisionStoreFileHeader(
-    const quint64 initialStp, const quint64 initialCb)
+    const quint64 initialStp, const quint64 initialCb, const quint64 cbExpectedFileLength)
     : Chunkable(initialStp, initialCb), m_guidFileType(guidFileType_One),
       m_guidFile(QUuid::createUuid()), m_ffvLastWriterVersion{0x0000002A},
       m_ffvOldestWriterVersion{0x0000002A},
@@ -34,7 +34,7 @@ RevisionStoreFileHeader::RevisionStoreFileHeader(
       m_fcrTransactionLog{TransactionLogFragment_WPtr_t()},
       m_fcrFileNodeListRoot{FileNodeListFragment_WPtr_t()},
       m_fcrFreeChunkList{FreeChunkListFragment_WPtr_t()},
-      m_cbExpectedFileLength{0x400}, m_cbFreeSpaceInFreeChunkList{0},
+      m_cbExpectedFileLength{cbExpectedFileLength}, m_cbFreeSpaceInFreeChunkList{0},
       m_guidFileVersion{QUuid()}, m_nFileVersionGeneration{},
       m_guidDenyReadFileVersion{QUuid()}, m_grfDebugLogFlags{0},
       m_fcrDebugLog(FCR_INIT::ZERO),

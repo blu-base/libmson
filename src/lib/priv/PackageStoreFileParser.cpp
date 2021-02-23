@@ -42,14 +42,14 @@ std::shared_ptr<PackageStoreFile> PackageStoreFileParser::parse()
   m_ds.device()->skip(1);
 
 
-  char peek[1];
+  std::array<char, 1> peek;
 
-  qint64 peeking = m_ds.device()->peek(peek, 1);
+  qint64 peeking = m_ds.device()->peek(peek.data(), 1);
   while ((static_cast<uint8_t>(peek[0]) & 0x1) != 1) {
 
     m_file->m_elements.push_back(parseDataElement(m_ds));
 
-    peeking = m_ds.device()->peek(peek, 1);
+    peeking = m_ds.device()->peek(peek.data(), 1);
 
     if (peeking == 0) {
       qDebug() << "Ran out of bytes";
@@ -95,20 +95,23 @@ std::shared_ptr<PackageStoreFile> PackageStoreFileParser::parse()
 
   // step 9
 
+  auto&& elements = m_file->m_elements;
+
   const auto cellManifestCurrentRevisionDataElementIter = std::find_if(
-      m_file->getElements().begin(), m_file->getElements().end(),
-      [&](DataElement_SPtr_t& entry) {
+      elements.begin(), elements.end(), [&](const DataElement_SPtr_t& entry) {
         return entry->getDataElementExtGuid() ==
                currentStorageIndexCellMappingEGuid;
       });
 
-  if (cellManifestCurrentRevisionDataElementIter ==
-      m_file->getElements().end()) {
-    qDebug("Did not find cellManifestCurrentRevision");
+
+  DataElement_SPtr_t cellManifestCurrentRevisionDataElement = nullptr;
+  if (cellManifestCurrentRevisionDataElementIter == elements.end()) {
+    qWarning("Did not find cellManifestCurrentRevision");
+    return m_file;
   }
 
-  const auto cellManifestCurrentRevisionDataElement =
-      *cellManifestCurrentRevisionDataElementIter;
+    cellManifestCurrentRevisionDataElement =
+        *cellManifestCurrentRevisionDataElementIter;
 
   if (cellManifestCurrentRevisionDataElement->getDataElementTypeEnum() !=
       DataElementType::CellManifest) {

@@ -14,8 +14,7 @@ private:
   quint64 m_size;
 
 public:
-  FreeChunk(
-      const quint64 size, const quint64 initialStp = 0,
+  FreeChunk(const quint64 initialStp = 0,
       const quint64 initialCb = 0);
 
   quint64 getSize() const;

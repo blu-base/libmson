@@ -50,7 +50,10 @@ target_compile_definitions(libmson_priv PUBLIC
 
 target_link_libraries(
     libmson_priv
-    Qt5::Core
+    PUBLIC
+      Qt5::Core
+    PRIVATE
+      isf
     )
 
 # Global includes. Used by all targets

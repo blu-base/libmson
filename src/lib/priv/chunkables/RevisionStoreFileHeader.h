@@ -35,7 +35,7 @@ class RevisionStoreFileHeader : public Chunkable {
 
 public:
   RevisionStoreFileHeader(
-      const quint64 initialStp = 0, const quint64 initialCb = 0);
+      const quint64 initialStp = 0, const quint64 initialCb = 0, const quint64 cbExpectedFileLength = 0x400);
 
   RevisionStoreFileHeader(
     const QUuid& guidFileType, const QUuid& guidFile,
