@@ -242,4 +242,4 @@ void MultiByteEncodingTest::encodeIntToStream()
 // void MultiByteEncodingTest::encodeInkPath2() {}
 
 QTEST_MAIN(MultiByteEncodingTest)
-#include "MultiByteEncoding.moc"
+//#include "MultiByteEncoding.moc"
