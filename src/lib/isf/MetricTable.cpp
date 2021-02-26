@@ -5,7 +5,7 @@
 
 namespace libmson::isf {
 
-MetricTable::MetricTable() {}
+MetricTable::MetricTable() = default;
 
 MetricTable::MetricTable(std::vector<MetricBlockEntry> entries)
     : m_entries(std::move(entries))
@@ -54,17 +54,15 @@ QDataStream& operator<<(QDataStream& ds, const MetricTable& obj)
 
 void MetricTable::deserialize(QDataStream& ds)
 {
-  qint64 pos = ds.device()->pos();
   while (!ds.device()->atEnd()) {
 
     MetricBlockEntry entry;
     ds >> entry;
-    pos = ds.device()->pos();
     if (entry.getType() == MetricBlockEntryType::INVALID) {
       break;
     }
 
-    m_entries.push_back(std::move(entry));
+    m_entries.push_back(entry);
   }
 }
 
