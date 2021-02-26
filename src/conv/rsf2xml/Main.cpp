@@ -22,7 +22,7 @@
 
 #include "RSFtoXml.h"
 
-static const QStringList onenotefileextensions{"*.one", "*.onetoc2"};
+const QStringList onenotefileextensions{"*.one", "*.onetoc2"};
 
 QStringList fileDirs(QDir& dir, const bool recursively);
 
@@ -32,17 +32,21 @@ QStringList fileDirs(QDir& dir, const bool recursively)
   if (dir.exists()) {
     dir.setNameFilters(onenotefileextensions);
     dir.setFilter(QDir::Files);
-    for (const auto& entry : dir.entryList()) {
-      files << dir.filePath(entry);
-    }
+    files.reserve(dir.entryList().size());
+    files.append(dir.entryList());
+
+
     if (recursively) {
       //      dir.setNameFilters(QStringList() << "*");
       dir.setFilter(QDir::AllDirs | QDir::NoDotAndDotDot);
-      for (const auto& entry : dir.entryInfoList()) {
+      for (auto&& entry : dir.entryInfoList()) {
         QDir sdir(entry.filePath());
         sdir.setFilter(QDir::NoDotAndDotDot);
         QStringList subdir = fileDirs(sdir, recursively);
-        files.append(subdir);
+        files.reserve(subdir.size());
+        for (auto&& sub : subdir) {
+          files.append(sdir.path() + QDir::separator() + sub);
+        }
       }
     }
   }
@@ -231,7 +235,7 @@ int main(int argc, char* argv[])
     auto revisionStoreFile = fileParser.parse();
     msonFile.close();
 
-    QFile outputFile(baseFileName + ".xml");
+    QFile outputFile(fileInfo.path() + QDir::separator() + baseFileName + ".xml");
     if (treeOutputSet) {
       RSFtoXml::writeRSFTree(outputFile, revisionStoreFile);
     }
