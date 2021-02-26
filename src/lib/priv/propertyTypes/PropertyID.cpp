@@ -452,16 +452,16 @@ QString PropertyID::idToString(const PropertyIDs& val)
     m_id_string = "undoc_001d5d";
     break;
 
-  case PropertyIDs::undoc_AuthorInitials:
-    m_id_string = "undoc_AuthorInitials";
+  case PropertyIDs::AuthorInitials:
+    m_id_string = "AuthorInitials";
     break;
 
   case PropertyIDs::ResolutionID:
     m_id_string = "ResolutionID";
     break;
 
-  case PropertyIDs::InkStrokeProperties:
-    m_id_string = "InkStrokeProperties";
+  case PropertyIDs::InkToolProperties:
+    m_id_string = "InkToolProperties";
     break;
   case PropertyIDs::InkMetricTable:
     m_id_string = "InkMetricTable";
@@ -469,11 +469,11 @@ QString PropertyID::idToString(const PropertyIDs& val)
   case PropertyIDs::InkPath:
     m_id_string = "InkPath";
     break;
-  case PropertyIDs::InkPenHeight:
-    m_id_string = "InkPenHeight";
+  case PropertyIDs::InkToolHeight:
+    m_id_string = "InkToolHeight";
     break;
-  case PropertyIDs::InkPenWidth:
-    m_id_string = "InkPenWidth";
+  case PropertyIDs::InkToolWidth:
+    m_id_string = "InkToolWidth";
     break;
   case PropertyIDs::InkColor:
     m_id_string = "InkColor";
@@ -487,14 +487,14 @@ QString PropertyID::idToString(const PropertyIDs& val)
   case PropertyIDs::InkBoundingBox:
     m_id_string = "InkBoundingBox";
     break;
-  case PropertyIDs::InkStorkeOrderingIndex:
-    m_id_string = "InkStorkeOrderingIndex";
+  case PropertyIDs::InkStrokeOrderingIndex:
+    m_id_string = "InkStrokeOrderingIndex";
     break;
   case PropertyIDs::InkGUID:
     m_id_string = "InkGUID";
     break;
-  case PropertyIDs::unodc_StrokeLanguage:
-    m_id_string = "unodc_StrokeLanguage";
+  case PropertyIDs::InkLanguageID:
+    m_id_string = "InkLanguageID";
     break;
   case PropertyIDs::InkBias:
     m_id_string = "InkBias";
@@ -537,6 +537,10 @@ QString PropertyID::idToString(const PropertyIDs& val)
 
   case PropertyIDs::PageBackgroundColor:
     m_id_string = "PageBackgroundColor";
+    break;
+
+  case PropertyIDs::NoteTags:
+    m_id_string = "NoteTags";
     break;
 
 
@@ -638,6 +642,9 @@ QString PropertyID::idToString(const PropertyIDs& val)
   case PropertyIDs::undoc_0x080034dd:
     m_id_string = "undoc_0x080034dd";
     break;
+  case PropertyIDs::undoc_0x14001c27:
+    m_id_string = "undoc_0x14001c27";
+    break;
   case PropertyIDs::undoc_0x14001c28:
     m_id_string = "undoc_0x14001c28";
     break;
@@ -670,6 +677,9 @@ QString PropertyID::idToString(const PropertyIDs& val)
     break;
   case PropertyIDs::undoc_0x14003450:
     m_id_string = "undoc_0x14003450";
+    break;
+  case PropertyIDs::undoc_0x14003457:
+    m_id_string = "undoc_0x14003457";
     break;
   case PropertyIDs::undoc_0x14003481:
     m_id_string = "undoc_0x14003481";
@@ -722,6 +732,9 @@ QString PropertyID::idToString(const PropertyIDs& val)
   case PropertyIDs::undoc_0x1c001daa:
     m_id_string = "undoc_0x1c001daa";
     break;
+  case PropertyIDs::undoc_0x1c001dac:
+    m_id_string = "undoc_0x1c001dac";
+    break;
   case PropertyIDs::undoc_0x1c001dbe:
     m_id_string = "undoc_0x1c001dbe";
     break;
@@ -752,14 +765,21 @@ QString PropertyID::idToString(const PropertyIDs& val)
   case PropertyIDs::undoc_0x10003453:
     m_id_string = "undoc_0x10003453";
     break;
+  case PropertyIDs::undoc_0x10003454:
+    m_id_string = "undoc_0x10003454";
+    break;
+  case PropertyIDs::undoc_0x24001cf6:
+    m_id_string = "undoc_0x24001cf6";
+    break;
+
 
   case PropertyIDs::None:
     m_id_string = "None";
     break;
 
-  default:
-    m_id_string = "unspecified";
-    break;
+//  default:
+//    m_id_string = "unspecified";
+//    break;
   }
 
   return m_id_string;
@@ -821,6 +841,9 @@ QString PropertyID::typeToString(const PropertyIDType& val)
     break;
   case PropertyIDType::PropertySet:
     m_type_string = "PropertySet";
+    break;
+  case PropertyIDType::ArrayNumber:
+    m_type_string = "ArrayNumber";
     break;
 
   case PropertyIDType::InvalidType:

@@ -330,25 +330,27 @@ enum class PropertyIDs : quint32 {
   undoc_001d5d = 0x14001d5d,
 
   /** Likely is used for labeling multi-author document changes
-   * Uses two letters for author with one family name and one given name (in
-   * german, and english)
+   * Uses two letters for author with one family name and one given name ( at
+   * least for German, and English)
    */
-  undoc_AuthorInitials = 0x1c001df8,
+  AuthorInitials = 0x1c001df8,
 
   /** some windows live stuff, eg:
    * <resolutionId provider="Windows Live" hash="abcdefg"> <localId
    * cid="abcdefg"/></resolutionId>
+   *
+   * seems to be utf8 string, not null-terminated
    */
   ResolutionID = 0x1c001e30,
 
   /** ObjectID which points to undoc_jciddrawingToolData(0x00120048), the tool
    * settings which contains:
-   * * undoc_Undetermined64byteBlock/ 0x1c00340a
-   * * undoc_StrokesColor
-   * * undoc_StrokesToolSizeHeight
-   * * undoc_StrokesToolSizeWidth
+   * * InkMetricTable
+   * * InkColor
+   * * InkToolHeight
+   * * InkToolWidth
    */
-  InkStrokeProperties = 0x20003409,
+  InkToolProperties = 0x20003409,
 
 
   /** ISF Metric table
@@ -358,10 +360,15 @@ enum class PropertyIDs : quint32 {
    *  | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | A | B | C | D | E | F |
    *  | - | - | - | - | - | - | - | - | - | - | - | - | - | - | - | - |
    *  | Tag Guid (16 bytes) ||||||||||||||||
-   *  | logic min (int32) |||| logic max (int32) |||| unit enum (32 bits] |||| resolution (float32) ||||
+   *  | logic min (int32) |||| logic max (int32) |||| unit enum (32 bits) ||||
+   * resolution (float32) ||||
    *
+   * Tags:
    * X = '{598A6A8F-52C0-4BA0-93AF-AF357411A561}'
    * Y = '{B53F9F75-04E0-4498-A7EE-C30DBB5A9011}'
+   *
+   *
+   * See libmson::isf (src/lib/isf) for more details
    *
    * Reference:
    * https://docs.microsoft.com/de-de/uwp/specifications/ink-serialized-format
@@ -381,28 +388,28 @@ enum class PropertyIDs : quint32 {
   /// \todo find ToolSettings whether it's round or square
   /** float32 for the tool height, 1 unit represents 0.01mm
    */
-  InkPenHeight = 0x1400340c,
+  InkToolHeight = 0x1400340c,
 
   /** float32 for the tool width, 1 unit represents 0.01mm
    *
    */
-  InkPenWidth = 0x1400340d,
+  InkToolWidth = 0x1400340d,
 
-  /** Stroke's Tool color
+  /** Ink Tool's color
    * FourBytesOfData
    * it's a array of the type: byte[4]
    * RGB + X
    *
    * the first three bytes seem to be the color hex code.
    *
-   * X might be a switch to declare fixed color versus automatically
-   * changeble,such as maybe color scheme
+   * X might be a switch to declare fixed color versus default/automatic
    */
   InkColor = 0x1400340f,
 
   /**
    * \todo why is 003411 byte and bool?
-   * Nameing source: https://github.com/msiemens/onenote.rs/blob/master/src/one/property/mod.rs
+   * Nameing source:
+   * https://github.com/msiemens/onenote.rs/blob/master/src/one/property/mod.rs
    */
   InkIgnorePressure = 0x08003411,
   /** Strokes's tool setting, which seem to correlate with square-like tool such
@@ -433,7 +440,8 @@ enum class PropertyIDs : quint32 {
    * Which contains PropertyID 0x24003416
    * which further points to undoc_jcidDrawingNode (0x00020047)
    *
-   * Nameing source: https://github.com/msiemens/onenote.rs/blob/master/src/one/property/mod.rs
+   * Nameing source:
+   * https://github.com/msiemens/onenote.rs/blob/master/src/one/property/mod.rs
    */
   InkData = 0x20003415,
 
@@ -442,9 +450,10 @@ enum class PropertyIDs : quint32 {
    *
    * points to undoc_jcidDrawingNodes which are likely
    * contain the strokes for which matches according to
-   * undoc_StrokesRecognizedText have been found
+   * InkRecognizedText have been found
    *
-   * Nameing source: https://github.com/msiemens/onenote.rs/blob/master/src/one/property/mod.rs
+   * Nameing source:
+   * https://github.com/msiemens/onenote.rs/blob/master/src/one/property/mod.rs
    */
   InkStrokes = 0x24003416,
 
@@ -456,14 +465,15 @@ enum class PropertyIDs : quint32 {
    *
    * only present when Handwritting modus is active?
    *
-   * Nameing source: https://github.com/msiemens/onenote.rs/blob/master/src/one/property/mod.rs
+   * Nameing source:
+   * https://github.com/msiemens/onenote.rs/blob/master/src/one/property/mod.rs
    */
   InkBoundingBox = 0x1c003418,
 
   /** squential number likely indicating the input order
    * FourBytesOfData
    */
-  InkStorkeOrderingIndex = 0x14003419,
+  InkStrokeOrderingIndex = 0x14003419,
   /** likely the language setting, maybe is used for ocr
   * TwoBytesOfData
 
@@ -475,12 +485,13 @@ enum class PropertyIDs : quint32 {
   InkGUID = 0x1c00341a,
 
 
-  /** TwoBytes declaring the LanguageID without a SortID
+  /** TwoBytes declaring the LanguageID without a SortID from a LCID object
    * TwoBytesOfData
    */
-  unodc_StrokeLanguage = 0x1000341b,
+  InkLanguageID = 0x1000341b,
 
-  /** Switch which describes the drawing mode used to create the referencing ink object
+  /** Switch which describes the drawing mode used to create the referencing ink
+   * object
    *
    *  One byte of data
    *
@@ -502,8 +513,8 @@ enum class PropertyIDs : quint32 {
   InkCreationTime = 0x1c00341d,
 
 
-  /** \0-seperated list of recognized text in the ink object
-   * It seems the sorting is by likelyhood
+  /** \0-seperated list of utf16 strings which represent recognized text in the
+   * ink object It seems the sorting is by likelyhood
    *
    * FourBytesOfLengthFollowedByData
    */
@@ -530,7 +541,7 @@ enum class PropertyIDs : quint32 {
   undoc_StrokesOffsetsVertHoriz = 0x1c00345b,
 
 
-  /** seems to be only present when "undoc_RecognizedText = 0x1c001cc4" is set
+  /** seems to be only present when "RecognizedText = 0x1c001cc4" is set
    *
    * maybe a MS Text Service Framework blob
    * Found GUIDs in
@@ -541,7 +552,13 @@ enum class PropertyIDs : quint32 {
    */
   undoc_TextServicesFrameworkBlob = 0x1c00345d,
 
-  //the following values always appear in a group
+
+  /**
+   * ArrayOfPropertyValues
+   */
+  NoteTags =0x40003489,
+
+  // the following values always appear in a group
   // EmbeddedInkStartX
   // EmbeddedInkStartY
   // EmbeddedInkWidth
@@ -552,7 +569,7 @@ enum class PropertyIDs : quint32 {
   // undoc_Strokes0034a5
 
 
-  /** Initial x coordinate of an embedded ink object
+    /** Initial x coordinate of an embedded ink object
    *
    *  Source:
    *  https://github.com/msiemens/onenote.rs/blob/master/src/one/property/mod.rs
@@ -600,8 +617,16 @@ enum class PropertyIDs : quint32 {
    */
   EmbeddedInkOffsetVert = 0x140034a3,
 
-
+  /**
+   *
+   * seems to be a float32 which is slightly larger than EmbeddedInkWidth
+   */
   undoc_Strokes0034a4 = 0x140034a4,
+
+  /**
+   *
+   * seems to be a float32 which is slightly larger than EmbeddedInkHeight
+   */
   undoc_Strokes0034a5 = 0x140034a5,
 
 
@@ -643,6 +668,7 @@ enum class PropertyIDs : quint32 {
   undoc_0x080034dd = 0x080034dd,
 
   // FourBytesOfData
+  undoc_0x14001c27 = 0x14001c27,
   undoc_0x14001c28 = 0x14001c28,
   undoc_0x14001c48 = 0x14001c48,
   undoc_0x14001c49 = 0x14001c49,
@@ -654,6 +680,7 @@ enum class PropertyIDs : quint32 {
   undoc_0x14001df9 = 0x14001df9,
   undoc_0x1400344f = 0x1400344f,
   undoc_0x14003450 = 0x14003450,
+  undoc_0x14003457 = 0x14003457,
   undoc_0x14003481 = 0x14003481,
   undoc_0x140035a4 = 0x140035a4,
   undoc_0x140035d1 = 0x140035d1,
@@ -673,6 +700,15 @@ enum class PropertyIDs : quint32 {
   undoc_0x1c001d61 = 0x1c001d61,
   undoc_0x1c001d84 = 0x1c001d84,
   undoc_0x1c001daa = 0x1c001daa,
+
+  /** maybe bounding box for shapes
+   *
+   * Seems to be related with shapes
+   * seems to be 4 float32 = 16bytes long
+   *
+   *
+   */
+  undoc_0x1c001dac = 0x1c001dac,
   undoc_0x1c001dbe = 0x1c001dbe,
   undoc_0x1c001dbf = 0x1c001dbf,
   undoc_0x1c001dcf = 0x1c001dcf,
@@ -683,9 +719,16 @@ enum class PropertyIDs : quint32 {
   undoc_0x0c001d4f = 0x0c001d4f,
   undoc_0x0c003452 = 0x0c003452,
 
-  //TwoBytesOfData
+  // TwoBytesOfData
   undoc_0x1000344e = 0x1000344e,
   undoc_0x10003453 = 0x10003453,
+  undoc_0x10003454 = 0x10003454,
+
+  // ArrayOfObjectIDs
+  undoc_0x24001cf6 = 0x24001cf6,
+
+  // ArrayOfPropertyValues
+
 
 };
 
