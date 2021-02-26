@@ -77,137 +77,76 @@ void JCID::setIsReadOnly(bool IsReadOnly)
   ;
 }
 
-JCIDs JCID::type() const
-{
-  return static_cast<JCIDs>(m_value);
-
-  //    switch (m_value) {
-  //    case 0x00120001:
-  //        return JCIDs::jcidReadOnlyPersistablePropertyContainerForAuthor;
-  //    case 0x00020001:
-  //        return JCIDs::jcidPersistablePropertyContainerForTOC;
-  //    case 0x00060007:
-  //        return JCIDs::jcidSectionNode;
-  //    case 0x00060008:
-  //        return JCIDs::jcidPageSeriesNode;
-  //    case 0x0006000B:
-  //        return JCIDs::jcidPageNode;
-  //    case 0x0006000C:
-  //        return JCIDs::jcidOutlineNode;
-  //    case 0x0006000D:
-  //        return JCIDs::jcidOutlineElementNode;
-  //    case 0x0006000E:
-  //        return JCIDs::jcidRichTextOENode;
-  //    case 0x00060011:
-  //        return JCIDs::jcidImageNode;
-  //    case 0x00060012:
-  //        return JCIDs::jcidNumberListNode;
-  //    case 0x00060019:
-  //        return JCIDs::jcidOutlineGroup;
-  //    case 0x00060022:
-  //        return JCIDs::jcidTableNode;
-  //    case 0x00060023:
-  //        return JCIDs::jcidTableRowNode;
-  //    case 0x00060024:
-  //        return JCIDs::jcidTableCellNode;
-  //    case 0x0006002C:
-  //        return JCIDs::jcidTitleNode;
-  //    case 0x00020030:
-  //        return JCIDs::jcidPageMetaData;
-  //    case 0x00020031:
-  //        return JCIDs::jcidSectionMetaData;
-  //    case 0x00060035:
-  //        return JCIDs::jcidEmbeddedFileNode;
-  //    case 0x00060037:
-  //        return JCIDs::jcidPageManifestNode;
-  //    case 0x00020038:
-  //        return JCIDs::jcidConflictPageMetaData;
-  //    case 0x0006003C:
-  //        return JCIDs::jcidVersionHistoryContent;
-  //    case 0x0006003D:
-  //        return JCIDs::jcidVersionProxy;
-  //    case 0x00120043:
-  //        return JCIDs::jcidNoteTagSharedDefinitionContainer;
-  //    case 0x00020044:
-  //        return JCIDs::jcidRevisionMetaData;
-  //    case 0x00020046:
-  //        return JCIDs::jcidVersionHistoryMetaData;
-  //    case 0x0012004D:
-  //        return JCIDs::jcidParagraphStyleObject;
-  //    case 0x00000000:
-  //    default:
-  //        return JCIDs::none;
-  //    }
-}
+JCIDs JCID::type() const { return static_cast<JCIDs>(m_value); }
 
 QString JCID::typeToString() const
 {
 
   switch (type()) {
   case JCIDs::jcidReadOnlyPersistablePropertyContainerForAuthor:
-    return QString("jcidReadOnlyPersistablePropertyContainerForAuthor");
+    return QStringLiteral("jcidReadOnlyPersistablePropertyContainerForAuthor");
   case JCIDs::jcidPersistablePropertyContainerForTOC:
-    return QString("jcidPersistablePropertyContainerForTOC");
+    return QStringLiteral("jcidPersistablePropertyContainerForTOC");
   case JCIDs::jcidSectionNode:
-    return QString("jcidSectionNode");
+    return QStringLiteral("jcidSectionNode");
   case JCIDs::jcidPageSeriesNode:
-    return QString("jcidPageSeriesNode");
+    return QStringLiteral("jcidPageSeriesNode");
   case JCIDs::jcidPageNode:
-    return QString("jcidPageNode");
+    return QStringLiteral("jcidPageNode");
   case JCIDs::jcidOutlineNode:
-    return QString("jcidOutlineNode");
+    return QStringLiteral("jcidOutlineNode");
   case JCIDs::jcidOutlineElementNode:
-    return QString("jcidOutlineElementNode");
+    return QStringLiteral("jcidOutlineElementNode");
   case JCIDs::jcidRichTextOENode:
-    return QString("jcidRichTextOENode");
+    return QStringLiteral("jcidRichTextOENode");
   case JCIDs::jcidImageNode:
-    return QString("jcidImageNode");
+    return QStringLiteral("jcidImageNode");
   case JCIDs::jcidNumberListNode:
-    return QString("jcidNumberListNode");
+    return QStringLiteral("jcidNumberListNode");
   case JCIDs::jcidOutlineGroup:
-    return QString("jcidOutlineGroup");
+    return QStringLiteral("jcidOutlineGroup");
   case JCIDs::jcidTableNode:
-    return QString("jcidTableNode");
+    return QStringLiteral("jcidTableNode");
   case JCIDs::jcidTableRowNode:
-    return QString("jcidTableRowNode");
+    return QStringLiteral("jcidTableRowNode");
   case JCIDs::jcidTableCellNode:
-    return QString("jcidTableCellNode");
+    return QStringLiteral("jcidTableCellNode");
   case JCIDs::jcidTitleNode:
-    return QString("jcidTitleNode");
+    return QStringLiteral("jcidTitleNode");
   case JCIDs::jcidPageMetaData:
-    return QString("jcidPageMetaData");
+    return QStringLiteral("jcidPageMetaData");
   case JCIDs::jcidSectionMetaData:
-    return QString("jcidSectionMetaData");
+    return QStringLiteral("jcidSectionMetaData");
   case JCIDs::jcidEmbeddedFileNode:
-    return QString("jcidEmbeddedFileNode");
+    return QStringLiteral("jcidEmbeddedFileNode");
   case JCIDs::jcidPageManifestNode:
-    return QString("jcidPageManifestNode");
+    return QStringLiteral("jcidPageManifestNode");
   case JCIDs::jcidConflictPageMetaData:
-    return QString("jcidConflictPageMetaData");
+    return QStringLiteral("jcidConflictPageMetaData");
   case JCIDs::jcidVersionHistoryContent:
-    return QString("jcidVersionHistoryContent");
+    return QStringLiteral("jcidVersionHistoryContent");
   case JCIDs::jcidVersionProxy:
-    return QString("jcidVersionProxy");
+    return QStringLiteral("jcidVersionProxy");
   case JCIDs::jcidNoteTagSharedDefinitionContainer:
-    return QString("jcidNoteTagSharedDefinitionContainer");
+    return QStringLiteral("jcidNoteTagSharedDefinitionContainer");
   case JCIDs::jcidRevisionMetaData:
-    return QString("jcidRevisionMetaData");
+    return QStringLiteral("jcidRevisionMetaData");
   case JCIDs::jcidVersionHistoryMetaData:
-    return QString("jcidVersionHistoryMetaData");
+    return QStringLiteral("jcidVersionHistoryMetaData");
   case JCIDs::jcidParagraphStyleObject:
-    return QString("jcidParagraphStyleObject");
+    return QStringLiteral("jcidParagraphStyleObject");
 
-  case JCIDs::undoc_jcidShape:
-    return QString("undoc_jcidShape");
-  case JCIDs::undoc_jcidDrawingNode:
-    return QString("undoc_jcidDrawingNode");
-  case JCIDs::undoc_jciddrawingToolData:
-    return QString("undoc_jciddrawingToolData");
+  case JCIDs::jcidInkContainer:
+    return QStringLiteral("jcidInkContainer");
+  case JCIDs::jcidInkNode:
+    return QStringLiteral("jcidInkNode");
+  case JCIDs::jcidInkToolProperties:
+    return QStringLiteral("jcidInkToolProperties");
 
   case JCIDs::none:
-    return QString("none");
+    return QStringLiteral("none");
   default:
-    return QString("unspecified");
+    return QStringLiteral("unspecified");
   }
 }
 
@@ -218,31 +157,6 @@ quint64 JCID::getSizeInFile() { return sizeInFile; }
 void JCID::deserialize(QDataStream& ds) { ds >> m_value; }
 
 void JCID::serialize(QDataStream& ds) const { ds << m_value; }
-
-
-// void JCID::toDebugString(QDebug &dbg) const {
-//  dbg << " JCID: index: " << qStringHex(index(), 4)
-//      << " m_IsBinary: " << IsBinary() << '\n'
-//      << " m_IsPropertySet: " << IsPropertySet() << '\n'
-//      << " m_IsGraphNode: " << IsGraphNode() << '\n'
-//      << " m_IsFileData: " << IsFileData() << '\n'
-//      << " m_IsReadOnly: " << IsReadOnly() << '\n';
-//}
-
-// void JCID::writeLowLevelXml(QXmlStreamWriter &xmlWriter) const {
-//  xmlWriter.writeStartElement("JCID");
-//  xmlWriter.writeAttribute("type", typeToString());
-//  xmlWriter.writeAttribute("value", qStringHex(m_value, 8));
-//  xmlWriter.writeAttribute("index", qStringHex(index(), 4));
-//  xmlWriter.writeAttribute("isBinary", IsBinary() ? "true" : "false");
-//  xmlWriter.writeAttribute("IsPropertySet", IsPropertySet() ? "true" :
-//  "false"); xmlWriter.writeAttribute("IsGraphNode", IsGraphNode() ? "true" :
-//  "false"); xmlWriter.writeAttribute("IsFileData", IsFileData() ? "true" :
-//  "false"); xmlWriter.writeAttribute("IsReadOnly", IsReadOnly() ? "true" :
-//  "false");
-
-//  xmlWriter.writeEndElement();
-//}
 
 } // namespace priv
 } // namespace libmson

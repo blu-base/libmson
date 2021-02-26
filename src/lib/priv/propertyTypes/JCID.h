@@ -42,27 +42,23 @@ enum class JCIDs : quint32 {
   /** \brief Node contains single Stroke in native format
    *
    * it contains these Properties:
-   * - undoc_StrokesBlob
-   * - undoc_StrokesIndex
-   * - unodc_StrokeLanguage
-   * - unodc_StrokeLanguage
-   * - undoc_StrokesGUID
-   * - undoc_StrokesCreationTime
-   * - 0x20003409 - ObjectID pointing to undoc_jciddrawingToolData (sometimes
+   * - InkPath
+   * - InkStrokeOrderingIndex
+   * - InkLanguageId
+   * - InkGUID
+   * - InkCreationTime
+   * - InkStrokeProperties - ObjectID pointing to jcidInkToolProperties (sometimes
    * CompactID's n seems to point nowhere)
-   *
-   * Maybe correlates with InkStroke
    */
-  undoc_jcidDrawingNode = 0x00020047,
+  jcidInkNode = 0x00020047,
 
   /** \brief Node defining the tool properties used for undoc_jcidDrawingNode
    *
    * contains these Properties:
-   * - undoc_Undetermined64byteBlock(0x1c00340a) - content does not to seem to
-   * change for same computer, input device
-   * - undoc_StrokesToolSizeHeight
-   * - undoc_StrokesToolSizeWidth
-   * - undoc_StrokesColor (optionally)
+   * - InkMetricTable - content does not to seem to change for same computer, input device
+   * - InkToolHeight
+   * - InkToolWidth
+   * - InkColor (optionally)
    * - 0x88003411, Bool, optionally, only present when highlighter (square tool)
    * is used
    * - 0x0c003412, OneByteOfData, optionally, only present when highlighter
@@ -72,7 +68,7 @@ enum class JCIDs : quint32 {
    * - 0x0c003413, OneByteOfData, optionally, only present when highlighter
    * (square tool) is used
    */
-  undoc_jciddrawingToolData = 0x00120048,
+  jcidInkToolProperties = 0x00120048,
 
   /** \brief Connects Handwritting matches with undoc_jcidDrawingNode
    *
@@ -80,14 +76,14 @@ enum class JCIDs : quint32 {
    * node, it contains the properties:
    * - 0x1c003418 - unknown 16 bytes
    * - 0x24003416 - group of Strokes (undoc_jcidDrawingNode)
-   * - unodc_StrokeLanguage
+   * - InkLanguageID
    * - 0x8800341f - unknown bool
-   * - undoc_StrokesRecognizedText
+   * - InksRecognizedText
    *
-   * if undoc_StrokesContainer (0x20003415) Property points to this node, it
+   * if jcidInkContainer (0x20003415) Property points to this node, it
    * only contains:
    * - 0x24003416 - points to group of Strokes (undoc_jcidDrawingNode)
-   * undoc_StrokesRecognizedText have been found
+   * InkRecognizedText have been found
    *
    * Maybe correlates with OneNote.Interfaces.InkWordLoadOptions from onenoteapi
    */
@@ -99,7 +95,7 @@ enum class JCIDs : quint32 {
    * - LastModifiedTime
    * - OffsetFromParentHoriz
    * - OffsetFromParentVert
-   * - undoc_StrokesContainer
+   * - InkData
    * - 0x14001d4e - FourBytesOfData, seem to have the same value as 0x140035a4,
    * observed values:
    * 01000000,02000000,03000000,04000000,05000000,06000000,0c000000,0e000000,10000000,18000000
@@ -115,7 +111,14 @@ enum class JCIDs : quint32 {
    * - 0x1c001daa - likely contains a predefined vector shape
    * - 0x0c001d4f - OneByteOfData, observed values: 0b, 0c
    */
-  undoc_jcidShape = 0x00060014,
+  jcidInkContainer = 0x00060014,
+
+
+
+  // 0x0002003e
+  // 0x00080036
+  // 0x00080039
+  // 0x0008003a
 
 };
 
