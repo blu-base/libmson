@@ -143,7 +143,6 @@ std::vector<qint64> MultiByteEncoding::decodeInkPath(QDataStream& ds)
     return vec;
   }
 
-
   while (!ds.atEnd()) {
 
     auto val = decodeInt(ds, &bytesread);
@@ -155,11 +154,9 @@ std::vector<qint64> MultiByteEncoding::decodeInkPath(QDataStream& ds)
     vec.push_back(val);
   }
 
-
   if (vec.size() != static_cast<size_t>(vecsize)) {
     return std::vector<qint64>();
   }
-
 
   return vec;
 }
