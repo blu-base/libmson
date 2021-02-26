@@ -3470,7 +3470,7 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       writeTime32(time, xmlWriter);
       break;
     }
-    case PropertyIDs::undoc_AuthorInitials: {
+    case PropertyIDs::AuthorInitials: {
       if (currentPrid.type() ==
           PropertyIDType::FourBytesOfLengthFollowedByData) {
         const auto data =
@@ -3513,7 +3513,7 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
 
       break;
     }
-    case PropertyIDs::InkStorkeOrderingIndex: {
+    case PropertyIDs::InkStrokeOrderingIndex: {
       const auto data =
           std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
               ->data();
@@ -3526,7 +3526,7 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       xmlWriter.writeCharacters(QString::number(val));
       break;
     }
-    case PropertyIDs::unodc_StrokeLanguage: {
+    case PropertyIDs::InkLanguageID: {
       const auto data =
           std::dynamic_pointer_cast<PropertyType_TwoBytesOfData>(currentData)
               ->data();
@@ -3549,7 +3549,7 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       break;
     }
 
-    case PropertyIDs::InkPenHeight: {
+    case PropertyIDs::InkToolHeight: {
       const auto data =
           std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
               ->data();
@@ -3561,7 +3561,7 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       xmlWriter.writeCharacters(QString::number(val, 'f', 5));
       break;
     }
-    case PropertyIDs::InkPenWidth: {
+    case PropertyIDs::InkToolWidth: {
       const auto data =
           std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
               ->data();
@@ -3784,6 +3784,67 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
       break;
     }
 
+    case PropertyIDs::EmbeddedInkStartX:
+    case PropertyIDs::EmbeddedInkStartY:
+    case PropertyIDs::EmbeddedInkWidth:
+    case PropertyIDs::EmbeddedInkHeight:
+    case PropertyIDs::EmbeddedInkOffsetHoriz:
+    case PropertyIDs::EmbeddedInkOffsetVert:
+    case PropertyIDs::undoc_Strokes0034a4:
+    case PropertyIDs::undoc_Strokes0034a5: {
+      const auto data =
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
+              ->data();
+      QDataStream bytes(data);
+      bytes.setByteOrder(QDataStream::LittleEndian);
+      bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
+      float val;
+      bytes >> val;
+      xmlWriter.writeCharacters(QString::number(val, 'f', 5));
+
+      break;
+    }
+
+    case PropertyIDs::InkBoundingBox: {
+      const auto data =
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfLengthFollowedByData>(currentData)
+              ->data();
+      QDataStream bytes(data);
+      bytes.setByteOrder(QDataStream::LittleEndian);
+
+      qint32 val;
+      while (!bytes.atEnd()) {
+        bytes >> val;
+        xmlWriter.writeStartElement("val");
+        xmlWriter.writeCharacters(QString::number(val));
+        xmlWriter.writeEndElement();
+      }
+
+      break;
+    }
+
+    case PropertyIDs::undoc_0x14001c27:
+    case PropertyIDs::undoc_0x14001c28:
+    case PropertyIDs::undoc_float001c9e:
+    case PropertyIDs::undoc_float001c9f:
+    case PropertyIDs::undoc_float001ca0:
+    case PropertyIDs::undoc_float001ca1:
+    {
+      const auto data =
+          std::dynamic_pointer_cast<PropertyType_FourBytesOfData>(currentData)
+              ->data();
+      QDataStream bytes(data);
+      bytes.setByteOrder(QDataStream::LittleEndian);
+      bytes.setFloatingPointPrecision(QDataStream::SinglePrecision);
+      float val;
+      bytes >> val;
+      xmlWriter.writeCharacters(QString::number(val, 'f', 5));
+
+      break;
+    }
+
+
+
     case PropertyIDs::NumberListFormat:
     case PropertyIDs::ContentChildNodes:
     case PropertyIDs::ElementChildNodes:
@@ -3804,15 +3865,12 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
     case PropertyIDs::VersionHistoryGraphSpaceContextNodes:
     case PropertyIDs::WebPictureContainer14:
     case PropertyIDs::undoc_TextRunDataPropertyArray:
-    case PropertyIDs::undoc_float001c9e:
-    case PropertyIDs::undoc_float001c9f:
-    case PropertyIDs::undoc_float001ca0:
-    case PropertyIDs::undoc_float001ca1:
+
     case PropertyIDs::TextServicesFrameworkBlob:
     case PropertyIDs::TextServiesFrameworkFlag1:
     case PropertyIDs::undoc_001d5c:
     case PropertyIDs::undoc_001d5d:
-    case PropertyIDs::InkStrokeProperties:
+    case PropertyIDs::InkToolProperties:
 
     case PropertyIDs::InkIgnorePressure:
     case PropertyIDs::undoc_StrokesToolSetting003411:
@@ -3821,18 +3879,12 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
     case PropertyIDs::undoc_StrokesToolSetting003414:
     case PropertyIDs::InkData:
     case PropertyIDs::InkStrokes:
-    case PropertyIDs::InkBoundingBox:
+
     case PropertyIDs::undoc_Strokes00341f:
     case PropertyIDs::undoc_Strokes003420:
     case PropertyIDs::undoc_TextServicesFrameworkBlob:
-    case PropertyIDs::EmbeddedInkStartX:
-    case PropertyIDs::EmbeddedInkStartY:
-    case PropertyIDs::EmbeddedInkWidth:
-    case PropertyIDs::EmbeddedInkHeight:
-    case PropertyIDs::EmbeddedInkOffsetHoriz:
-    case PropertyIDs::EmbeddedInkOffsetVert:
-    case PropertyIDs::undoc_Strokes0034a4:
-    case PropertyIDs::undoc_Strokes0034a5:
+
+
     case PropertyIDs::FileDataObject_GUID:
     case PropertyIDs::FileDataObject_InvalidData:
     case PropertyIDs::FileDataObject_Extension:
@@ -3849,7 +3901,10 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
     case PropertyIDs::undoc_0x08003495:
     case PropertyIDs::undoc_0x080034aa:
     case PropertyIDs::undoc_0x080034dd:
-    case PropertyIDs::undoc_0x14001c28:
+
+
+
+
     case PropertyIDs::undoc_0x14001c48:
     case PropertyIDs::undoc_0x14001c49:
     case PropertyIDs::undoc_0x14001c4a:
@@ -3860,6 +3915,7 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
     case PropertyIDs::undoc_0x14001df9:
     case PropertyIDs::undoc_0x1400344f:
     case PropertyIDs::undoc_0x14003450:
+    case PropertyIDs::undoc_0x14003457:
     case PropertyIDs::undoc_0x14003481:
     case PropertyIDs::undoc_0x140035a4:
     case PropertyIDs::undoc_0x140035d1:
@@ -3877,6 +3933,7 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
     case PropertyIDs::undoc_0x1c001d61:
     case PropertyIDs::undoc_0x1c001d84:
     case PropertyIDs::undoc_0x1c001daa:
+    case PropertyIDs::undoc_0x1c001dac:
     case PropertyIDs::undoc_0x1c001dbe:
     case PropertyIDs::undoc_0x1c001dbf:
     case PropertyIDs::undoc_0x1c001dcf:
@@ -3887,8 +3944,10 @@ RSFtoXml::writePropertySet(const PropertySet& obj, QXmlStreamWriter& xmlWriter)
     case PropertyIDs::undoc_0x0c003452:
     case PropertyIDs::undoc_0x1000344e:
     case PropertyIDs::undoc_0x10003453:
+    case PropertyIDs::undoc_0x10003454:
+    case PropertyIDs::undoc_0x24001cf6:
     case PropertyIDs::None:
-    default:
+//    default:
       writeIPropertyType(currentData, xmlWriter);
       break;
     }
