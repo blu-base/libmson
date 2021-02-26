@@ -6,14 +6,14 @@
 namespace libmson::isf {
 
 MetricBlockEntry::MetricBlockEntry()
-    : m_type(MetricBlockEntryType::INVALID), m_min(0), m_max(INT32_MAX),
+    : m_type(MetricBlockEntryType::INVALID), m_min(INT32_MIN), m_max(INT32_MAX),
       m_unit(MetricUnit::DEFAULT), m_resolution(1000.0)
 {
 }
 
 
 MetricBlockEntry::MetricBlockEntry(MetricBlockEntryType type)
-    : m_type(type), m_min(0), m_max(INT32_MAX), m_unit(MetricUnit::DEFAULT),
+    : m_type(type), m_min(INT32_MIN), m_max(INT32_MAX), m_unit(MetricUnit::DEFAULT),
       m_resolution(1000.0)
 {
 }
@@ -27,7 +27,7 @@ MetricBlockEntry::MetricBlockEntry(
 }
 
 MetricBlockEntry::MetricBlockEntry(const QByteArray& ba)
-    : m_type(MetricBlockEntryType::INVALID), m_min(0), m_max(INT32_MAX),
+    : m_type(MetricBlockEntryType::INVALID), m_min(INT32_MIN), m_max(INT32_MAX),
       m_unit(MetricUnit::DEFAULT), m_resolution(1000.0)
 {
   QDataStream in(ba);
@@ -37,7 +37,7 @@ MetricBlockEntry::MetricBlockEntry(const QByteArray& ba)
 }
 
 MetricBlockEntry::MetricBlockEntry(QDataStream& ds)
-    : m_type(MetricBlockEntryType::INVALID), m_min(0), m_max(INT32_MAX),
+    : m_type(MetricBlockEntryType::INVALID), m_min(INT32_MIN), m_max(INT32_MAX),
       m_unit(MetricUnit::DEFAULT), m_resolution(1000.0)
 {
   ds.setByteOrder(QDataStream::LittleEndian);

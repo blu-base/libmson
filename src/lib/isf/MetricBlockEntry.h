@@ -25,7 +25,7 @@ public:
   /**
    * @brief Intialize MetricBlockEntry with type and default properties
    *
-   * min is set to 0.
+   * min is set to INT32_MIN.
    * max is set to INT32_MAX
    * unit is set to DEFAULT
    * resolution is set to 1000
@@ -45,7 +45,7 @@ public:
 
 
   /**
-   * @brief Initialite aMetricBlockEntry from a stream, reading the next 32
+   * @brief Initialite a MetricBlockEntry from a stream, reading the next 32
    * bytes
    * @param ds reads 32 bytes from the stream
    */
