@@ -7,8 +7,7 @@ namespace priv {
 
 TransactionLogFragment::TransactionLogFragment(
     const quint64 initialStp, const quint64 initialCb)
-    : Chunkable(initialStp, initialCb), m_sizeTable(), m_nextFragment(),
-      m_paddingLength()
+    : Chunkable(initialStp, initialCb), m_sizeTable(), m_nextFragment()
 {
 }
 
@@ -39,22 +38,10 @@ void TransactionLogFragment::setNextFragment(
   m_nextFragment = value;
 }
 
-quint8 TransactionLogFragment::getPaddingLength() const
-{
-  return m_paddingLength;
-}
-
-void TransactionLogFragment::setPaddingLength(const quint8& paddingLength)
-{
-  m_isChanged     = true;
-  m_paddingLength = paddingLength;
-}
-
-
 quint64 TransactionLogFragment::cb() const
 {
   return m_sizeTable.size() * TransactionEntry::getSizeInFile() +
-         FileChunkReference64x32::getSizeInFile() + m_paddingLength;
+         FileChunkReference64x32::getSizeInFile() + paddingLength;
 }
 
 RevisionStoreChunkType TransactionLogFragment::getType() const

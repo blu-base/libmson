@@ -31,9 +31,6 @@ private:
 
   TransactionLogFragment_WPtr_t m_nextFragment;
 
-
-  quint8 m_paddingLength;
-
 public:
   TransactionLogFragment(
       const quint64 initialStp = 0, const quint64 initialCb = 0);
@@ -46,9 +43,7 @@ public:
   void setNextFragment(const TransactionLogFragment_WPtr_t value);
 
 
-  quint8 getPaddingLength() const;
-  void setPaddingLength(const quint8& paddingLength);
-
+  quint8 getPaddingLength() const { return paddingLength; };
 
   friend class RevisionStoreFileParser;
 
@@ -56,6 +51,8 @@ public:
 private:
   virtual quint64 cb() const override;
   virtual RevisionStoreChunkType getType() const override;
+
+  static const quint8 paddingLength = 4;
 };
 
 class TransactionEntry : public IStreamable {
@@ -82,6 +79,7 @@ private:
   virtual void deserialize(QDataStream& ds) override;
 
   static const quint64 sizeInFile = 8;
+
 };
 
 } // namespace priv
