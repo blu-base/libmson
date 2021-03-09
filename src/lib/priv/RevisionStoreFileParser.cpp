@@ -231,13 +231,13 @@ std::shared_ptr<RevisionStoreFile> RevisionStoreFileParser::parse()
 //                          << qStringHex(lastEnd, 16) << "of size"
 //                          << qStringHex(diff, 8);
 
-        auto unknownBlob = std::make_shared<UnknownBlob>(lastEnd, diff);
+        auto orphanedAlloc = std::make_shared<OrphanedAllocation>(lastEnd, diff);
 
-        unknownBlob = insertChunkSorted(m_file->chunks(), unknownBlob);
-        m_file->m_unkownBlobs.push_back(unknownBlob);
+        orphanedAlloc = insertChunkSorted(m_file->chunks(), orphanedAlloc);
+        m_file->m_orphanedAllocs.push_back(orphanedAlloc);
 
 
-        parseUnknownBlob(m_ds, unknownBlob);
+        parseOrphanedAllocation(m_ds, orphanedAlloc);
       }
 
       it++;
@@ -254,14 +254,14 @@ std::shared_ptr<RevisionStoreFile> RevisionStoreFileParser::parse()
 //                        << qStringHex(lastEnd, 16) << "of size"
 //                        << qStringHex(diff, 8);
 
-      auto unknownBlob = std::make_shared<UnknownBlob>(lastEnd, diff);
+      auto orphanedAlloc = std::make_shared<OrphanedAllocation>(lastEnd, diff);
 
-      unknownBlob = insertChunkSorted(m_file->chunks(), unknownBlob);
+      orphanedAlloc = insertChunkSorted(m_file->chunks(), orphanedAlloc);
 
 
-      m_file->m_unkownBlobs.push_back(unknownBlob);
+      m_file->m_orphanedAllocs.push_back(orphanedAlloc);
 
-      parseUnknownBlob(m_ds, unknownBlob);
+      parseOrphanedAllocation(m_ds, orphanedAlloc);
     }
   }
 
@@ -353,8 +353,8 @@ void RevisionStoreFileParser::parseChunk(
     parseEncryptedData(ds, std::static_pointer_cast<EncryptedData>(chunk));
     break;
   }
-  case RevisionStoreChunkType::UnknownBlob: {
-    parseUnknownBlob(ds, std::static_pointer_cast<UnknownBlob>(chunk));
+  case RevisionStoreChunkType::OrphanedAllocation: {
+    parseOrphanedAllocation(ds, std::static_pointer_cast<OrphanedAllocation>(chunk));
     break;
   }
 
@@ -1010,16 +1010,16 @@ bool RevisionStoreFileParser::parseTransactionLogFragment(
 
 // -----------------------------------------------------------------------------
 
-void RevisionStoreFileParser::parseUnknownBlob(
-    QDataStream& ds, const UnknownBlob_SPtr_t& unknownBlob)
+void RevisionStoreFileParser::parseOrphanedAllocation(
+    QDataStream& ds, const OrphanedAllocation_SPtr_t& orphanedAlloc)
 {
   qint64 originalStp = ds.device()->pos();
 
-  ds.device()->seek(unknownBlob->getInitialStp());
+  ds.device()->seek(orphanedAlloc->getInitialStp());
 
-  unknownBlob->m_blob = ds.device()->read(unknownBlob->getInitialCb());
+  orphanedAlloc->m_blob = ds.device()->read(orphanedAlloc->getInitialCb());
 
-  unknownBlob->m_isParsed = true;
+  orphanedAlloc->m_isParsed = true;
 
   ds.device()->seek(originalStp);
 }

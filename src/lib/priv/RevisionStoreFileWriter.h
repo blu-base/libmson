@@ -57,7 +57,7 @@ private:
   bool writeTransactionLogFragment(
       QDataStream& ds, TransactionLogFragment_SPtr_t transactionLogFragment);
 
-  bool writeUnknownBlob(QDataStream& ds, UnknownBlob_SPtr_t unknownBlob);
+  bool writeOrphanedAllocation(QDataStream& ds, OrphanedAllocation_SPtr_t orphanedAlloc);
 
   bool writeUnparsedChunk(QDataStream& ds, Chunkable_SPtr_t chunk);
 

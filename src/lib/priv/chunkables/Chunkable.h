@@ -19,7 +19,7 @@ enum class RevisionStoreChunkType {
   ObjectInfoDependencyOverrideData,
   EncryptedData,
 
-  UnknownBlob,
+  OrphanedAllocation,
 
   Invalid
 };

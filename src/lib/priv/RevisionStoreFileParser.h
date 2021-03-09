@@ -19,7 +19,7 @@
 #include "chunkables/ObjectSpaceObjectPropSet.h"
 #include "chunkables/RevisionStoreFileHeader.h"
 #include "chunkables/TransactionLogFragment.h"
-#include "chunkables/UnknownBlob.h"
+#include "chunkables/OrphanedAllocation.h"
 
 #include "chunkables/fileNodeTypes/FileNodeTypes.h"
 #include "chunkables/fileNodeTypes/IFileNodeType.h"
@@ -98,7 +98,7 @@ private:
   bool parseTransactionLogFragment(
       QDataStream& ds, const TransactionLogFragment_SPtr_t& firstFragment);
 
-  void parseUnknownBlob(QDataStream& ds, const UnknownBlob_SPtr_t& unknownBlob);
+  void parseOrphanedAllocation(QDataStream& ds, const OrphanedAllocation_SPtr_t& orphanedAlloc);
 
 
   // FileNodeType parsers ------------------------------------------------------

@@ -16,7 +16,7 @@
 #include "chunkables/ObjectSpaceObjectPropSet.h"
 #include "chunkables/RevisionStoreFileHeader.h"
 #include "chunkables/TransactionLogFragment.h"
-#include "chunkables/UnknownBlob.h"
+#include "chunkables/OrphanedAllocation.h"
 
 
 #include "commonTypes/FileChunkReference64.h"
@@ -163,9 +163,9 @@ bool RevisionStoreFileWriter::writeChunk(
     return writeEncryptedData(ds, tchunk);
   }
 
-  case RevisionStoreChunkType::UnknownBlob: {
-    auto tchunk = std::static_pointer_cast<UnknownBlob>(chunk);
-    return writeUnknownBlob(ds, tchunk);
+  case RevisionStoreChunkType::OrphanedAllocation: {
+    auto tchunk = std::static_pointer_cast<OrphanedAllocation>(chunk);
+    return writeOrphanedAllocation(ds, tchunk);
   }
 
   case RevisionStoreChunkType::Invalid:
@@ -355,8 +355,8 @@ bool RevisionStoreFileWriter::writeTransactionLogFragment(
   return true;
 }
 
-bool RevisionStoreFileWriter::writeUnknownBlob(
-    QDataStream& ds, UnknownBlob_SPtr_t unknownBlob)
+bool RevisionStoreFileWriter::writeOrphanedAllocation(
+    QDataStream& ds, OrphanedAllocation_SPtr_t orphanedAlloc)
 {
   // if byte order is big endian, change to little endian
   if (ds.byteOrder() == QDataStream::BigEndian) {
@@ -364,7 +364,7 @@ bool RevisionStoreFileWriter::writeUnknownBlob(
   }
 
 
-  ds.writeRawData(unknownBlob->getBlob(), unknownBlob->getBlob().size());
+  ds.writeRawData(orphanedAlloc->getBlob(), orphanedAlloc->getBlob().size());
 
   return true;
 }

@@ -21,7 +21,7 @@
 #include "chunkables/ObjectSpaceObjectPropSet.h"
 #include "chunkables/RevisionStoreFileHeader.h"
 #include "chunkables/TransactionLogFragment.h"
-#include "chunkables/UnknownBlob.h"
+#include "chunkables/OrphanedAllocation.h"
 
 #include "commonTypes/FileChunkReference32.h"
 #include "commonTypes/FileChunkReference64.h"
@@ -131,9 +131,9 @@ private:
   std::list<Chunkable_WPtr_t> m_undiscovered;
 
 
-  /// this is a list of binary blobs which do not seem to be referenced
+  /// this is a list of orphaned allocations which do not seem to be referenced
   /// somewhere, or are missed possibly due to bugs in this library.
-  std::list<UnknownBlob_WPtr_t> m_unkownBlobs;
+  std::list<OrphanedAllocation_WPtr_t> m_orphanedAllocs;
 };
 
 
