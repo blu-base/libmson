@@ -7,7 +7,7 @@
 #include <QDateTime>
 
 
-#include "../../priv/IStreamable.h"
+#include "../interfaces/IStreamable.h"
 
 namespace libmson {
 
@@ -18,7 +18,7 @@ namespace libmson {
  *
  *  Uses QDateTime member for convenience.
  */
-class Time32 : public priv::IStreamable {
+class Time32 : public IStreamable {
 private:
   QDateTime m_time;
 

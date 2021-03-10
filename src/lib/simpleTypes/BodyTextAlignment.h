@@ -3,7 +3,7 @@
 
 #include <QtCore/qglobal.h>
 
-#include "../../priv/IStreamable.h"
+#include "../interfaces/IStreamable.h"
 
 namespace libmson {
 
@@ -15,7 +15,7 @@ namespace libmson {
  * apperently value must be 0, and must be ignored
  * \todo determine actual usage
  */
-class BodyTextAlignment : public priv::IStreamable {
+class BodyTextAlignment : public IStreamable {
 private:
   quint32 m_value;
 

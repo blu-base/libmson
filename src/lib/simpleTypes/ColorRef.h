@@ -5,7 +5,7 @@
 #include <QtCore/qglobal.h>
 
 
-#include "../../priv/IStreamable.h"
+#include "../interfaces/IStreamable.h"
 
 namespace libmson {
 
@@ -15,7 +15,7 @@ namespace libmson {
  * must be value in range [0x00000000,0x00FFFFFF] as rgb color values, or
  * [0xFF000000] for automatic color
  */
-class ColorRef : public libmson::priv::IStreamable {
+class ColorRef : public IStreamable {
 private:
   quint32 m_colorVal;
 

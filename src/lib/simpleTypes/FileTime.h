@@ -6,7 +6,7 @@
 #include <QDataStream>
 #include <QDateTime>
 
-#include "../../priv/IStreamable.h"
+#include "../interfaces/IStreamable.h"
 
 namespace libmson {
 /// Representing MS-DTYP section 2.3.3
@@ -22,7 +22,7 @@ namespace libmson {
  *
  *
  */
-class FileTime : public priv::IStreamable {
+class FileTime : public IStreamable {
 private:
   QDateTime m_time;
 

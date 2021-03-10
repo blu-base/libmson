@@ -3,7 +3,7 @@
 
 #include <QtCore/qglobal.h>
 
-#include "../../priv/IStreamable.h"
+#include "../interfaces/IStreamable.h"
 
 namespace libmson {
 
@@ -165,7 +165,7 @@ enum class NoteTagShapeID : quint16 {
  *
  *  represents the simple type according to [MS-ONE] section 2.3.86
  */
-class NoteTagShape : public priv::IStreamable {
+class NoteTagShape : public IStreamable {
 private:
   quint16 m_shape;
 

@@ -3,7 +3,7 @@
 
 #include <QtCore/qglobal.h>
 
-#include "../../priv/IStreamable.h"
+#include "../interfaces/IStreamable.h"
 
 namespace libmson {
 
@@ -37,7 +37,7 @@ enum class CHARSET : quint8 {
  * represents the simply type according to [MS-ONE] section 2.3.55
  *
  */
-class Charset : public priv::IStreamable {
+class Charset : public IStreamable {
 private:
   CHARSET m_charset;
 public:

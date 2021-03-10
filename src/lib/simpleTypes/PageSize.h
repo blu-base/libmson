@@ -3,7 +3,7 @@
 
 #include <QtCore/qglobal.h>
 
-#include "../../priv/IStreamable.h"
+#include "../interfaces/IStreamable.h"
 
 namespace libmson {
 
@@ -37,7 +37,7 @@ enum class PageSizeType : quint32 {
  * Declares whether page is a fixed, predefined size, or resizes automatically.
  *
  */
-class PageSize : public priv::IStreamable {
+class PageSize : public IStreamable {
 private:
   quint32 m_type;
 

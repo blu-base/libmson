@@ -5,7 +5,7 @@
 
 #include <QDataStream>
 
-#include "../../priv/IStreamable.h"
+#include "../interfaces/IStreamable.h"
 
 namespace libmson {
 
@@ -38,7 +38,7 @@ enum class VAlignment : quint32 {
  *
  * represents the simple type according to [MS-ONE] section 2.3.2
  */
-class LayoutAlignment : public priv::IStreamable {
+class LayoutAlignment : public IStreamable {
 private:
   /** \todo replace composite member variable with separated variables*/
   quint32 m_value;

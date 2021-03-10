@@ -5,7 +5,7 @@
 
 #include <QDataStream>
 
-#include "../../priv/IStreamable.h"
+#include "../interfaces/IStreamable.h"
 
 namespace libmson {
 
@@ -481,7 +481,7 @@ enum class LanguageID : quint16 {
  * [MS-LCID]
  *
  */
-class LCID : public priv::IStreamable {
+class LCID : public IStreamable {
   LanguageID lid;
   quint8 sortid;
 

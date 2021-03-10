@@ -3,7 +3,7 @@
 
 #include <QtCore/qglobal.h>
 
-#include "../../priv/IStreamable.h"
+#include "../interfaces/IStreamable.h"
 
 namespace libmson {
 
@@ -58,7 +58,7 @@ enum class ListSymbolID : quint16 {
  *
  *
  */
-class ListMSAAIndex : public libmson::priv::IStreamable {
+class ListMSAAIndex : public IStreamable {
 private:
   quint16 m_value;
 
