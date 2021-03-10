@@ -1,7 +1,35 @@
-FILE(GLOB LIBMSON_PRIV_COMMONTYPES_PART_SRCS
- *.cpp
-  )
-
-FILE(GLOB LIBMSON_PRIV_COMMONTYPES_PART_HEADERS
-*.h
-  )
+target_sources(libmson_priv
+  PUBLIC
+    ${CMAKE_CURRENT_LIST_DIR}/BinaryItem.h
+    ${CMAKE_CURRENT_LIST_DIR}/CellIdArray.h
+    ${CMAKE_CURRENT_LIST_DIR}/CellId.h
+    ${CMAKE_CURRENT_LIST_DIR}/CompactExtGuidArray.h
+    ${CMAKE_CURRENT_LIST_DIR}/CompactExtGuid.h
+    ${CMAKE_CURRENT_LIST_DIR}/CompactID.h
+    ${CMAKE_CURRENT_LIST_DIR}/CompactUInt64.h
+    ${CMAKE_CURRENT_LIST_DIR}/Enums.h
+    ${CMAKE_CURRENT_LIST_DIR}/ExtendedGUID.h
+    ${CMAKE_CURRENT_LIST_DIR}/FileChunkReference32.h
+    ${CMAKE_CURRENT_LIST_DIR}/FileChunkReference64.h
+    ${CMAKE_CURRENT_LIST_DIR}/FileChunkReference64x32.h
+    ${CMAKE_CURRENT_LIST_DIR}/FileNodeChunkReference.h
+    ${CMAKE_CURRENT_LIST_DIR}/IFileChunkReference.h
+    ${CMAKE_CURRENT_LIST_DIR}/LongExtGuid.h
+    ${CMAKE_CURRENT_LIST_DIR}/StringInStorageBuffer.h
+  PRIVATE
+    ${CMAKE_CURRENT_LIST_DIR}/BinaryItem.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/CellIdArray.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/CellId.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/CompactExtGuidArray.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/CompactExtGuid.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/CompactID.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/CompactUInt64.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/ExtendedGUID.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/FileChunkReference32.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/FileChunkReference64.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/FileChunkReference64x32.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/FileNodeChunkReference.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/IFileChunkReference.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/LongExtGuid.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/StringInStorageBuffer.cpp
+)

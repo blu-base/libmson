@@ -1,0 +1,23 @@
+target_sources(libmson_priv
+  PUBLIC
+    ${CMAKE_CURRENT_LIST_DIR}/IObjectSpaceObjectStream.h
+    ${CMAKE_CURRENT_LIST_DIR}/ObjectDeclaration2Body.h
+    ${CMAKE_CURRENT_LIST_DIR}/ObjectDeclarationWithRefCountBody.h
+    ${CMAKE_CURRENT_LIST_DIR}/ObjectInfoDependencyOverride32.h
+    ${CMAKE_CURRENT_LIST_DIR}/ObjectInfoDependencyOverride8.h
+    ${CMAKE_CURRENT_LIST_DIR}/ObjectSpaceObjectStreamHeader.h
+    ${CMAKE_CURRENT_LIST_DIR}/ObjectSpaceObjectStreamOfContextIDs.h
+    ${CMAKE_CURRENT_LIST_DIR}/ObjectSpaceObjectStreamOfOIDs.h
+    ${CMAKE_CURRENT_LIST_DIR}/ObjectSpaceObjectStreamOfOSIDs.h
+  PRIVATE
+    ${CMAKE_CURRENT_LIST_DIR}/IObjectSpaceObjectStream.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/ObjectDeclaration2Body.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/ObjectDeclarationWithRefCountBody.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/ObjectInfoDependencyOverride32.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/ObjectInfoDependencyOverride8.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/ObjectSpaceObjectStreamHeader.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/ObjectSpaceObjectStreamOfContextIDs.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/ObjectSpaceObjectStreamOfOIDs.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/ObjectSpaceObjectStreamOfOSIDs.cpp
+
+    )

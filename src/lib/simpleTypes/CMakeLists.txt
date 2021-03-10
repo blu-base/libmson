@@ -1,0 +1,24 @@
+target_sources(mson
+  PUBLIC
+    ${CMAKE_CURRENT_LIST_DIR}/BodyTextAlignment.h
+    ${CMAKE_CURRENT_LIST_DIR}/Charset.h
+    ${CMAKE_CURRENT_LIST_DIR}/ColorRef.h
+    ${CMAKE_CURRENT_LIST_DIR}/FileTime.h
+    ${CMAKE_CURRENT_LIST_DIR}/LayoutAlignment.h
+    ${CMAKE_CURRENT_LIST_DIR}/LCID.h
+    ${CMAKE_CURRENT_LIST_DIR}/ListMSAAIndex.h
+    ${CMAKE_CURRENT_LIST_DIR}/NoteTagShape.h
+    ${CMAKE_CURRENT_LIST_DIR}/PageSize.h
+    ${CMAKE_CURRENT_LIST_DIR}/Time32.h
+  PRIVATE
+    ${CMAKE_CURRENT_LIST_DIR}/BodyTextAlignment.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Charset.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/ColorRef.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/FileTime.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/LayoutAlignment.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/LCID.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/ListMSAAIndex.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/NoteTagShape.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/PageSize.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Time32.cpp
+    )

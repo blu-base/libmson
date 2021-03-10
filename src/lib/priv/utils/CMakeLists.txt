@@ -1,9 +1,12 @@
-set (LIBMSON_PRIV_UTILS_PART_SRCS
-    Helper.cpp
-    CrcAlgorithms.cpp
-    )
-
-set (LIBMSON_PRIV_UTILS_PART_HEADERS
-    Helper.h
-    CrcAlgorithms.h
-    )
+target_sources(libmson_priv
+  PUBLIC
+    ${CMAKE_CURRENT_LIST_DIR}/ChunkableUtils.h
+    ${CMAKE_CURRENT_LIST_DIR}/Helper.h
+  PRIVATE
+    ${CMAKE_CURRENT_LIST_DIR}/MD5Algorithms.h
+    ${CMAKE_CURRENT_LIST_DIR}/CrcAlgorithms.h
+    ${CMAKE_CURRENT_LIST_DIR}/Helper.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/MD5Algorithms.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/CrcAlgorithms.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/ChunkableUtils.cpp
+  )

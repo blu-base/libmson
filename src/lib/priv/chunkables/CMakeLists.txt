@@ -1,14 +1,32 @@
-set(LIBMSON_PRIV_CHUNKABLES_PART_SRCS
-    FileNode.cpp
-    FileNodeListFragment.cpp
-    FreeChunk.cpp
-    FreeChunkListFragment.cpp
-    RevisionStoreFileHeader.cpp
-    RevisionStoreChunkContainer.cpp
+target_sources(libmson_priv
+  PUBLIC
+    ${CMAKE_CURRENT_LIST_DIR}/Chunkable.h
+    ${CMAKE_CURRENT_LIST_DIR}/EncryptedData.h
+    ${CMAKE_CURRENT_LIST_DIR}/FileDataStoreObject.h
+    ${CMAKE_CURRENT_LIST_DIR}/FileNode.h
+    ${CMAKE_CURRENT_LIST_DIR}/FileNodeListFragment.h
+    ${CMAKE_CURRENT_LIST_DIR}/FreeChunk.h
+    ${CMAKE_CURRENT_LIST_DIR}/FreeChunkListFragment.h
+    ${CMAKE_CURRENT_LIST_DIR}/ObjectInfoDependencyOverrideData.h
+    ${CMAKE_CURRENT_LIST_DIR}/ObjectSpaceObjectPropSet.h
+    ${CMAKE_CURRENT_LIST_DIR}/OrphanedAllocation.h
+    ${CMAKE_CURRENT_LIST_DIR}/RevisionStoreFileHeader.h
+    ${CMAKE_CURRENT_LIST_DIR}/TransactionLogFragment.h
+  PRIVATE
+    ${CMAKE_CURRENT_LIST_DIR}/Chunkable.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/EncryptedData.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/FileDataStoreObject.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/FileNode.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/FileNodeListFragment.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/FreeChunk.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/FreeChunkListFragment.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/ObjectInfoDependencyOverrideData.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/ObjectSpaceObjectPropSet.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/OrphanedAllocation.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/RevisionStoreFileHeader.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/TransactionLogFragment.cpp
+  )
 
+add_subdirectory(fileNodeTypes)
 
-    )
-
-set(LIBMSON_PRIV_CHUNKABLES_PART_HEADERS
-    Chunkable.h
-    )
+add_subdirectory(objectTypes)
