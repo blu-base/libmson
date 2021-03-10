@@ -3,8 +3,9 @@
 
 #include <QtCore/qglobal.h>
 
-#include "DataElement.h"
-#include "DataElementBody.h"
+#include <priv/commonTypes/CompactExtGuid.h>
+
+#include "interfaces/IDataElementBody.h"
 
 namespace libmson {
 namespace packStore {

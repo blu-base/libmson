@@ -1,4 +1,8 @@
 #include "DataElementPackage.h"
+
+#include "DataElement.h"
+
+
 namespace libmson {
 namespace packStore {
 QByteArray DataElementPackage::getData() const { return m_data; }

@@ -3,14 +3,15 @@
 
 #include <QtCore/qglobal.h>
 
-
-#include "DataElement.h"
-#include "DataElementBody.h"
-#include "streamObjects/CellManifestCurrentRevision.h"
+#include "interfaces/IDataElementBody.h"
 
 namespace libmson {
 namespace packStore {
 
+namespace streamObj {
+typedef std::shared_ptr<class CellManifestCurrentRevision>
+    CellManifestCurrentRevision_SPtr_t;
+}
 
 class CellManifest
     : public DataElementBody

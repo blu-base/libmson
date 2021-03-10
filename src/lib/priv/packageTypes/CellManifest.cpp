@@ -1,5 +1,7 @@
 #include "CellManifest.h"
 
+#include "streamObjects/CellManifestCurrentRevision.h"
+
 
 namespace libmson {
 namespace packStore {

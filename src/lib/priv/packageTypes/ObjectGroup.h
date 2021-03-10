@@ -4,7 +4,9 @@
 #include <QtCore/qglobal.h>
 
 
-#include "DataElementBody.h"
+
+#include "interfaces/IDataElementBody.h"
+
 #include "streamObjects/DataElementHash.h"
 #include "streamObjects/ObjectGroupData.h"
 #include "streamObjects/ObjectGroupDeclarations.h"

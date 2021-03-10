@@ -3,12 +3,15 @@
 
 #include <QtCore/qglobal.h>
 
+#include <priv/commonTypes/CompactExtGuid.h>
+
 #include "../../IStreamable.h"
-#include "../../commonTypes/CompactExtGuid.h"
+
 #include "StreamObject.h"
 
 namespace libmson {
 namespace packStore {
+
 namespace streamObj {
 
 class CellManifestCurrentRevision

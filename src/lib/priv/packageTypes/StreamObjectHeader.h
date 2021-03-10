@@ -6,11 +6,13 @@
 #include <QtCore/qglobal.h>
 
 #include "../IStreamable.h"
-#include "StreamObjectHeaderEnd.h"
 #include "StreamObjectTypes.h"
+#include "StreamObjectHeaderEnd.h" // keep for convenience
 
 namespace libmson {
 namespace packStore {
+
+class StreamObjectHeaderEnd;
 
 class StreamObjectHeader : public priv::IStreamable {
 public:

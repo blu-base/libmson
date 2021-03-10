@@ -1,4 +1,9 @@
 #include "ObjectGroupData.h"
+
+#include "ObjectGroupObjectData.h"
+#include "ObjectGroupObjectDataBlobReference.h"
+#include "ObjectGroupObjectExcludedData.h"
+
 namespace libmson {
 namespace packStore {
 namespace streamObj {

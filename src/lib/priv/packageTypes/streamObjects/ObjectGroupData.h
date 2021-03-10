@@ -6,14 +6,16 @@
 #include <vector>
 
 #include "../../IStreamable.h"
-#include "ObjectGroupObjectData.h"
-#include "ObjectGroupObjectDataBlobReference.h"
-#include "ObjectGroupObjectExcludedData.h"
 #include "StreamObject.h"
 
 namespace libmson {
 namespace packStore {
 namespace streamObj {
+
+
+class ObjectGroupObjectData;
+class ObjectGroupObjectDataBlobReference;
+class ObjectGroupObjectExcludedData;
 
 class ObjectGroupData
     : public StreamObject
@@ -26,10 +28,10 @@ public:
 
   std::vector<StreamObject_SPtr_t> getObjects() const;
 
-  std::vector<ObjectGroupObjectData_SPtr_t> getObjectData() const;
-  std::vector<ObjectGroupObjectDataBlobReference_SPtr_t>
+  std::vector<std::shared_ptr<ObjectGroupObjectData>> getObjectData() const;
+  std::vector<std::shared_ptr<ObjectGroupObjectDataBlobReference>>
   getObjectDataBlobReferences() const;
-  std::vector<ObjectGroupObjectExcludedData_SPtr_t>
+  std::vector<std::shared_ptr<ObjectGroupObjectExcludedData>>
   getObjectExcludedData() const;
 
 

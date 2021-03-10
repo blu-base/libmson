@@ -4,8 +4,8 @@
 #include <QtCore/qglobal.h>
 
 
-#include "DataElement.h"
-#include "DataElementBody.h"
+
+#include "interfaces/IDataElementBody.h"
 #include "streamObjects/ObjectDataBLOB.h"
 
 namespace libmson {

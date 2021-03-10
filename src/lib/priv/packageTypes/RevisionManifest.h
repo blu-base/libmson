@@ -5,8 +5,9 @@
 #include <QtCore/qglobal.h>
 
 #include "../commonTypes/CompactExtGuid.h"
-#include "DataElement.h"
-#include "DataElementBody.h"
+
+#include "interfaces/IDataElementBody.h"
+
 #include "streamObjects/RevisionManifest.h"
 #include "streamObjects/RevisionManifestObjectGroupReference.h"
 #include "streamObjects/RevisionManifestRootDeclare.h"

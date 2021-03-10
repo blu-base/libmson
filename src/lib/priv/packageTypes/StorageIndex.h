@@ -7,7 +7,7 @@
 #include "../commonTypes/CellId.h"
 #include "../commonTypes/CompactUInt64.h"
 #include "../commonTypes/LongExtGuid.h"
-#include "DataElementBody.h"
+#include "interfaces/IDataElementBody.h"
 #include "StreamObjectHeader.h"
 #include "streamObjects/StorageIndexCellMapping.h"
 #include "streamObjects/StorageIndexManifestMapping.h"

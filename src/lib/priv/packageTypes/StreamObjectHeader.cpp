@@ -1,4 +1,6 @@
 #include "StreamObjectHeader.h"
+
+#include "StreamObjectHeaderEnd.h"
 #include "../commonTypes/CompactUInt64.h"
 
 #include <QDebug>

@@ -6,8 +6,8 @@
 
 #include <QtCore/qglobal.h>
 
-#include "DataElement.h"
-#include "DataElementBody.h"
+
+#include "interfaces/IDataElementBody.h"
 #include "StreamObjectHeader.h"
 #include "streamObjects/StorageManifestRootDeclare.h"
 #include "streamObjects/StorageManifestSchema.h"

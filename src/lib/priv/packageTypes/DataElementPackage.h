@@ -2,17 +2,16 @@
 #define DATAELEMENTPACKAGE_H
 
 #include <memory>
-
 #include <QtCore/qglobal.h>
 
-#include "DataElement.h"
 #include "StreamObjectHeader.h"
 
 namespace libmson {
 namespace packStore {
 
-class DataElementPackage;
+typedef std::shared_ptr<class DataElement> DataElement_SPtr_t;
 
+class DataElementPackage;
 typedef std::shared_ptr<DataElementPackage> DataElementPackage_SPtr_t;
 typedef std::weak_ptr<DataElementPackage> DataElementPackage_WPtr_t;
 

@@ -1,5 +1,7 @@
 #include "DataElementFragment.h"
 
+#include <priv/commonTypes/CompactUInt64.h>
+
 namespace libmson {
 namespace packStore {
 

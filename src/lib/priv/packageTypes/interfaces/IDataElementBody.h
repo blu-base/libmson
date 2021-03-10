@@ -5,13 +5,11 @@
 
 #include <QtCore/qglobal.h>
 
-#include "../IStreamable.h"
+#include "../../IStreamable.h"
+#include "DataElementType.h"
 
 namespace libmson {
 namespace packStore {
-
-enum class DataElementType : uint8_t;
-
 
 /** Data between DataElement's  CompactUInt64 m_DataElementType and the
  * StreamObjectHeaderEnd */
