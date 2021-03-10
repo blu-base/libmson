@@ -18,6 +18,9 @@
 
 #include <memory>
 
+#include <priv/packageTypes/streamObjects/CellManifestCurrentRevision.h>
+
+
 
 bool PSFtoXml::writeSequence(
     QFile& outputFile,
@@ -738,10 +741,13 @@ QXmlStreamWriter& PSFtoXml::writeObjectGroupObjectDataBlobReference(
   return xmlWriter;
 }
 
+
+
 QXmlStreamWriter& PSFtoXml::writeObjectGroupObjectData(
     const packStore::streamObj::ObjectGroupObjectData_SPtr_t& obj,
     QXmlStreamWriter& xmlWriter)
 {
+
   xmlWriter.writeStartElement("ObjectGroupMetadata");
 
   writeCompactExtGuidArray(obj->getExtendedGuidArray(), xmlWriter);

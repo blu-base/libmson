@@ -35,16 +35,16 @@
 #include "../../lib/priv/propertyTypes/PropertyType_TwoBytesOfData.h"
 
 
-#include "../../lib/publ/simpleTypes/BodyTextAlignment.h"
-#include "../../lib/publ/simpleTypes/Charset.h"
-#include "../../lib/publ/simpleTypes/ColorRef.h"
-#include "../../lib/publ/simpleTypes/FileTime.h"
-#include "../../lib/publ/simpleTypes/LCID.h"
-#include "../../lib/publ/simpleTypes/LayoutAlignment.h"
-#include "../../lib/publ/simpleTypes/ListMSAAIndex.h"
-#include "../../lib/publ/simpleTypes/NoteTagShape.h"
-#include "../../lib/publ/simpleTypes/PageSize.h"
-#include "../../lib/publ/simpleTypes/Time32.h"
+#include "../../lib/simpleTypes/BodyTextAlignment.h"
+#include "../../lib/simpleTypes/Charset.h"
+#include "../../lib/simpleTypes/ColorRef.h"
+#include "../../lib/simpleTypes/FileTime.h"
+#include "../../lib/simpleTypes/LCID.h"
+#include "../../lib/simpleTypes/LayoutAlignment.h"
+#include "../../lib/simpleTypes/ListMSAAIndex.h"
+#include "../../lib/simpleTypes/NoteTagShape.h"
+#include "../../lib/simpleTypes/PageSize.h"
+#include "../../lib/simpleTypes/Time32.h"
 
 #include "../../lib/priv/chunkables/objectTypes/IObjectSpaceObjectStream.h"
 #include "../../lib/priv/chunkables/objectTypes/ObjectDeclaration2Body.h"
@@ -117,8 +117,8 @@ private:
       const bool followRecursively,
       const std::shared_ptr<RevisionStoreFile>& revisionStoreFile,
       QXmlStreamWriter& xmlWriter);
-  static QXmlStreamWriter& writeUnknownBlob(
-      const std::shared_ptr<UnknownBlob>& obj, QXmlStreamWriter& xmlWriter);
+  static QXmlStreamWriter& writeOrphanedAllocation(
+      const std::shared_ptr<OrphanedAllocation>& obj, QXmlStreamWriter& xmlWriter);
 
 
   // ---------------------------------------------------------------------------

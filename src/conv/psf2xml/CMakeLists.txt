@@ -13,7 +13,7 @@ add_executable(
 target_link_libraries(
     psf2xml
     libmson_priv
-    libmson
+    mson
     Qt5::Core
     Qt5::Xml
     )

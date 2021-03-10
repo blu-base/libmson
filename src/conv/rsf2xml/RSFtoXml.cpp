@@ -4,7 +4,7 @@
 #include "../../lib/priv/utils/Helper.h"
 
 
-#include <propertyTypes/PropertyID.h>
+#include <priv/propertyTypes/PropertyID.h>
 
 #include <QDataStream>
 #include <QDebug>
@@ -129,8 +129,8 @@ QXmlStreamWriter& RSFtoXml::writeChunkable(
         followRecursively, revisionStoreFile, xmlWriter);
     break;
   }
-  case RevisionStoreChunkType::UnknownBlob: {
-    writeUnknownBlob(std::static_pointer_cast<UnknownBlob>(chunk), xmlWriter);
+  case RevisionStoreChunkType::OrphanedAllocation: {
+    writeOrphanedAllocation(std::static_pointer_cast<OrphanedAllocation>(chunk), xmlWriter);
     break;
   }
   default:
@@ -562,10 +562,10 @@ QXmlStreamWriter& RSFtoXml::writeTransactionLogFragment(
   return xmlWriter;
 }
 
-QXmlStreamWriter& RSFtoXml::writeUnknownBlob(
-    const std::shared_ptr<UnknownBlob>& obj, QXmlStreamWriter& xmlWriter)
+QXmlStreamWriter& RSFtoXml::writeOrphanedAllocation(
+    const std::shared_ptr<OrphanedAllocation>& obj, QXmlStreamWriter& xmlWriter)
 {
-  xmlWriter.writeStartElement("UnknownBlob");
+  xmlWriter.writeStartElement("OrphanedAllocation");
   xmlWriter.writeStartElement("Data");
   xmlWriter.writeCharacters(obj->getBlob().toHex());
   xmlWriter.writeEndElement();

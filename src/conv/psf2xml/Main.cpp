@@ -14,7 +14,7 @@
 #include "../../lib/priv/PackageStoreFile.h"
 #include "../../lib/priv/PackageStoreFileParser.h"
 
-#include <../FormatIdentifier.h>
+#include <FormatIdentifier.h>
 
 #include "PSFtoXml.h"
 

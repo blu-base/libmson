@@ -13,13 +13,18 @@
 
 #include "../../lib/priv/packageTypes/CellManifest.h"
 #include "../../lib/priv/packageTypes/DataElement.h"
-#include "../../lib/priv/packageTypes/DataElementBody.h"
+#include "../../lib/priv/packageTypes/interfaces/IDataElementBody.h"
 #include "../../lib/priv/packageTypes/DataElementFragment.h"
 #include "../../lib/priv/packageTypes/ObjectDataBLOB.h"
 #include "../../lib/priv/packageTypes/ObjectGroup.h"
 #include "../../lib/priv/packageTypes/RevisionManifest.h"
 #include "../../lib/priv/packageTypes/StorageIndex.h"
 #include "../../lib/priv/packageTypes/StorageManifest.h"
+
+#include <priv/packageTypes/streamObjects/ObjectGroupObjectData.h>
+#include <priv/packageTypes/streamObjects/ObjectGroupObjectDataBlobReference.h>
+#include <priv/packageTypes/streamObjects/ObjectGroupObjectExcludedData.h>
+
 
 #include "../../lib/priv/chunkables/ObjectSpaceObjectPropSet.h"
 
@@ -45,17 +50,16 @@
 #include "../../lib/priv/propertyTypes/PropertyType_PropertySet.h"
 #include "../../lib/priv/propertyTypes/PropertyType_TwoBytesOfData.h"
 
-
-#include "../../lib/publ/simpleTypes/BodyTextAlignment.h"
-#include "../../lib/publ/simpleTypes/Charset.h"
-#include "../../lib/publ/simpleTypes/ColorRef.h"
-#include "../../lib/publ/simpleTypes/FileTime.h"
-#include "../../lib/publ/simpleTypes/LCID.h"
-#include "../../lib/publ/simpleTypes/LayoutAlignment.h"
-#include "../../lib/publ/simpleTypes/ListMSAAIndex.h"
-#include "../../lib/publ/simpleTypes/NoteTagShape.h"
-#include "../../lib/publ/simpleTypes/PageSize.h"
-#include "../../lib/publ/simpleTypes/Time32.h"
+#include "../../lib/simpleTypes/BodyTextAlignment.h"
+#include "../../lib/simpleTypes/Charset.h"
+#include "../../lib/simpleTypes/ColorRef.h"
+#include "../../lib/simpleTypes/FileTime.h"
+#include "../../lib/simpleTypes/LCID.h"
+#include "../../lib/simpleTypes/LayoutAlignment.h"
+#include "../../lib/simpleTypes/ListMSAAIndex.h"
+#include "../../lib/simpleTypes/NoteTagShape.h"
+#include "../../lib/simpleTypes/PageSize.h"
+#include "../../lib/simpleTypes/Time32.h"
 
 
 using namespace libmson;
