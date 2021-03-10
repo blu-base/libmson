@@ -10,6 +10,9 @@ DocumentItem::~DocumentItem() { qDeleteAll(m_childItems); }
 
 void DocumentItem::appendChild(DocumentItem* child)
 {
+
+
+
   m_childItems.append(child);
 }
 

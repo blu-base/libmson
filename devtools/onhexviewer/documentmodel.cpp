@@ -2,10 +2,12 @@
 
 #include "documentitem.h"
 
+#include <QDebug>
+
 
 DocumentModel::DocumentModel(QObject* parent) : QAbstractItemModel(parent)
 {
-  rootItem = new DocumentItem({"Object", "Type", "Value", "STP", "ByteCount"});
+  rootItem = new DocumentItem({"Object", "Type", "Value", "STP", "ByteCount", });
 }
 
 DocumentModel::~DocumentModel() { delete rootItem; }

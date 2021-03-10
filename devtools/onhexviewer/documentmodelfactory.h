@@ -99,8 +99,8 @@ private:
       DocumentItem* parent);
   static void appendEncryptedData(
       const libmson::priv::EncryptedData_SPtr_t& chunk, DocumentItem* parent);
-  static void appendUnknownBlob(
-      const libmson::priv::UnknownBlob_SPtr_t& chunk, DocumentItem* parent);
+  static void appendOrphanedAllocation(
+      const libmson::priv::OrphanedAllocation_SPtr_t& chunk, DocumentItem* parent);
 
 
   // fileNodeTypes

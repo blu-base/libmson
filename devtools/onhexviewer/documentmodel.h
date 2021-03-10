@@ -29,9 +29,6 @@ public:
   explicit DocumentModel(QObject* parent = nullptr);
   ~DocumentModel();
 
-
-
-
   // QAbstractItemModel interface
 public:
   Qt::ItemFlags flags(const QModelIndex& index) const override;

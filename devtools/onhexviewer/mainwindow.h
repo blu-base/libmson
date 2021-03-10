@@ -8,32 +8,31 @@
 #include <QtGui/QMainWindow>
 #endif
 
-#include <QTreeView>
-#include <QSplitter>
-#include <QCommandLineParser>
 #include <QCommandLineOption>
+#include <QCommandLineParser>
+#include <QSplitter>
+#include <QTreeView>
+#include <QUndoStack>
 
 
 QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
+namespace Ui {
+class MainWindow;
+}
 class QHexView;
 class QHexDocument;
 class DocumentModel;
 QT_END_NAMESPACE
 
 
-
-class MainWindow : public QMainWindow
-{
+class MainWindow : public QMainWindow {
   Q_OBJECT
 
 public:
-  MainWindow(QCommandLineParser* parser,
-             const QCommandLineOption &file,
-             QWidget *parent = nullptr);
+  MainWindow(
+      QCommandLineParser* parser, const QCommandLineOption& file,
+      QWidget* parent = nullptr);
   ~MainWindow();
-
-
 
 
 private slots:
@@ -47,6 +46,10 @@ private slots:
   void selectionChangedSlot(
       const QItemSelection& newSelection, const QItemSelection& oldSelection);
 
+  void treeViewClicked(const QModelIndex& index);
+
+  void onCustomContextMenu(const QPoint& point);
+
 
 private:
   void openFile(QString fileName);
@@ -56,25 +59,29 @@ private:
   void markSelection(const QModelIndex& item);
 
 
-
-
 private:
   Ui::MainWindow* ui;
 
-  QSplitter* splitter;
+  QSplitter* splitter = nullptr;
 
-  QHexView* hexView;
-  QTreeView* treeView;
-  QItemSelectionModel* selectionModel;
+  QHexView* hexView                   = nullptr;
+  QTreeView* treeView                 = nullptr;
+  QItemSelectionModel* selectionModel = nullptr;
+  QMenu* contextMenu                  = nullptr;
 
-  DocumentModel* m_model;
-  QHexDocument* m_hexDoc;
+  DocumentModel* m_model = nullptr;
+  QHexDocument* m_hexDoc = nullptr;
 
   QString m_currentFile;
 
   // command line settings
-  QCommandLineParser* m_cli_parser;
+  QCommandLineParser* m_cli_parser = nullptr;
   QCommandLineOption m_cli_file;
 
+
+  // stream positions
+  QAction* undoAction      = nullptr;
+  QAction* redoAction      = nullptr;
+  QUndoStack* posUndoStack = nullptr;
 };
 #endif // MAINWINDOW_H

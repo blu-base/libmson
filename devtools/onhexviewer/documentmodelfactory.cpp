@@ -137,9 +137,9 @@ void DocumentModelFactory::createRevisionStoreModel(
           std::dynamic_pointer_cast<libmson::priv::EncryptedData>(chunk), root);
       break;
     }
-    case libmson::priv::RevisionStoreChunkType::UnknownBlob: {
-      appendUnknownBlob(
-          std::dynamic_pointer_cast<libmson::priv::UnknownBlob>(chunk), root);
+    case libmson::priv::RevisionStoreChunkType::OrphanedAllocation: {
+      appendOrphanedAllocation(
+          std::dynamic_pointer_cast<libmson::priv::OrphanedAllocation>(chunk), root);
       break;
     }
     case libmson::priv::RevisionStoreChunkType::RevisionStoreFileHeader:
@@ -157,6 +157,82 @@ void DocumentModelFactory::createPackageStoreModel(
   auto packageStoreFile = getPackageStoreDocument(fileName);
 
   auto* root = tree->root();
+
+
+
+
+//  for (const auto& chunk : revisionStoreFile->getChunks()) {
+
+//    switch (chunk->type()) {
+
+//    case libmson::priv::RevisionStoreChunkType::FileNodeListFragment: {
+//      appendFileNodeListFragment(
+//          std::dynamic_pointer_cast<libmson::priv::FileNodeListFragment>(chunk),
+//          revisionStoreFile, root);
+//      break;
+//    }
+//    case libmson::priv::RevisionStoreChunkType::FileNode: {
+//      appendFileNode(
+//          std::dynamic_pointer_cast<libmson::priv::FileNode>(chunk),
+//          revisionStoreFile, root);
+//      break;
+//    }
+//    case libmson::priv::RevisionStoreChunkType::FreeChunkListFragment: {
+//      appendFreeChunkListFragment(
+//          std::dynamic_pointer_cast<libmson::priv::FreeChunkListFragment>(
+//              chunk),
+//          revisionStoreFile, root);
+//      break;
+//    }
+//    case libmson::priv::RevisionStoreChunkType::FreeChunk: {
+//      appendFreeChunk(
+//          std::dynamic_pointer_cast<libmson::priv::FreeChunk>(chunk), root);
+//      break;
+//    }
+//    case libmson::priv::RevisionStoreChunkType::TransactionLogFragment: {
+//      appendTransactionLogFragment(
+//          std::dynamic_pointer_cast<libmson::priv::TransactionLogFragment>(
+//              chunk),
+//          revisionStoreFile, root);
+//      break;
+//    }
+//    case libmson::priv::RevisionStoreChunkType::FileDataStoreObject: {
+//      appendFileDataStoreObject(
+//          std::dynamic_pointer_cast<libmson::priv::FileDataStoreObject>(chunk),
+//          root);
+//      break;
+//    }
+//    case libmson::priv::RevisionStoreChunkType::ObjectSpaceObjectPropSet: {
+//      appendObjectSpaceObjectPropSet(
+//          std::dynamic_pointer_cast<libmson::priv::ObjectSpaceObjectPropSet>(
+//              chunk),
+//          root);
+//      break;
+//    }
+//    case libmson::priv::RevisionStoreChunkType::
+//        ObjectInfoDependencyOverrideData: {
+//      appendObjectInfoDependencyOverrideData(
+//          std::dynamic_pointer_cast<
+//              libmson::priv::ObjectInfoDependencyOverrideData>(chunk),
+//          root);
+//      break;
+//    }
+//    case libmson::priv::RevisionStoreChunkType::EncryptedData: {
+//      appendEncryptedData(
+//          std::dynamic_pointer_cast<libmson::priv::EncryptedData>(chunk), root);
+//      break;
+//    }
+//    case libmson::priv::RevisionStoreChunkType::OrphanedAllocation: {
+//      appendOrphanedAllocation(
+//          std::dynamic_pointer_cast<libmson::priv::OrphanedAllocation>(chunk), root);
+//      break;
+//    }
+//    case libmson::priv::RevisionStoreChunkType::RevisionStoreFileHeader:
+//    case libmson::priv::RevisionStoreChunkType::Invalid: {
+//      break;
+//    }
+//    }
+//  }
 }
 
 std::shared_ptr<libmson::priv::RevisionStoreFile>
@@ -337,7 +413,7 @@ void DocumentModelFactory::appendRevisionStoreFileHeader(
   appendFileChunkReference64x32(
       libmson::priv::getFcr64x32FromChunk(
           revStoreFile, header->getFcrFileNodeListRoot()),
-      QStringLiteral("m_fcrFileNodeListRoot"), stp, headerItem);
+      QStringLiteral("fcrFileNodeListRoot"), stp, headerItem);
 
   appendFileChunkReference64x32(
       libmson::priv::getFcr64x32FromChunk(
@@ -696,11 +772,11 @@ void DocumentModelFactory::appendEncryptedData(
       chunkItem);
 }
 
-void DocumentModelFactory::appendUnknownBlob(
-    const libmson::priv::UnknownBlob_SPtr_t& chunk, DocumentItem* parent)
+void DocumentModelFactory::appendOrphanedAllocation(
+    const libmson::priv::OrphanedAllocation_SPtr_t& chunk, DocumentItem* parent)
 {
   appendNewChild(
-      QStringLiteral("UnknownBlob"), QStringLiteral("Chunkable"), QString(),
+      QStringLiteral("OrphanedAllocation"), QStringLiteral("Chunkable"), QString(),
       chunk->getInitialStp(), chunk->getInitialCb(), parent);
 }
 
@@ -2126,7 +2202,24 @@ void DocumentModelFactory::appendPackagingStructure(
 {
   auto header = packStoreFile->getHeader();
 
-  //  const quint64 cb = header.getSi
+//  // add Header
+//  auto* headerItem = appendNewChild(
+//      QStringLiteral("Header"), QStringLiteral("PackagingStructure"),
+//      QStringLiteral("RevisionStoreFile"), stp, header->getInitialCb(), parent);
+
+//  appendGuid(
+//      header->getGuidFileType(), QStringLiteral("GuidFileType"), stp,
+//      headerItem);
+
+//  appendGuid(
+//      header->getGuidFile(), QStringLiteral("GuidFile"), stp, headerItem);
+
+//  appendGuid(
+//      header->getGuidLegacyFileVersion(),
+//      QStringLiteral("GuidLegacyFileVersion"), stp, headerItem);
+
+//  appendGuid(
+//      header->getGuidFileFormat(), QStringLiteral("GuidFileFormat"), stp,
 
   //  // add Header
   //  auto* headerItem = appendNewChild(
@@ -2527,10 +2620,10 @@ DocumentItem* DocumentModelFactory::appendFileChunkReference32(
 
   appendNewChild(
       QStringLiteral("Stp"), QStringLiteral("uint32_t"),
-      QString::number(ref.stp(), 16), stp, sizeof(quint32), item);
+      QString("0x" + QString::number(ref.stp(), 16)), stp, sizeof(quint32), item);
   appendNewChild(
       QStringLiteral("Cb"), QStringLiteral("uint32_t"),
-      QString::number(ref.cb(), 16), stp + sizeof(quint32), sizeof(quint32),
+      QString("0x" + QString::number(ref.cb(), 16)), stp + sizeof(quint32), sizeof(quint32),
       item);
 
   stp += cb;
@@ -2552,11 +2645,11 @@ DocumentItem* DocumentModelFactory::appendFileChunkReference64x32(
 
   appendNewChild(
       QStringLiteral("Stp"), QStringLiteral("uint64_t"),
-      QString::number(ref.stp(), 16), stp, sizeof(quint64), item);
+      QString("0x" + QString::number(ref.stp(), 16)), stp, sizeof(quint64), item);
 
   appendNewChild(
       QStringLiteral("Cb"), QStringLiteral("uint32_t"),
-      QString::number(ref.cb(), 16), stp + sizeof(quint64), sizeof(quint32),
+      QString("0x" + QString::number(ref.cb(), 16)), stp + sizeof(quint64), sizeof(quint32),
       item);
 
   stp += cb;
@@ -2578,10 +2671,10 @@ DocumentItem* DocumentModelFactory::appendFileChunkReference64(
 
   appendNewChild(
       QStringLiteral("Stp"), QStringLiteral("uint64_t"),
-      QString::number(ref.stp(), 16), stp, sizeof(quint64), item);
+      QString("0x" + QString::number(ref.stp(), 16)), stp, sizeof(quint64), item);
   appendNewChild(
       QStringLiteral("Cb"), QStringLiteral("uint64_t"),
-      QString::number(ref.cb(), 16), stp + sizeof(quint64), sizeof(quint64),
+      QString("0x" + QString::number(ref.cb(), 16)), stp + sizeof(quint64), sizeof(quint64),
       item);
 
   stp += cb;

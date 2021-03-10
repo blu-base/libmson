@@ -61,6 +61,17 @@
     </font>
    </property>
   </widget>
+  <widget class="QToolBar" name="toolBarStp">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
   <action name="actionOpen">
    <property name="text">
     <string>&amp;Open File</string>
@@ -74,6 +85,36 @@
   <action name="actionAbout">
    <property name="text">
     <string>&amp;About OnHexViewer</string>
+   </property>
+  </action>
+  <action name="actionStpPrevious">
+   <property name="icon">
+    <iconset theme="edit-undo">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>Previous Stream Position</string>
+   </property>
+   <property name="toolTip">
+    <string>Jump to the previous stream position</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
+   </property>
+  </action>
+  <action name="actionStpNext">
+   <property name="icon">
+    <iconset theme="edit-redo">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>Next Stream Position</string>
+   </property>
+   <property name="toolTip">
+    <string>Jump to the next stream position</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Z</string>
    </property>
   </action>
  </widget>

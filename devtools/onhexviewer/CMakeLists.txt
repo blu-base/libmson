@@ -13,12 +13,14 @@ set(ONHEXVIEWER_SOURCES
         documentmodel.cpp
         documentmodelfactory.h
         documentmodelfactory.cpp
+        selectioncommand.cpp
+        selectioncommand.h
 )
 
 add_executable(onhexviewer
     ${ONHEXVIEWER_SOURCES}
 )
 
-target_link_libraries(onhexviewer PRIVATE Qt${QT_VERSION_MAJOR}::Widgets qhexview-lib  libmson libmson_priv)
+target_link_libraries(onhexviewer PRIVATE Qt${QT_VERSION_MAJOR}::Widgets qhexview-lib  mson libmson_priv)
 
 install(TARGETS onhexviewer DESTINATION ${CMAKE_INSTALL_BINDIR})
