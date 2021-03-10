@@ -1,5 +1,8 @@
 #include "BinaryItem.h"
 
+
+#include "CompactUInt64.h"
+
 #include <QDataStream>
 
 namespace libmson {

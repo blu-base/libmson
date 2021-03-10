@@ -8,6 +8,7 @@
 #include "packageTypes/DataElementPackage.h"
 #include "packageTypes/PackagingStructure.h"
 #include "packageTypes/StreamObjectHeader.h"
+#include "packageTypes/StreamObjectHeaderEnd.h"
 
 #include "packageTypes/CellManifest.h"
 #include "packageTypes/DataElementFragment.h"

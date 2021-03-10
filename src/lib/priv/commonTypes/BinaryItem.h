@@ -5,7 +5,6 @@
 #include <QtCore/qglobal.h>
 
 #include "../IStreamable.h"
-#include "../commonTypes/CompactUInt64.h"
 
 namespace libmson {
 namespace packStore {

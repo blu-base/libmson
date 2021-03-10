@@ -3,8 +3,8 @@
 
 #include <QUuid>
 #include <QtCore/qglobal.h>
-#include <commonTypes/FileChunkReference32.h>
-#include <commonTypes/FileChunkReference64x32.h>
+#include <priv/commonTypes/FileChunkReference32.h>
+#include <priv/commonTypes/FileChunkReference64x32.h>
 
 #include <memory>
 
