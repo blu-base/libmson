@@ -10,8 +10,8 @@
 #include "documentitem.h"
 #include "documentmodel.h"
 
-#include "../../../src/lib/priv/RevisionStoreFile.h"
 #include "../../../src/lib/priv/PackageStoreFile.h"
+#include "../../../src/lib/priv/RevisionStoreFile.h"
 #include "../../../src/lib/priv/RevisionStoreFileParser.h"
 
 #include "../../../src/lib/priv/utils/ChunkableUtils.h"
@@ -19,6 +19,35 @@
 #include "../../../src/lib/priv/chunkables/fileNodeTypes/FileNodeTypes.h"
 
 #include "../../../src/lib/priv/propertyTypes/PropertyTypes.h"
+
+#include <priv/packageTypes/CellManifestCurrentRevision.h>
+#include <priv/packageTypes/DataElement.h>
+#include <priv/packageTypes/DataElementFragment.h>
+#include <priv/packageTypes/DataElementHash.h>
+#include <priv/packageTypes/DataElementPackage.h>
+#include <priv/packageTypes/ObjectDataBLOB.h>
+#include <priv/packageTypes/ObjectGroupData.h>
+#include <priv/packageTypes/ObjectGroupDeclarations.h>
+#include <priv/packageTypes/ObjectGroupMetadata.h>
+#include <priv/packageTypes/ObjectGroupMetadataDeclarations.h>
+#include <priv/packageTypes/ObjectGroupObjectData.h>
+#include <priv/packageTypes/ObjectGroupObjectDataBLOBDeclaration.h>
+#include <priv/packageTypes/ObjectGroupObjectDataBLOBReference.h>
+#include <priv/packageTypes/ObjectGroupObjectDeclare.h>
+#include <priv/packageTypes/ObjectGroupObjectExcludedData.h>
+#include <priv/packageTypes/PackagingHeader.h>
+#include <priv/packageTypes/PackagingStart.h>
+#include <priv/packageTypes/RevisionManifest.h>
+#include <priv/packageTypes/RevisionManifestObjectGroupReference.h>
+#include <priv/packageTypes/RevisionManifestRootDeclare.h>
+#include <priv/packageTypes/StorageIndexCellMapping.h>
+#include <priv/packageTypes/StorageIndexManifestMapping.h>
+#include <priv/packageTypes/StorageIndexRevisionMapping.h>
+#include <priv/packageTypes/StorageManifestRootDeclare.h>
+#include <priv/packageTypes/StorageManifestSchemaGUID.h>
+#include <priv/packageTypes/StreamObjectHeader.h>
+#include <priv/packageTypes/StreamObjectHeaderEnd.h>
+#include <priv/packageTypes/interfaces/StreamObjectTypes.h>
 
 // namespace libmson::priv {
 // class RevisionStoreFile;
@@ -100,7 +129,8 @@ private:
   static void appendEncryptedData(
       const libmson::priv::EncryptedData_SPtr_t& chunk, DocumentItem* parent);
   static void appendOrphanedAllocation(
-      const libmson::priv::OrphanedAllocation_SPtr_t& chunk, DocumentItem* parent);
+      const libmson::priv::OrphanedAllocation_SPtr_t& chunk,
+      DocumentItem* parent);
 
 
   // fileNodeTypes
@@ -292,10 +322,6 @@ private:
 
   // ObjectPropSet components
 
-
-
-
-
   // increments stp by its size
   static DocumentItem* appendObjectSpaceObjectStreamHeader(
       const libmson::priv::ObjectSpaceObjectStreamHeader& streamHeader,
@@ -364,12 +390,126 @@ private:
 
 
   // PackageStoreFile
-  static void appendPackagingStructure(
+  static quint64 appendPackagingStructureHeader(
       const libmson::packStore::PackageStoreFile_SPtr_t& packStoreFile,
       DocumentItem* parent);
 
 
+  // StreamObjects
+
+  static DocumentItem* appendStreamObject(
+      const libmson::fsshttpb::IStreamObject_SPtr_t& obj, quint64& stp,
+      DocumentItem* parent);
+  static DocumentItem* appendIStreamObject(
+      const libmson::fsshttpb::IStreamObject_SPtr_t& obj, quint64& stp,
+      DocumentItem* parent);
+
+
+  static DocumentItem* appendCellManifestCurrentRevision(
+      const libmson::fsshttpb::CellManifestCurrentRevision_SPtr_t& obj,
+      quint64& stp, DocumentItem* parent);
+  static DocumentItem* appendDataElement(
+      const libmson::fsshttpb::DataElement_SPtr_t& obj, quint64& stp,
+      DocumentItem* parent);
+  static DocumentItem* appendDataElementHash(
+      const libmson::fsshttpb::DataElementHash_SPtr_t& obj, quint64& stp,
+      DocumentItem* parent);
+  static DocumentItem* appendDataElementFragment(
+      const libmson::fsshttpb::DataElementFragment_SPtr_t& obj, quint64& stp,
+      DocumentItem* parent);
+  static DocumentItem* appendDataElementPackage(
+      const libmson::fsshttpb::DataElementPackage_SPtr_t& obj, quint64& stp,
+      DocumentItem* parent);
+  static DocumentItem* appendObjectDataBLOB(
+      const libmson::fsshttpb::ObjectDataBLOB_SPtr_t& obj, quint64& stp,
+      DocumentItem* parent);
+  static DocumentItem* appendObjectGroupData(
+      const libmson::fsshttpb::ObjectGroupData_SPtr_t& obj, quint64& stp,
+      DocumentItem* parent);
+  static DocumentItem* appendObjectGroupDeclarations(
+      const libmson::fsshttpb::ObjectGroupDeclarations_SPtr_t& obj,
+      quint64& stp, DocumentItem* parent);
+  static DocumentItem* appendObjectGroupMetadata(
+      const libmson::fsshttpb::ObjectGroupMetadata_SPtr_t& obj, quint64& stp,
+      DocumentItem* parent);
+  static DocumentItem* appendObjectGroupMetadataDeclarations(
+      const libmson::fsshttpb::ObjectGroupMetadataDeclarations_SPtr_t& obj,
+      quint64& stp, DocumentItem* parent);
+  static DocumentItem* appendObjectGroupObjectData(
+      const libmson::fsshttpb::ObjectGroupObjectData_SPtr_t& obj, quint64& stp,
+      DocumentItem* parent);
+  static DocumentItem* appendObjectGroupObjectDataBLOBDeclaration(
+      const libmson::fsshttpb::ObjectGroupObjectDataBLOBDeclaration_SPtr_t& obj,
+      quint64& stp, DocumentItem* parent);
+  static DocumentItem* appendObjectGroupObjectDataBLOBReference(
+      const libmson::fsshttpb::ObjectGroupObjectDataBLOBReference_SPtr_t& obj,
+      quint64& stp, DocumentItem* parent);
+  static DocumentItem* appendObjectGroupObjectDeclare(
+      const libmson::fsshttpb::ObjectGroupObjectDeclare_SPtr_t& obj,
+      quint64& stp, DocumentItem* parent);
+  static DocumentItem* appendObjectGroupObjectExcludedData(
+      const libmson::fsshttpb::ObjectGroupObjectExcludedData_SPtr_t& obj,
+      quint64& stp, DocumentItem* parent);
+  static DocumentItem* appendPackagingStart(
+      const libmson::fsshttpb::PackagingStart_SPtr_t& obj, quint64& stp,
+      DocumentItem* parent);
+  static DocumentItem* appendRevisionManifest(
+      const libmson::fsshttpb::RevisionManifest_SPtr_t& obj, quint64& stp,
+      DocumentItem* parent);
+  static DocumentItem* appendRevisionManifestRootDeclare(
+      const libmson::fsshttpb::RevisionManifestRootDeclare_SPtr_t& obj,
+      quint64& stp, DocumentItem* parent);
+  static DocumentItem* appendRevisionManifestObjectGroupReference(
+      const libmson::fsshttpb::RevisionManifestObjectGroupReference_SPtr_t& obj,
+      quint64& stp, DocumentItem* parent);
+  static DocumentItem* appendStorageIndexCellMapping(
+      const libmson::fsshttpb::StorageIndexCellMapping_SPtr_t& obj,
+      quint64& stp, DocumentItem* parent);
+  static DocumentItem* appendStorageIndexManifestMapping(
+      const libmson::fsshttpb::StorageIndexManifestMapping_SPtr_t& obj,
+      quint64& stp, DocumentItem* parent);
+  static DocumentItem* appendStorageIndexRevisionMapping(
+      const libmson::fsshttpb::StorageIndexRevisionMapping_SPtr_t& obj,
+      quint64& stp, DocumentItem* parent);
+  static DocumentItem* appendStorageManifestRootDeclare(
+      const libmson::fsshttpb::StorageManifestRootDeclare_SPtr_t& obj,
+      quint64& stp, DocumentItem* parent);
+  static DocumentItem* appendStorageManifestSchemaGUID(
+      const libmson::fsshttpb::StorageManifestSchemaGUID_SPtr_t& obj,
+      quint64& stp, DocumentItem* parent);
+
+  static DocumentItem* appendStreamObjectHeader(
+      libmson::fsshttpb::StreamObjectType type, quint64 cbNextHeader,
+      quint64& stp, DocumentItem* parent);
+  static DocumentItem* appendStreamObjectHeaderEnd(
+      libmson::fsshttpb::StreamObjectType type, quint64& stp,
+      DocumentItem* parent);
+
+
   // common
+
+  static DocumentItem* appendCompactU64(
+      const quint64 val, const QString& name, quint64& stp,
+      DocumentItem* parent, const bool asHex = true);
+
+  static DocumentItem* appendCompactExtGuid(
+      const libmson::priv::ExtendedGUID& eguid, const QString& name,
+      quint64& stp, DocumentItem* parent);
+
+  static DocumentItem* appendCompactExtGuidArray(
+      const std::vector<libmson::priv::ExtendedGUID>& eguids,
+      const QString& name, quint64& stp, DocumentItem* parent);
+
+  static DocumentItem* appendLongExtGuid(
+      const libmson::fsshttpb::LongExtGuid& eguid, const QString& name,
+      quint64& stp, DocumentItem* parent);
+
+  static DocumentItem* appendCellId(
+      const libmson::fsshttpb::CellId& cellId, const QString& name,
+      quint64& stp, DocumentItem* parent);
+  static DocumentItem* appendCellIdArray(
+      const std::vector<libmson::fsshttpb::CellId>& cellIds,
+      const QString& name, quint64& stp, DocumentItem* parent);
 
   // increments stp by its size
   static DocumentItem* appendUInt8(

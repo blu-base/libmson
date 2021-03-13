@@ -1,24 +1,28 @@
 #include "PSFtoXml.h"
 
-#include "../../lib/priv/utils/ChunkableUtils.h"
-#include "../../lib/priv/utils/Helper.h"
-
-#include "../../lib/priv/commonTypes/CellId.h"
-#include "../../lib/priv/packageTypes/DataElement.h"
-#include "../../lib/priv/packageTypes/StorageIndex.h"
-#include "../../lib/priv/packageTypes/StorageManifest.h"
-#include "../../lib/priv/packageTypes/StreamObjectHeader.h"
-
-#include "../../lib/priv/packageTypes/streamObjects/StorageManifestRootDeclare.h"
-
-
 #include <QDataStream>
 #include <QDebug>
 #include <QXmlStreamWriter>
-
 #include <memory>
 
-#include <priv/packageTypes/streamObjects/CellManifestCurrentRevision.h>
+//#include "../../lib/priv/utils/ChunkableUtils.h"
+//#include "../../lib/priv/utils/Helper.h"
+
+//#include "../../lib/priv/commonTypes/CellId.h"
+//#include "../../lib/priv/packageTypes/DataElement.h"
+//#include "../../lib/priv/packageTypes/StorageIndex.h"
+//#include "../../lib/priv/packageTypes/StorageManifest.h"
+//#include "../../lib/priv/packageTypes/StreamObjectHeader.h"
+
+//#include "../../lib/priv/packageTypes/streamObjects/StorageManifestRootDeclare.h"
+
+
+
+
+
+//#include <priv/packageTypes/streamObjects/CellManifestCurrentRevision.h>
+
+#include <priv/PackageStoreFile.h>
 
 
 
@@ -35,7 +39,7 @@ bool PSFtoXml::writeSequence(
   xmlWriter.writeStartDocument();
 
   xmlWriter.writeStartElement("PackageStoreFile");
-  writePackagingStructure(packageStoreFile, xmlWriter);
+//  writePackagingStructure(packageStoreFile, xmlWriter);
 
   xmlWriter.writeEndElement();
   xmlWriter.writeEndDocument();
@@ -45,880 +49,880 @@ bool PSFtoXml::writeSequence(
   return true;
 }
 
-QXmlStreamWriter& PSFtoXml::writePackagingStructure(
-    const std::shared_ptr<packStore::PackageStoreFile>& packageStoreFile,
-    QXmlStreamWriter& xmlWriter)
-{
-  const auto& header = packageStoreFile->getHeader();
-
-  xmlWriter.writeStartElement("PackagingStructure");
-
-  xmlWriter.writeStartElement("guidFileType");
-  xmlWriter.writeCharacters(header->getGuidFileType().toString());
-  xmlWriter.writeEndElement();
-
-  xmlWriter.writeStartElement("guidFile");
-  xmlWriter.writeCharacters(header->getGuidFile().toString());
-  xmlWriter.writeEndElement();
-
-  xmlWriter.writeStartElement("guidLegacyFileVersion");
-  xmlWriter.writeCharacters(header->getGuidLegacyFileVersion().toString());
-  xmlWriter.writeEndElement();
-
-  xmlWriter.writeStartElement("guidFileFormat");
-  xmlWriter.writeCharacters(header->getGuidFileFormat().toString());
-  xmlWriter.writeEndElement();
-
-  xmlWriter.writeEmptyElement("rgbReserved");
-
-  xmlWriter.writeStartElement("packagingStart");
-  writeStreamObjectHeader(header->getPackagingStart(), xmlWriter);
-  xmlWriter.writeEndElement();
-
-  xmlWriter.writeStartElement("storageIndex");
-  writeCompactExtGuid(header->getStorageIndex(), xmlWriter);
-  xmlWriter.writeEndElement();
-
-  xmlWriter.writeStartElement("guidCellSchemaId");
-  xmlWriter.writeCharacters(header->getGuidCellSchemaId().toString());
-  xmlWriter.writeEndElement();
-
-  xmlWriter.writeStartElement("DataElements");
-  for (const auto& entry : packageStoreFile->getElements()) {
-    writeDataElement(entry, xmlWriter);
-  }
-  xmlWriter.writeEndElement();
-
-  xmlWriter.writeEmptyElement("packagingEnd");
-
-  return xmlWriter;
-}
-
-QXmlStreamWriter& PSFtoXml::writeStreamObjectHeader(
-    const packStore::StreamObjectHeader_SPtr_t& obj,
-    QXmlStreamWriter& xmlWriter)
-{
-  xmlWriter.writeStartElement("StreamObjectHeader");
-
-  xmlWriter.writeStartElement("type");
-  //  xmlWriter.writeAttribute(
-  //      "compound",
-  //      QString::number(packStore::compoundType.at(obj->getType())));
-  //  xmlWriter.writeCharacters(
-  //      packStore::StreamObjectHeader::typeToString(obj->getType()));
-  xmlWriter.writeEndElement();
-
-  xmlWriter.writeStartElement("length");
-  xmlWriter.writeCharacters(QString::number(obj->getLength()));
-  xmlWriter.writeEndElement();
-
-  xmlWriter.writeEndElement();
-
-  return xmlWriter;
-}
-
-QXmlStreamWriter& PSFtoXml::writeDataElementPackage(
-    const packStore::DataElementPackage& obj, QXmlStreamWriter& xmlWriter)
-{
-  xmlWriter.writeStartElement("DataElementPackage");
-
-  xmlWriter.writeAttribute(
-      "type",
-      packStore::StreamObjectHeader::typeToString(obj.getHeader()->getType()));
-  xmlWriter.writeAttribute(
-      "length", QString::number(obj.getHeader()->getLength()));
-
-  if (packStore::compoundType.at(obj.getHeader()->getType())) {
-    xmlWriter.writeAttribute("compound", "True");
-  }
-
-  //  writeStreamObjectHeader(obj.getHeader(), xmlWriter);
-
-  if (obj.getHeader()->getType() == packStore::StreamObjectType::DataElement) {
-    writeDataElement(obj.getDataElement(), xmlWriter);
-  }
-  else {
-    xmlWriter.writeStartElement("DataElements");
-    for (const auto& entry : obj.getChildren()) {
-      writeDataElementPackage(*entry, xmlWriter);
-    }
-    xmlWriter.writeEndElement();
-  }
-
-  //  xmlWriter.writeStartElement("Data");
-  //  xmlWriter.writeComment(obj.getData().toHex());
-  //  xmlWriter.writeEndElement();
+//QXmlStreamWriter& PSFtoXml::writePackagingStructure(
+//    const std::shared_ptr<packStore::PackageStoreFile>& packageStoreFile,
+//    QXmlStreamWriter& xmlWriter)
+//{
+//  const auto& header = packageStoreFile->getHeader();
+
+//  xmlWriter.writeStartElement("PackagingStructure");
+
+//  xmlWriter.writeStartElement("guidFileType");
+//  xmlWriter.writeCharacters(header->getGuidFileType().toString());
+//  xmlWriter.writeEndElement();
+
+//  xmlWriter.writeStartElement("guidFile");
+//  xmlWriter.writeCharacters(header->getGuidFile().toString());
+//  xmlWriter.writeEndElement();
+
+//  xmlWriter.writeStartElement("guidLegacyFileVersion");
+//  xmlWriter.writeCharacters(header->getGuidLegacyFileVersion().toString());
+//  xmlWriter.writeEndElement();
+
+//  xmlWriter.writeStartElement("guidFileFormat");
+//  xmlWriter.writeCharacters(header->getGuidFileFormat().toString());
+//  xmlWriter.writeEndElement();
+
+//  xmlWriter.writeEmptyElement("rgbReserved");
+
+//  xmlWriter.writeStartElement("packagingStart");
+//  writeStreamObjectHeader(header->getPackagingStart(), xmlWriter);
+//  xmlWriter.writeEndElement();
+
+//  xmlWriter.writeStartElement("storageIndex");
+//  writeCompactExtGuid(header->getStorageIndex(), xmlWriter);
+//  xmlWriter.writeEndElement();
+
+//  xmlWriter.writeStartElement("guidCellSchemaId");
+//  xmlWriter.writeCharacters(header->getGuidCellSchemaId().toString());
+//  xmlWriter.writeEndElement();
+
+//  xmlWriter.writeStartElement("DataElements");
+//  for (const auto& entry : packageStoreFile->getElements()) {
+//    writeDataElement(entry, xmlWriter);
+//  }
+//  xmlWriter.writeEndElement();
+
+//  xmlWriter.writeEmptyElement("packagingEnd");
+
+//  return xmlWriter;
+//}
+
+//QXmlStreamWriter& PSFtoXml::writeStreamObjectHeader(
+//    const packStore::StreamObjectHeader_SPtr_t& obj,
+//    QXmlStreamWriter& xmlWriter)
+//{
+//  xmlWriter.writeStartElement("StreamObjectHeader");
+
+//  xmlWriter.writeStartElement("type");
+//  //  xmlWriter.writeAttribute(
+//  //      "compound",
+//  //      QString::number(packStore::compoundType.at(obj->getType())));
+//  //  xmlWriter.writeCharacters(
+//  //      packStore::StreamObjectHeader::typeToString(obj->getType()));
+//  xmlWriter.writeEndElement();
+
+//  xmlWriter.writeStartElement("length");
+//  xmlWriter.writeCharacters(QString::number(obj->getLength()));
+//  xmlWriter.writeEndElement();
+
+//  xmlWriter.writeEndElement();
+
+//  return xmlWriter;
+//}
+
+//QXmlStreamWriter& PSFtoXml::writeDataElementPackage(
+//    const packStore::DataElementPackage& obj, QXmlStreamWriter& xmlWriter)
+//{
+//  xmlWriter.writeStartElement("DataElementPackage");
+
+//  xmlWriter.writeAttribute(
+//      "type",
+//      packStore::StreamObjectHeader::typeToString(obj.getHeader()->getType()));
+//  xmlWriter.writeAttribute(
+//      "length", QString::number(obj.getHeader()->getLength()));
+
+//  if (packStore::compoundType.at(obj.getHeader()->getType())) {
+//    xmlWriter.writeAttribute("compound", "True");
+//  }
+
+//  //  writeStreamObjectHeader(obj.getHeader(), xmlWriter);
+
+//  if (obj.getHeader()->getType() == packStore::StreamObjectType::DataElement) {
+//    writeDataElement(obj.getDataElement(), xmlWriter);
+//  }
+//  else {
+//    xmlWriter.writeStartElement("DataElements");
+//    for (const auto& entry : obj.getChildren()) {
+//      writeDataElementPackage(*entry, xmlWriter);
+//    }
+//    xmlWriter.writeEndElement();
+//  }
+
+//  //  xmlWriter.writeStartElement("Data");
+//  //  xmlWriter.writeComment(obj.getData().toHex());
+//  //  xmlWriter.writeEndElement();
 
 
-  xmlWriter.writeEndElement();
-
-  return xmlWriter;
-}
-
-QXmlStreamWriter& PSFtoXml::writeDataElement(
-    const packStore::DataElement_SPtr_t& obj, QXmlStreamWriter& xmlWriter)
-{
-  xmlWriter.writeStartElement("DataElement");
-
-  xmlWriter.writeStartElement("dataElementExtGuid");
-  writeCompactExtGuid(obj->getDataElementExtGuid(), xmlWriter);
-  xmlWriter.writeEndElement();
-
-  xmlWriter.writeStartElement("serialNumber");
-  writeLongExtGuid(obj->getSerialNumber(), xmlWriter);
-  xmlWriter.writeEndElement();
-
-  xmlWriter.writeStartElement("type");
-  xmlWriter.writeCharacters(QString::number(obj->getDataElementType()));
-  xmlWriter.writeEndElement();
-
-  auto type =
-      static_cast<packStore::DataElementType>(obj->getDataElementType());
-
-  switch (type) {
-  case packStore::DataElementType::StorageIndex: {
-
-    auto dataElementType =
-        std::dynamic_pointer_cast<packStore::StorageIndex>(obj->getBody());
-    writeStorageIndex(dataElementType, xmlWriter);
-    break;
-  }
-  case packStore::DataElementType::StorageManifest: {
+//  xmlWriter.writeEndElement();
+
+//  return xmlWriter;
+//}
+
+//QXmlStreamWriter& PSFtoXml::writeDataElement(
+//    const packStore::DataElement_SPtr_t& obj, QXmlStreamWriter& xmlWriter)
+//{
+//  xmlWriter.writeStartElement("DataElement");
+
+//  xmlWriter.writeStartElement("dataElementExtGuid");
+//  writeCompactExtGuid(obj->getDataElementExtGuid(), xmlWriter);
+//  xmlWriter.writeEndElement();
+
+//  xmlWriter.writeStartElement("serialNumber");
+//  writeLongExtGuid(obj->getSerialNumber(), xmlWriter);
+//  xmlWriter.writeEndElement();
+
+//  xmlWriter.writeStartElement("type");
+//  xmlWriter.writeCharacters(QString::number(obj->getDataElementType()));
+//  xmlWriter.writeEndElement();
+
+//  auto type =
+//      static_cast<packStore::DataElementType>(obj->getDataElementType());
+
+//  switch (type) {
+//  case packStore::DataElementType::StorageIndex: {
+
+//    auto dataElementType =
+//        std::dynamic_pointer_cast<packStore::StorageIndex>(obj->getBody());
+//    writeStorageIndex(dataElementType, xmlWriter);
+//    break;
+//  }
+//  case packStore::DataElementType::StorageManifest: {
 
-    auto dataElementType =
-        std::dynamic_pointer_cast<packStore::StorageManifest>(obj->getBody());
-    writeStorageManifest(dataElementType, xmlWriter);
-    break;
-  }
-  case packStore::DataElementType::CellManifest: {
+//    auto dataElementType =
+//        std::dynamic_pointer_cast<packStore::StorageManifest>(obj->getBody());
+//    writeStorageManifest(dataElementType, xmlWriter);
+//    break;
+//  }
+//  case packStore::DataElementType::CellManifest: {
 
-    auto dataElementType =
-        std::dynamic_pointer_cast<packStore::CellManifest>(obj->getBody());
-    writeCellManifest(dataElementType, xmlWriter);
-    break;
-  }
-  case packStore::DataElementType::RevisionManifest: {
+//    auto dataElementType =
+//        std::dynamic_pointer_cast<packStore::CellManifest>(obj->getBody());
+//    writeCellManifest(dataElementType, xmlWriter);
+//    break;
+//  }
+//  case packStore::DataElementType::RevisionManifest: {
 
-    auto dataElementType =
-        std::dynamic_pointer_cast<packStore::RevisionManifest>(obj->getBody());
-    writeRevisionManifest(dataElementType, xmlWriter);
-    break;
-  }
+//    auto dataElementType =
+//        std::dynamic_pointer_cast<packStore::RevisionManifest>(obj->getBody());
+//    writeRevisionManifest(dataElementType, xmlWriter);
+//    break;
+//  }
 
-  case packStore::DataElementType::ObjectGroup: {
+//  case packStore::DataElementType::ObjectGroup: {
 
-    auto dataElementType =
-        std::dynamic_pointer_cast<packStore::ObjectGroup>(obj->getBody());
-    writeObjectGroup(dataElementType, xmlWriter);
-    break;
-  }
+//    auto dataElementType =
+//        std::dynamic_pointer_cast<packStore::ObjectGroup>(obj->getBody());
+//    writeObjectGroup(dataElementType, xmlWriter);
+//    break;
+//  }
 
-  case packStore::DataElementType::DataElementFragment: {
+//  case packStore::DataElementType::DataElementFragment: {
 
-    auto dataElementType =
-        std::dynamic_pointer_cast<packStore::DataElementFragment>(
-            obj->getBody());
-    writeDataElementFragment(dataElementType, xmlWriter);
-    break;
-  }
+//    auto dataElementType =
+//        std::dynamic_pointer_cast<packStore::DataElementFragment>(
+//            obj->getBody());
+//    writeDataElementFragment(dataElementType, xmlWriter);
+//    break;
+//  }
 
-  case packStore::DataElementType::ObjectDataBLOB: {
+//  case packStore::DataElementType::ObjectDataBLOB: {
 
-    auto dataElementType =
-        std::dynamic_pointer_cast<packStore::ObjectDataBLOB>(obj->getBody());
-    writeObjectDataBLOB(dataElementType, xmlWriter);
-    break;
-  }
-  default:
-    break;
-  }
+//    auto dataElementType =
+//        std::dynamic_pointer_cast<packStore::ObjectDataBLOB>(obj->getBody());
+//    writeObjectDataBLOB(dataElementType, xmlWriter);
+//    break;
+//  }
+//  default:
+//    break;
+//  }
 
 
-  xmlWriter.writeEndElement();
+//  xmlWriter.writeEndElement();
 
-  return xmlWriter;
-}
+//  return xmlWriter;
+//}
 
-QXmlStreamWriter& PSFtoXml::writeStorageIndex(
-    const packStore::StorageIndex_SPtr_t& obj, QXmlStreamWriter& xmlWriter)
-{
+//QXmlStreamWriter& PSFtoXml::writeStorageIndex(
+//    const packStore::StorageIndex_SPtr_t& obj, QXmlStreamWriter& xmlWriter)
+//{
 
-  xmlWriter.writeStartElement("StorageIndex");
+//  xmlWriter.writeStartElement("StorageIndex");
 
-  writeStorageIndexManifestMapping(obj->getManifestMapping(), xmlWriter);
+//  writeStorageIndexManifestMapping(obj->getManifestMapping(), xmlWriter);
 
-  xmlWriter.writeStartElement("CellMappings");
-  for (const auto& entry : obj->getCellMappings()) {
-    writeStorageIndexCellMapping(entry, xmlWriter);
-  }
-  xmlWriter.writeEndElement();
+//  xmlWriter.writeStartElement("CellMappings");
+//  for (const auto& entry : obj->getCellMappings()) {
+//    writeStorageIndexCellMapping(entry, xmlWriter);
+//  }
+//  xmlWriter.writeEndElement();
 
-  xmlWriter.writeStartElement("RevisionMappings");
-  for (const auto& entry : obj->getRevisionMappings()) {
-    writeStorageIndexRevisionMapping(entry, xmlWriter);
-  }
-  xmlWriter.writeEndElement();
+//  xmlWriter.writeStartElement("RevisionMappings");
+//  for (const auto& entry : obj->getRevisionMappings()) {
+//    writeStorageIndexRevisionMapping(entry, xmlWriter);
+//  }
+//  xmlWriter.writeEndElement();
 
-  xmlWriter.writeEndElement();
+//  xmlWriter.writeEndElement();
 
-  return xmlWriter;
-}
+//  return xmlWriter;
+//}
 
-QXmlStreamWriter& PSFtoXml::writeStorageManifest(
-    const packStore::StorageManifest_SPtr_t& obj, QXmlStreamWriter& xmlWriter)
-{
-  xmlWriter.writeStartElement("StorageManifest");
+//QXmlStreamWriter& PSFtoXml::writeStorageManifest(
+//    const packStore::StorageManifest_SPtr_t& obj, QXmlStreamWriter& xmlWriter)
+//{
+//  xmlWriter.writeStartElement("StorageManifest");
 
-  xmlWriter.writeStartElement("StorageManifestSchema");
-  xmlWriter.writeCharacters(obj->getSchema()->getGuid().toString());
-  xmlWriter.writeEndElement();
+//  xmlWriter.writeStartElement("StorageManifestSchema");
+//  xmlWriter.writeCharacters(obj->getSchema()->getGuid().toString());
+//  xmlWriter.writeEndElement();
 
-  xmlWriter.writeStartElement("RootDeclares");
-  for (const auto& entry : obj->getRootDeclares()) {
-    writeRootDeclare(entry, xmlWriter);
-  }
-  xmlWriter.writeEndElement();
+//  xmlWriter.writeStartElement("RootDeclares");
+//  for (const auto& entry : obj->getRootDeclares()) {
+//    writeRootDeclare(entry, xmlWriter);
+//  }
+//  xmlWriter.writeEndElement();
 
 
-  xmlWriter.writeEndElement();
+//  xmlWriter.writeEndElement();
 
-  return xmlWriter;
-}
+//  return xmlWriter;
+//}
 
-QXmlStreamWriter& PSFtoXml::writeCellManifest(
-    const packStore::CellManifest_SPtr_t& obj, QXmlStreamWriter& xmlWriter)
-{
-  xmlWriter.writeStartElement("CellManifest");
+//QXmlStreamWriter& PSFtoXml::writeCellManifest(
+//    const packStore::CellManifest_SPtr_t& obj, QXmlStreamWriter& xmlWriter)
+//{
+//  xmlWriter.writeStartElement("CellManifest");
 
-  writeCellManifestCurrentRevision(obj->getCurrentRevision(), xmlWriter);
+//  writeCellManifestCurrentRevision(obj->getCurrentRevision(), xmlWriter);
 
-  xmlWriter.writeEndElement();
+//  xmlWriter.writeEndElement();
 
-  return xmlWriter;
-}
+//  return xmlWriter;
+//}
 
-QXmlStreamWriter& PSFtoXml::writeRevisionManifest(
-    const packStore::RevisionManifest_SPtr_t& obj, QXmlStreamWriter& xmlWriter)
-{
-  xmlWriter.writeStartElement("RevisionManifest");
-
-  writeRevisionManifest(obj->getRevisionManifest(), xmlWriter);
-
-  xmlWriter.writeStartElement("RootDeclares");
-  for (const auto& entry : obj->getRootDeclares()) {
-    writeRevisionManifestRootDeclare(entry, xmlWriter);
-  }
-  xmlWriter.writeEndElement();
+//QXmlStreamWriter& PSFtoXml::writeRevisionManifest(
+//    const packStore::RevisionManifest_SPtr_t& obj, QXmlStreamWriter& xmlWriter)
+//{
+//  xmlWriter.writeStartElement("RevisionManifest");
+
+//  writeRevisionManifest(obj->getRevisionManifest(), xmlWriter);
+
+//  xmlWriter.writeStartElement("RootDeclares");
+//  for (const auto& entry : obj->getRootDeclares()) {
+//    writeRevisionManifestRootDeclare(entry, xmlWriter);
+//  }
+//  xmlWriter.writeEndElement();
 
-  xmlWriter.writeStartElement("ObjectGroupReferences");
-  for (const auto& entry : obj->getObjectGroups()) {
-    writeRevisionManifestObjectGroupReference(entry, xmlWriter);
-  }
-  xmlWriter.writeEndElement();
+//  xmlWriter.writeStartElement("ObjectGroupReferences");
+//  for (const auto& entry : obj->getObjectGroups()) {
+//    writeRevisionManifestObjectGroupReference(entry, xmlWriter);
+//  }
+//  xmlWriter.writeEndElement();
 
-  xmlWriter.writeEndElement();
-  return xmlWriter;
-}
+//  xmlWriter.writeEndElement();
+//  return xmlWriter;
+//}
 
-/*--------------------------------------------------------------------------*/
-/* stream object Types*/
-/*--------------------------------------------------------------------------*/
+///*--------------------------------------------------------------------------*/
+///* stream object Types*/
+///*--------------------------------------------------------------------------*/
 
 
-QXmlStreamWriter& PSFtoXml::writeStorageIndexManifestMapping(
-    const packStore::streamObj::StorageIndexManifestMapping_SPtr_t& obj,
-    QXmlStreamWriter& xmlWriter)
-{
+//QXmlStreamWriter& PSFtoXml::writeStorageIndexManifestMapping(
+//    const packStore::streamObj::StorageIndexManifestMapping_SPtr_t& obj,
+//    QXmlStreamWriter& xmlWriter)
+//{
 
 
-  xmlWriter.writeStartElement("StorageIndexManifestMapping");
+//  xmlWriter.writeStartElement("StorageIndexManifestMapping");
 
-  if (obj != nullptr) {
-    xmlWriter.writeStartElement("ExtGuid");
-    writeCompactExtGuid(obj->getExtendedGuid(), xmlWriter);
-    xmlWriter.writeEndElement();
+//  if (obj != nullptr) {
+//    xmlWriter.writeStartElement("ExtGuid");
+//    writeCompactExtGuid(obj->getExtendedGuid(), xmlWriter);
+//    xmlWriter.writeEndElement();
 
-    xmlWriter.writeStartElement("SerialNumber");
-    writeLongExtGuid(obj->getSerialNumber(), xmlWriter);
-    xmlWriter.writeEndElement();
-  }
+//    xmlWriter.writeStartElement("SerialNumber");
+//    writeLongExtGuid(obj->getSerialNumber(), xmlWriter);
+//    xmlWriter.writeEndElement();
+//  }
 
-  xmlWriter.writeEndElement();
-  return xmlWriter;
-}
+//  xmlWriter.writeEndElement();
+//  return xmlWriter;
+//}
 
-QXmlStreamWriter& PSFtoXml::writeStorageIndexCellMapping(
-    const packStore::streamObj::StorageIndexCellMapping_SPtr_t& obj,
-    QXmlStreamWriter& xmlWriter)
-{
-  xmlWriter.writeStartElement("StorageIndexCellMapping");
-  if (obj != nullptr) {
+//QXmlStreamWriter& PSFtoXml::writeStorageIndexCellMapping(
+//    const packStore::streamObj::StorageIndexCellMapping_SPtr_t& obj,
+//    QXmlStreamWriter& xmlWriter)
+//{
+//  xmlWriter.writeStartElement("StorageIndexCellMapping");
+//  if (obj != nullptr) {
 
-    writeCellId(obj->getCellId(), xmlWriter);
+//    writeCellId(obj->getCellId(), xmlWriter);
 
 
-    xmlWriter.writeStartElement("ExtGuid");
-    writeCompactExtGuid(obj->getExtendedGuid(), xmlWriter);
-    xmlWriter.writeEndElement();
-
-    xmlWriter.writeStartElement("SerialNumber");
-    writeLongExtGuid(obj->getSerialNumber(), xmlWriter);
-    xmlWriter.writeEndElement();
-  }
+//    xmlWriter.writeStartElement("ExtGuid");
+//    writeCompactExtGuid(obj->getExtendedGuid(), xmlWriter);
+//    xmlWriter.writeEndElement();
+
+//    xmlWriter.writeStartElement("SerialNumber");
+//    writeLongExtGuid(obj->getSerialNumber(), xmlWriter);
+//    xmlWriter.writeEndElement();
+//  }
 
-  xmlWriter.writeEndElement();
-  return xmlWriter;
-}
-
-QXmlStreamWriter& PSFtoXml::writeStorageIndexRevisionMapping(
-    const packStore::streamObj::StorageIndexRevisionMapping_SPtr_t& obj,
-    QXmlStreamWriter& xmlWriter)
-{
-  xmlWriter.writeStartElement("StorageIndexRevisionMapping");
-  if (obj != nullptr) {
-    xmlWriter.writeStartElement("Revision");
-    writeCompactExtGuid(obj->getExtendedGuid(), xmlWriter);
-    xmlWriter.writeEndElement();
-
-    xmlWriter.writeStartElement("ExtGuid");
-    writeCompactExtGuid(obj->getExtendedGuid(), xmlWriter);
-    xmlWriter.writeEndElement();
-
-    xmlWriter.writeStartElement("SerialNumber");
-    writeLongExtGuid(obj->getSerialNumber(), xmlWriter);
-    xmlWriter.writeEndElement();
-  }
-
-  xmlWriter.writeEndElement();
-  return xmlWriter;
-}
-
-QXmlStreamWriter& PSFtoXml::writeRootDeclare(
-    const packStore::streamObj::StorageManifestRootDeclare_SPtr_t& obj,
-    QXmlStreamWriter& xmlWriter)
-{
-  xmlWriter.writeStartElement("RootDeclare");
-  xmlWriter.writeStartElement("RootExtGuid");
-  writeCompactExtGuid(obj->getExtendedGuid(), xmlWriter);
-  xmlWriter.writeEndElement();
-
-  writeCellId(obj->getCellId(), xmlWriter);
-
+//  xmlWriter.writeEndElement();
+//  return xmlWriter;
+//}
+
+//QXmlStreamWriter& PSFtoXml::writeStorageIndexRevisionMapping(
+//    const packStore::streamObj::StorageIndexRevisionMapping_SPtr_t& obj,
+//    QXmlStreamWriter& xmlWriter)
+//{
+//  xmlWriter.writeStartElement("StorageIndexRevisionMapping");
+//  if (obj != nullptr) {
+//    xmlWriter.writeStartElement("Revision");
+//    writeCompactExtGuid(obj->getExtendedGuid(), xmlWriter);
+//    xmlWriter.writeEndElement();
+
+//    xmlWriter.writeStartElement("ExtGuid");
+//    writeCompactExtGuid(obj->getExtendedGuid(), xmlWriter);
+//    xmlWriter.writeEndElement();
+
+//    xmlWriter.writeStartElement("SerialNumber");
+//    writeLongExtGuid(obj->getSerialNumber(), xmlWriter);
+//    xmlWriter.writeEndElement();
+//  }
+
+//  xmlWriter.writeEndElement();
+//  return xmlWriter;
+//}
+
+//QXmlStreamWriter& PSFtoXml::writeRootDeclare(
+//    const packStore::streamObj::StorageManifestRootDeclare_SPtr_t& obj,
+//    QXmlStreamWriter& xmlWriter)
+//{
+//  xmlWriter.writeStartElement("RootDeclare");
+//  xmlWriter.writeStartElement("RootExtGuid");
+//  writeCompactExtGuid(obj->getExtendedGuid(), xmlWriter);
+//  xmlWriter.writeEndElement();
+
+//  writeCellId(obj->getCellId(), xmlWriter);
+
 
-  xmlWriter.writeEndElement();
-
-  return xmlWriter;
-}
+//  xmlWriter.writeEndElement();
+
+//  return xmlWriter;
+//}
 
-QXmlStreamWriter& PSFtoXml::writeCellManifestCurrentRevision(
-    const packStore::streamObj::CellManifestCurrentRevision_SPtr_t& obj,
-    QXmlStreamWriter& xmlWriter)
-{
-  xmlWriter.writeStartElement("CellManifestCurrentRevision");
-  writeCompactExtGuid(obj->getExtendedGuid(), xmlWriter);
-
-  xmlWriter.writeEndElement();
-
-  return xmlWriter;
-}
+//QXmlStreamWriter& PSFtoXml::writeCellManifestCurrentRevision(
+//    const packStore::streamObj::CellManifestCurrentRevision_SPtr_t& obj,
+//    QXmlStreamWriter& xmlWriter)
+//{
+//  xmlWriter.writeStartElement("CellManifestCurrentRevision");
+//  writeCompactExtGuid(obj->getExtendedGuid(), xmlWriter);
+
+//  xmlWriter.writeEndElement();
+
+//  return xmlWriter;
+//}
 
-QXmlStreamWriter& PSFtoXml::writeRevisionManifest(
-    const packStore::streamObj::RevisionManifest_SPtr_t& obj,
-    QXmlStreamWriter& xmlWriter)
-{
-  xmlWriter.writeStartElement("RevisionManifest");
-
-  xmlWriter.writeStartElement("RevisionId");
-  writeCompactExtGuid(obj->getRevisionId(), xmlWriter);
-  xmlWriter.writeEndElement();
-
-  xmlWriter.writeStartElement("BaseRevisionId");
-  writeCompactExtGuid(obj->getBaseRevisionId(), xmlWriter);
-  xmlWriter.writeEndElement();
-
-  xmlWriter.writeEndElement();
+//QXmlStreamWriter& PSFtoXml::writeRevisionManifest(
+//    const packStore::streamObj::RevisionManifest_SPtr_t& obj,
+//    QXmlStreamWriter& xmlWriter)
+//{
+//  xmlWriter.writeStartElement("RevisionManifest");
+
+//  xmlWriter.writeStartElement("RevisionId");
+//  writeCompactExtGuid(obj->getRevisionId(), xmlWriter);
+//  xmlWriter.writeEndElement();
+
+//  xmlWriter.writeStartElement("BaseRevisionId");
+//  writeCompactExtGuid(obj->getBaseRevisionId(), xmlWriter);
+//  xmlWriter.writeEndElement();
+
+//  xmlWriter.writeEndElement();
 
-  return xmlWriter;
-}
+//  return xmlWriter;
+//}
 
-QXmlStreamWriter& PSFtoXml::writeObjectGroup(
-    const packStore::ObjectGroup_SPtr_t& obj, QXmlStreamWriter& xmlWriter)
-{
-  xmlWriter.writeStartElement("ObjectGroup");
+//QXmlStreamWriter& PSFtoXml::writeObjectGroup(
+//    const packStore::ObjectGroup_SPtr_t& obj, QXmlStreamWriter& xmlWriter)
+//{
+//  xmlWriter.writeStartElement("ObjectGroup");
 
-  if (obj->getDataElementHash() != nullptr) {
-    writeDataElementHash(obj->getDataElementHash(), xmlWriter);
-  }
-  if (obj->getObjectGroupDeclarations() != nullptr) {
-    writeObjectGroupDeclarations(obj->getObjectGroupDeclarations(), xmlWriter);
-  }
+//  if (obj->getDataElementHash() != nullptr) {
+//    writeDataElementHash(obj->getDataElementHash(), xmlWriter);
+//  }
+//  if (obj->getObjectGroupDeclarations() != nullptr) {
+//    writeObjectGroupDeclarations(obj->getObjectGroupDeclarations(), xmlWriter);
+//  }
 
-  if (obj->getObjectGroupMetadataDeclarations() != nullptr) {
-    writeObjectGroupMetadataDeclarations(
-        obj->getObjectGroupMetadataDeclarations(), xmlWriter);
-  }
-  if (obj->getObjectGroupData() != nullptr) {
-    writeObjectGroupData(obj->getObjectGroupData(), xmlWriter);
-  }
-  xmlWriter.writeEndElement();
+//  if (obj->getObjectGroupMetadataDeclarations() != nullptr) {
+//    writeObjectGroupMetadataDeclarations(
+//        obj->getObjectGroupMetadataDeclarations(), xmlWriter);
+//  }
+//  if (obj->getObjectGroupData() != nullptr) {
+//    writeObjectGroupData(obj->getObjectGroupData(), xmlWriter);
+//  }
+//  xmlWriter.writeEndElement();
 
-  return xmlWriter;
-}
+//  return xmlWriter;
+//}
 
-QXmlStreamWriter& PSFtoXml::writeDataElementFragment(
-    const packStore::DataElementFragment_SPtr_t& obj,
-    QXmlStreamWriter& xmlWriter)
-{
-  xmlWriter.writeStartElement("DataElementFragment");
+//QXmlStreamWriter& PSFtoXml::writeDataElementFragment(
+//    const packStore::DataElementFragment_SPtr_t& obj,
+//    QXmlStreamWriter& xmlWriter)
+//{
+//  xmlWriter.writeStartElement("DataElementFragment");
 
-  xmlWriter.writeStartElement("ExtendedGuid");
-  writeCompactExtGuid(obj->getExtendedGuid(), xmlWriter);
-  xmlWriter.writeEndElement();
+//  xmlWriter.writeStartElement("ExtendedGuid");
+//  writeCompactExtGuid(obj->getExtendedGuid(), xmlWriter);
+//  xmlWriter.writeEndElement();
 
-  xmlWriter.writeStartElement("size");
-  xmlWriter.writeCharacters(QString::number(obj->getSize()));
-  xmlWriter.writeEndElement();
-  xmlWriter.writeStartElement("FileChunkStart");
-  xmlWriter.writeCharacters(QString::number(obj->getFileChunkStart()));
-  xmlWriter.writeEndElement();
-  xmlWriter.writeStartElement("FileChunkSize");
-  xmlWriter.writeCharacters(QString::number(obj->getData().size()));
-  xmlWriter.writeEndElement();
+//  xmlWriter.writeStartElement("size");
+//  xmlWriter.writeCharacters(QString::number(obj->getSize()));
+//  xmlWriter.writeEndElement();
+//  xmlWriter.writeStartElement("FileChunkStart");
+//  xmlWriter.writeCharacters(QString::number(obj->getFileChunkStart()));
+//  xmlWriter.writeEndElement();
+//  xmlWriter.writeStartElement("FileChunkSize");
+//  xmlWriter.writeCharacters(QString::number(obj->getData().size()));
+//  xmlWriter.writeEndElement();
 
-  xmlWriter.writeStartElement("Data");
-  xmlWriter.writeCharacters(obj->getData().toHex());
-  xmlWriter.writeEndElement();
+//  xmlWriter.writeStartElement("Data");
+//  xmlWriter.writeCharacters(obj->getData().toHex());
+//  xmlWriter.writeEndElement();
 
 
-  xmlWriter.writeEndElement();
+//  xmlWriter.writeEndElement();
 
-  return xmlWriter;
-}
+//  return xmlWriter;
+//}
 
-QXmlStreamWriter& PSFtoXml::writeObjectDataBLOB(
-    const packStore::ObjectDataBLOB_SPtr_t& obj, QXmlStreamWriter& xmlWriter)
-{
-  xmlWriter.writeStartElement("ObjectDataBLOB");
+//QXmlStreamWriter& PSFtoXml::writeObjectDataBLOB(
+//    const packStore::ObjectDataBLOB_SPtr_t& obj, QXmlStreamWriter& xmlWriter)
+//{
+//  xmlWriter.writeStartElement("ObjectDataBLOB");
 
-  writeObjectDataBLOB(obj->getObject(), xmlWriter);
+//  writeObjectDataBLOB(obj->getObject(), xmlWriter);
 
-  xmlWriter.writeEndElement();
+//  xmlWriter.writeEndElement();
 
-  return xmlWriter;
-}
+//  return xmlWriter;
+//}
 
-QXmlStreamWriter& PSFtoXml::writeRevisionManifestObjectGroupReference(
-    const packStore::streamObj::RevisionManifestObjectGroupReference_SPtr_t&
-        obj,
-    QXmlStreamWriter& xmlWriter)
-{
-  xmlWriter.writeStartElement("RevisionManifestObjectGroupReference");
+//QXmlStreamWriter& PSFtoXml::writeRevisionManifestObjectGroupReference(
+//    const packStore::streamObj::RevisionManifestObjectGroupReference_SPtr_t&
+//        obj,
+//    QXmlStreamWriter& xmlWriter)
+//{
+//  xmlWriter.writeStartElement("RevisionManifestObjectGroupReference");
 
-  xmlWriter.writeStartElement("ObjectGroup");
-  writeCompactExtGuid(obj->getObjectGroup(), xmlWriter);
-  xmlWriter.writeEndElement();
+//  xmlWriter.writeStartElement("ObjectGroup");
+//  writeCompactExtGuid(obj->getObjectGroup(), xmlWriter);
+//  xmlWriter.writeEndElement();
 
-  xmlWriter.writeEndElement();
+//  xmlWriter.writeEndElement();
 
-  return xmlWriter;
-}
+//  return xmlWriter;
+//}
 
-QXmlStreamWriter& PSFtoXml::writeRevisionManifestRootDeclare(
-    const packStore::streamObj::RevisionManifestRootDeclare_SPtr_t& obj,
-    QXmlStreamWriter& xmlWriter)
-{
-  xmlWriter.writeStartElement("RevisionManifestRootDeclare");
-
-  xmlWriter.writeStartElement("Root");
-  writeCompactExtGuid(obj->getRoot(), xmlWriter);
-  xmlWriter.writeEndElement();
-
-  xmlWriter.writeStartElement("Object");
-  writeCompactExtGuid(obj->getObject(), xmlWriter);
-  xmlWriter.writeEndElement();
-
-  xmlWriter.writeEndElement();
-
-  return xmlWriter;
-}
-
-QXmlStreamWriter& PSFtoXml::writeDataElementHash(
-    const packStore::streamObj::DataElementHash_SPtr_t& obj,
-    QXmlStreamWriter& xmlWriter)
-{
-
-
-  xmlWriter.writeStartElement("DataElementHash");
-
-
-  xmlWriter.writeStartElement("Scheme");
-  xmlWriter.writeCharacters(QString::number(obj->getScheme()));
-  xmlWriter.writeEndElement();
-
-  xmlWriter.writeStartElement("Data");
-  writeBinaryItem(obj->getData(), xmlWriter);
-  xmlWriter.writeEndElement();
-
-
-  xmlWriter.writeEndElement();
-
-  return xmlWriter;
-}
-
-QXmlStreamWriter& PSFtoXml::writeObjectGroupDeclarations(
-    const packStore::streamObj::ObjectGroupDeclarations_SPtr_t& obj,
-    QXmlStreamWriter& xmlWriter)
-{
-  xmlWriter.writeStartElement("ObjectGroupDeclarations");
-
-  for (const auto& entry : obj->getObjects()) {
-
-    if (entry->getType() ==
-        packStore::StreamObjectType::ObjectGroupObjectDeclare) {
-      writeObjectGroupObjectDeclare(
-          std::dynamic_pointer_cast<
-              packStore::streamObj::ObjectGroupObjectDeclare>(entry),
-          xmlWriter);
-    }
-    else if (
-        entry->getType() ==
-        packStore::StreamObjectType::ObjectGroupObjectDataBLOBDeclaration) {
-      writeObjectGroupObjectDataBLOBDeclaration(
-          std::dynamic_pointer_cast<
-              packStore::streamObj::ObjectGroupObjectDataBLOBDeclaration>(
-              entry),
-          xmlWriter);
-    }
-  }
-
-
-  xmlWriter.writeEndElement();
-
-  return xmlWriter;
-}
-
-QXmlStreamWriter& PSFtoXml::writeObjectGroupMetadataDeclarations(
-    const packStore::streamObj::ObjectGroupMetadataDeclarations_SPtr_t& obj,
-    QXmlStreamWriter& xmlWriter)
-{
-  xmlWriter.writeStartElement("ObjectGroupMetadataDeclarations");
-
-  for (const auto& entry : obj->getMetaData()) {
-    writeObjectGroupMetadata(entry, xmlWriter);
-  }
-  xmlWriter.writeEndElement();
-
-  return xmlWriter;
-}
-
-QXmlStreamWriter& PSFtoXml::writeObjectGroupData(
-    const packStore::streamObj::ObjectGroupData_SPtr_t& obj,
-    QXmlStreamWriter& xmlWriter)
-{
-  xmlWriter.writeStartElement("ObjectGroupData");
-
-  for (const auto& entry : obj->getObjects()) {
-
-    if (entry->getType() ==
-        packStore::StreamObjectType::ObjectGroupObjectDataBLOBReference) {
-      writeObjectGroupObjectDataBlobReference(
-          std::dynamic_pointer_cast<
-              packStore::streamObj::ObjectGroupObjectDataBlobReference>(entry),
-          xmlWriter);
-    }
-    else if (
-        entry->getType() ==
-        packStore::StreamObjectType::ObjectGroupObjectData) {
-      writeObjectGroupObjectData(
-          std::dynamic_pointer_cast<
-              packStore::streamObj::ObjectGroupObjectData>(entry),
-          xmlWriter);
-    }
-    else if (
-        entry->getType() ==
-        packStore::StreamObjectType::ObjectGroupObjectExcludedData) {
-      writeObjectGroupObjectExcludedData(
-          std::dynamic_pointer_cast<
-              packStore::streamObj::ObjectGroupObjectExcludedData>(entry),
-          xmlWriter);
-    }
-  }
-
-  xmlWriter.writeEndElement();
-
-
-  return xmlWriter;
-}
-
-QXmlStreamWriter& PSFtoXml::writeObjectGroupObjectDeclare(
-    const packStore::streamObj::ObjectGroupObjectDeclare_SPtr_t& obj,
-    QXmlStreamWriter& xmlWriter)
-{
-  xmlWriter.writeStartElement("ObjectGroupObjectDeclare");
-
-  xmlWriter.writeStartElement("ExtendedGuid");
-  writeCompactExtGuid(obj->getExtendedGuid(), xmlWriter);
-  xmlWriter.writeEndElement();
-
-  xmlWriter.writeStartElement("PartitionId");
-  xmlWriter.writeCharacters(QString::number(obj->getPartitionId()));
-  xmlWriter.writeEndElement();
-  xmlWriter.writeStartElement("DataSize");
-  xmlWriter.writeCharacters(QString::number(obj->getDataSize()));
-  xmlWriter.writeEndElement();
-  xmlWriter.writeStartElement("ObjectReferencesCount");
-  xmlWriter.writeCharacters(QString::number(obj->getObjectReferencesCount()));
-  xmlWriter.writeEndElement();
-  xmlWriter.writeStartElement("CellReferencesCount");
-  xmlWriter.writeCharacters(QString::number(obj->getCellReferencesCount()));
-  xmlWriter.writeEndElement();
-
-  xmlWriter.writeEndElement();
-
-  return xmlWriter;
-}
-
-QXmlStreamWriter& PSFtoXml::writeObjectGroupObjectDataBLOBDeclaration(
-    const packStore::streamObj::ObjectGroupObjectDataBLOBDeclaration_SPtr_t&
-        obj,
-    QXmlStreamWriter& xmlWriter)
-{
-  xmlWriter.writeStartElement("ObjectGroupObjectDataBLOBDeclaration");
-
-  xmlWriter.writeStartElement("ExtendedGuid");
-  writeCompactExtGuid(obj->getExtendedGuid(), xmlWriter);
-  xmlWriter.writeEndElement();
-
-  xmlWriter.writeStartElement("BlobExtendedGuid");
-  writeCompactExtGuid(obj->getBlobExtendedGuid(), xmlWriter);
-  xmlWriter.writeEndElement();
-
-  xmlWriter.writeStartElement("PartitionId");
-  xmlWriter.writeCharacters(QString::number(obj->getPartitionId()));
-  xmlWriter.writeEndElement();
-  xmlWriter.writeStartElement("ObjectReferencesCount");
-  xmlWriter.writeCharacters(QString::number(obj->getObjectReferencesCount()));
-  xmlWriter.writeEndElement();
-  xmlWriter.writeStartElement("CellReferencesCount");
-  xmlWriter.writeCharacters(QString::number(obj->getCellReferencesCount()));
-  xmlWriter.writeEndElement();
-
-  xmlWriter.writeEndElement();
-
-  return xmlWriter;
-}
-
-QXmlStreamWriter& PSFtoXml::writeObjectGroupMetadata(
-    const packStore::streamObj::ObjectGroupMetadata_SPtr_t& obj,
-    QXmlStreamWriter& xmlWriter)
-{
-  xmlWriter.writeStartElement("ObjectGroupMetadata");
+//QXmlStreamWriter& PSFtoXml::writeRevisionManifestRootDeclare(
+//    const packStore::streamObj::RevisionManifestRootDeclare_SPtr_t& obj,
+//    QXmlStreamWriter& xmlWriter)
+//{
+//  xmlWriter.writeStartElement("RevisionManifestRootDeclare");
+
+//  xmlWriter.writeStartElement("Root");
+//  writeCompactExtGuid(obj->getRoot(), xmlWriter);
+//  xmlWriter.writeEndElement();
+
+//  xmlWriter.writeStartElement("Object");
+//  writeCompactExtGuid(obj->getObject(), xmlWriter);
+//  xmlWriter.writeEndElement();
+
+//  xmlWriter.writeEndElement();
+
+//  return xmlWriter;
+//}
+
+//QXmlStreamWriter& PSFtoXml::writeDataElementHash(
+//    const packStore::streamObj::DataElementHash_SPtr_t& obj,
+//    QXmlStreamWriter& xmlWriter)
+//{
+
+
+//  xmlWriter.writeStartElement("DataElementHash");
+
+
+//  xmlWriter.writeStartElement("Scheme");
+//  xmlWriter.writeCharacters(QString::number(obj->getScheme()));
+//  xmlWriter.writeEndElement();
+
+//  xmlWriter.writeStartElement("Data");
+//  writeBinaryItem(obj->getData(), xmlWriter);
+//  xmlWriter.writeEndElement();
+
+
+//  xmlWriter.writeEndElement();
+
+//  return xmlWriter;
+//}
+
+//QXmlStreamWriter& PSFtoXml::writeObjectGroupDeclarations(
+//    const packStore::streamObj::ObjectGroupDeclarations_SPtr_t& obj,
+//    QXmlStreamWriter& xmlWriter)
+//{
+//  xmlWriter.writeStartElement("ObjectGroupDeclarations");
+
+//  for (const auto& entry : obj->getObjects()) {
+
+//    if (entry->getType() ==
+//        packStore::StreamObjectType::ObjectGroupObjectDeclare) {
+//      writeObjectGroupObjectDeclare(
+//          std::dynamic_pointer_cast<
+//              packStore::streamObj::ObjectGroupObjectDeclare>(entry),
+//          xmlWriter);
+//    }
+//    else if (
+//        entry->getType() ==
+//        packStore::StreamObjectType::ObjectGroupObjectDataBLOBDeclaration) {
+//      writeObjectGroupObjectDataBLOBDeclaration(
+//          std::dynamic_pointer_cast<
+//              packStore::streamObj::ObjectGroupObjectDataBLOBDeclaration>(
+//              entry),
+//          xmlWriter);
+//    }
+//  }
+
+
+//  xmlWriter.writeEndElement();
+
+//  return xmlWriter;
+//}
+
+//QXmlStreamWriter& PSFtoXml::writeObjectGroupMetadataDeclarations(
+//    const packStore::streamObj::ObjectGroupMetadataDeclarations_SPtr_t& obj,
+//    QXmlStreamWriter& xmlWriter)
+//{
+//  xmlWriter.writeStartElement("ObjectGroupMetadataDeclarations");
+
+//  for (const auto& entry : obj->getMetaData()) {
+//    writeObjectGroupMetadata(entry, xmlWriter);
+//  }
+//  xmlWriter.writeEndElement();
+
+//  return xmlWriter;
+//}
+
+//QXmlStreamWriter& PSFtoXml::writeObjectGroupData(
+//    const packStore::streamObj::ObjectGroupData_SPtr_t& obj,
+//    QXmlStreamWriter& xmlWriter)
+//{
+//  xmlWriter.writeStartElement("ObjectGroupData");
+
+//  for (const auto& entry : obj->getObjects()) {
+
+//    if (entry->getType() ==
+//        packStore::StreamObjectType::ObjectGroupObjectDataBLOBReference) {
+//      writeObjectGroupObjectDataBlobReference(
+//          std::dynamic_pointer_cast<
+//              packStore::streamObj::ObjectGroupObjectDataBlobReference>(entry),
+//          xmlWriter);
+//    }
+//    else if (
+//        entry->getType() ==
+//        packStore::StreamObjectType::ObjectGroupObjectData) {
+//      writeObjectGroupObjectData(
+//          std::dynamic_pointer_cast<
+//              packStore::streamObj::ObjectGroupObjectData>(entry),
+//          xmlWriter);
+//    }
+//    else if (
+//        entry->getType() ==
+//        packStore::StreamObjectType::ObjectGroupObjectExcludedData) {
+//      writeObjectGroupObjectExcludedData(
+//          std::dynamic_pointer_cast<
+//              packStore::streamObj::ObjectGroupObjectExcludedData>(entry),
+//          xmlWriter);
+//    }
+//  }
+
+//  xmlWriter.writeEndElement();
+
+
+//  return xmlWriter;
+//}
+
+//QXmlStreamWriter& PSFtoXml::writeObjectGroupObjectDeclare(
+//    const packStore::streamObj::ObjectGroupObjectDeclare_SPtr_t& obj,
+//    QXmlStreamWriter& xmlWriter)
+//{
+//  xmlWriter.writeStartElement("ObjectGroupObjectDeclare");
+
+//  xmlWriter.writeStartElement("ExtendedGuid");
+//  writeCompactExtGuid(obj->getExtendedGuid(), xmlWriter);
+//  xmlWriter.writeEndElement();
+
+//  xmlWriter.writeStartElement("PartitionId");
+//  xmlWriter.writeCharacters(QString::number(obj->getPartitionId()));
+//  xmlWriter.writeEndElement();
+//  xmlWriter.writeStartElement("DataSize");
+//  xmlWriter.writeCharacters(QString::number(obj->getDataSize()));
+//  xmlWriter.writeEndElement();
+//  xmlWriter.writeStartElement("ObjectReferencesCount");
+//  xmlWriter.writeCharacters(QString::number(obj->getObjectReferencesCount()));
+//  xmlWriter.writeEndElement();
+//  xmlWriter.writeStartElement("CellReferencesCount");
+//  xmlWriter.writeCharacters(QString::number(obj->getCellReferencesCount()));
+//  xmlWriter.writeEndElement();
+
+//  xmlWriter.writeEndElement();
+
+//  return xmlWriter;
+//}
+
+//QXmlStreamWriter& PSFtoXml::writeObjectGroupObjectDataBLOBDeclaration(
+//    const packStore::streamObj::ObjectGroupObjectDataBLOBDeclaration_SPtr_t&
+//        obj,
+//    QXmlStreamWriter& xmlWriter)
+//{
+//  xmlWriter.writeStartElement("ObjectGroupObjectDataBLOBDeclaration");
+
+//  xmlWriter.writeStartElement("ExtendedGuid");
+//  writeCompactExtGuid(obj->getExtendedGuid(), xmlWriter);
+//  xmlWriter.writeEndElement();
+
+//  xmlWriter.writeStartElement("BlobExtendedGuid");
+//  writeCompactExtGuid(obj->getBlobExtendedGuid(), xmlWriter);
+//  xmlWriter.writeEndElement();
+
+//  xmlWriter.writeStartElement("PartitionId");
+//  xmlWriter.writeCharacters(QString::number(obj->getPartitionId()));
+//  xmlWriter.writeEndElement();
+//  xmlWriter.writeStartElement("ObjectReferencesCount");
+//  xmlWriter.writeCharacters(QString::number(obj->getObjectReferencesCount()));
+//  xmlWriter.writeEndElement();
+//  xmlWriter.writeStartElement("CellReferencesCount");
+//  xmlWriter.writeCharacters(QString::number(obj->getCellReferencesCount()));
+//  xmlWriter.writeEndElement();
+
+//  xmlWriter.writeEndElement();
+
+//  return xmlWriter;
+//}
+
+//QXmlStreamWriter& PSFtoXml::writeObjectGroupMetadata(
+//    const packStore::streamObj::ObjectGroupMetadata_SPtr_t& obj,
+//    QXmlStreamWriter& xmlWriter)
+//{
+//  xmlWriter.writeStartElement("ObjectGroupMetadata");
 
-  xmlWriter.writeStartElement("ChangeFrequency");
-  xmlWriter.writeCharacters(QString::number(obj->getObjectChangeFrequency()));
-  xmlWriter.writeEndElement();
+//  xmlWriter.writeStartElement("ChangeFrequency");
+//  xmlWriter.writeCharacters(QString::number(obj->getObjectChangeFrequency()));
+//  xmlWriter.writeEndElement();
 
-  xmlWriter.writeEndElement();
-  return xmlWriter;
-}
+//  xmlWriter.writeEndElement();
+//  return xmlWriter;
+//}
 
-QXmlStreamWriter& PSFtoXml::writeObjectGroupObjectDataBlobReference(
-    const packStore::streamObj::ObjectGroupObjectDataBlobReference_SPtr_t& obj,
-    QXmlStreamWriter& xmlWriter)
-{
-  xmlWriter.writeStartElement("ObjectGroupMetadata");
+//QXmlStreamWriter& PSFtoXml::writeObjectGroupObjectDataBlobReference(
+//    const packStore::streamObj::ObjectGroupObjectDataBlobReference_SPtr_t& obj,
+//    QXmlStreamWriter& xmlWriter)
+//{
+//  xmlWriter.writeStartElement("ObjectGroupMetadata");
 
-  writeCompactExtGuidArray(obj->getObjectExtGuidArray(), xmlWriter);
+//  writeCompactExtGuidArray(obj->getObjectExtGuidArray(), xmlWriter);
 
-  writeCellIdArray(obj->getCellIdArray(), xmlWriter);
+//  writeCellIdArray(obj->getCellIdArray(), xmlWriter);
 
 
-  xmlWriter.writeStartElement("ExtendedGuid");
-  writeCompactExtGuid(obj->getExtendedGuid(), xmlWriter);
-  xmlWriter.writeEndElement();
+//  xmlWriter.writeStartElement("ExtendedGuid");
+//  writeCompactExtGuid(obj->getExtendedGuid(), xmlWriter);
+//  xmlWriter.writeEndElement();
 
-  xmlWriter.writeEndElement();
-  return xmlWriter;
-}
+//  xmlWriter.writeEndElement();
+//  return xmlWriter;
+//}
 
 
 
-QXmlStreamWriter& PSFtoXml::writeObjectGroupObjectData(
-    const packStore::streamObj::ObjectGroupObjectData_SPtr_t& obj,
-    QXmlStreamWriter& xmlWriter)
-{
+//QXmlStreamWriter& PSFtoXml::writeObjectGroupObjectData(
+//    const packStore::streamObj::ObjectGroupObjectData_SPtr_t& obj,
+//    QXmlStreamWriter& xmlWriter)
+//{
 
-  xmlWriter.writeStartElement("ObjectGroupMetadata");
+//  xmlWriter.writeStartElement("ObjectGroupMetadata");
 
-  writeCompactExtGuidArray(obj->getExtendedGuidArray(), xmlWriter);
+//  writeCompactExtGuidArray(obj->getExtendedGuidArray(), xmlWriter);
 
-  writeCellIdArray(obj->getCellIdArray(), xmlWriter);
+//  writeCellIdArray(obj->getCellIdArray(), xmlWriter);
 
-  xmlWriter.writeStartElement("Data");
-  writeBinaryItem(obj->getData(), xmlWriter);
-  xmlWriter.writeEndElement();
-
-  xmlWriter.writeEndElement();
-  return xmlWriter;
-}
-
-QXmlStreamWriter& PSFtoXml::writeObjectGroupObjectExcludedData(
-    const packStore::streamObj::ObjectGroupObjectExcludedData_SPtr_t& obj,
-    QXmlStreamWriter& xmlWriter)
-{
-  xmlWriter.writeStartElement("ObjectGroupMetadata");
-
-  writeCompactExtGuidArray(obj->getExtendedGuidArray(), xmlWriter);
-
-  writeCellIdArray(obj->getCellIdArray(), xmlWriter);
-
-  xmlWriter.writeStartElement("DataSize");
-  xmlWriter.writeCharacters(QString::number(obj->getDataSize()));
-  xmlWriter.writeEndElement();
-
-  xmlWriter.writeEndElement();
-
-  return xmlWriter;
-}
-
-QXmlStreamWriter& PSFtoXml::writeObjectDataBLOB(
-    const packStore::streamObj::ObjectDataBLOB_SPtr_t& obj,
-    QXmlStreamWriter& xmlWriter)
-{
-  xmlWriter.writeStartElement("ObjectDataBLOB");
-
-  xmlWriter.writeStartElement("Data");
-  xmlWriter.writeCharacters(obj->getData().toHex());
-  xmlWriter.writeEndElement();
-
-  xmlWriter.writeEndElement();
-
-  return xmlWriter;
-}
-
-
-/*--------------------------------------------------------------------------*/
-/* common Types*/
-/*--------------------------------------------------------------------------*/
-
-QXmlStreamWriter& PSFtoXml::writeCompactID(
-    const priv::CompactID& obj, QXmlStreamWriter& xmlWriter)
-{
-  xmlWriter.writeStartElement("CompactID");
-
-  xmlWriter.writeAttribute(
-      "guidIndex", priv::qStringHex(obj.getGuidIndex(), 12));
-  xmlWriter.writeAttribute("n", QString::number(obj.getN()));
-
-  xmlWriter.writeEndElement();
-
-  return xmlWriter;
-}
-
-QXmlStreamWriter& PSFtoXml::writeExtendedGUID(
-    const priv::ExtendedGUID& obj, QXmlStreamWriter& xmlWriter)
-{
-  xmlWriter.writeStartElement("ExtendedGUID");
-
-  xmlWriter.writeCharacters(obj.toString());
-
-  xmlWriter.writeEndElement();
-
-  return xmlWriter;
-}
-
-QXmlStreamWriter&
-PSFtoXml::writeGUID(const QUuid& obj, QXmlStreamWriter& xmlWriter)
-{
-  xmlWriter.writeStartElement("GUID");
-  xmlWriter.writeCharacters(obj.toString());
-
-  xmlWriter.writeEndElement();
-
-  return xmlWriter;
-}
-
-QXmlStreamWriter& PSFtoXml::writeCompactExtGuid(
-    const packStore::CompactExtGuid& obj, QXmlStreamWriter& xmlWriter)
-{
-  xmlWriter.writeStartElement("CompactExtGuid");
-  //  xmlWriter.writeAttribute(
-  //      "type", packStore::CompactExtGuid::typeToString(obj.getWidthType()));
-  xmlWriter.writeCharacters(obj.toString());
-  xmlWriter.writeEndElement();
-
-  return xmlWriter;
-}
-
-QXmlStreamWriter& PSFtoXml::writeLongExtGuid(
-    const packStore::LongExtGuid& obj, QXmlStreamWriter& xmlWriter)
-{
-  xmlWriter.writeStartElement("SerialNumber");
-  xmlWriter.writeCharacters(
-      "{" + obj.getGuid().toString() + "," +
-      QString::number(obj.getSerialNumber()) + "}");
-  xmlWriter.writeEndElement();
-
-  return xmlWriter;
-}
-
-QXmlStreamWriter&
-PSFtoXml::writeCellId(const packStore::CellId& obj, QXmlStreamWriter& xmlWriter)
-{
-  xmlWriter.writeStartElement("CellId");
-  xmlWriter.writeStartElement("ExtGuid1");
-  writeCompactExtGuid(obj.getExguid1(), xmlWriter);
-  xmlWriter.writeEndElement();
-
-  xmlWriter.writeStartElement("ExtGuid2");
-  writeCompactExtGuid(obj.getExguid2(), xmlWriter);
-  xmlWriter.writeEndElement();
-
-  xmlWriter.writeEndElement();
-
-  return xmlWriter;
-}
-
-QXmlStreamWriter& PSFtoXml::writeBinaryItem(
-    const packStore::BinaryItem& obj, QXmlStreamWriter& xmlWriter)
-{
-  xmlWriter.writeStartElement("BinaryItem");
-  xmlWriter.writeAttribute("length", QString::number(obj.getLength()));
-
-  xmlWriter.writeCharacters(obj.getContent().toHex());
-  xmlWriter.writeEndElement();
-
-  return xmlWriter;
-}
-
-QXmlStreamWriter& PSFtoXml::writeCompactExtGuidArray(
-    const packStore::CompactExtGuidArray& obj, QXmlStreamWriter& xmlWriter)
-{
-  xmlWriter.writeStartElement("CompactExtGuidArray");
-  xmlWriter.writeAttribute("count", QString::number(obj.getCount()));
-
-  for (const auto& entry : obj.getElements()) {
-    writeCompactExtGuid(entry, xmlWriter);
-  }
-
-  xmlWriter.writeEndElement();
-  return xmlWriter;
-}
-
-QXmlStreamWriter& PSFtoXml::writeCellIdArray(
-    const packStore::CellIdArray& obj, QXmlStreamWriter& xmlWriter)
-{
-  xmlWriter.writeStartElement("CellIdArray");
-  xmlWriter.writeAttribute("count", QString::number(obj.getCount()));
-
-  for (const auto& entry : obj.getElements()) {
-    writeCellId(entry, xmlWriter);
-  }
-
-
-  xmlWriter.writeEndElement();
-  return xmlWriter;
-}
+//  xmlWriter.writeStartElement("Data");
+//  writeBinaryItem(obj->getData(), xmlWriter);
+//  xmlWriter.writeEndElement();
+
+//  xmlWriter.writeEndElement();
+//  return xmlWriter;
+//}
+
+//QXmlStreamWriter& PSFtoXml::writeObjectGroupObjectExcludedData(
+//    const packStore::streamObj::ObjectGroupObjectExcludedData_SPtr_t& obj,
+//    QXmlStreamWriter& xmlWriter)
+//{
+//  xmlWriter.writeStartElement("ObjectGroupMetadata");
+
+//  writeCompactExtGuidArray(obj->getExtendedGuidArray(), xmlWriter);
+
+//  writeCellIdArray(obj->getCellIdArray(), xmlWriter);
+
+//  xmlWriter.writeStartElement("DataSize");
+//  xmlWriter.writeCharacters(QString::number(obj->getDataSize()));
+//  xmlWriter.writeEndElement();
+
+//  xmlWriter.writeEndElement();
+
+//  return xmlWriter;
+//}
+
+//QXmlStreamWriter& PSFtoXml::writeObjectDataBLOB(
+//    const packStore::streamObj::ObjectDataBLOB_SPtr_t& obj,
+//    QXmlStreamWriter& xmlWriter)
+//{
+//  xmlWriter.writeStartElement("ObjectDataBLOB");
+
+//  xmlWriter.writeStartElement("Data");
+//  xmlWriter.writeCharacters(obj->getData().toHex());
+//  xmlWriter.writeEndElement();
+
+//  xmlWriter.writeEndElement();
+
+//  return xmlWriter;
+//}
+
+
+///*--------------------------------------------------------------------------*/
+///* common Types*/
+///*--------------------------------------------------------------------------*/
+
+//QXmlStreamWriter& PSFtoXml::writeCompactID(
+//    const priv::CompactID& obj, QXmlStreamWriter& xmlWriter)
+//{
+//  xmlWriter.writeStartElement("CompactID");
+
+//  xmlWriter.writeAttribute(
+//      "guidIndex", priv::qStringHex(obj.getGuidIndex(), 12));
+//  xmlWriter.writeAttribute("n", QString::number(obj.getN()));
+
+//  xmlWriter.writeEndElement();
+
+//  return xmlWriter;
+//}
+
+//QXmlStreamWriter& PSFtoXml::writeExtendedGUID(
+//    const priv::ExtendedGUID& obj, QXmlStreamWriter& xmlWriter)
+//{
+//  xmlWriter.writeStartElement("ExtendedGUID");
+
+//  xmlWriter.writeCharacters(obj.toString());
+
+//  xmlWriter.writeEndElement();
+
+//  return xmlWriter;
+//}
+
+//QXmlStreamWriter&
+//PSFtoXml::writeGUID(const QUuid& obj, QXmlStreamWriter& xmlWriter)
+//{
+//  xmlWriter.writeStartElement("GUID");
+//  xmlWriter.writeCharacters(obj.toString());
+
+//  xmlWriter.writeEndElement();
+
+//  return xmlWriter;
+//}
+
+//QXmlStreamWriter& PSFtoXml::writeCompactExtGuid(
+//    const packStore::CompactExtGuid& obj, QXmlStreamWriter& xmlWriter)
+//{
+//  xmlWriter.writeStartElement("CompactExtGuid");
+//  //  xmlWriter.writeAttribute(
+//  //      "type", packStore::CompactExtGuid::typeToString(obj.getWidthType()));
+//  xmlWriter.writeCharacters(obj.toString());
+//  xmlWriter.writeEndElement();
+
+//  return xmlWriter;
+//}
+
+//QXmlStreamWriter& PSFtoXml::writeLongExtGuid(
+//    const packStore::LongExtGuid& obj, QXmlStreamWriter& xmlWriter)
+//{
+//  xmlWriter.writeStartElement("SerialNumber");
+//  xmlWriter.writeCharacters(
+//      "{" + obj.getGuid().toString() + "," +
+//      QString::number(obj.getSerialNumber()) + "}");
+//  xmlWriter.writeEndElement();
+
+//  return xmlWriter;
+//}
+
+//QXmlStreamWriter&
+//PSFtoXml::writeCellId(const packStore::CellId& obj, QXmlStreamWriter& xmlWriter)
+//{
+//  xmlWriter.writeStartElement("CellId");
+//  xmlWriter.writeStartElement("ExtGuid1");
+//  writeCompactExtGuid(obj.getExguid1(), xmlWriter);
+//  xmlWriter.writeEndElement();
+
+//  xmlWriter.writeStartElement("ExtGuid2");
+//  writeCompactExtGuid(obj.getExguid2(), xmlWriter);
+//  xmlWriter.writeEndElement();
+
+//  xmlWriter.writeEndElement();
+
+//  return xmlWriter;
+//}
+
+//QXmlStreamWriter& PSFtoXml::writeBinaryItem(
+//    const packStore::BinaryItem& obj, QXmlStreamWriter& xmlWriter)
+//{
+//  xmlWriter.writeStartElement("BinaryItem");
+//  xmlWriter.writeAttribute("length", QString::number(obj.getLength()));
+
+//  xmlWriter.writeCharacters(obj.getContent().toHex());
+//  xmlWriter.writeEndElement();
+
+//  return xmlWriter;
+//}
+
+//QXmlStreamWriter& PSFtoXml::writeCompactExtGuidArray(
+//    const packStore::CompactExtGuidArray& obj, QXmlStreamWriter& xmlWriter)
+//{
+//  xmlWriter.writeStartElement("CompactExtGuidArray");
+//  xmlWriter.writeAttribute("count", QString::number(obj.getCount()));
+
+//  for (const auto& entry : obj.getElements()) {
+//    writeCompactExtGuid(entry, xmlWriter);
+//  }
+
+//  xmlWriter.writeEndElement();
+//  return xmlWriter;
+//}
+
+//QXmlStreamWriter& PSFtoXml::writeCellIdArray(
+//    const packStore::CellIdArray& obj, QXmlStreamWriter& xmlWriter)
+//{
+//  xmlWriter.writeStartElement("CellIdArray");
+//  xmlWriter.writeAttribute("count", QString::number(obj.getCount()));
+
+//  for (const auto& entry : obj.getElements()) {
+//    writeCellId(entry, xmlWriter);
+//  }
+
+
+//  xmlWriter.writeEndElement();
+//  return xmlWriter;
+//}
 
 
 /*--------------------------------------------------------------------------*/

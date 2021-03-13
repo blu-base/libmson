@@ -4,51 +4,49 @@
 #include <memory>
 #include <QtCore/qglobal.h>
 
-#include "StreamObjectHeader.h"
+#include "interfaces/IStreamObject.h"
 
 namespace libmson {
-namespace packStore {
+namespace fsshttpb {
 
-typedef std::shared_ptr<class DataElement> DataElement_SPtr_t;
+class DataElement;
+typedef std::shared_ptr<DataElement> DataElement_SPtr_t;
+typedef std::weak_ptr<DataElement> DataElement_WPtr_t;
 
-class DataElementPackage;
-typedef std::shared_ptr<DataElementPackage> DataElementPackage_SPtr_t;
-typedef std::weak_ptr<DataElementPackage> DataElementPackage_WPtr_t;
-
-class DataElementPackage {
+class DataElementPackage : public IStreamObject {
 private:
-  StreamObjectHeader_SPtr_t m_header;
-
-  QByteArray m_data;
-
-  DataElement_SPtr_t m_dataElement;
-
-  std::vector<DataElementPackage_SPtr_t> m_children;
-
-  // for Debug purpose
-  quint64 m_stp = 0;
-
-  //  std::shared_ptr<DataElement> m_data;
+  quint8 m_reserved;
 
 public:
   DataElementPackage();
 
-  StreamObjectHeader_SPtr_t getHeader() const;
-  void setHeader(const StreamObjectHeader_SPtr_t& header);
-
-  //  std::shared_ptr<DataElement> getData() const;
-  //  void setData(const std::shared_ptr<DataElement>& data);
-
   friend class PackageStoreFileParser;
 
-  QByteArray getData() const;
-  void setData(const QByteArray& data);
+  std::vector<DataElement_WPtr_t> getObjects();
+  std::vector<DataElement_WPtr_t> getDataElements();
 
-  std::vector<DataElementPackage_SPtr_t> getChildren() const;
-  std::vector<DataElementPackage_SPtr_t>& children();
-  void setChildren(const std::vector<DataElementPackage_SPtr_t>& children);
-  DataElement_SPtr_t getDataElement() const;
-  void setDataElement(const DataElement_SPtr_t& dataElement);
+  DataElement_WPtr_t at(size_t pos);
+
+  void push_back(DataElement_SPtr_t& obj);
+  IStreamObj_It_t
+  insert(IStreamObj_It_t pos, const DataElement_SPtr_t& obj);
+
+  // IStreamObject interface
+private:
+  virtual quint64 strObjBody_cb() const override;
+  virtual quint64 cbNextHeader() const override;
+
+  virtual void deserializeStrObj(QDataStream& ds) override;
+  virtual void serializeStrObj(QDataStream& ds) const override;
+
+public:
+  virtual StreamObjectType getType() const override
+  {
+    return StreamObjectType::DataElementPackage;
+  }
+
+  virtual void push_back(IStreamObject_SPtr_t& obj) override;
+  virtual IStreamObj_It_t insert(IStreamObj_It_t pos, const IStreamObject_SPtr_t& obj) override;
 };
 
 

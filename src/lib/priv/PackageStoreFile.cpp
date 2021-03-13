@@ -5,12 +5,12 @@ namespace packStore {
 
 PackageStoreFile::PackageStoreFile() {}
 
-PackagingStructure_SPtr_t PackageStoreFile::getHeader() const
+PackagingHeader PackageStoreFile::getHeader() const
 {
   return m_header;
 }
 
-void PackageStoreFile::setHeader(const PackagingStructure_SPtr_t& header)
+void PackageStoreFile::setHeader(const PackagingHeader& header)
 {
   m_header = header;
 }
@@ -29,16 +29,26 @@ void PackageStoreFile::setIsEncrypted(bool isEncrypted)
   m_isEncrypted = isEncrypted;
 }
 
-std::vector<std::shared_ptr<DataElement>> PackageStoreFile::getElements() const
+fsshttpb::PackagingStart_WPtr_t PackageStoreFile::getPackagingStart() const
 {
-  return m_elements;
+  return m_packagingStart;
 }
 
-void PackageStoreFile::setElements(
-    const std::vector<std::shared_ptr<DataElement>>& elements)
+void PackageStoreFile::setPackagingStart(const fsshttpb::PackagingStart_SPtr_t& packagingStart)
 {
-  m_elements = elements;
+  m_packagingStart = packagingStart;
 }
+
+//std::vector<std::shared_ptr<DataElement>> PackageStoreFile::getElements() const
+//{
+//  return m_elements;
+//}
+
+//void PackageStoreFile::setElements(
+//    const std::vector<std::shared_ptr<DataElement>>& elements)
+//{
+//  m_elements = elements;
+//}
 
 } // namespace packStore
 } // namespace libmson

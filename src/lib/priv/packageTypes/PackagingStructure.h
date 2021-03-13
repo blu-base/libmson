@@ -6,13 +6,18 @@
 #include <QUuid>
 #include <QtCore/qglobal.h>
 
-#include "../commonTypes/CompactExtGuid.h"
+#include "dataTypes/CompactExtGuid.h"
 #include "StreamObjectHeader.h"
 
 namespace libmson {
 namespace packStore {
 
-
+/** Header structure of the PackagingStructure according to [MS-ONESTORE] section 2.8.1
+ *
+ *
+ *
+ *
+ */
 class PackagingStructure {
 public:
   PackagingStructure();

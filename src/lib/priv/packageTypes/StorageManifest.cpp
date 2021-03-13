@@ -3,7 +3,7 @@
 #include <numeric>
 
 namespace libmson {
-namespace packStore {
+namespace fsshttpb {
 
 StorageManifest::StorageManifest() : m_schema(), m_rootDeclares{} {}
 

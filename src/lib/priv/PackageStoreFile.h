@@ -4,14 +4,16 @@
 #include <QString>
 #include <QtCore/qglobal.h>
 
-#include "packageTypes/DataElementPackage.h"
-#include "packageTypes/PackagingStructure.h"
+//#include "packageTypes/DataElementPackage.h"
+#include "packageTypes/PackagingHeader.h"
+#include "packageTypes/PackagingStart.h"
 
-#include "packageTypes/StorageIndex.h"
-#include "packageTypes/StorageManifest.h"
+//#include "packageTypes/StorageIndex.h"
+//#include "packageTypes/StorageManifest.h"
 
 namespace libmson {
 namespace packStore {
+
 
 class PackageStoreFile {
 public:
@@ -20,8 +22,8 @@ public:
 
   friend class PackageStoreFileParser;
 
-  PackagingStructure_SPtr_t getHeader() const;
-  void setHeader(const PackagingStructure_SPtr_t& header);
+  PackagingHeader getHeader() const;
+  void setHeader(const PackagingHeader& header);
 
   QString getFileName() const;
   void setFileName(const QString& fileName);
@@ -29,8 +31,11 @@ public:
   bool getIsEncrypted() const;
   void setIsEncrypted(bool isEncrypted);
 
-  std::vector<std::shared_ptr<DataElement>> getElements() const;
-  void setElements(const std::vector<std::shared_ptr<DataElement>>& packages);
+//  std::vector<std::shared_ptr<DataElement>> getElements() const;
+//  void setElements(const std::vector<std::shared_ptr<DataElement>>& packages);
+
+  fsshttpb::PackagingStart_WPtr_t getPackagingStart() const;
+  void setPackagingStart(const fsshttpb::PackagingStart_SPtr_t& packagingStart);
 
 private:
   /// File name such as "Notebook.one". Does not include any path information.
@@ -38,12 +43,14 @@ private:
 
   bool m_isEncrypted = false;
 
-  PackagingStructure_SPtr_t m_header;
+  PackagingHeader m_header;
 
-  std::vector<DataElement_SPtr_t> m_elements;
+  fsshttpb::PackagingStart_SPtr_t m_packagingStart;
 
-  StorageIndex_WPtr_t m_storageIndex;
-  StorageManifest_WPtr_t m_storageManifest;
+//  std::vector<DataElement_SPtr_t> m_elements;
+
+//  StorageIndex_WPtr_t m_storageIndex;
+//  StorageManifest_WPtr_t m_storageManifest;
 };
 
 

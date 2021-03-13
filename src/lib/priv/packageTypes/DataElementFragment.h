@@ -3,18 +3,16 @@
 
 #include <QtCore/qglobal.h>
 
-#include <priv/commonTypes/CompactExtGuid.h>
-
-#include "interfaces/IDataElementBody.h"
+#include "interfaces/IStreamObject.h"
+#include <priv/commonTypes/ExtendedGUID.h>
 
 namespace libmson {
-namespace packStore {
+namespace fsshttpb {
 
-class DataElementFragment
-    : public DataElementBody
-    , public priv::IStreamable {
+class DataElementFragment : public IStreamObject {
 private:
-  CompactExtGuid m_extendedGuid;
+  priv::ExtendedGUID m_extendedGuid;
+
   quint64 m_size;
 
   quint64 m_fileChunkStart;
@@ -22,10 +20,10 @@ private:
   QByteArray m_data;
 
 public:
-  DataElementFragment() ;
+  DataElementFragment();
 
-  CompactExtGuid getExtendedGuid() const;
-  void setExtendedGuid(const CompactExtGuid& extendedGuid);
+  priv::ExtendedGUID getExtendedGuid() const;
+  void setExtendedGuid(const priv::ExtendedGUID& extendedGuid);
   quint64 getSize() const;
   void setSize(const quint64& size);
   quint64 getFileChunkStart() const;
@@ -33,24 +31,29 @@ public:
   quint64 getFileChunkSize() const;
   QByteArray getData() const;
   void setData(const QByteArray& data);
-  // IStreamable interface
-private:
-  virtual void deserialize(QDataStream& ds) override;
-  virtual void serialize(QDataStream& ds) const override;
 
-  // DataElementBody interface
+  // IStreamObject interface
 protected:
-  virtual quint64 cb() const override;
+  virtual quint64 strObjBody_cb() const override;
+  virtual quint64 cbNextHeader() const override;
 
 public:
-  virtual DataElementType getType() const override;
+  virtual StreamObjectType getType() const override
+  {
+    return StreamObjectType::DataElementFragment;
+  }
+  virtual void push_back(IStreamObject_SPtr_t& obj) override;
+  virtual IStreamObj_It_t insert(IStreamObj_It_t pos, const IStreamObject_SPtr_t& obj) override;
 
+private:
+  virtual void deserializeStrObj(QDataStream& ds) override;
+  virtual void serializeStrObj(QDataStream& ds) const override;
 };
 
 typedef std::shared_ptr<DataElementFragment> DataElementFragment_SPtr_t;
 typedef std::weak_ptr<DataElementFragment> DataElementFragment_WPtr_t;
 
-} // namespace packStore
+} // namespace fsshttpb
 } // namespace libmson
 
 #endif // DATAELEMENTFRAGMENT_H

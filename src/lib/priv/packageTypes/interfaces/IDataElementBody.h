@@ -9,7 +9,7 @@
 #include "DataElementType.h"
 
 namespace libmson {
-namespace packStore {
+namespace fsshttpb {
 
 /** Data between DataElement's  CompactUInt64 m_DataElementType and the
  * StreamObjectHeaderEnd */
@@ -28,7 +28,7 @@ public:
 typedef std::shared_ptr<DataElementBody> DataElementBody_SPtr_t;
 typedef std::weak_ptr<DataElementBody> DataElementBody_WPtr_t;
 
-} // namespace packStore
+} // namespace fsshttpb
 } // namespace libmson
 
 #endif // DATAELEMENTBODY_H

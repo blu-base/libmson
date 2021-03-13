@@ -1,0 +1,18 @@
+target_sources(libmson_priv
+  PUBLIC
+    ${CMAKE_CURRENT_LIST_DIR}/BinaryItem.h
+    ${CMAKE_CURRENT_LIST_DIR}/CellIdArray.h
+    ${CMAKE_CURRENT_LIST_DIR}/CellId.h
+    ${CMAKE_CURRENT_LIST_DIR}/CompactExtGuidArray.h
+    ${CMAKE_CURRENT_LIST_DIR}/CompactExtGuid.h
+    ${CMAKE_CURRENT_LIST_DIR}/CompactUInt64.h
+    ${CMAKE_CURRENT_LIST_DIR}/LongExtGuid.h
+  PRIVATE
+    ${CMAKE_CURRENT_LIST_DIR}/BinaryItem.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/CellIdArray.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/CellId.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/CompactExtGuidArray.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/CompactExtGuid.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/CompactUInt64.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/LongExtGuid.cpp
+)

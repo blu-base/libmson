@@ -6,13 +6,11 @@
 #include <QtCore/qglobal.h>
 
 #include "../IStreamable.h"
-#include "StreamObjectTypes.h"
 #include "StreamObjectHeaderEnd.h" // keep for convenience
+#include "interfaces/StreamObjectTypes.h"
 
 namespace libmson {
-namespace packStore {
-
-class StreamObjectHeaderEnd;
+namespace fsshttpb {
 
 class StreamObjectHeader : public priv::IStreamable {
 public:
@@ -25,8 +23,7 @@ public:
   uint64_t getLength() const;
   void setLength(const uint64_t& length);
 
-  std::shared_ptr<StreamObjectHeaderEnd> getEnd() const;
-  void setEnd(const std::shared_ptr<StreamObjectHeaderEnd>& end);
+  StreamObjectHeaderEnd getEnd() const;
 
   quint64 getSizeInFile() const;
 
@@ -40,14 +37,9 @@ public:
   static quint64
   getSizeInFile(const quint64& length, const StreamObjectType& type);
 
-  static QString typeToString(const StreamObjectType& type);
-
-
 private:
   StreamObjectType m_type;
   uint64_t m_length;
-
-  std::shared_ptr<StreamObjectHeaderEnd> m_end;
 
   // IStreamable interface
 private:
@@ -55,10 +47,7 @@ private:
   virtual void serialize(QDataStream& ds) const override;
 };
 
-typedef std::shared_ptr<StreamObjectHeader> StreamObjectHeader_SPtr_t;
-typedef std::weak_ptr<StreamObjectHeader> StreamObjectHeader_WPtr_t;
-
-} // namespace packStore
+} // namespace fsshttpb
 } // namespace libmson
 
 #endif // STREAMOBJECTHEADER_H

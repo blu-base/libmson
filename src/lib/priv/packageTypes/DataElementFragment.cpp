@@ -1,28 +1,24 @@
 #include "DataElementFragment.h"
 
-#include <priv/commonTypes/CompactUInt64.h>
+#include "dataTypes/CompactExtGuid.h"
+#include "dataTypes/CompactUInt64.h"
 
 namespace libmson {
-namespace packStore {
+namespace fsshttpb {
 
-QByteArray DataElementFragment::getData() const
-{
-  return m_data;
-}
+QByteArray DataElementFragment::getData() const { return m_data; }
 
-void DataElementFragment::setData(const QByteArray& data)
-{
-  m_data = data;
-}
+void DataElementFragment::setData(const QByteArray& data) { m_data = data; }
 
 DataElementFragment::DataElementFragment() : m_size(0), m_fileChunkStart(0) {}
 
-CompactExtGuid DataElementFragment::getExtendedGuid() const
+priv::ExtendedGUID DataElementFragment::getExtendedGuid() const
 {
   return m_extendedGuid;
 }
 
-void DataElementFragment::setExtendedGuid(const CompactExtGuid& extendedGuid)
+void DataElementFragment::setExtendedGuid(
+    const priv::ExtendedGUID& extendedGuid)
 {
   m_extendedGuid = extendedGuid;
 }
@@ -43,35 +39,10 @@ void DataElementFragment::setFileChunkStart(const quint64& fileChunkStart)
 
 quint64 DataElementFragment::getFileChunkSize() const { return m_data.size(); }
 
-void DataElementFragment::deserialize(QDataStream& ds)
+
+quint64 DataElementFragment::strObjBody_cb() const
 {
-  ds >> m_extendedGuid;
-
-  CompactUInt64 val;
-  ds >> val;
-  m_size = val.getValue();
-
-  ds >> val;
-  m_fileChunkStart = val.getValue();
-
-  ds >> val;
-  m_data = ds.device()->read(val.getValue());
-}
-
-void DataElementFragment::serialize(QDataStream& ds) const
-{
-  ds << m_extendedGuid;
-
-  ds << CompactUInt64(m_size);
-  ds << CompactUInt64(m_fileChunkStart);
-  ds << CompactUInt64(m_data.size());
-
-  ds.writeRawData(m_data.constData(), m_data.size());
-}
-
-quint64 DataElementFragment::cb() const
-{
-  quint64 total = m_extendedGuid.getSizeInFile();
+  quint64 total = CompactExtGuid(m_extendedGuid).getSizeInFile();
   total += CompactUInt64::getSizeInFile(m_size);
   total += CompactUInt64::getSizeInFile(m_fileChunkStart);
   total += CompactUInt64::getSizeInFile(m_data.size());
@@ -80,10 +51,53 @@ quint64 DataElementFragment::cb() const
   return total;
 }
 
-DataElementType DataElementFragment::getType() const
+quint64 DataElementFragment::cbNextHeader() const
 {
-  return DataElementType::DataElementFragment;
+  return strObjBody_cb();
 }
 
-} // namespace packStore
+void DataElementFragment::push_back(IStreamObject_SPtr_t& obj)
+{
+  Q_UNUSED(obj);
+}
+
+IStreamObj_It_t DataElementFragment::insert(
+    IStreamObj_It_t pos, const IStreamObject_SPtr_t& obj)
+{
+  Q_UNUSED(pos);
+  Q_UNUSED(obj);
+  m_children.clear();
+  return m_children.end();
+}
+
+void DataElementFragment::deserializeStrObj(QDataStream& ds)
+{
+  CompactExtGuid guid;
+  ds >> guid;
+  m_extendedGuid = guid.getExtendedGUID();
+
+  CompactUInt64 val;
+  ds >> val;
+  m_size = val.getValue();
+
+  ds >> val;
+  m_fileChunkStart = val.getValue();
+
+  // length
+  ds >> val;
+
+  m_data = ds.device()->read(val.getValue());
+}
+
+void DataElementFragment::serializeStrObj(QDataStream& ds) const
+{
+  ds << CompactExtGuid(m_extendedGuid);
+  ds << CompactUInt64(m_size);
+  ds << CompactUInt64(m_fileChunkStart);
+  ds << CompactUInt64(m_data.size());
+
+  ds.writeRawData(m_data.constData(), m_data.size());
+}
+
+} // namespace fsshttpb
 } // namespace libmson

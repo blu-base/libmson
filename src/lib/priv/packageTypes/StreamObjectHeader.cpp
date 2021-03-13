@@ -1,12 +1,13 @@
 #include "StreamObjectHeader.h"
 
-#include "StreamObjectHeaderEnd.h"
-#include "../commonTypes/CompactUInt64.h"
-
 #include <QDebug>
 
+#include "StreamObjectHeaderEnd.h"
+#include "dataTypes/CompactUInt64.h"
+
+
 namespace libmson {
-namespace packStore {
+namespace fsshttpb {
 
 StreamObjectHeader::StreamObjectHeader()
     : m_type(StreamObjectType::Invalid), m_length()
@@ -32,26 +33,14 @@ void StreamObjectHeader::setLength(const uint64_t& length)
   m_length = length;
 }
 
-std::shared_ptr<StreamObjectHeaderEnd> StreamObjectHeader::getEnd() const
+StreamObjectHeaderEnd StreamObjectHeader::getEnd() const
 {
-  return m_end;
-}
-
-void StreamObjectHeader::setEnd(
-    const std::shared_ptr<StreamObjectHeaderEnd>& end)
-{
-  m_end = end;
+  return StreamObjectHeaderEnd(m_type);
 }
 
 quint64 StreamObjectHeader::getSizeInFile() const
 {
-  uint16_t typeBits = static_cast<uint16_t>(m_type);
-  if (m_length < 127 && (typeBits >> 6) == 0) {
-    return 2;
-  }
-  else {
-    return 4;
-  }
+  return getSizeInFile(m_length,m_type);
 }
 
 quint64 StreamObjectHeader::getSizeInFile(
@@ -62,253 +51,20 @@ quint64 StreamObjectHeader::getSizeInFile(
     return 2;
   }
   else {
+
+    if (length > 0x7FFE) {
+      return 4 + CompactUInt64::getSizeInFile(length);
+    }
     return 4;
   }
 }
 
-QString StreamObjectHeader::typeToString(const StreamObjectType& type)
-{
-  switch (type) {
-  case StreamObjectType::DataElement:
-    return "DataElement";
-
-  case StreamObjectType::ObjectDataBLOB:
-    return "ObjectDataBLOB";
-
-  case StreamObjectType::ObjectGroupObjectExcludedData:
-    return "ObjectGroupObjectExcludedData";
-
-  case StreamObjectType::WaterlineKnowledgeEntry:
-    return "WaterlineKnowledgeEntry";
-
-  case StreamObjectType::ObjectGroupObjectDataBLOBDeclaration:
-    return "ObjectGroupObjectDataBLOBDeclaration";
-
-  case StreamObjectType::DataElementHash:
-    return "DataElementHash";
-
-  case StreamObjectType::StorageManifestRootDeclare:
-    return "StorageManifestRootDeclare";
-
-  case StreamObjectType::RevisionManifestRootDeclare:
-    return "RevisionManifestRootDeclare";
-
-  case StreamObjectType::CellManifestCurrentRevision:
-    return "CellManifestCurrentRevision";
-
-  case StreamObjectType::StorageManifestSchemaGUID:
-    return "StorageManifestSchemaGUID";
-
-  case StreamObjectType::StorageIndexRevisionMapping:
-    return "StorageIndexRevisionMapping";
-
-  case StreamObjectType::StorageIndexCellMapping:
-    return "StorageIndexCellMapping";
-
-  case StreamObjectType::CellKnowledgeRange:
-    return "CellKnowledgeRange";
-
-  case StreamObjectType::Knowledge:
-    return "Knowledge";
-
-  case StreamObjectType::StorageIndexManifestMapping:
-    return "StorageIndexManifestMapping";
-
-  case StreamObjectType::CellKnowledge:
-    return "CellKnowledge";
-
-  case StreamObjectType::DataElementPackage:
-    return "DataElementPackage";
-
-  case StreamObjectType::ObjectGroupObjectData:
-    return "ObjectGroupObjectData";
-
-  case StreamObjectType::CellKnowledgeEntry:
-    return "CellKnowledgeEntry";
-
-  case StreamObjectType::ObjectGroupObjectDeclare:
-    return "ObjectGroupObjectDeclare";
-
-  case StreamObjectType::RevisionManifestObjectGroupReference:
-    return "RevisionManifestObjectGroupReference";
-
-  case StreamObjectType::RevisionManifest:
-    return "RevisionManifest";
-
-  case StreamObjectType::ObjectGroupObjectDataBLOBReference:
-    return "ObjectGroupObjectDataBLOBReference";
-
-  case StreamObjectType::ObjectGroupDeclarations:
-    return "ObjectGroupDeclarations";
-
-  case StreamObjectType::ObjectGroupData:
-    return "ObjectGroupData";
-
-  case StreamObjectType::WaterlineKnowledge:
-    return "WaterlineKnowledge";
-
-  case StreamObjectType::ContentTagKnowledge:
-    return "ContentTagKnowledge";
-
-  case StreamObjectType::ContentTagKnowledgeEntry:
-    return "ContentTagKnowledgeEntry";
-
-  case StreamObjectType::QueryChangesVersioning:
-    return "QueryChangesVersioning";
-
-    /* 32bit header types */
-  case StreamObjectType::Request:
-    return "Request";
-
-  case StreamObjectType::Subresponse:
-    return "Subresponse";
-
-  case StreamObjectType::Subrequest:
-    return "Subrequest";
-
-  case StreamObjectType::ReadAccessResponse:
-    return "ReadAccessResponse";
-
-  case StreamObjectType::SpecializedKnowledge:
-    return "SpecializedKnowledge";
-
-  case StreamObjectType::WriteAccessResponse:
-    return "WriteAccessResponse";
-
-  case StreamObjectType::QueryChangesFilter:
-    return "QueryChangesFilter";
-
-  case StreamObjectType::ErrorWin32:
-    return "ErrorWin32";
-
-  case StreamObjectType::ErrorProtocol:
-    return "ErrorProtocol";
-
-  case StreamObjectType::Error:
-    return "Error";
-
-  case StreamObjectType::ErrorStringSupplementalInfo:
-    return "ErrorStringSupplementalInfo";
-
-  case StreamObjectType::UserAgentVersion:
-    return "UserAgentVersion";
-
-  case StreamObjectType::QueryChangesFilterSchemaSpecific:
-    return "QueryChangesFilterSchemaSpecific";
-
-  case StreamObjectType::QueryChangesRequest:
-    return "QueryChangesRequest";
-
-  case StreamObjectType::ErrorHRESULT:
-    return "ErrorHRESULT";
-
-  case StreamObjectType::QueryChangesFilterDataElementIDs:
-    return "QueryChangesFilterDataElementIDs";
-
-  case StreamObjectType::UserAgentGUID:
-    return "UserAgentGUID";
-
-  case StreamObjectType::QueryChangesFilterDataElementType:
-    return "QueryChangesFilterDataElementType";
-
-  case StreamObjectType::QueryChangesDataConstraint:
-    return "QueryChangesDataConstraint";
-
-  case StreamObjectType::PutChangesRequest:
-    return "PutChangesRequest";
-
-  case StreamObjectType::QueryChangesRequestArguments:
-    return "QueryChangesRequestArguments";
-
-  case StreamObjectType::QueryChangesFilterCellID:
-    return "QueryChangesFilterCellID";
-
-  case StreamObjectType::UserAgent:
-    return "UserAgent";
-
-  case StreamObjectType::QueryChangesResponse:
-    return "QueryChangesResponse";
-
-  case StreamObjectType::QueryChangesFilterHierarchy:
-    return "QueryChangesFilterHierarchy";
-
-  case StreamObjectType::Response:
-    return "Response";
-
-  case StreamObjectType::ErrorCell:
-    return "ErrorCell";
-
-  case StreamObjectType::QueryChangesFilterFlags:
-    return "QueryChangesFilterFlags";
-
-  case StreamObjectType::DataElementFragment:
-    return "DataElementFragment";
-
-  case StreamObjectType::FragmentKnowledge:
-    return "FragmentKnowledge";
-
-  case StreamObjectType::FragmentKnowledgeEntry:
-    return "FragmentKnowledgeEntry";
-
-  case StreamObjectType::ObjectGroupMetadata:
-    return "ObjectGroupMetadata";
-
-  case StreamObjectType::ObjectGroupMetadataDeclarations:
-    return "ObjectGroupMetadataDeclarations";
-
-  case StreamObjectType::ONPackageStart:
-    return "ONPackageStart";
-
-  case StreamObjectType::AllocateExtendedGUIDRangeRequest:
-    return "AllocateExtendedGUIDRangeRequest";
-
-  case StreamObjectType::AllocateExtendedGUIDRangeResponse:
-    return "AllocateExtendedGUIDRangeResponse";
-
-  case StreamObjectType::TargetPartitionId:
-    return "TargetPartitionId";
-
-  case StreamObjectType::PutChangesLockId:
-    return "PutChangesLockId";
-
-  case StreamObjectType::AdditionalFlags:
-    return "AdditionalFlags";
-
-  case StreamObjectType::PutChangesResponse:
-    return "PutChangesResponse";
-
-  case StreamObjectType::RequestHashingOptions:
-    return "RequestHashingOptions";
-
-  case StreamObjectType::DiagnosticRequestOptionOutput:
-    return "DiagnosticRequestOptionOutput";
-
-  case StreamObjectType::DiagnosticRequestOptionInput:
-    return "DiagnosticRequestOptionInput";
-
-  case StreamObjectType::UserAgentClientAndPlatform:
-    return "UserAgentClientAndPlatform";
-
-  case StreamObjectType::VersionTokenKnowledge:
-    return "VersionTokenKnowledge";
-
-  case StreamObjectType::CellRoundtripOptions:
-    return "CellRoundtripOptions";
-
-  case StreamObjectType::FileHash:
-    return "FileHash";
-
-  case StreamObjectType::Invalid:
-  default:
-    return QString::number(static_cast<uint16_t>(type), 16);
-  }
-}
-
-
 void StreamObjectHeader::deserialize(QDataStream& ds)
 {
 
+
   uint16_t composite;
+
   ds >> composite;
 
   /*16 bit header*/
@@ -321,11 +77,11 @@ void StreamObjectHeader::deserialize(QDataStream& ds)
     }
     else {
       qDebug() << "TypeVal: " << QString::number(typeVal);
-      qFatal("Incorrectly formated Stream Object Header (type)");
+      m_type = StreamObjectType::Invalid;
     }
     // test if compound bit is correct
     if (((composite >> 2) & 0x1) != compoundType.at(m_type)) {
-      qFatal("Incorrectlyformated Stream Object Header (compound bit)");
+      m_type = StreamObjectType::Invalid;
     }
 
     m_length = (composite >> 9) & 0x7F;
@@ -343,11 +99,11 @@ void StreamObjectHeader::deserialize(QDataStream& ds)
     }
     else {
       qDebug() << "TypeVal: " << QString::number(typeVal);
-      qFatal("Incorrectly formated Stream Object Header (type)");
+      m_type = StreamObjectType::Invalid;
     }
     // test if compound bit is correct
     if (((composite >> 2) & 0x1) != compoundType.at(m_type)) {
-      qFatal("Incorrectly formated Stream Object Header (compound bit)");
+      m_type = StreamObjectType::Invalid;
     }
 
 
@@ -366,8 +122,7 @@ void StreamObjectHeader::deserialize(QDataStream& ds)
     }
   }
   else {
-    qDebug() << "Composite:" << composite;
-    qWarning("Error: Incorrectly formated StreamObjectHeader");
+    m_type = StreamObjectType::Invalid;
   }
 }
 
@@ -406,5 +161,5 @@ void StreamObjectHeader::serialize(QDataStream& ds) const
   }
 }
 
-} // namespace packStore
+} // namespace fsshttpb
 } // namespace libmson

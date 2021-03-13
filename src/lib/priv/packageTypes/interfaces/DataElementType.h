@@ -1,10 +1,11 @@
 #ifndef DATAELEMENTTYPE_H
 #define DATAELEMENTTYPE_H
 
+#include <QString>
 #include <cstdint>
 
 namespace libmson {
-namespace packStore {
+namespace fsshttpb {
 
 enum class DataElementType : uint8_t {
   StorageIndex        = 0x01,
@@ -16,7 +17,7 @@ enum class DataElementType : uint8_t {
   ObjectDataBLOB      = 0x0A,
 };
 
-}
-}
+} // namespace fsshttpb
+} // namespace libmson
 
 #endif // DATAELEMENTTYPE_H

@@ -1,34 +1,67 @@
 add_subdirectory(interfaces)
+add_subdirectory(dataTypes)
 
 target_sources(libmson_priv
   PUBLIC
-    ${CMAKE_CURRENT_LIST_DIR}/CellManifest.h
-    ${CMAKE_CURRENT_LIST_DIR}/DataElementFragment.h
+    ${CMAKE_CURRENT_LIST_DIR}/CellManifestCurrentRevision.h
     ${CMAKE_CURRENT_LIST_DIR}/DataElement.h
+    ${CMAKE_CURRENT_LIST_DIR}/DataElementHash.h
+    ${CMAKE_CURRENT_LIST_DIR}/DataElementFragment.h
     ${CMAKE_CURRENT_LIST_DIR}/DataElementPackage.h
     ${CMAKE_CURRENT_LIST_DIR}/ObjectDataBLOB.h
-    ${CMAKE_CURRENT_LIST_DIR}/ObjectGroup.h
-    ${CMAKE_CURRENT_LIST_DIR}/PackagingStructure.h
+    ${CMAKE_CURRENT_LIST_DIR}/ObjectGroupData.h
+    ${CMAKE_CURRENT_LIST_DIR}/ObjectGroupDeclarations.h
+    ${CMAKE_CURRENT_LIST_DIR}/ObjectGroupMetadata.h
+    ${CMAKE_CURRENT_LIST_DIR}/ObjectGroupMetadataDeclarations.h
+    ${CMAKE_CURRENT_LIST_DIR}/ObjectGroupObjectData.h
+    ${CMAKE_CURRENT_LIST_DIR}/ObjectGroupObjectDataBLOBDeclaration.h
+    ${CMAKE_CURRENT_LIST_DIR}/ObjectGroupObjectDataBLOBReference.h
+    ${CMAKE_CURRENT_LIST_DIR}/ObjectGroupObjectDeclare.h
+    ${CMAKE_CURRENT_LIST_DIR}/ObjectGroupObjectExcludedData.h
+    ${CMAKE_CURRENT_LIST_DIR}/PackagingHeader.h
+    ${CMAKE_CURRENT_LIST_DIR}/PackagingStart.h
     ${CMAKE_CURRENT_LIST_DIR}/RevisionManifest.h
-    ${CMAKE_CURRENT_LIST_DIR}/StorageIndex.h
-    ${CMAKE_CURRENT_LIST_DIR}/StorageManifest.h
+    ${CMAKE_CURRENT_LIST_DIR}/RevisionManifestRootDeclare.h
+    ${CMAKE_CURRENT_LIST_DIR}/RevisionManifestObjectGroupReference.h
+    ${CMAKE_CURRENT_LIST_DIR}/StorageIndexCellMapping.h
+    ${CMAKE_CURRENT_LIST_DIR}/StorageIndexDataElement.h
+    ${CMAKE_CURRENT_LIST_DIR}/StorageIndexManifestMapping.h
+    ${CMAKE_CURRENT_LIST_DIR}/StorageIndexRevisionMapping.h
+    ${CMAKE_CURRENT_LIST_DIR}/StorageManifestRootDeclare.h
+    ${CMAKE_CURRENT_LIST_DIR}/StorageManifestSchemaGUID.h
     ${CMAKE_CURRENT_LIST_DIR}/StreamObjectHeaderEnd.h
     ${CMAKE_CURRENT_LIST_DIR}/StreamObjectHeader.h
-    ${CMAKE_CURRENT_LIST_DIR}/StreamObjectTypes.h
   PRIVATE
-    ${CMAKE_CURRENT_LIST_DIR}/CellManifest.cpp
     ${CMAKE_CURRENT_LIST_DIR}/DataElement.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/DataElementHash.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/CellManifestCurrentRevision.cpp
     ${CMAKE_CURRENT_LIST_DIR}/DataElementFragment.cpp
     ${CMAKE_CURRENT_LIST_DIR}/DataElementPackage.cpp
     ${CMAKE_CURRENT_LIST_DIR}/ObjectDataBLOB.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/ObjectGroup.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/PackagingStructure.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/ObjectGroupData.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/ObjectGroupDeclarations.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/ObjectGroupMetadata.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/ObjectGroupMetadataDeclarations.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/ObjectGroupObjectData.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/ObjectGroupObjectDataBLOBDeclaration.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/ObjectGroupObjectDataBLOBReference.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/ObjectGroupObjectDeclare.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/ObjectGroupObjectExcludedData.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/PackagingHeader.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/PackagingStart.cpp
     ${CMAKE_CURRENT_LIST_DIR}/RevisionManifest.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/StorageIndex.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/StorageManifest.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/RevisionManifestRootDeclare.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/RevisionManifestObjectGroupReference.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/StorageIndexCellMapping.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/StorageIndexDataElement.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/StorageIndexManifestMapping.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/StorageIndexRevisionMapping.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/StorageManifestRootDeclare.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/StorageManifestSchemaGUID.cpp
     ${CMAKE_CURRENT_LIST_DIR}/StreamObjectHeader.cpp
     ${CMAKE_CURRENT_LIST_DIR}/StreamObjectHeaderEnd.cpp
+
 )
 
-add_subdirectory(streamObjects)
+#add_subdirectory(streamObjects)
 

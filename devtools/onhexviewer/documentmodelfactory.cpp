@@ -19,6 +19,14 @@
 
 #include "../../../src/lib/priv/chunkables/fileNodeTypes/FileNodeTypeIDs.h"
 
+#include <priv/packageTypes/DataElement.h>
+#include <priv/packageTypes/DataElementPackage.h>
+#include <priv/packageTypes/StreamObjectHeader.h>
+#include <priv/packageTypes/dataTypes/CellIdArray.h>
+#include <priv/packageTypes/dataTypes/CompactExtGuid.h>
+#include <priv/packageTypes/dataTypes/CompactExtGuidArray.h>
+#include <priv/packageTypes/dataTypes/CompactUInt64.h>
+
 
 DocumentModelFactory::DocumentModelFactory(const QString& fileName)
     : m_fileName(fileName)
@@ -50,7 +58,7 @@ void DocumentModelFactory::createModel(DocumentModel* tree)
 
   case libmson::OnFormat::One_packStore:
   case libmson::OnFormat::OneToc_packStore:
-    //    createPackageStoreModel(tree, m_fileName);
+    createPackageStoreModel(tree, m_fileName);
     break;
   }
 }
@@ -139,7 +147,8 @@ void DocumentModelFactory::createRevisionStoreModel(
     }
     case libmson::priv::RevisionStoreChunkType::OrphanedAllocation: {
       appendOrphanedAllocation(
-          std::dynamic_pointer_cast<libmson::priv::OrphanedAllocation>(chunk), root);
+          std::dynamic_pointer_cast<libmson::priv::OrphanedAllocation>(chunk),
+          root);
       break;
     }
     case libmson::priv::RevisionStoreChunkType::RevisionStoreFileHeader:
@@ -159,80 +168,16 @@ void DocumentModelFactory::createPackageStoreModel(
   auto* root = tree->root();
 
 
+  quint64 stp = appendPackagingStructureHeader(packageStoreFile, root);
 
+  //  appendPackagingStart(packageStoreFile->getPackagingStart().lock(), stp,
+  //  root);
 
-//  for (const auto& chunk : revisionStoreFile->getChunks()) {
+  auto packagingStart = packageStoreFile->getPackagingStart().lock();
 
-//    switch (chunk->type()) {
-
-//    case libmson::priv::RevisionStoreChunkType::FileNodeListFragment: {
-//      appendFileNodeListFragment(
-//          std::dynamic_pointer_cast<libmson::priv::FileNodeListFragment>(chunk),
-//          revisionStoreFile, root);
-//      break;
-//    }
-//    case libmson::priv::RevisionStoreChunkType::FileNode: {
-//      appendFileNode(
-//          std::dynamic_pointer_cast<libmson::priv::FileNode>(chunk),
-//          revisionStoreFile, root);
-//      break;
-//    }
-//    case libmson::priv::RevisionStoreChunkType::FreeChunkListFragment: {
-//      appendFreeChunkListFragment(
-//          std::dynamic_pointer_cast<libmson::priv::FreeChunkListFragment>(
-//              chunk),
-//          revisionStoreFile, root);
-//      break;
-//    }
-//    case libmson::priv::RevisionStoreChunkType::FreeChunk: {
-//      appendFreeChunk(
-//          std::dynamic_pointer_cast<libmson::priv::FreeChunk>(chunk), root);
-//      break;
-//    }
-//    case libmson::priv::RevisionStoreChunkType::TransactionLogFragment: {
-//      appendTransactionLogFragment(
-//          std::dynamic_pointer_cast<libmson::priv::TransactionLogFragment>(
-//              chunk),
-//          revisionStoreFile, root);
-//      break;
-//    }
-//    case libmson::priv::RevisionStoreChunkType::FileDataStoreObject: {
-//      appendFileDataStoreObject(
-//          std::dynamic_pointer_cast<libmson::priv::FileDataStoreObject>(chunk),
-//          root);
-//      break;
-//    }
-//    case libmson::priv::RevisionStoreChunkType::ObjectSpaceObjectPropSet: {
-//      appendObjectSpaceObjectPropSet(
-//          std::dynamic_pointer_cast<libmson::priv::ObjectSpaceObjectPropSet>(
-//              chunk),
-//          root);
-//      break;
-//    }
-//    case libmson::priv::RevisionStoreChunkType::
-//        ObjectInfoDependencyOverrideData: {
-//      appendObjectInfoDependencyOverrideData(
-//          std::dynamic_pointer_cast<
-//              libmson::priv::ObjectInfoDependencyOverrideData>(chunk),
-//          root);
-//      break;
-//    }
-//    case libmson::priv::RevisionStoreChunkType::EncryptedData: {
-//      appendEncryptedData(
-//          std::dynamic_pointer_cast<libmson::priv::EncryptedData>(chunk), root);
-//      break;
-//    }
-//    case libmson::priv::RevisionStoreChunkType::OrphanedAllocation: {
-//      appendOrphanedAllocation(
-//          std::dynamic_pointer_cast<libmson::priv::OrphanedAllocation>(chunk), root);
-//      break;
-//    }
-//    case libmson::priv::RevisionStoreChunkType::RevisionStoreFileHeader:
-//    case libmson::priv::RevisionStoreChunkType::Invalid: {
-//      break;
-//    }
-//    }
-//  }
+  if (packagingStart != nullptr) {
+    appendStreamObject(packagingStart, stp, root);
+  }
 }
 
 std::shared_ptr<libmson::priv::RevisionStoreFile>
@@ -776,8 +721,8 @@ void DocumentModelFactory::appendOrphanedAllocation(
     const libmson::priv::OrphanedAllocation_SPtr_t& chunk, DocumentItem* parent)
 {
   appendNewChild(
-      QStringLiteral("OrphanedAllocation"), QStringLiteral("Chunkable"), QString(),
-      chunk->getInitialStp(), chunk->getInitialCb(), parent);
+      QStringLiteral("OrphanedAllocation"), QStringLiteral("Chunkable"),
+      QString(), chunk->getInitialStp(), chunk->getInitialCb(), parent);
 }
 
 void DocumentModelFactory::appendFileNodeData(
@@ -1350,8 +1295,7 @@ void DocumentModelFactory::appendObjectDeclarationFileData3RefCountFND(
       fnd->getFileDataReference(), QStringLiteral("FileDataReference"), fndstp,
       parent);
   appendStringInStorageBuffer(
-      fnd->getExtension(), QStringLiteral("Extension"), fndstp,
-      parent);
+      fnd->getExtension(), QStringLiteral("Extension"), fndstp, parent);
 }
 
 void DocumentModelFactory::appendObjectDeclarationFileData3LargeRefCountFND(
@@ -2196,35 +2140,1153 @@ DocumentModelFactory::appendPTNoData(quint64& stp, DocumentItem* parent)
 }
 
 
-void DocumentModelFactory::appendPackagingStructure(
+quint64 DocumentModelFactory::appendPackagingStructureHeader(
     const libmson::packStore::PackageStoreFile_SPtr_t& packStoreFile,
     DocumentItem* parent)
 {
   auto header = packStoreFile->getHeader();
 
-//  // add Header
-//  auto* headerItem = appendNewChild(
-//      QStringLiteral("Header"), QStringLiteral("PackagingStructure"),
-//      QStringLiteral("RevisionStoreFile"), stp, header->getInitialCb(), parent);
+  quint64 stp = 0;
 
-//  appendGuid(
-//      header->getGuidFileType(), QStringLiteral("GuidFileType"), stp,
-//      headerItem);
+  // add Header
+  auto* headerItem = appendNewChild(
+      QStringLiteral("Header"), QStringLiteral("PackagingStructure"),
+      QStringLiteral("PackageStoreFile"), stp, header.getSizeInFile(), parent);
 
-//  appendGuid(
-//      header->getGuidFile(), QStringLiteral("GuidFile"), stp, headerItem);
+  appendGuid(
+      header.getGuidFileType(), QStringLiteral("GuidFileType"), stp,
+      headerItem);
 
-//  appendGuid(
-//      header->getGuidLegacyFileVersion(),
-//      QStringLiteral("GuidLegacyFileVersion"), stp, headerItem);
+  appendGuid(header.getGuidFile(), QStringLiteral("GuidFile"), stp, headerItem);
 
-//  appendGuid(
-//      header->getGuidFileFormat(), QStringLiteral("GuidFileFormat"), stp,
+  appendGuid(
+      header.getGuidLegacyFileVersion(),
+      QStringLiteral("GuidLegacyFileVersion"), stp, headerItem);
 
-  //  // add Header
-  //  auto* headerItem = appendNewChild(
-  //      QStringLiteral("Header"), QStringLiteral("Chunkable"),
-  //      QStringLiteral("RevisionStoreFile"), 0, packStoreFile->), parent);
+  appendGuid(
+      header.getGuidFileFormat(), QStringLiteral("GuidFileFormat"), stp,
+      headerItem);
+
+  appendNewChild(
+      QStringLiteral("reserved"), QString(), QString(), stp, 4, headerItem);
+  stp += 4;
+
+  return stp;
+}
+
+DocumentItem* DocumentModelFactory::appendStreamObject(
+    const libmson::fsshttpb::IStreamObject_SPtr_t& obj, quint64& stp,
+    DocumentItem* parent)
+{
+
+  DocumentItem* composite;
+
+  switch (obj->getType()) {
+    //  case libmson::fsshttpb::StreamObjectType::Invalid:
+    //    break;
+  case libmson::fsshttpb::StreamObjectType::DataElement: {
+    auto cast = std::static_pointer_cast<libmson::fsshttpb::DataElement>(obj);
+    composite = appendDataElement(cast, stp, parent);
+    break;
+  }
+  case libmson::fsshttpb::StreamObjectType::ObjectDataBLOB: {
+    auto cast =
+        std::static_pointer_cast<libmson::fsshttpb::ObjectDataBLOB>(obj);
+    composite = appendObjectDataBLOB(cast, stp, parent);
+    break;
+  }
+  case libmson::fsshttpb::StreamObjectType::ObjectGroupObjectExcludedData: {
+    auto cast = std::static_pointer_cast<
+        libmson::fsshttpb::ObjectGroupObjectExcludedData>(obj);
+    composite = appendObjectGroupObjectExcludedData(cast, stp, parent);
+    break;
+  }
+    //  case libmson::fsshttpb::StreamObjectType::WaterlineKnowledgeEntry:
+    //    break;
+  case libmson::fsshttpb::StreamObjectType::
+      ObjectGroupObjectDataBLOBDeclaration: {
+    auto cast = std::static_pointer_cast<
+        libmson::fsshttpb::ObjectGroupObjectDataBLOBDeclaration>(obj);
+    composite = appendObjectGroupObjectDataBLOBDeclaration(cast, stp, parent);
+    break;
+  }
+  case libmson::fsshttpb::StreamObjectType::DataElementHash: {
+    auto cast =
+        std::static_pointer_cast<libmson::fsshttpb::DataElementHash>(obj);
+    composite = appendDataElementHash(cast, stp, parent);
+    break;
+  }
+  case libmson::fsshttpb::StreamObjectType::StorageManifestRootDeclare: {
+    auto cast =
+        std::static_pointer_cast<libmson::fsshttpb::StorageManifestRootDeclare>(
+            obj);
+    composite = appendStorageManifestRootDeclare(cast, stp, parent);
+    break;
+  }
+  case libmson::fsshttpb::StreamObjectType::RevisionManifestRootDeclare: {
+    auto cast = std::static_pointer_cast<
+        libmson::fsshttpb::RevisionManifestRootDeclare>(obj);
+    composite = appendRevisionManifestRootDeclare(cast, stp, parent);
+    break;
+  }
+  case libmson::fsshttpb::StreamObjectType::CellManifestCurrentRevision: {
+    auto cast = std::static_pointer_cast<
+        libmson::fsshttpb::CellManifestCurrentRevision>(obj);
+    composite = appendCellManifestCurrentRevision(cast, stp, parent);
+    break;
+  }
+  case libmson::fsshttpb::StreamObjectType::StorageManifestSchemaGUID: {
+    auto cast =
+        std::static_pointer_cast<libmson::fsshttpb::StorageManifestSchemaGUID>(
+            obj);
+    composite = appendStorageManifestSchemaGUID(cast, stp, parent);
+    break;
+  }
+  case libmson::fsshttpb::StreamObjectType::StorageIndexRevisionMapping: {
+    auto cast = std::static_pointer_cast<
+        libmson::fsshttpb::StorageIndexRevisionMapping>(obj);
+    composite = appendStorageIndexRevisionMapping(cast, stp, parent);
+    break;
+  }
+  case libmson::fsshttpb::StreamObjectType::StorageIndexCellMapping: {
+    auto cast =
+        std::static_pointer_cast<libmson::fsshttpb::StorageIndexCellMapping>(
+            obj);
+    composite = appendStorageIndexCellMapping(cast, stp, parent);
+    break;
+  }
+    //  case libmson::fsshttpb::StreamObjectType::CellKnowledgeRange:
+    //    break;
+    //  case libmson::fsshttpb::StreamObjectType::Knowledge:
+    //    break;
+  case libmson::fsshttpb::StreamObjectType::StorageIndexManifestMapping: {
+    auto cast = std::static_pointer_cast<
+        libmson::fsshttpb::StorageIndexManifestMapping>(obj);
+    composite = appendStorageIndexManifestMapping(cast, stp, parent);
+    break;
+  }
+    //  case libmson::fsshttpb::StreamObjectType::CellKnowledge:
+    //    break;
+  case libmson::fsshttpb::StreamObjectType::DataElementPackage: {
+    auto cast =
+        std::static_pointer_cast<libmson::fsshttpb::DataElementPackage>(obj);
+    composite = appendDataElementPackage(cast, stp, parent);
+    break;
+  }
+  case libmson::fsshttpb::StreamObjectType::ObjectGroupObjectData: {
+    auto cast =
+        std::static_pointer_cast<libmson::fsshttpb::ObjectGroupObjectData>(obj);
+    composite = appendObjectGroupObjectData(cast, stp, parent);
+    break;
+  }
+    //  case libmson::fsshttpb::StreamObjectType::CellKnowledgeEntry:
+    //    break;
+  case libmson::fsshttpb::StreamObjectType::ObjectGroupObjectDeclare: {
+    auto cast =
+        std::static_pointer_cast<libmson::fsshttpb::ObjectGroupObjectDeclare>(
+            obj);
+    composite = appendObjectGroupObjectDeclare(cast, stp, parent);
+    break;
+  }
+  case libmson::fsshttpb::StreamObjectType::
+      RevisionManifestObjectGroupReference: {
+    auto cast = std::static_pointer_cast<
+        libmson::fsshttpb::RevisionManifestObjectGroupReference>(obj);
+    composite = appendRevisionManifestObjectGroupReference(cast, stp, parent);
+    break;
+  }
+  case libmson::fsshttpb::StreamObjectType::RevisionManifest: {
+    auto cast =
+        std::static_pointer_cast<libmson::fsshttpb::RevisionManifest>(obj);
+    composite = appendRevisionManifest(cast, stp, parent);
+    break;
+  }
+  case libmson::fsshttpb::StreamObjectType::
+      ObjectGroupObjectDataBLOBReference: {
+    auto cast = std::static_pointer_cast<
+        libmson::fsshttpb::ObjectGroupObjectDataBLOBReference>(obj);
+    composite = appendObjectGroupObjectDataBLOBReference(cast, stp, parent);
+    break;
+  }
+  case libmson::fsshttpb::StreamObjectType::ObjectGroupDeclarations: {
+    auto cast =
+        std::static_pointer_cast<libmson::fsshttpb::ObjectGroupDeclarations>(
+            obj);
+    composite = appendObjectGroupDeclarations(cast, stp, parent);
+    break;
+  }
+  case libmson::fsshttpb::StreamObjectType::ObjectGroupData: {
+    auto cast =
+        std::static_pointer_cast<libmson::fsshttpb::ObjectGroupData>(obj);
+    composite = appendObjectGroupData(cast, stp, parent);
+    break;
+  }
+    //  case libmson::fsshttpb::StreamObjectType::WaterlineKnowledge:
+    //    break;
+    //  case libmson::fsshttpb::StreamObjectType::ContentTagKnowledge:
+    //    break;
+    //  case libmson::fsshttpb::StreamObjectType::ContentTagKnowledgeEntry:
+    //    break;
+    //  case libmson::fsshttpb::StreamObjectType::QueryChangesVersioning:
+    //    break;
+    //  case libmson::fsshttpb::StreamObjectType::Request:
+    //    break;
+    //  case libmson::fsshttpb::StreamObjectType::Subresponse:
+    //    break;
+    //  case libmson::fsshttpb::StreamObjectType::Subrequest:
+    //    break;
+    //  case libmson::fsshttpb::StreamObjectType::ReadAccessResponse:
+    //    break;
+    //  case libmson::fsshttpb::StreamObjectType::SpecializedKnowledge:
+    //    break;
+    //  case libmson::fsshttpb::StreamObjectType::WriteAccessResponse:
+    //    break;
+    //  case libmson::fsshttpb::StreamObjectType::QueryChangesFilter:
+    //    break;
+    //  case libmson::fsshttpb::StreamObjectType::ErrorWin32:
+    //    break;
+    //  case libmson::fsshttpb::StreamObjectType::ErrorProtocol:
+    //    break;
+    //  case libmson::fsshttpb::StreamObjectType::Error:
+    //    break;
+    //  case libmson::fsshttpb::StreamObjectType::ErrorStringSupplementalInfo:
+    //    break;
+    //  case libmson::fsshttpb::StreamObjectType::UserAgentVersion:
+    //    break;
+    //  case
+    //  libmson::fsshttpb::StreamObjectType::QueryChangesFilterSchemaSpecific:
+    //    break;
+    //  case libmson::fsshttpb::StreamObjectType::QueryChangesRequest:
+    //    break;
+    //  case libmson::fsshttpb::StreamObjectType::ErrorHRESULT:
+    //    break;
+    //  case
+    //  libmson::fsshttpb::StreamObjectType::QueryChangesFilterDataElementIDs:
+    //    break;
+    //  case libmson::fsshttpb::StreamObjectType::UserAgentGUID:
+    //    break;
+    //  case
+    //  libmson::fsshttpb::StreamObjectType::QueryChangesFilterDataElementType:
+    //    break;
+    //  case libmson::fsshttpb::StreamObjectType::QueryChangesDataConstraint:
+    //    break;
+    //  case libmson::fsshttpb::StreamObjectType::PutChangesRequest:
+    //    break;
+    //  case libmson::fsshttpb::StreamObjectType::QueryChangesRequestArguments:
+    //    break;
+    //  case libmson::fsshttpb::StreamObjectType::QueryChangesFilterCellID:
+    //    break;
+    //  case libmson::fsshttpb::StreamObjectType::UserAgent:
+    //    break;
+    //  case libmson::fsshttpb::StreamObjectType::QueryChangesResponse:
+    //    break;
+    //  case libmson::fsshttpb::StreamObjectType::QueryChangesFilterHierarchy:
+    //    break;
+    //  case libmson::fsshttpb::StreamObjectType::Response:
+    //    break;
+    //  case libmson::fsshttpb::StreamObjectType::ErrorCell:
+    //    break;
+    //  case libmson::fsshttpb::StreamObjectType::QueryChangesFilterFlags:
+    //    break;
+  case libmson::fsshttpb::StreamObjectType::DataElementFragment: {
+    auto cast =
+        std::static_pointer_cast<libmson::fsshttpb::DataElementFragment>(obj);
+    composite = appendDataElementFragment(cast, stp, parent);
+    break;
+  }
+    //  case libmson::fsshttpb::StreamObjectType::FragmentKnowledge:
+    //    break;
+    //  case libmson::fsshttpb::StreamObjectType::FragmentKnowledgeEntry:
+    //    break;
+  case libmson::fsshttpb::StreamObjectType::ObjectGroupMetadata: {
+    auto cast =
+        std::static_pointer_cast<libmson::fsshttpb::ObjectGroupMetadata>(obj);
+    composite = appendObjectGroupMetadata(cast, stp, parent);
+    break;
+  }
+  case libmson::fsshttpb::StreamObjectType::ObjectGroupMetadataDeclarations: {
+    auto cast = std::static_pointer_cast<
+        libmson::fsshttpb::ObjectGroupMetadataDeclarations>(obj);
+    composite = appendObjectGroupMetadataDeclarations(cast, stp, parent);
+    break;
+  }
+  case libmson::fsshttpb::StreamObjectType::ONPackageStart: {
+    auto cast =
+        std::static_pointer_cast<libmson::fsshttpb::PackagingStart>(obj);
+    composite = appendPackagingStart(cast, stp, parent);
+    break;
+  }
+    //  case
+    //  libmson::fsshttpb::StreamObjectType::AllocateExtendedGUIDRangeRequest:
+    //    break;
+    //  case
+    //  libmson::fsshttpb::StreamObjectType::AllocateExtendedGUIDRangeResponse:
+    //    break;
+    //  case libmson::fsshttpb::StreamObjectType::TargetPartitionId:
+    //    break;
+    //  case libmson::fsshttpb::StreamObjectType::PutChangesLockId:
+    //    break;
+    //  case libmson::fsshttpb::StreamObjectType::AdditionalFlags:
+    //    break;
+    //  case libmson::fsshttpb::StreamObjectType::PutChangesResponse:
+    //    break;
+    //  case libmson::fsshttpb::StreamObjectType::RequestHashingOptions:
+    //    break;
+    //  case libmson::fsshttpb::StreamObjectType::DiagnosticRequestOptionOutput:
+    //    break;
+    //  case libmson::fsshttpb::StreamObjectType::DiagnosticRequestOptionInput:
+    //    break;
+    //  case libmson::fsshttpb::StreamObjectType::UserAgentClientAndPlatform:
+    //    break;
+    //  case libmson::fsshttpb::StreamObjectType::VersionTokenKnowledge:
+    //    break;
+    //  case libmson::fsshttpb::StreamObjectType::CellRoundtripOptions:
+    //    break;
+    //  case libmson::fsshttpb::StreamObjectType::FileHash:
+    //    break;
+  default:
+    composite = appendIStreamObject(obj, stp, parent);
+    break;
+  }
+
+  auto children = obj->getObjects();
+
+  quint64 cbChildren = std::accumulate(
+      children.begin(), children.end(), 0, [](quint64 sum, const auto& ptr) {
+        return sum + ptr.lock()->getSizeInFile();
+      });
+
+
+  if (obj->isCompound()) {
+    auto* childrenItem = appendNewChild(
+        QStringLiteral("Children"), QString(),
+        QString::number(obj->size()) + QString(" objects"), stp, cbChildren,
+        composite);
+
+    libmson::fsshttpb::IStreamObject_SPtr_t child;
+    for (const auto& ptr : obj->getObjects()) {
+
+      child = ptr.lock();
+      if (child != nullptr) {
+        appendStreamObject(child, stp, childrenItem);
+      }
+    }
+
+    appendStreamObjectHeaderEnd(obj->getType(), stp, composite);
+  }
+
+
+  return composite;
+}
+
+DocumentItem* DocumentModelFactory::appendIStreamObject(
+    const libmson::fsshttpb::IStreamObject_SPtr_t& obj, quint64& stp,
+    DocumentItem* parent)
+{
+
+
+  auto item = appendNewChild(
+      QStringLiteral("IStreamObject"),
+      libmson::fsshttpb::streamObjectTypeToString(obj->getType()), QString(),
+      stp, obj->getSizeInFile(), parent);
+
+  appendStreamObjectHeader(obj->getType(), obj->getCbNextHeader(), stp, item);
+  stp += obj->getCbNextHeader();
+
+  return item;
+}
+
+DocumentItem* DocumentModelFactory::appendCellManifestCurrentRevision(
+    const libmson::fsshttpb::CellManifestCurrentRevision_SPtr_t& obj,
+    quint64& stp, DocumentItem* parent)
+{
+  auto cb = obj->getSizeInFile();
+
+  auto* item = appendNewChild(
+      QStringLiteral("CellManifestCurrentRevision"),
+      QStringLiteral("StreamObject"), QString(), stp, cb, parent);
+
+  appendStreamObjectHeader(obj->getType(), obj->getCbNextHeader(), stp, item);
+
+  appendCompactExtGuid(
+      obj->getExtendedGuid(), QStringLiteral("Current Revision"), stp, item);
+
+
+  return item;
+}
+
+DocumentItem* DocumentModelFactory::appendPackagingStart(
+    const libmson::fsshttpb::PackagingStart_SPtr_t& obj, quint64& stp,
+    DocumentItem* parent)
+{
+
+  auto cb = obj->getSizeInFile();
+
+  auto* item = appendNewChild(
+      QStringLiteral("PackagingStart"), QStringLiteral("StreamObject"),
+      QString(), stp, cb, parent);
+
+  appendStreamObjectHeader(obj->getType(), obj->getCbNextHeader(), stp, item);
+
+  appendCompactExtGuid(
+      obj->getStorageIndex(), QStringLiteral("StorageIndexExtendedGUID"), stp,
+      item);
+
+  appendGuid(
+      obj->getGuidCellSchemaId(), QStringLiteral("guidCellSchemaId"), stp,
+      item);
+
+  return item;
+}
+
+DocumentItem* DocumentModelFactory::appendRevisionManifest(
+    const libmson::fsshttpb::RevisionManifest_SPtr_t& obj, quint64& stp,
+    DocumentItem* parent)
+{
+  auto cb = obj->getSizeInFile();
+
+  auto* item = appendNewChild(
+      QStringLiteral("RevisionManifest"), QStringLiteral("StreamObject"),
+      QString(), stp, cb, parent);
+
+  appendStreamObjectHeader(obj->getType(), obj->getCbNextHeader(), stp, item);
+
+  appendCompactExtGuid(
+      obj->getRevisionId(), QStringLiteral("RevisionId"), stp, item);
+
+  appendCompactExtGuid(
+      obj->getBaseRevisionId(), QStringLiteral("BaseRevisionId"), stp, item);
+
+  return item;
+}
+
+DocumentItem* DocumentModelFactory::appendRevisionManifestRootDeclare(
+    const libmson::fsshttpb::RevisionManifestRootDeclare_SPtr_t& obj,
+    quint64& stp, DocumentItem* parent)
+{
+
+  auto cb = obj->getSizeInFile();
+
+  auto* item = appendNewChild(
+      QStringLiteral("RevisionManifestRootDeclare"),
+      QStringLiteral("StreamObject"), QString(), stp, cb, parent);
+
+  appendStreamObjectHeader(obj->getType(), obj->getCbNextHeader(), stp, item);
+
+  appendCompactExtGuid(
+      obj->getRootGUID(), QStringLiteral("RootExtendedGUID"), stp, item);
+
+  appendCompactExtGuid(
+      obj->getObjectGUID(), QStringLiteral("ObjectExtendedGUID"), stp, item);
+
+  return item;
+}
+
+DocumentItem* DocumentModelFactory::appendRevisionManifestObjectGroupReference(
+    const libmson::fsshttpb::RevisionManifestObjectGroupReference_SPtr_t& obj,
+    quint64& stp, DocumentItem* parent)
+{
+  auto cb = obj->getSizeInFile();
+
+  auto* item = appendNewChild(
+      QStringLiteral("RevisionManifestObjectGroupReferenc"),
+      QStringLiteral("StreamObject"), QString(), stp, cb, parent);
+
+  appendStreamObjectHeader(obj->getType(), obj->getCbNextHeader(), stp, item);
+
+  appendCompactExtGuid(
+      obj->getObjectGroup(), QStringLiteral("ObjectGroup"), stp, item);
+
+  return item;
+}
+
+DocumentItem* DocumentModelFactory::appendStorageIndexCellMapping(
+    const libmson::fsshttpb::StorageIndexCellMapping_SPtr_t& obj, quint64& stp,
+    DocumentItem* parent)
+{
+  auto cb = obj->getSizeInFile();
+
+  auto* item = appendNewChild(
+      QStringLiteral("StorageIndexCellMapping"), QStringLiteral("StreamObject"),
+      QString(), stp, cb, parent);
+
+  appendStreamObjectHeader(obj->getType(), obj->getCbNextHeader(), stp, item);
+
+  appendCellId(obj->getCellId(), QStringLiteral("Cell ID"), stp, item);
+
+  appendCompactExtGuid(
+      obj->getExtendedGuid(), QStringLiteral("Cell Mapping"), stp, item);
+
+  appendLongExtGuid(
+      obj->getSerialNumber(), QStringLiteral("Serial Number"), stp, item);
+
+  return item;
+}
+
+DocumentItem* DocumentModelFactory::appendStorageIndexManifestMapping(
+    const libmson::fsshttpb::StorageIndexManifestMapping_SPtr_t& obj,
+    quint64& stp, DocumentItem* parent)
+{
+  auto cb = obj->getSizeInFile();
+
+  auto* item = appendNewChild(
+      QStringLiteral("StorageIndexManifestMapping"),
+      QStringLiteral("StreamObject"), QString(), stp, cb, parent);
+
+  appendStreamObjectHeader(obj->getType(), obj->getCbNextHeader(), stp, item);
+
+  appendCompactExtGuid(
+      obj->getExtendedGuid(), QStringLiteral("Manifest Mapping"), stp, item);
+
+  appendLongExtGuid(
+      obj->getSerialNumber(), QStringLiteral("Serial Number"), stp, item);
+
+  return item;
+}
+
+DocumentItem* DocumentModelFactory::appendStorageIndexRevisionMapping(
+    const libmson::fsshttpb::StorageIndexRevisionMapping_SPtr_t& obj,
+    quint64& stp, DocumentItem* parent)
+{
+  auto cb = obj->getSizeInFile();
+
+  auto* item = appendNewChild(
+      QStringLiteral("StorageIndexRevisionMapping"),
+      QStringLiteral("StreamObject"), QString(), stp, cb, parent);
+
+  appendStreamObjectHeader(obj->getType(), obj->getCbNextHeader(), stp, item);
+
+  appendCompactExtGuid(
+      obj->getRevision(), QStringLiteral("Revision"), stp, item);
+
+  appendCompactExtGuid(
+      obj->getExtendedGuid(), QStringLiteral("Revision Mapping"), stp, item);
+
+  appendLongExtGuid(
+      obj->getSerialNumber(), QStringLiteral("Serial Number"), stp, item);
+
+  return item;
+}
+
+DocumentItem* DocumentModelFactory::appendStorageManifestRootDeclare(
+    const libmson::fsshttpb::StorageManifestRootDeclare_SPtr_t& obj,
+    quint64& stp, DocumentItem* parent)
+{
+  auto cb = obj->getSizeInFile();
+
+  auto* item = appendNewChild(
+      QStringLiteral("StorageIndexRevisionMapping"),
+      QStringLiteral("StreamObject"), QString(), stp, cb, parent);
+
+  appendStreamObjectHeader(obj->getType(), obj->getCbNextHeader(), stp, item);
+
+  appendCompactExtGuid(
+      obj->getExtendedGuid(), QStringLiteral("Root"), stp, item);
+
+  appendCellId(obj->getCellId(), QStringLiteral("Cell ID"), stp, item);
+
+
+  return item;
+}
+
+DocumentItem* DocumentModelFactory::appendStorageManifestSchemaGUID(
+    const libmson::fsshttpb::StorageManifestSchemaGUID_SPtr_t& obj,
+    quint64& stp, DocumentItem* parent)
+{
+  auto cb = obj->getSizeInFile();
+
+  auto* item = appendNewChild(
+      QStringLiteral("StorageIndexRevisionMapping"),
+      QStringLiteral("StreamObject"), QString(), stp, cb, parent);
+
+  appendStreamObjectHeader(obj->getType(), obj->getCbNextHeader(), stp, item);
+  appendGuid(obj->getGuid(), QStringLiteral("Schema GUID"), stp, item);
+
+  return item;
+}
+
+DocumentItem* DocumentModelFactory::appendDataElementPackage(
+    const libmson::fsshttpb::DataElementPackage_SPtr_t& obj, quint64& stp,
+    DocumentItem* parent)
+{
+  auto cb = obj->getSizeInFile();
+
+  auto* item = appendNewChild(
+      QStringLiteral("DataElementPackage"), QStringLiteral("StreamObject"),
+      QString(), stp, cb, parent);
+
+  appendStreamObjectHeader(obj->getType(), obj->getCbNextHeader(), stp, item);
+
+  appendUInt8(0, QStringLiteral("reserved"), stp, item);
+
+  return item;
+}
+
+DocumentItem* DocumentModelFactory::appendObjectDataBLOB(
+    const libmson::fsshttpb::ObjectDataBLOB_SPtr_t& obj, quint64& stp,
+    DocumentItem* parent)
+{
+  auto cb = obj->getSizeInFile();
+
+  auto* item = appendNewChild(
+      QStringLiteral("ObjectDataBLOB"), QStringLiteral("StreamObject"),
+      QString(), stp, cb, parent);
+
+  appendStreamObjectHeader(obj->getType(), obj->getCbNextHeader(), stp, item);
+
+  appendNewChild(
+      QStringLiteral("Data"), QStringLiteral("ByteArray"),
+      obj->getData().toHex(), stp, obj->getData().size(), item);
+  stp += obj->getData().size();
+
+  return item;
+}
+
+DocumentItem* DocumentModelFactory::appendObjectGroupData(
+    const libmson::fsshttpb::ObjectGroupData_SPtr_t& obj, quint64& stp,
+    DocumentItem* parent)
+{
+  auto cb = obj->getSizeInFile();
+
+  auto* item = appendNewChild(
+      QStringLiteral("ObjectGroupData"), QStringLiteral("StreamObject"),
+      QString(), stp, cb, parent);
+
+  appendStreamObjectHeader(obj->getType(), obj->getCbNextHeader(), stp, item);
+
+  return item;
+}
+
+DocumentItem* DocumentModelFactory::appendObjectGroupDeclarations(
+    const libmson::fsshttpb::ObjectGroupDeclarations_SPtr_t& obj, quint64& stp,
+    DocumentItem* parent)
+{
+  auto cb = obj->getSizeInFile();
+
+  auto* item = appendNewChild(
+      QStringLiteral("ObjectGroupDeclarations"), QStringLiteral("StreamObject"),
+      QString(), stp, cb, parent);
+
+  appendStreamObjectHeader(obj->getType(), obj->getCbNextHeader(), stp, item);
+
+  return item;
+}
+
+DocumentItem* DocumentModelFactory::appendObjectGroupMetadata(
+    const libmson::fsshttpb::ObjectGroupMetadata_SPtr_t& obj, quint64& stp,
+    DocumentItem* parent)
+{
+  auto cb = obj->getSizeInFile();
+
+  auto* item = appendNewChild(
+      QStringLiteral("ObjectGroupMetadata"), QStringLiteral("StreamObject"),
+      QString(), stp, cb, parent);
+
+  appendStreamObjectHeader(obj->getType(), obj->getCbNextHeader(), stp, item);
+
+  appendCompactU64(
+      obj->getObjectChangeFrequency(),
+      QStringLiteral("Object Change Frequency"), stp, item);
+
+  return item;
+}
+
+DocumentItem* DocumentModelFactory::appendObjectGroupMetadataDeclarations(
+    const libmson::fsshttpb::ObjectGroupMetadataDeclarations_SPtr_t& obj,
+    quint64& stp, DocumentItem* parent)
+{
+  auto cb = obj->getSizeInFile();
+
+  auto* item = appendNewChild(
+      QStringLiteral("ObjectGroupMetadata"), QStringLiteral("StreamObject"),
+      QString(), stp, cb, parent);
+
+  appendStreamObjectHeader(obj->getType(), obj->getCbNextHeader(), stp, item);
+
+  return item;
+}
+
+DocumentItem* DocumentModelFactory::appendObjectGroupObjectData(
+    const libmson::fsshttpb::ObjectGroupObjectData_SPtr_t& obj, quint64& stp,
+    DocumentItem* parent)
+{
+  auto cb = obj->getSizeInFile();
+
+  auto* item = appendNewChild(
+      QStringLiteral("ObjectGroupObjectData"), QStringLiteral("StreamObject"),
+      QString(), stp, cb, parent);
+
+  appendStreamObjectHeader(obj->getType(), obj->getCbNextHeader(), stp, item);
+
+  appendCompactExtGuidArray(
+      obj->getExtendedGuidArray(), QStringLiteral("ObjectExtendedGuidArray"),
+      stp, item);
+  appendCellIdArray(
+      obj->getCellIdArray(), QStringLiteral("CellIDArray"), stp, item);
+
+
+  auto size = obj->getData().size();
+  appendCompactU64(size, QStringLiteral("DataSize"), stp, item);
+  if (size >= 0) {
+    appendNewChild(
+        QStringLiteral("Data"), QStringLiteral("ByteArray"),
+        obj->getData().toHex(), stp, size, item);
+    stp += size;
+  }
+
+  return item;
+}
+
+DocumentItem* DocumentModelFactory::appendObjectGroupObjectDataBLOBDeclaration(
+    const libmson::fsshttpb::ObjectGroupObjectDataBLOBDeclaration_SPtr_t& obj,
+    quint64& stp, DocumentItem* parent)
+{
+  auto cb = obj->getSizeInFile();
+
+  auto* item = appendNewChild(
+      QStringLiteral("GroupObjectDataBLOBDeclaration"),
+      QStringLiteral("StreamObject"), QString(), stp, cb, parent);
+
+  appendStreamObjectHeader(obj->getType(), obj->getCbNextHeader(), stp, item);
+
+  appendCompactExtGuid(
+      obj->getExtendedGuid(), QStringLiteral("ObjectExtendedGUID"), stp, item);
+  appendCompactExtGuid(
+      obj->getBlobExtendedGuid(), QStringLiteral("Object Data BLOB EXGUID"),
+      stp, item);
+
+  appendCompactU64(
+      obj->getPartitionId(), QStringLiteral("PartitionID"), stp, item);
+  appendCompactU64(
+      obj->getObjectReferencesCount(), QStringLiteral("ObjectReferencesCount"),
+      stp, item);
+  appendCompactU64(
+      obj->getCellReferencesCount(), QStringLiteral("CellReferencesCount"), stp,
+      item);
+
+
+  return item;
+}
+
+DocumentItem* DocumentModelFactory::appendObjectGroupObjectDataBLOBReference(
+    const libmson::fsshttpb::ObjectGroupObjectDataBLOBReference_SPtr_t& obj,
+    quint64& stp, DocumentItem* parent)
+{
+  auto cb = obj->getSizeInFile();
+
+  auto* item = appendNewChild(
+      QStringLiteral("GroupObjectDataBLOBReference"),
+      QStringLiteral("StreamObject"), QString(), stp, cb, parent);
+
+  appendStreamObjectHeader(obj->getType(), obj->getCbNextHeader(), stp, item);
+
+  appendCompactExtGuidArray(
+      obj->getObjectExtGuidArray(),
+      QStringLiteral("Object Extended GUID Array"), stp, item);
+  appendCellIdArray(
+      obj->getCellIdArray(), QStringLiteral("Cell ID Array"), stp, item);
+  appendCompactExtGuid(
+      obj->getExtendedGuid(), QStringLiteral("BLOB Extended GUID"), stp, item);
+
+
+  return item;
+}
+
+DocumentItem* DocumentModelFactory::appendObjectGroupObjectDeclare(
+    const libmson::fsshttpb::ObjectGroupObjectDeclare_SPtr_t& obj, quint64& stp,
+    DocumentItem* parent)
+{
+  auto cb = obj->getSizeInFile();
+
+  auto* item = appendNewChild(
+      QStringLiteral("GroupObjectDeclare"), QStringLiteral("StreamObject"),
+      QString(), stp, cb, parent);
+
+  appendStreamObjectHeader(obj->getType(), obj->getCbNextHeader(), stp, item);
+
+  appendCompactExtGuid(
+      obj->getExtendedGuid(), QStringLiteral("ObjectExtendedGUID"), stp, item);
+
+  appendCompactU64(
+      obj->getPartitionId(), QStringLiteral("PartitionID"), stp, item);
+  appendCompactU64(obj->getDataSize(), QStringLiteral("DataSize"), stp, item);
+  appendCompactU64(
+      obj->getObjectReferencesCount(), QStringLiteral("ObjectReferencesCount"),
+      stp, item);
+  appendCompactU64(
+      obj->getCellReferencesCount(), QStringLiteral("CellReferencesCount"), stp,
+      item);
+
+
+  return item;
+}
+
+DocumentItem* DocumentModelFactory::appendObjectGroupObjectExcludedData(
+    const libmson::fsshttpb::ObjectGroupObjectExcludedData_SPtr_t& obj,
+    quint64& stp, DocumentItem* parent)
+{
+
+  auto cb = obj->getSizeInFile();
+
+  auto* item = appendNewChild(
+      QStringLiteral("ObjectGroupObjectExcludedData"),
+      QStringLiteral("StreamObject"), QString(), stp, cb, parent);
+
+  appendStreamObjectHeader(obj->getType(), obj->getCbNextHeader(), stp, item);
+
+  appendCompactExtGuidArray(
+      obj->getExtendedGuidArray(), QStringLiteral("ObjectExtendedGuidArray"),
+      stp, item);
+  appendCellIdArray(
+      obj->getCellIdArray(), QStringLiteral("CellIDArray"), stp, item);
+
+
+  auto size = obj->getDataSize();
+  appendCompactU64(size, QStringLiteral("DataSize"), stp, item);
+  //  if (size >= 0) {
+  //    appendNewChild(
+  //        QStringLiteral("Data"), QStringLiteral("ByteArray"),
+  //        obj->getData().toHex(), stp, size, item);
+  //    stp += size;
+  //  }
+
+  return item;
+}
+
+DocumentItem* DocumentModelFactory::appendDataElement(
+    const libmson::fsshttpb::DataElement_SPtr_t& obj, quint64& stp,
+    DocumentItem* parent)
+{
+  auto cb = obj->getSizeInFile();
+
+  auto* item = appendNewChild(
+      QStringLiteral("DataElement"), QStringLiteral("StreamObject"),
+      obj->dataElementTypeToString(), stp, cb, parent);
+
+  appendStreamObjectHeader(obj->getType(), obj->getCbNextHeader(), stp, item);
+
+  appendCompactExtGuid(
+      obj->getDataElementExtGuid(), QStringLiteral("DataElementExtendedGUID"),
+      stp, item);
+
+  appendLongExtGuid(
+      obj->getSerialNumber(), QStringLiteral("Serial Number"), stp, item);
+
+  appendCompactU64(
+      obj->getDataElementType(), QStringLiteral("DataElementType"), stp, item);
+
+
+  return item;
+}
+
+DocumentItem* DocumentModelFactory::appendDataElementHash(
+    const libmson::fsshttpb::DataElementHash_SPtr_t& obj, quint64& stp,
+    DocumentItem* parent)
+{
+  auto cb = obj->getSizeInFile();
+
+  auto* item = appendNewChild(
+      QStringLiteral("DataElementHash"), QStringLiteral("StreamObject"),
+      QString(), stp, cb, parent);
+
+  appendStreamObjectHeader(obj->getType(), obj->getCbNextHeader(), stp, item);
+
+
+  appendCompactU64(obj->getScheme(), QStringLiteral("Hash Scheme"), stp, item);
+
+
+  appendCompactU64(
+      obj->getData().size(), QStringLiteral("Hash Data Size"), stp, item);
+  appendNewChild(
+      QStringLiteral("Hash Data"), QStringLiteral("ByteArray"),
+      obj->getData().toHex(), stp, obj->getData().size(), item);
+  stp += obj->getData().size();
+
+  return item;
+}
+
+DocumentItem* DocumentModelFactory::appendDataElementFragment(
+    const libmson::fsshttpb::DataElementFragment_SPtr_t& obj, quint64& stp,
+    DocumentItem* parent)
+{
+  auto cb = obj->getSizeInFile();
+
+  auto* item = appendNewChild(
+      QStringLiteral("DataElementFragment"), QStringLiteral("StreamObject"),
+      QString(), stp, cb, parent);
+
+  appendStreamObjectHeader(obj->getType(), obj->getCbNextHeader(), stp, item);
+
+  appendCompactExtGuid(
+      obj->getExtendedGuid(), QStringLiteral("Fragment Extended GUID"), stp,
+      item);
+  appendCompactU64(
+      obj->getSize(), QStringLiteral("Fragment Data Element Size"), stp, item);
+  appendCompactU64(
+      obj->getFileChunkStart(), QStringLiteral("FileChunkStart"), stp, item);
+  appendCompactU64(
+      obj->getFileChunkSize(), QStringLiteral("FileChunkSizee"), stp, item);
+
+  appendNewChild(
+      QStringLiteral("Data"), QStringLiteral("ByteArray"),
+      obj->getData().toHex(), stp, obj->getData().size(), item);
+  stp += obj->getData().size();
+
+  return item;
+}
+
+DocumentItem* DocumentModelFactory::appendStreamObjectHeader(
+    libmson::fsshttpb::StreamObjectType type, quint64 cbNextHeader,
+    quint64& stp, DocumentItem* parent)
+{
+
+  auto headerSize =
+      libmson::fsshttpb::StreamObjectHeader::getSizeInFile(cbNextHeader, type);
+
+  auto streamObjectType = libmson::fsshttpb::streamObjectTypeToString(type);
+
+  auto* headerItem = appendNewChild(
+      QStringLiteral("StreamObjectHeader"), QString(), streamObjectType, stp,
+      headerSize, parent);
+
+
+  if (headerSize == 2) {
+    appendNewChild(
+        QStringLiteral("HeaderType"), QStringLiteral("2bit"),
+        QStringLiteral("16 bit Header"), stp, 1, headerItem);
+  }
+  else {
+    appendNewChild(
+        QStringLiteral("HeaderType"), QStringLiteral("2bit"),
+        QStringLiteral("32 bit Header"), stp, 1, headerItem);
+  }
+
+
+  appendNewChild(
+      QStringLiteral("isCompound"), QStringLiteral("1 bit"),
+      libmson::fsshttpb::compoundType.at(type) ? QStringLiteral("True")
+                                               : QStringLiteral("False"),
+      stp, 1, headerItem);
+
+  if (headerSize == 2) {
+    appendNewChild(
+        QStringLiteral("StreamObjectType"), QStringLiteral("6 bits"),
+        streamObjectType, stp, 2, headerItem);
+  }
+  else {
+    appendNewChild(
+        QStringLiteral("StreamObjectType"), QStringLiteral("14 bits"),
+        streamObjectType, stp, 2, headerItem);
+  }
+
+  if (headerSize == 2) {
+    appendNewChild(
+        QStringLiteral("Length"), QStringLiteral("uint7_t"),
+        "0x" + QString::number(cbNextHeader, 16), stp + 1, 1, headerItem);
+    stp += 2;
+    return headerItem;
+  }
+  else if (headerSize == 4) {
+    appendNewChild(
+        QStringLiteral("Length"), QStringLiteral("uint15_t"),
+        "0x" + QString::number(cbNextHeader, 16), stp + 2, 2, headerItem);
+    stp += 4;
+    return headerItem;
+  }
+
+  // LargeLength
+  appendNewChild(
+      QStringLiteral("Large Length switch"), QString(), QString(), stp + 2, 2,
+      headerItem);
+  stp += 4;
+
+  appendCompactU64(cbNextHeader, QStringLiteral("Length"), stp, headerItem);
+
+  return headerItem;
+}
+
+DocumentItem* DocumentModelFactory::appendStreamObjectHeaderEnd(
+    libmson::fsshttpb::StreamObjectType type, quint64& stp,
+    DocumentItem* parent)
+{
+
+  auto streamObjectType = libmson::fsshttpb::streamObjectTypeToString(type);
+  auto headerSize =
+      libmson::fsshttpb::StreamObjectHeaderEnd::getSizeInFile(type);
+
+
+  auto* headerItem = appendNewChild(
+      QStringLiteral("StreamObjectHeaderEnd"), QString(), streamObjectType, stp,
+      headerSize, parent);
+
+
+  if (headerSize == 1) {
+    appendNewChild(
+        QStringLiteral("HeaderType"), QStringLiteral("2bit"),
+        QStringLiteral("8 bit End"), stp, 1, headerItem);
+    appendNewChild(
+        QStringLiteral("StreamObjectType"), QStringLiteral("6 bits"),
+        streamObjectType, stp, 1, headerItem);
+
+    stp += 1;
+  }
+  else {
+    appendNewChild(
+        QStringLiteral("HeaderType"), QStringLiteral("2bit"),
+        QStringLiteral("16 bit End"), stp, 1, headerItem);
+    appendNewChild(
+        QStringLiteral("StreamObjectType"), QStringLiteral("14 bits"),
+        streamObjectType, stp, 2, headerItem);
+
+    stp += 2;
+  }
+
+  return headerItem;
+}
+
+
+DocumentItem* DocumentModelFactory::appendCompactU64(
+    const quint64 val, const QString& name, quint64& stp, DocumentItem* parent,
+    const bool asHex)
+{
+  const quint64 cb = libmson::fsshttpb::CompactUInt64::getSizeInFile(val);
+
+  DocumentItem* item = appendNewChild(
+      name, QStringLiteral("CompactUInt64"),
+      QString((asHex ? "0x" : "") + QString::number(val, asHex ? 16 : 10)), stp,
+      cb, parent);
+  stp += cb;
+  return item;
+}
+
+DocumentItem* DocumentModelFactory::appendCompactExtGuid(
+    const libmson::priv::ExtendedGUID& eguid, const QString& name, quint64& stp,
+    DocumentItem* parent)
+{
+  auto ceg = libmson::fsshttpb::CompactExtGuid(eguid);
+
+  const quint64 cb = ceg.getSizeInFile();
+
+  DocumentItem* item = appendNewChild(
+      name, QStringLiteral("CompactExtGuid"), eguid.toString(), stp, cb,
+      parent);
+
+  appendNewChild(
+      QStringLiteral("type"), QStringLiteral("CompactExtGuidWidth"),
+      libmson::fsshttpb::CompactExtGuid::typeToString(ceg.getWidthType()), stp,
+      1, item);
+
+
+  switch (ceg.getWidthType()) {
+  case libmson::fsshttpb::CompactExtGuidWidth::CompressedNull:
+    appendNewChild(
+        QStringLiteral("Guid"), QString(), eguid.toString(), stp, 1, item);
+    stp += 1;
+    return item;
+  case libmson::fsshttpb::CompactExtGuidWidth::CompressedN5Bit:
+    appendNewChild(
+        QStringLiteral("value"), QStringLiteral("uint5_t"),
+        QString::number(ceg.getN()), stp, 1, item);
+    stp += 1;
+    break;
+  case libmson::fsshttpb::CompactExtGuidWidth::CompressedN10Bit:
+    appendNewChild(
+        QStringLiteral("value"), QStringLiteral("uint10_t"),
+        QString::number(ceg.getN()), stp, 2, item);
+    stp += 2;
+    break;
+  case libmson::fsshttpb::CompactExtGuidWidth::CompressedN17Bit:
+    appendNewChild(
+        QStringLiteral("value"), QStringLiteral("uint17_t"),
+        QString::number(ceg.getN()), stp, 3, item);
+    stp += 3;
+    break;
+  case libmson::fsshttpb::CompactExtGuidWidth::Uncompressed:
+    stp += 1;
+    appendUInt32(ceg.getN(), QStringLiteral("value"), stp, item, false);
+    break;
+  case libmson::fsshttpb::CompactExtGuidWidth::Auto:
+    break;
+  }
+
+  appendGuid(eguid.getGuid(), QStringLiteral("Guid"), stp, item);
+
+  return item;
+}
+
+DocumentItem* DocumentModelFactory::appendCompactExtGuidArray(
+    const std::vector<libmson::priv::ExtendedGUID>& eguids, const QString& name,
+    quint64& stp, DocumentItem* parent)
+{
+  auto cb = libmson::fsshttpb::CompactExtGuidArray::getSizeInFile(eguids);
+
+  DocumentItem* item = appendNewChild(
+      name, QStringLiteral("CompactExtGuidArray"),
+      QString::number(eguids.size()) + " eguids", stp, cb, parent);
+
+
+  appendCompactU64(eguids.size(), QStringLiteral("Size"), stp, item, false);
+
+  for (const auto& eg : eguids) {
+    appendCompactExtGuid(eg, QString(), stp, item);
+  }
+
+  return item;
+}
+
+DocumentItem* DocumentModelFactory::appendLongExtGuid(
+    const libmson::fsshttpb::LongExtGuid& sn, const QString& name, quint64& stp,
+    DocumentItem* parent)
+{
+  const quint64 cb = sn.getSizeInFile();
+
+  DocumentItem* item = appendNewChild(
+      name, QStringLiteral("SerialNumber"), sn.toString(), stp, cb, parent);
+
+  appendNewChild(
+      QStringLiteral("type"), cb == 1 ? "NullWidth" : "FullWidth", QString(),
+      stp, 1, item);
+  stp += 1;
+  appendGuid(sn.getGuid(), QStringLiteral("Guid"), stp, item);
+  appendUInt64(sn.getSerialNumber(), QStringLiteral("Value"), stp, item, false);
+
+  return item;
+}
+
+DocumentItem* DocumentModelFactory::appendCellId(
+    const libmson::fsshttpb::CellId& cellId, const QString& name, quint64& stp,
+    DocumentItem* parent)
+{
+  const quint64 cb = cellId.getSizeInFile();
+
+  DocumentItem* item = appendNewChild(
+      name, QStringLiteral("CellId"), QString(), stp, cb, parent);
+
+  appendCompactExtGuid(
+      cellId.getExguid1(), QStringLiteral("ExtGuid1"), stp, item);
+  appendCompactExtGuid(
+      cellId.getExguid2(), QStringLiteral("ExtGuid2"), stp, item);
+
+  return item;
+}
+
+DocumentItem* DocumentModelFactory::appendCellIdArray(
+    const std::vector<libmson::fsshttpb::CellId>& cellIds, const QString& name,
+    quint64& stp, DocumentItem* parent)
+{
+  auto cb = libmson::fsshttpb::CellIdArray::getSizeInFile(cellIds);
+
+  DocumentItem* item = appendNewChild(
+      name, QStringLiteral("CompactExtGuidArray"),
+      QString::number(cellIds.size()) + " cellIds", stp, cb, parent);
+
+  appendCompactU64(cellIds.size(), QStringLiteral("Size"), stp, item, false);
+
+  for (const auto& id : cellIds) {
+    appendCellId(id, QString(), stp, item);
+  }
+
+  return item;
 }
 
 
@@ -2525,7 +3587,7 @@ DocumentItem* DocumentModelFactory::appendStringInStorageBuffer(
 
   appendNewChild(
       QStringLiteral("RawString"), QStringLiteral("char array"),
-      buffer.getStringData(), stp, buffer.getCch() *2, item);
+      buffer.getStringData(), stp, buffer.getCch() * 2, item);
 
   stp += buffer.getCch() * 2;
 
@@ -2620,11 +3682,12 @@ DocumentItem* DocumentModelFactory::appendFileChunkReference32(
 
   appendNewChild(
       QStringLiteral("Stp"), QStringLiteral("uint32_t"),
-      QString("0x" + QString::number(ref.stp(), 16)), stp, sizeof(quint32), item);
+      QString("0x" + QString::number(ref.stp(), 16)), stp, sizeof(quint32),
+      item);
   appendNewChild(
       QStringLiteral("Cb"), QStringLiteral("uint32_t"),
-      QString("0x" + QString::number(ref.cb(), 16)), stp + sizeof(quint32), sizeof(quint32),
-      item);
+      QString("0x" + QString::number(ref.cb(), 16)), stp + sizeof(quint32),
+      sizeof(quint32), item);
 
   stp += cb;
   return item;
@@ -2645,12 +3708,13 @@ DocumentItem* DocumentModelFactory::appendFileChunkReference64x32(
 
   appendNewChild(
       QStringLiteral("Stp"), QStringLiteral("uint64_t"),
-      QString("0x" + QString::number(ref.stp(), 16)), stp, sizeof(quint64), item);
+      QString("0x" + QString::number(ref.stp(), 16)), stp, sizeof(quint64),
+      item);
 
   appendNewChild(
       QStringLiteral("Cb"), QStringLiteral("uint32_t"),
-      QString("0x" + QString::number(ref.cb(), 16)), stp + sizeof(quint64), sizeof(quint32),
-      item);
+      QString("0x" + QString::number(ref.cb(), 16)), stp + sizeof(quint64),
+      sizeof(quint32), item);
 
   stp += cb;
   return item;
@@ -2671,11 +3735,12 @@ DocumentItem* DocumentModelFactory::appendFileChunkReference64(
 
   appendNewChild(
       QStringLiteral("Stp"), QStringLiteral("uint64_t"),
-      QString("0x" + QString::number(ref.stp(), 16)), stp, sizeof(quint64), item);
+      QString("0x" + QString::number(ref.stp(), 16)), stp, sizeof(quint64),
+      item);
   appendNewChild(
       QStringLiteral("Cb"), QStringLiteral("uint64_t"),
-      QString("0x" + QString::number(ref.cb(), 16)), stp + sizeof(quint64), sizeof(quint64),
-      item);
+      QString("0x" + QString::number(ref.cb(), 16)), stp + sizeof(quint64),
+      sizeof(quint64), item);
 
   stp += cb;
   return item;

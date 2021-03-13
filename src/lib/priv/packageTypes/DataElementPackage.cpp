@@ -4,59 +4,95 @@
 
 
 namespace libmson {
-namespace packStore {
-QByteArray DataElementPackage::getData() const { return m_data; }
-
-void DataElementPackage::setData(const QByteArray& data) { m_data = data; }
-
-std::vector<DataElementPackage_SPtr_t> DataElementPackage::getChildren() const
-{
-  return m_children;
-}
-
-std::vector<DataElementPackage_SPtr_t>& DataElementPackage::children()
-{
-  return m_children;
-}
-
-void DataElementPackage::setChildren(
-    const std::vector<DataElementPackage_SPtr_t>& children)
-{
-  m_children = children;
-}
-
-DataElement_SPtr_t DataElementPackage::getDataElement() const
-{
-  return m_dataElement;
-}
-
-void DataElementPackage::setDataElement(const DataElement_SPtr_t& dataElement)
-{
-  m_dataElement = dataElement;
-}
+namespace fsshttpb {
 
 DataElementPackage::DataElementPackage() {}
 
-StreamObjectHeader_SPtr_t DataElementPackage::getHeader() const
+std::vector<DataElement_WPtr_t> DataElementPackage::getObjects()
 {
-  return m_header;
+  std::vector<DataElement_WPtr_t> vec{};
+
+  vec.reserve(m_children.size());
+  std::transform(
+      m_children.cbegin(), m_children.cend(), std::back_inserter(vec),
+      [](auto& ptr) { return std::dynamic_pointer_cast<DataElement>(ptr); });
+
+  return vec;
 }
 
-void DataElementPackage::setHeader(const StreamObjectHeader_SPtr_t& header)
+std::vector<DataElement_WPtr_t> DataElementPackage::getDataElements()
 {
-  m_header = header;
+  return getObjects();
 }
 
-// std::shared_ptr<DataElement> DataElementPackage::getData() const
-//{
-//  return m_data;
-//}
+DataElement_WPtr_t DataElementPackage::at(size_t pos)
+{
+  return std::dynamic_pointer_cast<DataElement>(m_children.at(pos));
+}
 
-// void DataElementPackage::setData(const std::shared_ptr<DataElement>& data)
-//{
-//  m_data = data;
-//}
+void DataElementPackage::push_back(IStreamObject_SPtr_t& obj)
+{
+  if (obj->getType() == StreamObjectType::DataElement) {
+    m_children.push_back(obj);
+  }
+}
+void DataElementPackage::push_back(DataElement_SPtr_t& obj)
+{
+  m_children.push_back(std::static_pointer_cast<IStreamObject>(obj));
+}
+
+IStreamObj_It_t
+DataElementPackage::insert(IStreamObj_It_t pos, const IStreamObject_SPtr_t& obj)
+{
+  if (obj->getType() == StreamObjectType::DataElement) {
+    return m_children.insert(pos, obj);
+  }
+
+  return m_children.end();
+}
+
+IStreamObj_It_t
+DataElementPackage::insert(IStreamObj_It_t pos, const DataElement_SPtr_t& obj)
+{
+  return m_children.insert(pos, std::static_pointer_cast<IStreamObject>(obj));
+}
+
+quint64 DataElementPackage::strObjBody_cb() const
+{
+  quint64 cb = std::accumulate(
+      IStreamObject::cbegin(), IStreamObject::cend(), 0,
+      [](quint64 sum, auto& ptr) { return sum + ptr->getSizeInFile(); });
+
+  return sizeof(m_reserved) + cb;
+}
+
+quint64 DataElementPackage::cbNextHeader() const
+{
+  return 1;
+}
+
+void DataElementPackage::deserializeStrObj(QDataStream& ds)
+{
+  ds >> m_reserved;
+
+  while (!isObjectStreamEnd(ds)) {
+    auto package = std::make_shared<DataElement>();
+    m_children.push_back(package);
+    ds >> *package;
+
+  }
+}
+
+void DataElementPackage::serializeStrObj(QDataStream& ds) const
+{
+  quint8 reserved = 0;
+  ds << reserved;
+
+  for (auto ptr : m_children) {
+    ds << *std::dynamic_pointer_cast<DataElement>(ptr);
+  }
+}
 
 
-} // namespace packStore
+} // namespace fsshttpb
 } // namespace libmson

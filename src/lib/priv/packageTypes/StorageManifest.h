@@ -14,7 +14,7 @@
 
 
 namespace libmson {
-namespace packStore {
+namespace fsshttpb {
 
 class StorageManifest
     : public DataElementBody

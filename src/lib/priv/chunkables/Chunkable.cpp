@@ -9,6 +9,9 @@ bool Chunkable::isParsed() const { return m_isParsed; }
 
 void Chunkable::setIsChanged() { m_isChanged = true; }
 
+bool Chunkable::isChanged() const { return m_isChanged;
+}
+
 Chunkable::Chunkable(const quint64 initialStp, const quint64 initialCb)
     : m_initialStp(initialStp), m_initialCb(initialCb), m_cb(initialCb),
       m_isParsed(false), m_isChanged(false)

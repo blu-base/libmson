@@ -7,6 +7,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QSplitter>
+#include <QString>
 #include <qhexview.h>
 
 #include "documentitem.h"
@@ -150,15 +151,18 @@ void MainWindow::onCustomContextMenu(const QPoint& point)
   }
 }
 
-void MainWindow::createDocumentModel(const QString& fileName)
+DocumentModel* MainWindow::createDocumentModel(const QString& fileName)
 {
+  auto* model = new DocumentModel(this);
   QFileInfo fileInfo(fileName);
 
   if (!fileInfo.exists()) {
-    return;
+    return model;
   }
 
-  DocumentModelFactory(fileName).createModel(m_model);
+  DocumentModelFactory(fileName).createModel(model);
+
+  return model;
 }
 
 
@@ -181,8 +185,7 @@ void MainWindow::openFile(QString fileName)
 
 
   delete m_model;
-  m_model = new DocumentModel(this);
-  createDocumentModel(fileName);
+  m_model = createDocumentModel(fileName);
 
   treeView->setModel(m_model);
 

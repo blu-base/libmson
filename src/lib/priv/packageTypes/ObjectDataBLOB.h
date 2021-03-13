@@ -1,44 +1,44 @@
-#ifndef OBJECTDATABLOBDATAELEMENT_H
-#define OBJECTDATABLOBDATAELEMENT_H
+#ifndef OBJECTDATABLOB_H
+#define OBJECTDATABLOB_H
 
 #include <QtCore/qglobal.h>
 
-
-
-#include "interfaces/IDataElementBody.h"
-#include "streamObjects/ObjectDataBLOB.h"
+#include "interfaces/IStreamObject.h"
 
 namespace libmson {
-namespace packStore {
+namespace fsshttpb {
 
-class ObjectDataBLOB
-    : public DataElementBody
-    , public priv::IStreamable {
+class ObjectDataBLOB : public IStreamObject {
 private:
-  streamObj::ObjectDataBLOB_SPtr_t m_object;
+  QByteArray m_data;
 
 public:
-  ObjectDataBLOB();
-  streamObj::ObjectDataBLOB_SPtr_t getObject() const;
-  void setObject(const streamObj::ObjectDataBLOB_SPtr_t& object);
+  ObjectDataBLOB()  = default;
+  ~ObjectDataBLOB() = default;
 
-  // IStreamable interface
-private:
-  virtual void deserialize(QDataStream& ds) override;
-  virtual void serialize(QDataStream& ds) const override;
+  QByteArray getData() const;
+  void setData(const QByteArray& data);
 
-  // DataElementBody interface
+  // IStreamObject interface
 protected:
-  virtual quint64 cb() const override;
+  virtual quint64 strObjBody_cb() const override;
+  virtual quint64 cbNextHeader() const override;
 
 public:
-  virtual DataElementType getType() const override;
+  virtual StreamObjectType getType() const override;
+  virtual void push_back(IStreamObject_SPtr_t& obj) override;
+  virtual IStreamObj_It_t
+  insert(IStreamObj_It_t pos, const IStreamObject_SPtr_t& obj) override;
+
+private:
+  virtual void deserializeStrObj(QDataStream& ds) override;
+  virtual void serializeStrObj(QDataStream& ds) const override;
 };
 
 typedef std::shared_ptr<ObjectDataBLOB> ObjectDataBLOB_SPtr_t;
 typedef std::weak_ptr<ObjectDataBLOB> ObjectDataBLOB_WPtr_t;
 
-} // namespace packStore
+} // namespace fsshttpb
 } // namespace libmson
 
-#endif // OBJECTDATABLOBDATAELEMENT_H
+#endif // OBJECTDATABLOB_H

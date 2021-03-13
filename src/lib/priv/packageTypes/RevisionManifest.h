@@ -1,66 +1,49 @@
-#ifndef REVISIONMANIFESTDATAELEMENT_H
-#define REVISIONMANIFESTDATAELEMENT_H
-
+#ifndef REVISIONMANIFESTSTREAMOBJ_H
+#define REVISIONMANIFESTSTREAMOBJ_H
 
 #include <QtCore/qglobal.h>
 
-#include "../commonTypes/CompactExtGuid.h"
-
-#include "interfaces/IDataElementBody.h"
-
-#include "streamObjects/RevisionManifest.h"
-#include "streamObjects/RevisionManifestObjectGroupReference.h"
-#include "streamObjects/RevisionManifestRootDeclare.h"
+#include "interfaces/IStreamObject.h"
+#include <priv/commonTypes/ExtendedGUID.h>
 
 namespace libmson {
-namespace packStore {
+namespace fsshttpb {
 
-class RevisionManifest
-    : public DataElementBody
-    , public priv::IStreamable {
+
+class RevisionManifest : public IStreamObject {
 private:
-  streamObj::RevisionManifest_SPtr_t m_revisionManifest;
-
-  std::vector<streamObj::RevisionManifestRootDeclare_SPtr_t> m_rootDeclares;
-  std::vector<streamObj::RevisionManifestObjectGroupReference_SPtr_t>
-      m_objectGroups;
+  priv::ExtendedGUID m_revisionId;
+  priv::ExtendedGUID m_baseRevisionId;
 
 public:
   RevisionManifest();
+  priv::ExtendedGUID getRevisionId() const;
+  void setRevisionId(const priv::ExtendedGUID& revisionId);
+  priv::ExtendedGUID getBaseRevisionId() const;
+  void setBaseRevisionId(const priv::ExtendedGUID& baseRevisionId);
 
-  streamObj::RevisionManifest_SPtr_t getRevisionManifest() const;
-  void setRevisionManifest(
-      const streamObj::RevisionManifest_SPtr_t& revisionManifest);
-
-
-  std::vector<streamObj::RevisionManifestRootDeclare_SPtr_t>
-  getRootDeclares() const;
-  void setRootDeclares(
-      const std::vector<streamObj::RevisionManifestRootDeclare_SPtr_t>&
-          rootDeclares);
-  std::vector<streamObj::RevisionManifestObjectGroupReference_SPtr_t>
-  getObjectGroups() const;
-  void setObjectGroups(
-      const std::vector<streamObj::RevisionManifestObjectGroupReference_SPtr_t>&
-          objectGroups);
-
-  // IStreamable interface
-private:
-  virtual void deserialize(QDataStream& ds) override;
-  virtual void serialize(QDataStream& ds) const override;
-
-  // DataElementBody interface
+  // IStreamObject interface
 protected:
-  virtual quint64 cb() const override;
+  virtual quint64 strObjBody_cb() const override;
+  virtual quint64 cbNextHeader() const override;
 
 public:
-  virtual DataElementType getType() const override;
+  virtual StreamObjectType getType() const override;
+  virtual void push_back(IStreamObject_SPtr_t& obj) override;
+  virtual IStreamObj_It_t insert(IStreamObj_It_t pos, const IStreamObject_SPtr_t& obj) override;
+
+private:
+  virtual void deserializeStrObj(QDataStream& ds) override;
+  virtual void serializeStrObj(QDataStream& ds) const override;
 };
 
 
-typedef std::weak_ptr<RevisionManifest> RevisionManifest_WPtr_t;
 typedef std::shared_ptr<RevisionManifest> RevisionManifest_SPtr_t;
+typedef std::weak_ptr<RevisionManifest> RevisionManifest_WPtr_t;
 
-} // namespace packStore
+
+} // namespace fsshttpb
 } // namespace libmson
-#endif // REVISIONMANIFESTDATAELEMENT_H
+
+
+#endif // REVISIONMANIFESTSTREAMOBJ_H

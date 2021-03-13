@@ -1,37 +1,44 @@
 #include "ObjectDataBLOB.h"
 
-#include "StreamObjectHeader.h"
-
 namespace libmson {
-namespace packStore {
-ObjectDataBLOB::ObjectDataBLOB() {}
+namespace fsshttpb {
 
-streamObj::ObjectDataBLOB_SPtr_t ObjectDataBLOB::getObject() const
+QByteArray ObjectDataBLOB::getData() const { return m_data; }
+
+void ObjectDataBLOB::setData(const QByteArray& data) { m_data = data; }
+
+StreamObjectType ObjectDataBLOB::getType() const
 {
-  return m_object;
+  return StreamObjectType::ObjectDataBLOB;
 }
 
-void ObjectDataBLOB::setObject(const streamObj::ObjectDataBLOB_SPtr_t& object)
+quint64 ObjectDataBLOB::strObjBody_cb() const { return m_data.size(); }
+
+quint64 ObjectDataBLOB::cbNextHeader() const
 {
-  m_object = object;
+  return strObjBody_cb();
 }
 
+void ObjectDataBLOB::push_back(IStreamObject_SPtr_t& obj) { Q_UNUSED(obj); }
 
-void ObjectDataBLOB::deserialize(QDataStream& ds)
+IStreamObj_It_t
+ObjectDataBLOB::insert(IStreamObj_It_t pos, const IStreamObject_SPtr_t& obj)
 {
-  auto data = std::make_shared<streamObj::ObjectDataBLOB>();
-  ds >> *data;
-  m_object = std::move(data);
+  Q_UNUSED(pos);
+  Q_UNUSED(obj);
+  m_children.clear();
+  return m_children.end();
 }
 
-void ObjectDataBLOB::serialize(QDataStream& ds) const { ds << *m_object; }
-
-quint64 ObjectDataBLOB::cb() const { return m_object->getSizeInFile(); }
-
-DataElementType ObjectDataBLOB::getType() const
+void ObjectDataBLOB::deserializeStrObj(QDataStream& ds)
 {
-  return DataElementType::ObjectDataBLOB;
+  m_data = ds.device()->read(m_cbNxtHd);
 }
 
-} // namespace packStore
+void ObjectDataBLOB::serializeStrObj(QDataStream& ds) const
+{
+  ds.writeRawData(m_data.data(), m_data.size());
+}
+
+} // namespace fsshttpb
 } // namespace libmson

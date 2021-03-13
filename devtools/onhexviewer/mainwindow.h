@@ -53,7 +53,7 @@ private slots:
 
 private:
   void openFile(QString fileName);
-  void createDocumentModel(const QString& fileName);
+  DocumentModel* createDocumentModel(const QString& fileName);
 
 
   void markSelection(const QModelIndex& item);
